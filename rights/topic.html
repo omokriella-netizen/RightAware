@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rights Overview — RightAware</title>
+<meta name="description" content="Plain-language overview of a rights topic with next steps and sources to verify."/>
+<link rel="stylesheet" href="../styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="../index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="../index.html">Home</a><a href="../about.html">About Us</a><a href="../rights.html">Explore Rights</a><a href="../resources.html">Resources</a><a href="../help.html">Get Help</a><a href="../contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <a class="btn btn-outline btn-sm" href="../login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="../rights.html">← Library</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="../index.html">Home</a><a href="../about.html">About Us</a><a href="../rights.html">Explore Rights</a><a href="../resources.html">Resources</a><a href="../help.html">Get Help</a><a href="../lawyers.html">Legal Professionals</a><a href="../ai.html">✨ RightAware AI</a><a href="../contact.html">Contact Us</a>
+  </div>
+</header>
+<main class="container">
+  <p class="breadcrumb"><a href="../index.html">Home</a> › <a href="../rights.html">Explore Rights</a> › <span id="crumb">Overview</span></p>
+  <div class="guide-hero"><span class="badge"><span class="pulse"></span> <span id="kicker">Rights overview</span></span>
+    <h1 id="tIconTitle">Rights overview</h1>
+    <p class="lead" style="color:#cbd5e1" id="tSummary"></p>
+    <div class="guide-meta"><span>⏱ 3-min read</span><span>🌍 Plain language</span><span id="tStatus">Overview — full guide in research</span></div>
+  </div>
+  <div class="guide-grid">
+    <aside class="toc"><strong>On this page</strong><a href="#key">Key points</a><a href="#do">What to do</a><a href="#src">Sources to verify</a><a href="#next">Next steps</a></aside>
+    <article class="guide-content">
+      <h2 id="key">Key points</h2><ul id="tPoints" class="checklist"></ul>
+      <h2 id="do">What to do if this affects you</h2>
+      <ol><li>Write down what happened: dates, places, names, and what was said — while it is fresh.</li><li>Keep evidence: receipts, messages, photos, letters, medical reports. Store copies safely.</li><li>Raise it in writing with the other party or institution first, with a clear request and deadline.</li><li>If unresolved or urgent, use <a class="link" href="../help.html">Get Help</a> to find reporting and referral paths.</li></ol>
+      <h2 id="src">Sources to verify</h2>
+      <div class="key-box" id="tSource"></div>
+      <h2 id="next">Next steps</h2>
+      <div class="hero-cta"><a href="../help.html" class="btn btn-primary">Get Help →</a><a href="../lawyers.html" class="btn btn-secondary">Browse Professionals (Demo)</a><a href="../ai.html" class="btn btn-secondary">Ask AI Demo</a></div>
+      <p><small><strong>Disclaimer:</strong> general legal information only, not legal advice. Confirm with a qualified lawyer.</small></p>
+      <p><a class="link" href="../rights.html">← Back to library</a></p>
+    </article>
+  </div>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="../index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p></div>
+  <div><h4>Explore</h4><a href="../rights.html">Explore Rights</a><a href="../resources.html">Resources</a></div>
+  <div><h4>Support</h4><a href="../help.html">Get Help</a><a href="../contact.html">Contact Us</a></div>
+  <div><h4>Contact</h4><p>📧 hello@rightaware.ng (placeholder)</p></div>
+</div><div class="footer-bottom container"><small>© 2026 RightAware 🇳🇬</small></div></footer>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  var id=new URLSearchParams(location.search).get("id")||"fundamental";
+  var r=(window.RA_RIGHTS||[]).find(function(x){return x.id===id;})||window.RA_RIGHTS[0];
+  if(r.fullGuide){ location.replace(r.fullGuide); return; }
+  document.title=r.title+" — RightAware";
+  document.getElementById("crumb").textContent=r.title;
+  document.getElementById("tIconTitle").textContent=r.icon+" "+r.title;
+  document.getElementById("tSummary").textContent=r.summary;
+  document.getElementById("tPoints").innerHTML=r.points.map(function(p){return "<li>"+p+"</li>";}).join("");
+  document.getElementById("tSource").innerHTML="<strong>🔎 Source hint:</strong> "+r.source;
+})();
+</script>
+</body>
+</html>
