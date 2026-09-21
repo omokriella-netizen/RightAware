@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Get Help — RightAware</title>
+<meta name="description" content="Find legal help: professionals directory, rights-protection organisations, emergency guidance and report-a-concern form."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Get Help</span><h1>Find legal help, fast</h1>
+  <p class="lead-dark">If anyone is in immediate danger, prioritise safety and official emergency channels first. Then use the paths below. Saved reports stay on this device in v1 — nothing is sent anywhere yet.</p>
+  <div class="chip-row"><a href="#paths">Paths</a><a href="#professionals">Professionals</a><a href="#organisations">Organisations</a><a href="#emergency">Emergency</a><a href="#report">Report</a></div>
+</div></section>
+
+<section class="section" id="paths"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Find legal help</span><h2>Choose your path</h2></div>
+  <div class="cards-grid">
+    <article class="card rv"><div class="icon">🚔</div><h3>Police / arrest issue</h3><p>Read the full guide, then report with evidence.</p><a class="link" href="rights/arrest-rights.html">Open guide →</a></article>
+    <article class="card rv"><div class="icon">👔</div><h3>Need a professional</h3><p>Browse the demo directory interface and request help.</p><a class="link" href="lawyers.html">Open directory →</a></article>
+    <article class="card rv"><div class="icon">✨</div><h3>Not sure where to start?</h3><p>Ask the demo AI — it points you to library pages.</p><a class="link" href="ai.html">Open AI demo →</a></article>
+  </div>
+</div></section>
+
+<section class="section section-alt" id="professionals"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Legal professionals</span><h2>Directory preview <span class="pill">DEMO DATA</span></h2><p>Fictional placeholder profiles. Full directory with filters on its own page.</p></div>
+  <div class="cards-grid" id="helpLawyers"></div>
+  <p style="margin-top:1rem"><a class="link" href="lawyers.html">Open full directory →</a></p>
+</div></section>
+
+<section class="section" id="organisations"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Rights-protection organisations</span><h2>Who does what</h2><p>Organisation types and how they generally help. Verify current contacts via official directories before reaching out.</p></div>
+  <div class="cards-grid" id="helpOrgs"></div>
+</div></section>
+
+<section class="section section-alt" id="emergency"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Emergency / help contacts</span><h2>Save these <span class="pill">VERIFY LOCALLY</span></h2><p>v1 does not hard-code phone numbers. Confirm current official numbers for your state before an emergency.</p></div>
+  <div class="cards-grid">
+    <article class="card rv"><h3>🚨 Immediate danger</h3><p>Contact official emergency services or move somewhere safe first. Keep your phone charged and share your live location with someone trusted.</p></article>
+    <article class="card rv"><h3>🏥 Medical + evidence</h3><p>After assault: seek medical care promptly and keep the medical report — it matters for any complaint or case.</p></article>
+    <article class="card rv"><h3>📝 Document early</h3><p>Names, numbers, plates, times, photos, witnesses. Evidence collected in the first hours is the most valuable.</p></article>
+  </div>
+</div></section>
+
+<section class="section section-dark" id="report"><div class="container help-grid">
+  <div class="rv"><span class="eyebrow eyebrow-light">Report a rights concern</span><h2>Structure your complaint</h2>
+    <p>Filling this in creates a tidy summary you can copy into an official complaint. In v1 it is stored only in this browser (demo) — it is not transmitted to anyone.</p>
+    <ul class="help-list"><li><strong>Do:</strong> stick to facts, dates and evidence.</li><li><strong>Do:</strong> keep copies of everything you submit elsewhere.</li><li><strong>Don't:</strong> include passwords, OTPs or bank details.</li></ul>
+  </div>
+  <form class="help-form rv" id="reportForm">
+    <h3>Report form (demo — local only)</h3>
+    <label>Category<select id="repCat"><option>Police / arrest</option><option>Rent / tenancy</option><option>Employment</option><option>Women / children safety</option><option>Consumer</option><option>Digital / scam</option><option>Other</option></select></label>
+    <div class="form-row"><label>State<input id="repState" placeholder="e.g. Lagos"/></label><label>Date of incident<input id="repDate" type="date"/></label></div>
+    <label>What happened?<textarea id="repText" rows="4" placeholder="Facts: who, what, where, when…" required></textarea></label>
+    <label>Evidence you have (describe)<input id="repEv" placeholder="e.g. photos, receipts, messages, witnesses"/></label>
+    <button class="btn btn-primary" type="submit">Generate summary</button>
+    <button class="btn btn-secondary" type="button" id="repCopy">Copy summary</button>
+    <p class="form-note" id="repOut">General information only — not legal advice.</p>
+  </form>
+</div></section>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  document.getElementById("helpLawyers").innerHTML=(window.RA_LAWYERS||[]).slice(0,3).map(function(l){
+    return '<article class="card lawyer"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+'</small><p>⭐ '+l.rating+' ('+l.reviews+' demo reviews)</p><a class="btn btn-outline btn-sm" href="lawyers.html#'+l.id+'">View Profile</a></article>';
+  }).join("");
+  document.getElementById("helpOrgs").innerHTML=(window.RA_ORGS||[]).map(function(o){
+    return '<article class="card"><h3>🏛 '+o.name+'</h3><p>'+o.help+'</p><p><small>'+o.contact+'</small></p></article>';
+  }).join("");
+  var F=document.getElementById("reportForm");
+  function summary(){
+    return "RIGHTAWARE CONCERN SUMMARY (demo, "+new Date().toLocaleString()+")\nCategory: "+document.getElementById("repCat").value+"\nState: "+document.getElementById("repState").value+"\nDate: "+document.getElementById("repDate").value+"\nWhat happened:\n"+document.getElementById("repText").value+"\nEvidence: "+document.getElementById("repEv").value+"\n---\nGeneral information only, not legal advice.";
+  }
+  F.addEventListener("submit",function(e){
+    e.preventDefault();
+    try{var a=JSON.parse(localStorage.getItem("ra_reports")||"[]");a.push({at:new Date().toISOString(),s:summary()});localStorage.setItem("ra_reports",JSON.stringify(a));}catch(_){}
+    document.getElementById("repOut").textContent="Summary generated and saved on this device ("+(JSON.parse(localStorage.getItem("ra_reports")||"[]")).length+" stored). Copy it into an official complaint channel.";
+  });
+  document.getElementById("repCopy").addEventListener("click",function(){ navigator.clipboard&&navigator.clipboard.writeText(summary()); });
+})();
+</script>
+</body>
+</html>

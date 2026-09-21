@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Explore Rights — RightAware Library</title>
+<meta name="description" content="Searchable library of Nigerian rights: fundamental, police & arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Explore Rights</span>
+  <h1>Rights library</h1>
+  <p class="lead-dark">12 categories. Search below — the Police & Arrest guide is complete; others open as structured overviews with source hints while full guides are researched and verified.</p>
+  <form id="libSearch" class="search-form" role="search" style="margin:1.2rem 0 0"><input id="libInput" type="search" placeholder="Filter: try 'bail', 'rent', 'vote', 'scam'…" aria-label="Filter rights"/><button class="btn btn-primary" type="submit">Filter</button></form>
+</div></section>
+<section class="section"><div class="container">
+  <div id="libGrid" class="cards-grid"></div>
+  <div class="notice rv" style="margin-top:1.5rem">⚠️ <strong>Verification note:</strong> overviews are general information, not legal advice. Source hints on each page show which official text to confirm. Laws differ by state and change over time.</div>
+</div></section>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power — we make the law understandable for everyone.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var grid=document.getElementById("libGrid"), input=document.getElementById("libInput");
+  function render(q){
+    q=(q||"").trim().toLowerCase();
+    var list=(window.RA_RIGHTS||[]).filter(function(r){
+      if(!q) return true;
+      return (r.title+" "+r.summary+" "+r.keywords+" "+r.points.join(" ")).toLowerCase().includes(q);
+    });
+    grid.innerHTML = list.length ? list.map(function(r){
+      var url=r.fullGuide?r.fullGuide:("rights/topic.html?id="+r.id);
+      var badge=r.fullGuide?'<span class="tag">Full guide</span>':'<span class="tag tag-soon">Overview</span>';
+      return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+url+'">Open →</a></article>';
+    }).join("") : '<div class="result">No match. Try "arrest", "rent", "vote", "scam" — or <a class="link" href="help.html">get help →</a></div>';
+  }
+  render("");
+  var params=new URLSearchParams(location.search); if(params.get("q")){ input.value=params.get("q"); render(input.value); }
+  document.getElementById("libSearch").addEventListener("submit",function(e){e.preventDefault();render(input.value);});
+  input.addEventListener("input",function(){render(input.value);});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact Us — RightAware</title>
+<meta name="description" content="Contact RightAware: placeholder contact details and a working demo contact form."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Contact Us</span><h1>Talk to the RightAware team</h1>
+  <p class="lead-dark">Contact details below are <strong>placeholders</strong> until real ones are provided. The form works as a demo — messages are saved on this device only.</p>
+</div></section>
+<section class="section"><div class="container contact-grid">
+  <div class="rv">
+    <article class="card"><h3>📧 Email</h3><p>hello@rightaware.ng <span class="pill">PLACEHOLDER</span></p><p><small>Replace with the real support inbox before launch.</small></p></article><br/>
+    <article class="card"><h3>📍 Office</h3><p>Lagos, Nigeria <span class="pill">PLACEHOLDER</span></p><p><small>Full address to be confirmed.</small></p></article><br/>
+    <article class="card"><h3>🕘 Hours</h3><p>Mon–Fri, 9am–5pm (WAT) <span class="pill">PLACEHOLDER</span></p><p><small>Support hours to be confirmed.</small></p></article><br/>
+    <article class="card"><h3>🚨 Urgent rights issue?</h3><p>Don't wait for email — use <a class="link" href="help.html">Get Help</a> and official emergency channels.</p></article>
+  </div>
+  <form class="form-card rv" id="contactForm">
+    <h2>Send a message (demo)</h2>
+    <div class="form-row"><label>Full name<input id="cName" required placeholder="Your name"/></label><label>Email<input id="cEmail" type="email" required placeholder="you@example.com"/></label></div>
+    <label>Topic<select id="cTopic"><option>General question</option><option>Correction to a guide</option><option>Professional onboarding (lawyer/clinic/NGO)</option><option>Partnership</option><option>Press</option></select></label>
+    <label>Message<textarea id="cMsg" rows="5" required placeholder="How can we help?"></textarea></label>
+    <button class="btn btn-primary" type="submit">Send Message</button>
+    <p class="form-note" id="cOut">Demo: stored in this browser only. Email delivery still needs to be connected.</p>
+  </form>
+</div></section>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact</h4><p>📧 hello@rightaware.ng (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="app.js"></script>
+<script>
+document.getElementById("contactForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var m={at:new Date().toISOString(),name:document.getElementById("cName").value,email:document.getElementById("cEmail").value,topic:document.getElementById("cTopic").value,msg:document.getElementById("cMsg").value};
+  try{var a=JSON.parse(localStorage.getItem("ra_messages")||"[]");a.push(m);localStorage.setItem("ra_messages",JSON.stringify(a));}catch(_){}
+  document.getElementById("cOut").textContent="Message saved on this device (demo). Connect a backend/email service to receive real messages.";
+  e.target.reset();
+});
+</script>
+</body>
+</html>

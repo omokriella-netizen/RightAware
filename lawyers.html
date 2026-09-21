@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Legal Professionals (Demo) — RightAware</title>
+<meta name="description" content="Demo directory of legal professionals: fictional placeholder profiles with practice area, location, rating, reviews and request-help."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Legal professionals</span><h1>Directory <span class="pill">DEMO DATA — NOT REAL LAWYERS</span></h1>
+  <p class="lead-dark">Interface preview with fictional placeholder profiles. No real names, phone numbers or emails are listed. Contact happens through an on-site demo request (stored on your device). Real verification still needs to be built.</p>
+  <div class="filter-bar">
+    <input id="fQ" type="search" placeholder="Search name, practice, keyword…" aria-label="Search professionals"/>
+    <select id="fLoc" aria-label="Filter by location"><option value="">All locations</option><option>Lagos</option><option>Abuja FCT</option><option>Rivers</option><option>Oyo</option><option>Kano</option><option>Enugu</option></select>
+    <select id="fArea" aria-label="Filter by area"><option value="">All areas</option><option>Human Rights & Police Matters</option><option>Family & Gender-Based Violence</option><option>Employment & Workplace Disputes</option><option>Tenancy & Property</option><option>Consumer & Digital Fraud</option><option>Free Clinic — Students & Low Income</option></select>
+  </div>
+</div></section>
+<section class="section"><div class="container"><div id="dirGrid" class="cards-grid"></div>
+<div class="cta-banner rv" style="margin-top:1.5rem"><div><h3>Are you a lawyer, clinic or NGO?</h3><p>Professional onboarding with credential checks opens after verification is built. Leave a message via Contact.</p></div><a href="contact.html" class="btn btn-primary">Register Interest</a></div>
+</div></section>
+</main>
+<div class="modal" id="reqModal" aria-hidden="true"><div class="modal-box">
+  <h3 id="reqTitle">Request help</h3>
+  <p style="color:var(--muted);font-size:.9rem">Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.</p>
+  <label>Your name<input id="reqName" placeholder="e.g. Jane Doe"/></label>
+  <label>Briefly describe your issue<textarea id="reqMsg" rows="3" placeholder="Facts only, no sensitive data"></textarea></label>
+  <div style="display:flex;gap:.6rem"><button class="btn btn-primary" id="reqSend">Send Request (demo)</button><button class="btn btn-secondary" id="reqClose">Close</button></div>
+  <p class="form-note" id="reqOut"></p>
+</div></div>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">Demo profiles only — not real lawyers. General information, not legal advice.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var grid=document.getElementById("dirGrid"), q=document.getElementById("fQ"), loc=document.getElementById("fLoc"), area=document.getElementById("fArea");
+  var current=null;
+  function render(){
+    var qv=(q.value||"").toLowerCase();
+    var list=(window.RA_LAWYERS||[]).filter(function(l){
+      var okQ=!qv||(l.name+" "+l.practice+" "+l.location+" "+l.tags.join(" ")).toLowerCase().includes(qv);
+      return okQ&&(!loc.value||l.location===loc.value)&&(!area.value||l.practice===area.value);
+    });
+    grid.innerHTML=list.length?list.map(function(l){
+      return '<article class="card lawyer rv" id="'+l.id+'"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+' • '+l.exp+'</small><p>'+l.bio+'</p><p>⭐ '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><div class="rev">'+l.rev.map(function(r){return '<div class="rev-item"><strong>'+r[0]+'</strong> <span>★'.repeat(0)+'</span><small>'+r[2]+'/5 — '+r[1]+'</small></div>';}).join("")+'</div><div style="display:flex;gap:.5rem;margin-top:.7rem"><button class="btn btn-primary btn-sm" data-req="'+l.id+'">Contact / Request Help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
+    }).join(""):'<div class="result">No demo profiles match. Clear filters and try again.</div>';
+    grid.querySelectorAll("[data-req]").forEach(function(b){b.addEventListener("click",function(){openReq(b.dataset.req);});});
+    if(location.hash){var t=document.querySelector(location.hash);if(t){t.style.borderColor="var(--green)";}}
+  }
+  function openReq(id){current=(window.RA_LAWYERS||[]).find(function(l){return l.id===id;});document.getElementById("reqTitle").textContent="Request help — "+(current?current.name:"");document.getElementById("reqOut").textContent="";document.getElementById("reqModal").classList.add("open");}
+  document.getElementById("reqClose").addEventListener("click",function(){document.getElementById("reqModal").classList.remove("open");});
+  document.getElementById("reqSend").addEventListener("click",function(){
+    var n=document.getElementById("reqName").value.trim(),m=document.getElementById("reqMsg").value.trim();
+    if(!n||!m){document.getElementById("reqOut").textContent="Please add your name and a brief description.";return;}
+    try{var a=JSON.parse(localStorage.getItem("ra_requests")||"[]");a.push({to:current&&current.id,at:new Date().toISOString(),name:n,msg:m});localStorage.setItem("ra_requests",JSON.stringify(a));}catch(_){}
+    document.getElementById("reqOut").textContent="Demo request saved on this device. A real directory would notify the professional here.";
+  });
+  [q,loc,area].forEach(function(el){el.addEventListener("input",render);el.addEventListener("change",render);});
+  render();
+})();
+</script>
+</body>
+</html>

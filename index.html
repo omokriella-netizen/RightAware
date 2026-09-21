@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RightAware — Understand your Rights. Know your power.</title>
+<meta name="description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a>
+    </nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search RightAware"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="get-started">
+  <div class="container hero-grid">
+    <div class="hero-copy rv">
+      <span class="badge"><span class="pulse"></span> Nigerian Civil Tech & Legal Awareness</span>
+      <h1>Understand your Rights.<br/><span class="highlight">Know your power.</span></h1>
+      <p class="lead">RightAware helps every Nigerian understand their fundamental rights, civic responsibilities, and the laws that protect them — in simple, clear language. No legal jargon. Just knowledge you can act on.</p>
+      <div class="hero-cta">
+        <a href="rights.html" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="rights.html" class="btn btn-secondary btn-lg">Explore Rights →</a>
+        <a href="ai.html" class="btn btn-ghost btn-lg">✨ Ask RightAware AI</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>12</strong><span>Rights categories</span></div>
+        <div><strong>6+</strong><span>Demo videos</span></div>
+        <div><strong>100%</strong><span>Free awareness</span></div>
+      </div>
+    </div>
+    <div class="hero-card-wrap rv">
+      <div class="hero-card">
+        <div class="hero-card-head"><span class="shield">⚖</span><div><strong>Know your rights at a stop</strong><small>Police & Arrest Rights • Simplified</small></div></div>
+        <ul class="checklist"><li>You have the right to remain silent</li><li>You have the right to a lawyer</li><li>You must be charged within 24–48 hours</li></ul>
+        <div class="search-mini">
+          <input id="heroSearchInput" type="search" placeholder="Try: 'bail', 'rent', 'voting'…" aria-label="Search rights"/>
+          <button class="btn btn-primary btn-sm" id="heroSearchBtn">Search</button>
+        </div>
+      </div>
+      <div class="hero-card floating"><strong>🇳🇬 Built for Nigeria</strong><p>Plain-language guides with source hints to verify against official legal texts.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="search-section"><div class="container search-box rv">
+  <h2>Find rights and legal information</h2>
+  <p>Search in plain English or Pidgin. Example: “police arrest me”, “landlord lock my shop”, “work sack me”.</p>
+  <form id="homeSearchForm" class="search-form" role="search"><input id="homeSearchInput" type="search" placeholder="Search rights, laws, topics…" autocomplete="off"/><button class="btn btn-primary" type="submit">Search</button></form>
+  <div class="quick-tags">
+    <button type="button" data-q="arrest">Arrest</button><button type="button" data-q="bail">Bail</button><button type="button" data-q="rent">Rent & Tenancy</button><button type="button" data-q="employment">Employment</button><button type="button" data-q="vote">Voting</button><button type="button" data-q="scam">Online scam</button>
+  </div>
+  <div id="homeSearchResults" class="search-results" aria-live="polite"></div>
+</div></section>
+
+<section class="section" id="popular"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Popular rights & topics</span><h2>Start with what Nigerians ask about most</h2><p>Twelve categories. One has a full guide today; the rest open as structured overviews while full guides are researched.</p></div>
+  <div class="cards-grid" id="homeRights"></div>
+  <p style="margin-top:1rem"><a class="link" href="rights.html">Open the full rights library →</a></p>
+</div></section>
+
+<section class="section section-alt" id="videos"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Learn visually</span><h2>Educational videos</h2><p>Short explainers (placeholders in v1 — full production list on the Resources page).</p></div>
+  <div class="cards-grid" id="homeVideos"></div>
+  <p style="margin-top:1rem"><a class="link" href="resources.html#videos">All videos & resources →</a></p>
+</div></section>
+
+<section class="section" id="featured-resources"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Featured resources</span><h2>Free guides & downloads</h2><p>Printable checklists you can save or share on WhatsApp.</p></div>
+  <div class="cards-grid">
+    <article class="card rv"><h3>✅ Police Encounter Checklist</h3><p>What to say, what not to sign, what to record. One-page printable.</p><a class="link" href="rights/arrest-rights.html">Open guide →</a></article>
+    <article class="card rv"><h3>📄 Fundamental Rights Overview</h3><p>Plain-language overview with a verify-against-Constitution note.</p><a class="link" href="rights/topic.html?id=fundamental">Open overview →</a></article>
+    <article class="card rv"><h3>❓ FAQs answered simply</h3><p>Is RightAware a law firm? Is bail free? Can police check my phone?</p><a class="link" href="resources.html#faqs">Read FAQs →</a></article>
+  </div>
+</div></section>
+
+<section class="section section-dark" id="help"><div class="container help-grid">
+  <div class="rv"><span class="eyebrow eyebrow-light">Get help</span><h2>In trouble right now? Get help fast.</h2>
+    <p>First: if anyone is in danger, contact emergency services or move somewhere safe. Then document what happened and choose a path below.</p>
+    <ul class="help-list"><li><strong>Emergency?</strong> Use official emergency channels (verify current numbers locally).</li><li><strong>Police issue?</strong> See the Police & Arrest guide, then report via Get Help.</li><li><strong>Can't afford a lawyer?</strong> Ask about free legal-aid options on the Get Help page.</li></ul>
+    <div class="hero-cta"><a href="help.html" class="btn btn-primary btn-lg">Get Help</a><a href="lawyers.html" class="btn btn-ghost btn-lg">Find a Professional</a></div>
+  </div>
+  <div class="rv"><div class="help-form"><h3>Quick triage (demo)</h3><p style="color:var(--muted);font-size:.9rem">Answer 2 questions — we point you to the right page. Saved on this device only.</p>
+    <label>What best describes your issue?<select id="triageIssue"><option value="police">Police / arrest / bail</option><option value="tenancy">Rent / landlord / eviction</option><option value="employment">Work / salary / dismissal</option><option value="women">Safety / domestic issue</option><option value="digital">Online scam / fraud</option><option value="other">Something else</option></select></label>
+    <label>Is anyone in immediate danger?<select id="triageDanger"><option>No</option><option>Yes</option></select></label>
+    <button class="btn btn-primary" id="triageBtn" type="button">Where do I go?</button>
+    <p class="form-note" id="triageOut">General information only — not legal advice.</p>
+  </div></div>
+</div></section>
+
+<section class="section" id="orgs"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Support network</span><h2>Rights-protection organisations</h2><p>Types of bodies that can help. Contacts must be verified via official directories before use — see Get Help.</p></div>
+  <div class="cards-grid" id="homeOrgs"></div>
+  <p style="margin-top:1rem"><a class="link" href="help.html#organisations">All organisations & reporting paths →</a></p>
+</div></section>
+
+<section class="section section-alt" id="lawyers"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Legal professionals</span><h2>Talk to a professional <span class="pill">DEMO DATA</span></h2><p>Directory interface preview with fictional placeholder profiles — not real lawyers. Verification still to be built.</p></div>
+  <div class="cards-grid" id="homeLawyers"></div>
+  <p style="margin-top:1rem"><a class="link" href="lawyers.html">Open the full directory →</a></p>
+  <div class="cta-banner rv"><div><h3>Are you a lawyer, clinic or NGO?</h3><p>Register interest — professional onboarding opens after verification is built.</p></div><a href="contact.html" class="btn btn-primary">Contact Us</a></div>
+</div></section>
+
+<section class="section"><div class="container cta-banner rv">
+  <div><h3>✨ Try the RightAware AI (demo placeholder)</h3><p>It points you to library pages. Clearly marked demo — not a lawyer, not a live legal service.</p></div>
+  <a href="ai.html" class="btn btn-primary">Open AI Demo</a>
+</div></section>
+</main>
+
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+      <p>A Nigerian Civil Tech and Legal Awareness Platform. Knowledge is power — we make the law understandable for everyone.</p>
+      <p class="disclaimer">General legal information only — not legal advice. v1 uses demo/placeholder content where marked.</p>
+    </div>
+    <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html#videos">Educational Videos</a><a href="resources.html">Resources & Guides</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
+    <div><h4>Support</h4><a href="help.html">Get Help</a><a href="help.html#report">Report a Concern</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+    <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><p>🕘 Mon–Fri, 9am–5pm (placeholder)</p>
+      <form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form>
+      <a href="contact.html" style="margin-top:.6rem">Open contact page →</a>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 • <a href="about.html">About</a> • <a href="contact.html">Contact</a> • <a href="resources.html#faqs">FAQs</a></small></div>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var R = window.RA_RIGHTS || [];
+  function card(r){
+    var url = r.fullGuide ? r.fullGuide : ("rights/topic.html?id="+r.id);
+    var badge = r.fullGuide ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
+    return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+url+'">Open →</a></article>';
+  }
+  document.getElementById("homeRights").innerHTML = R.slice(0,6).map(card).join("");
+  document.getElementById("homeVideos").innerHTML = (window.RA_VIDEOS||[]).slice(0,3).map(function(v){
+    return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+v.meta+'</small></div><h3>'+v.title+'</h3><p>'+v.desc+'</p><span class="tag">'+v.tag+'</span></article>';
+  }).join("");
+  document.getElementById("homeOrgs").innerHTML = (window.RA_ORGS||[]).slice(0,3).map(function(o){
+    return '<article class="card rv"><h3>🏛 '+o.name+'</h3><p>'+o.help+'</p><span class="tag tag-soon">Verify contact officially</span></article>';
+  }).join("");
+  document.getElementById("homeLawyers").innerHTML = (window.RA_LAWYERS||[]).slice(0,3).map(function(l){
+    return '<article class="card lawyer rv"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+'</small><p>⭐ '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><a class="btn btn-outline btn-sm" href="lawyers.html#'+l.id+'">View Profile</a></article>';
+  }).join("");
+  // Home live search -> top matches inline + link to search page
+  var input = document.getElementById("homeSearchInput"), out = document.getElementById("homeSearchResults");
+  function run(q){
+    q=(q||"").trim().toLowerCase();
+    if(!q){ out.innerHTML=""; return; }
+    var idx = window.RA_SEARCH_INDEX().filter(function(e){ return e.text.includes(q) || e.title.toLowerCase().includes(q); }).slice(0,4);
+    out.innerHTML = idx.length
+      ? idx.map(function(e){ return '<div class="result"><strong>'+e.title+'</strong><br/><a class="link" href="'+e.url+'">Open →</a></div>'; }).join("") + '<div style="text-align:center"><a class="link" href="search.html?q='+encodeURIComponent(q)+'">See all results →</a></div>'
+      : '<div class="result">No direct match for "<strong>'+q+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content →</a> or <a class="link" href="help.html">get help →</a></div>';
+  }
+  document.getElementById("homeSearchForm").addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
+  input.addEventListener("input", function(){ run(input.value); });
+  document.querySelectorAll(".quick-tags button").forEach(function(b){ b.addEventListener("click", function(){ input.value=b.dataset.q; run(b.dataset.q); }); });
+  document.getElementById("heroSearchBtn").addEventListener("click", function(){ var v=document.getElementById("heroSearchInput").value.trim(); location.href="search.html?q="+encodeURIComponent(v); });
+  // Triage
+  document.getElementById("triageBtn").addEventListener("click", function(){
+    var i=document.getElementById("triageIssue").value, d=document.getElementById("triageDanger").value, o=document.getElementById("triageOut");
+    var map={police:"rights/arrest-rights.html",tenancy:"rights/topic.html?id=tenancy",employment:"rights/topic.html?id=employment",women:"rights/topic.html?id=women",digital:"rights/topic.html?id=digital",other:"help.html#report"};
+    o.innerHTML=(d==="Yes"?"<strong>Prioritise safety / emergency services first.</strong> Then open: ":"Recommended next page: ")+'<a class="link" href="'+map[i]+'">'+map[i]+'</a>';
+  });
+})();
+</script>
+</body>
+</html>

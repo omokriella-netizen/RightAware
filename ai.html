@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RightAware AI (Demo) — RightAware</title>
+<meta name="description" content="RightAware AI demo placeholder: points you to library pages. Not a lawyer, not a live legal service."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">RightAware AI</span><h1>AI assistant <span class="pill">DEMO PLACEHOLDER</span></h1>
+  <p class="lead-dark">This v1 demo is <strong>not</strong> connected to a real AI or legal service. It matches keywords and points you to library pages. Never enter passwords, OTPs or bank details. For real cases, use Get Help or a qualified lawyer.</p>
+</div></section>
+<section class="section"><div class="container chat-wrap rv">
+  <div class="chat-box" id="chatBox" aria-live="polite">
+    <div class="msg ai"><strong>RightAware AI (demo):</strong> Hello! Tell me what happened in plain words — e.g. “police arrested my brother”, “landlord locked my shop”, “my boss has not paid me”. I'll point you to the right page.</div>
+  </div>
+  <div class="chip-row" style="margin:.8rem 0">
+    <button type="button" data-p="Police arrested someone I know. What are our rights?">Arrest help</button>
+    <button type="button" data-p="My landlord wants to evict me. What should I do?">Eviction</button>
+    <button type="button" data-p="My employer has not paid my salary.">Unpaid salary</button>
+    <button type="button" data-p="I was scammed online.">Online scam</button>
+  </div>
+  <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Describe your issue…" autocomplete="off" aria-label="Ask the demo AI"/><button class="btn btn-primary" type="submit">Send</button></form>
+  <p class="form-note">Demo responses only — general information, not legal advice. Connection to a real AI service still needs to be built.</p>
+</div></section>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">AI demo only — not a lawyer or live service.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  var box=document.getElementById("chatBox"), form=document.getElementById("chatForm"), input=document.getElementById("chatInput");
+  function add(who,text,html){
+    var d=document.createElement("div"); d.className="msg "+who;
+    d.innerHTML="<strong>"+(who==="ai"?"RightAware AI (demo):":"You:")+"</strong> "+(html||text.replace(/</g,"&lt;"));
+    box.appendChild(d); box.scrollTop=box.scrollHeight;
+  }
+  function answer(q){
+    var s=q.toLowerCase();
+    var link=function(t,u){return '<br/>👉 <a class="link" href="'+u+'">'+t+'</a>';};
+    if(/arrest|police|bail|station|cell|custody/.test(s)) return "For police/arrest issues: (1) stay calm, (2) ask the offence, (3) remain silent until you can reach a lawyer/family, (4) never pay for bail. Full steps:"+link("Open Police & Arrest guide","rights/arrest-rights.html")+link("Report a concern","help.html#report");
+    if(/rent|landlord|evict|quit|shop|house|tenan/.test(s)) return "For rent/eviction: keep your agreement + all receipts, note notice dates, and do not accept lockouts quietly — document them."+link("Open Rent & Tenancy overview","rights/topic.html?id=tenancy")+link("Get help","help.html");
+    if(/salary|pay|job|sack|dismiss|boss|employ/.test(s)) return "For work/pay issues: gather your offer letter, payslips and any query/dismissal letters, then raise a written demand."+link("Open Employment overview","rights/topic.html?id=employment");
+    if(/scam|fraud|otp|fake vendor|transfer|hack/.test(s)) return "For scams: screenshot everything, alert your bank/platform immediately, and keep reference numbers."+link("Open Digital Rights overview","rights/topic.html?id=digital");
+    if(/vote|pvc|inec|election/.test(s)) return "For voting issues:"+link("Open Civic Responsibilities overview","rights/topic.html?id=civic");
+    if(/woman|wife|husband|beat|abuse|assault|marriage/.test(s)) return "If anyone is unsafe, prioritise safety and official help channels first, then document and seek support."+link("Open Women's Rights overview","rights/topic.html?id=women")+link("Get help","help.html");
+    if(/child|school|student/.test(s)) return "For children/school issues:"+link("Open Children's Rights overview","rights/topic.html?id=children");
+    if(/lawyer|advocate|barrister|court/.test(s)) return "You can browse the demo directory interface (fictional profiles in v1):"+link("Open directory (demo)","lawyers.html");
+    if(/hello|hi|hey/.test(s)) return "Hello! Describe your issue in a few words and I'll point you to the right page. Try the quick buttons above.";
+    return "Thanks — based on those words, start here:"+link("Search all content","search.html?q="+encodeURIComponent(q))+link("Browse the rights library","rights.html")+link("Get help","help.html")+"<br/><small>(Demo matcher — a real AI connection still needs to be built.)</small>";
+  }
+  form.addEventListener("submit",function(e){
+    e.preventDefault(); var q=input.value.trim(); if(!q) return;
+    add("you",q); input.value="";
+    setTimeout(function(){ add("ai","",answer(q)); },350);
+  });
+  document.querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(){input.value=b.dataset.p;form.dispatchEvent(new Event("submit"))});});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Log In (Demo) — RightAware</title>
+<meta name="description" content="Demo login for RightAware v1. Accounts backend still to be built."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header"><div class="container header-inner">
+  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+  <div class="header-actions"><a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></div></header>
+<main><section class="section"><div class="container" style="max-width:480px">
+  <div class="form-card rv"><span class="pill">DEMO — NO REAL ACCOUNTS</span><h1>Log in</h1>
+  <p style="color:var(--muted)">v1 authentication is a front-end demo. Accounts backend still needs to be built.</p>
+  <form id="loginForm"><label>Email<input type="email" id="lEmail" required placeholder="you@example.com"/></label><label>Password<input type="password" id="lPass" required placeholder="••••••••"/></label><button class="btn btn-primary" type="submit" style="width:100%">Log In (demo)</button></form>
+  <p class="form-note" id="lOut">Demo only — do not reuse a real password.</p>
+  <p><a class="link" href="index.html">← Back home</a></p></div>
+</div></section></main>
+<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="app.js"></script>
+<script>
+document.getElementById("loginForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  try{localStorage.setItem("ra_demo_user",document.getElementById("lEmail").value);}catch(_){}
+  document.getElementById("lOut").textContent="Demo login saved on this device as "+document.getElementById("lEmail").value+". Real authentication still to be built.";
+});
+</script>
+</body>
+</html>
