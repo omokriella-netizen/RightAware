@@ -1,96 +1,88 @@
 # RightAware
 
-**RightAware** is a Nigerian Civil Tech and Legal Awareness Platform. Its goal is to help
-citizens understand their rights, civic responsibilities, and the laws that protect them —
-in simple, clear language.
+**RightAware** is a Nigerian Civil Tech and Legal Awareness Platform.
 
-> **Motto:** Understand your Rights. Know your power.
+> **Core purpose:** “Understand your Rights. Know your power.”
 
-## Purpose
+RightAware educates citizens about their legal rights, civic responsibilities, Nigerian
+laws, constitutional rights, practical steps to take when rights are violated,
+rights-protection organizations, access to legitimate legal professionals, and
+simplified explanations of difficult legal information.
 
-Millions of Nigerians face police stops, evictions, dismissals, scams, and other legal
-situations without knowing the protections and duties the law already gives them.
-RightAware turns legal knowledge into plain, usable power — free for everyone,
-regardless of income, location, or schooling.
+## Major features (v2 platform)
 
-**Vision:** A Nigeria where every person can understand the law well enough to act on it.
+| Area | What exists today |
+|---|---|
+| Home | Hero, search, featured rights/resources/videos, triage, orgs, professionals preview, AI CTA, newsletter, libraries strip |
+| About | Mission, vision, objectives, how-it-works, who-it-serves, disclaimer, partnerships |
+| Explore Rights | 22-topic searchable library; 1 full guide (Police & Arrest), 1 partial draft, 20 structured overviews with verification states |
+| Laws library | Searchable catalog (Constitution + 9 Acts as **awaiting-upload placeholders**), categories, related rights, upload architecture |
+| Video library | Search, filters, featured rail, save-for-offline; ships **empty** (no invented videos) |
+| Organizations | 8 support-body types + verified-records rail (0 published); no invented contacts |
+| Professionals | Filterable demo directory (6 **fictional** profiles), full-profile schema, request flow, reviews with moderation + report |
+| Account | Demo signup/login/recovery, profile, saved items, consultation history, notifications, settings |
+| Admin | Locked-by-default architecture preview with entity counts + role model |
+| RightAware AI | Demo knowledge-base assistant + server-route skeleton (`/api/ai/chat`) |
+| Search | Global ranked search across pages, rights, laws, FAQs, videos |
+| Get Help / Contact | Triage, report-a-concern generator, demo contact inbox |
+| Offline-first | Service worker caches core guides; `offline.html` fallback; local-first storage |
+| Payments | Paystack initialize/verify server stubs; UI stays disabled until configured |
 
-**Mission:** Publish free, plain-language rights guides, connect people to real help, and
-build trustworthy civic-tech tools with verified sources.
+**Content-safety rule:** nothing invented — no fabricated laws, sections, cases,
+lawyers, organizations, contacts, numbers or statistics. Unverified content is
+labelled `AWAITING UPLOAD / OVERVIEW / DRAFT / DEMO / PLACEHOLDER`.
 
-## What the website provides
+## Technology architecture
 
-- **Home page** — branding, hero message, Get Started / Explore Rights calls to action,
-  global search, popular rights topics, featured resources, educational videos,
-  legal-help triage, support organisations, and professionals preview.
-- **About Us** — purpose, vision, mission, and what RightAware is (and is not).
-- **Explore Rights** — a searchable library of 12 categories: Fundamental Human Rights,
-  Police & Arrest Rights, Employment Rights, Rent & Tenancy Rights, Consumer Rights,
-  Women's Rights, Children's Rights, Disability Rights, Education Rights,
-  Digital/Online Rights, Constitutional Rights, and Civic Responsibilities.
-  Includes one complete guide (**Police & Arrest Rights**); other topics open as
-  structured overviews with source hints while full guides are researched.
-- **Resources** — Constitution guide, rights guides, educational videos, FAQs,
-  rights-protection organisations, helpful official-source links, and printable
-  checklists (Print → Save as PDF).
-- **Get Help** — help paths, professionals preview, organisation types, emergency
-  guidance, and a report-a-concern form that structures a complaint summary.
-- **Legal Professionals** — a filterable directory interface (name, practice area,
-  location, profile, rating, client reviews, request-help). **v1 uses clearly marked
-  fictional DEMO data — not real lawyers.**
-- **RightAware AI (demo)** — a clearly marked placeholder assistant that points users
-  to library pages. Not connected to a live AI or legal service.
-- **Contact Us** — placeholder contact details plus a working demo contact form.
-- **Search** — site-wide search across rights, guides, videos, FAQs, and pages.
-
-## Design
-
-Modern, professional, and trustworthy civic-tech look and feel: clean typography,
-responsive layout (phone, tablet, desktop), consistent header/footer on every page,
-light scroll animations (with `prefers-reduced-motion` support), and keyboard-focus
-accessibility styles.
+- **Frontend:** static HTML + CSS + vanilla JS (no build step, no framework). Runs
+  from `file://` and on any static host.
+- **Content layer:** `content/*.js` (rights, laws, videos, organizations,
+  professionals) + `data.js` index — plain JS so `file://` keeps working. Edit a
+  file, reload the page. Schemas documented in CONTENT_UPLOAD_GUIDE.md.
+- **App layer:** `js/config.js` (env/flags) → `js/db.js` (local-first storage with
+  Supabase-shaped API) → `js/auth.js`, `js/reviews.js`, `js/ai.js`, `js/paystack.js`.
+- **Backend (ready, not connected):** `supabase/schema.sql` (18 tables + RLS),
+  `api/*` Vercel functions (health, Paystack initialize/verify, AI chat),
+  `vercel.json`, `sw.js`.
+- See SETUP.md, ENVIRONMENT.md, DATABASE.md, DEPLOYMENT.md.
 
 ## How to run
 
-No build step and no backend. The site is static HTML/CSS/JS.
+No build, no backend required:
 
-1. Clone or download this repository.
-2. Open `index.html` in any modern browser (double-click it),
-   or serve the folder locally, e.g. `python -m http.server` and visit
-   `http://localhost:8000`.
+1. Open `index.html` in a browser (double-click), **or**
+2. Serve locally: `python -m http.server` (or `npx serve`) → `http://localhost:8000`.
 
-## Project structure
+## Environment variables
 
-```text
-RightAware-official/
-├── index.html            # Home page
-├── about.html            # About Us
-├── rights.html           # Rights library (12 categories)
-├── rights/
-│   ├── arrest-rights.html# Full Police & Arrest Rights guide
-│   └── topic.html        # Generic overview renderer (?id=...)
-├── resources.html        # Guides, videos, FAQs, organisations, links, print
-├── help.html             # Get Help + report-a-concern
-├── lawyers.html          # Professionals directory (DEMO data)
-├── ai.html               # RightAware AI demo placeholder
-├── search.html           # Site-wide search
-├── contact.html          # Contact page (placeholder details)
-├── login.html            # Demo login
-├── data.js               # Shared content index (rights, videos, FAQs, directory)
-├── app.js                # Shared UI (nav, search, newsletter, animations)
-├── styles.css            # Site-wide stylesheet
-└── script.js             # Legacy homepage script (kept for reference)
+Copy `.env.example` → `.env` (local) or set values in the Vercel dashboard.
+Only **public** keys may reach the browser via `window.__ENV__`; secrets stay
+server-side. Details: ENVIRONMENT.md.
+
+```bash
+SUPABASE_URL= SUPABASE_PUBLISHABLE_KEY=        # public — browser OK
+SUPABASE_SERVICE_ROLE_KEY=                     # SERVER ONLY
+PAYSTACK_PUBLIC_KEY=                           # public — browser OK
+PAYSTACK_SECRET_KEY=                           # SERVER ONLY (/api/paystack/*)
+AI_API_KEY= AI_MODEL=                          # SERVER ONLY (/api/ai/chat)
 ```
 
-## Important notes
+## Adding content later
 
-- Content is **general legal information only — not legal advice**. Laws differ by
-  state and change over time.
-- Items marked **VERIFY / DEMO / PLACEHOLDER** still need confirmation against
-  official sources before final publication: real contact details, emergency numbers,
-  lawyer verification, AI backend, video production, and full guides for 11 topics.
-- No real lawyers, phone numbers, addresses, or client data are included in v1.
+Edit the matching file in `content/` following its header schema, or use the
+Admin preview (after backend setup). Full instructions: CONTENT_UPLOAD_GUIDE.md.
+
+- New right → `content/rights.js` (+ summary row if it should appear on cards)
+- New law → `content/laws.js` (status `awaiting-upload` until the file is stored)
+- New video → `content/videos.js` (status `draft` → `published`)
+- New organization → `content/organizations.js` (unverified until confirmed)
+- New professional → onboarding with credential checks (never hand-add real people as demo)
+
+## Deployment
+
+Static hosting works as-is; Vercel adds server routes + env vars. See DEPLOYMENT.md.
 
 ## Status
 
-v1 — first complete working version (static front end, demo data where marked).
+v2 platform architecture — frontend complete, backend integration-ready, external
+services **not** connected (no credentials have been supplied).

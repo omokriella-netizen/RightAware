@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Video Library — RightAware</title>
+<meta name="description" content="RightAware educational videos. Library architecture ready — videos arrive later."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Video library</span><h1>Learn by watching</h1>
+  <p class="lead-dark">Short explainers in English, Pidgin and Nigerian languages — published here as they are produced. Nothing is listed until it exists.</p>
+  <div class="filter-bar">
+    <input id="vQ" type="search" placeholder="Search videos…" aria-label="Search videos"/>
+    <select id="vCat" aria-label="Filter by category"><option value="">All categories</option></select>
+  </div>
+</div></section>
+<section class="section" id="featured-wrap" style="display:none"><div class="container">
+  <div class="section-head"><span class="eyebrow">Featured</span><h2>Featured videos</h2></div>
+  <div id="vFeatured" class="cards-grid"></div>
+</div></section>
+<section class="section" style="padding-top:0"><div class="container"><div id="vGrid" class="cards-grid"></div></div></section>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="resources.html">Resources</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
+<script src="content/videos.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  const grid=document.getElementById("vGrid"), feat=document.getElementById("vFeatured"), wrap=document.getElementById("featured-wrap");
+  const q=document.getElementById("vQ"), cat=document.getElementById("vCat");
+  (window.RA_VIDEO_CATEGORIES||[]).forEach(c=>{const o=document.createElement("option");o.textContent=c;cat.appendChild(o);});
+  function card(v){
+    const saved = RA_DB.isSaved("video", v.id);
+    return '<article class="card rv"><div class="video-thumb">'+(v.thumb?'<img src="'+v.thumb+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:10px"/>':'<span>▶</span><small>'+(v.duration||"")+' • '+(v.lang||"")+ '</small>')+'</div>'
+    + '<h3>'+v.title+'</h3><p>'+v.description+'</p><span class="tag">'+v.category+'</span> '
+    + (v.status!=="published"?'<span class="tag tag-soon">Draft</span>':"")
+    + '<br/><br/><div style="display:flex;gap:.5rem;flex-wrap:wrap">'
+    + (v.url?'<a class="btn btn-primary btn-sm" href="'+v.url+'" target="_blank" rel="noopener">Watch →</a>':'<button class="btn btn-secondary btn-sm" disabled>No video file yet</button>')
+    + '<button class="btn btn-outline btn-sm" data-save="'+v.id+'">'+(saved?"★ Saved":"☆ Save")+'</button></div></article>';
+  }
+  function render(){
+    const qv=(q.value||"").toLowerCase();
+    const pub=(window.RA_VIDEOS_LIB||[]).filter(v=>v.status==="published");
+    const list=pub.filter(v=>(!cat.value||v.category===cat.value)&&(!qv||(v.title+" "+v.description+" "+v.category).toLowerCase().includes(qv)));
+    const feats=pub.filter(v=>v.featured);
+    if(feats.length){wrap.style.display="";feat.innerHTML=feats.map(card).join("");}else{wrap.style.display="none";}
+    grid.innerHTML=list.length?list.map(card).join("")
+      :'<div class="card rv" style="grid-column:1/-1;text-align:center;padding:3rem"><div class="icon" style="font-size:2.5rem">🎬</div><h3>No videos published yet</h3><p>The library, search, filters, featured rail and save buttons are ready. Videos appear here automatically once added (see CONTENT_UPLOAD_GUIDE.md). No placeholders are shown as real content.</p><a class="link" href="rights.html">Browse the rights library instead →</a></div>';
+    grid.querySelectorAll("[data-save]").forEach(b=>b.addEventListener("click",()=>{
+      const v=(window.RA_VIDEOS_LIB||[]).find(x=>x.id===b.dataset.save);
+      RA_DB.toggleSaved("video", v.id, v.title); render();
+    }));
+    (feat||{querySelectorAll:()=>[]}).querySelectorAll && feat.querySelectorAll("[data-save]").forEach(b=>b.addEventListener("click",()=>{
+      const v=(window.RA_VIDEOS_LIB||[]).find(x=>x.id===b.dataset.save);
+      RA_DB.toggleSaved("video", v.id, v.title); render();
+    }));
+  }
+  [q,cat].forEach(el=>{el.addEventListener("input",render);el.addEventListener("change",render);});
+  render();
+})();
+</script>
+</body>
+</html>

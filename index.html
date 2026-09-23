@@ -76,6 +76,15 @@
   <p style="margin-top:1rem"><a class="link" href="rights.html">Open the full rights library →</a></p>
 </div></section>
 
+<section class="section section-alt" id="libraries"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Libraries</span><h2>Browse every collection</h2><p>Laws, videos, organizations and FAQs — each with search, filters and room to grow.</p></div>
+  <div class="cards-grid">
+    <article class="card rv"><div class="icon">📜</div><h3>Laws & Constitution Library</h3><p>Catalog of key instruments with sources, dates and related rights. Verified uploads arrive later.</p><a class="link" href="laws.html">Open library →</a></article>
+    <article class="card rv"><div class="icon">🎬</div><h3>Video Library</h3><p>Explainers with search, filters, featured rail and save-for-offline. Ready for your uploads.</p><a class="link" href="videos.html">Open library →</a></article>
+    <article class="card rv"><div class="icon">🏛</div><h3>Organizations Directory</h3><p>Support-body types today; verified records with contacts publish after confirmation.</p><a class="link" href="organizations.html">Open directory →</a></article>
+  </div>
+</div></section>
+
 <section class="section section-alt" id="videos"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Learn visually</span><h2>Educational videos</h2><p>Short explainers (placeholders in v1 — full production list on the Resources page).</p></div>
   <div class="cards-grid" id="homeVideos"></div>
@@ -131,7 +140,7 @@
       <p>A Nigerian Civil Tech and Legal Awareness Platform. Knowledge is power — we make the law understandable for everyone.</p>
       <p class="disclaimer">General legal information only — not legal advice. v1 uses demo/placeholder content where marked.</p>
     </div>
-    <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html#videos">Educational Videos</a><a href="resources.html">Resources & Guides</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
+    <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources & Guides</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
     <div><h4>Support</h4><a href="help.html">Get Help</a><a href="help.html#report">Report a Concern</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
     <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><p>🕘 Mon–Fri, 9am–5pm (placeholder)</p>
       <form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form>
@@ -142,12 +151,16 @@
 </footer>
 
 <script src="data.js"></script>
+<script src="content/rights.js"></script>
+<script src="content/laws.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
   var R = window.RA_RIGHTS || [];
   function card(r){
-    var url = r.fullGuide ? r.fullGuide : ("rights/topic.html?id="+r.id);
+    var det = ((window.RA_RIGHTS_DETAIL||[]).find(function(x){ return x.title===r.title; })||{});
+    var direct = r.fullGuide || r.slug || det.fullGuide;
+    var url = direct ? direct : (det.id ? ("rights/topic.html?id="+det.id) : "rights.html");
     var badge = r.fullGuide ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
     return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+url+'">Open →</a></article>';
   }

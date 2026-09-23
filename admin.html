@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin (Architecture Demo) — RightAware</title>
+<meta name="description" content="Admin area architecture preview. Role-gated; no real admin powers in demo mode."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header"><div class="container header-inner">
+  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+  <div class="header-actions"><a class="btn btn-outline btn-sm" href="index.html">← Site</a>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="contact.html">Contact Us</a></div></header>
+<main>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">Admin</span><h1>Content management <span class="pill">ARCHITECTURE DEMO</span></h1>
+<p class="lead-dark" id="adminLine">Checking access…</p></div></section>
+<section class="section"><div class="container" id="adminBody"></div></section>
+</main>
+<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 • Admin routes enforce roles server-side in production.</small></div></footer>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
+<script src="js/reviews.js"></script>
+<script src="content/rights.js"></script>
+<script src="content/laws.js"></script>
+<script src="content/videos.js"></script>
+<script src="content/organizations.js"></script>
+<script src="content/professionals.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  const body=document.getElementById("adminBody"), line=document.getElementById("adminLine");
+  const ENTITIES=[
+    ["Rights guides","rights.html","RA_RIGHTS_DETAIL"],["Legal documents","laws.html","RA_LAWS"],
+    ["Videos","videos.html","RA_VIDEOS_LIB"],["Organization types","organizations.html","RA_ORG_TYPES"],
+    ["Verified organizations","organizations.html","RA_ORGANIZATIONS"],["Professionals (demo)","lawyers.html","RA_PROFESSIONALS"],
+    ["FAQs","resources.html#faqs","RA_FAQS"]
+  ];
+  function count(key){ try{ const v=eval("("+key+")"); return Array.isArray(v)?v.length:"—"; }catch(_){ return "—"; } }
+  // Demo mode NEVER grants admin (see js/auth.js). Show locked state + read-only preview.
+  line.innerHTML='Signed in as <strong>'+((RA_AUTH.current()||{}).email||"guest")+'</strong> — role: <strong>none (demo)</strong>. Real admin roles are assigned server-side after Supabase setup (see DATABASE.md). Nothing here can change live content.';
+  body.innerHTML =
+    '<div class="notice rv">🔒 <strong>Locked in demo mode.</strong> The dashboard below is a read-only architecture preview. <button class="btn btn-secondary btn-sm" id="prevBtn">Preview dashboard layout (read-only)</button></div><div id="prev"></div>';
+  document.getElementById("prevBtn").addEventListener("click",()=>{
+    document.getElementById("prev").innerHTML =
+      '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to a Supabase table + admin API. Local demo queues are shown where they exist on this device.</p></div>'
+      + '<div class="cards-grid">' + ENTITIES.map(e=>'<article class="card rv"><h3>'+e[0]+'</h3><p><strong>'+count("window."+e[2])+'</strong> records in local catalog</p><a class="link" href="'+e[1]+'">Open public page →</a><br/><button class="btn btn-outline btn-sm" disabled title="Requires admin role + backend">Manage (locked)</button></article>').join("") + '</div>'
+      + '<div class="two-col"><div class="card rv"><h3>🚩 Review moderation queue (this device)</h3><p>'+RA_REVIEWS.queue().length+' flagged item(s). Moderation UI activates with backend roles.</p></div>'
+      + '<div class="card rv"><h3>✉️ Contact messages (this device)</h3><p>'+RA_DB.messages().length+' stored message(s). Secure inbox arrives with backend.</p></div></div>'
+      + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS + audit_logs — never by frontend code. See DATABASE.md.</div>';
+  });
+})();
+</script>
+</body>
+</html>

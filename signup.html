@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign Up (Demo) — RightAware</title>
+<meta name="description" content="Create a RightAware account. Demo only — Supabase Auth arrives later."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header"><div class="container header-inner">
+  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+  <div class="header-actions"><a class="btn btn-outline btn-sm" href="login.html">Log In</a><a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="login.html">Log In</a><a href="contact.html">Contact Us</a></div></header>
+<main><section class="section"><div class="container" style="max-width:520px">
+  <div class="form-card rv"><span class="pill">DEMO — NO REAL ACCOUNTS</span><h1>Create account</h1>
+  <p style="color:var(--muted)">Demo signup stored on this device only. Real authentication uses Supabase Auth (see SETUP.md).</p>
+  <form id="suForm"><label>Full name<input id="suName" required placeholder="Your name"/></label><label>Email<input id="suEmail" type="email" required placeholder="you@example.com"/></label><label>Password (demo — do not reuse a real one)<input id="suPass" type="password" required minlength="6" placeholder="••••••••"/></label><button class="btn btn-primary" style="width:100%" type="submit">Sign Up (demo)</button></form>
+  <p class="form-note" id="suOut"></p>
+  <hr style="border:none;border-top:1px solid var(--border);margin:1.2rem 0"/>
+  <h3>Forgot password?</h3>
+  <form id="recForm" class="newsletter" style="display:flex"><input id="recEmail" type="email" required placeholder="Account email" aria-label="Account email"/><button class="btn btn-secondary btn-sm" type="submit">Reset</button></form>
+  <p class="form-note" id="recOut"></p>
+  <p>Have an account? <a class="link" href="login.html">Log in →</a></p></div>
+</div></section></main>
+<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
+<script src="app.js"></script>
+<script>
+document.getElementById("suForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const u=RA_AUTH.signup(document.getElementById("suName").value.trim(), document.getElementById("suEmail").value.trim());
+  RA_DB.saveProfile({name:u.name,email:u.email,phone:"",state:"",language:"English"});
+  document.getElementById("suOut").textContent="Demo account created on this device. Redirecting…";
+  setTimeout(()=>location.href="account.html",700);
+});
+document.getElementById("recForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  document.getElementById("recOut").textContent=RA_AUTH.requestRecovery(document.getElementById("recEmail").value.trim());
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Local/dev ignores — keep secrets and OS noise out of git.
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db
+node_modules/
+.vercel/

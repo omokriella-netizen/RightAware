@@ -46,5 +46,9 @@
       var io = new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } }); }, {threshold:.08});
       document.querySelectorAll(".rv").forEach(function(el){ el.classList.add("rvh"); io.observe(el); });
     }
+    // Service worker: offline-first core content (http(s) hosts only; skipped on file://)
+    if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
+      navigator.serviceWorker.register("/sw.js").catch(function(){});
+    }
   });
 })();

@@ -43,20 +43,36 @@
   <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
+<script src="content/rights.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
   var grid=document.getElementById("libGrid"), input=document.getElementById("libInput");
+  function allRights(){
+    var det = window.RA_RIGHTS_DETAIL||[];
+    var base=(window.RA_RIGHTS||[]).map(function(r){
+      var m = det.find(function(x){ return x.title===r.title && !x.fullGuide; });
+      var direct = r.fullGuide || r.slug;
+      var badge = direct ? 'Full guide' : (m ? (m.status==="partial"?"Draft":"Overview") : "Overview");
+      return { icon:r.icon, title:r.title, summary:r.summary, keywords:r.keywords||"",
+        url: direct ? direct : (m ? ("rights/topic.html?id="+m.id) : "rights.html"), badge: badge };
+    });
+    var seen={}; base.forEach(function(r){ seen[r.title]=1; });
+    (window.RA_RIGHTS_DETAIL||[]).forEach(function(r){
+      if(r.fullGuide || seen[r.title]) return; // police lives in base; skip dupes
+      base.push({ icon:r.icon, title:r.title, summary:r.summary, keywords:r.keywords||"", url:"rights/topic.html?id="+r.id, badge:(r.status==="partial"?"Draft":"Overview") });
+    });
+    return base;
+  }
   function render(q){
     q=(q||"").trim().toLowerCase();
-    var list=(window.RA_RIGHTS||[]).filter(function(r){
+    var list=allRights().filter(function(r){
       if(!q) return true;
-      return (r.title+" "+r.summary+" "+r.keywords+" "+r.points.join(" ")).toLowerCase().includes(q);
+      return (r.title+" "+r.summary+" "+(r.keywords||"")).toLowerCase().includes(q);
     });
     grid.innerHTML = list.length ? list.map(function(r){
-      var url=r.fullGuide?r.fullGuide:("rights/topic.html?id="+r.id);
-      var badge=r.fullGuide?'<span class="tag">Full guide</span>':'<span class="tag tag-soon">Overview</span>';
-      return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+url+'">Open →</a></article>';
+      var badge=r.badge==='Full guide'?'<span class="tag">Full guide</span>':'<span class="tag tag-soon">'+r.badge+'</span>';
+      return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+r.url+'">Open →</a></article>';
     }).join("") : '<div class="result">No match. Try "arrest", "rent", "vote", "scam" — or <a class="link" href="help.html">get help →</a></div>';
   }
   render("");

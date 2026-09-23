@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Organizations Directory — RightAware</title>
+<meta name="description" content="Directory of rights-protection and legal-assistance organization types. Verified records arrive later."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
+      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+  </div>
+</header>
+<main>
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Organizations</span><h1>Rights-protection directory</h1>
+  <p class="lead-dark">Types of bodies that can help — and, later, verified records with contacts. <strong>No contact details are published until verified from official sources.</strong></p>
+  <form id="orgSearch" class="search-form" role="search" style="margin:1.2rem 0 0"><input id="orgQ" type="search" placeholder="Search: try 'police', 'child', 'consumer'…" aria-label="Search organizations"/><button class="btn btn-primary" type="submit">Search</button></form>
+</div></section>
+<section class="section"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Who does what</span><h2>Organization types</h2></div>
+  <div id="orgTypes" class="cards-grid"></div>
+</div></section>
+<section class="section section-alt"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Verified records</span><h2>Verified organizations <span class="pill">0 PUBLISHED</span></h2><p>Full records (logo, services, location, contacts, verification badge) appear here once confirmed. The interface below is ready.</p></div>
+  <div id="orgRecords" class="cards-grid"></div>
+</div></section>
+</main>
+<footer class="footer"><div class="container footer-grid">
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a></div>
+  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="js/config.js"></script>
+<script src="content/organizations.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  const types=document.getElementById("orgTypes"), recs=document.getElementById("orgRecords"), q=document.getElementById("orgQ");
+  function render(f){
+    f=(f||"").toLowerCase();
+    const list=(window.RA_ORG_TYPES||[]).filter(o=>!f||(o.name+" "+o.help+" "+o.specializations.join(" ")).toLowerCase().includes(f));
+    types.innerHTML=list.length?list.map(o=>'<article class="card rv"><div class="icon">'+o.icon+'</div><h3>'+o.name+'</h3><p>'+o.help+'</p><p><small><strong>Handles:</strong> '+o.specializations.join(" • ")+'</small></p><span class="tag tag-soon">Contacts verified before publishing</span><br/><br/><a class="link" href="help.html#organisations">How to reach this type →</a></article>').join("")
+      :'<div class="result">No match. Try "police", "child", "consumer" — or <a class="link" href="help.html">get help →</a></div>';
+    const full=(window.RA_ORGANIZATIONS||[]).filter(o=>o.verification.status==="verified");
+    recs.innerHTML=full.length?full.map(o=>'<article class="card rv"><h3>'+o.name+'</h3><p>'+o.description+'</p><a class="btn btn-primary btn-sm" href="help.html#report">Contact →</a></article>').join("")
+      :'<div class="card rv" style="grid-column:1/-1;text-align:center;padding:2.5rem"><div class="icon" style="font-size:2.2rem">🏛</div><h3>No verified records yet</h3><p>Records publish only after official-source verification (name, logo, services, location, contacts, verification badge). See CONTENT_UPLOAD_GUIDE.md.</p></div>';
+  }
+  render("");
+  document.getElementById("orgSearch").addEventListener("submit",e=>{e.preventDefault();render(q.value);});
+  q.addEventListener("input",()=>render(q.value));
+})();
+</script>
+</body>
+</html>

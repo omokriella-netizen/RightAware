@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Account (Demo) — RightAware</title>
+<meta name="description" content="Profile, saved items, consultations, notifications and settings. Demo — Supabase sync arrives later."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header"><div class="container header-inner">
+  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+  <div class="header-actions"><span id="whoChip" class="tag"></span><button class="btn btn-outline btn-sm" id="logoutBtn">Log Out</button>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="account.html">My Account</a><a href="contact.html">Contact Us</a></div></header>
+<main>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill">DEMO — ON THIS DEVICE ONLY</span> Saved items, history and settings sync to Supabase after backend setup.</p>
+<div class="chip-row"><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
+<section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights, laws & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
+<section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p>Requests made through the demo directory. Payments stay “none” until Paystack is configured.</p></div><div id="consultList" class="cards-grid"></div></div></section>
+<section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div><div id="notifList" style="max-width:760px"></div></div></section>
+<section class="section section-alt"><div class="container contact-grid">
+  <form class="form-card rv" id="profileForm"><h2 id="profile">Profile</h2>
+    <label>Full name<input id="pName"/></label>
+    <div class="form-row"><label>Email<input id="pEmail" type="email"/></label><label>Phone (optional)<input id="pPhone" placeholder="To be used only after backend launch"/></label></div>
+    <div class="form-row"><label>State<select id="pState"><option>Lagos</option><option>Abuja FCT</option><option>Kano</option><option>Rivers</option><option>Oyo</option><option>Enugu</option><option>Other</option></select></label><label>Language<select id="pLang"><option>English</option><option>Pidgin</option><option>Yoruba</option><option>Hausa</option><option>Igbo</option></select></label></div>
+    <button class="btn btn-primary" type="submit">Save Profile</button><p class="form-note" id="pOut"></p></form>
+  <form class="form-card rv" id="setForm"><h2 id="settings">Settings</h2>
+    <label><input type="checkbox" id="sRem" style="width:auto"/> Weekly rights-tips reminders</label>
+    <label><input type="checkbox" id="sOff" style="width:auto"/> Prefer offline-friendly pages</label>
+    <button class="btn btn-secondary" type="submit">Save Settings</button><p class="form-note">Online-only features will always say so.</p></form>
+</div></section>
+</main>
+<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  const u = RA_AUTH.guard(); if(!u) return;
+  document.getElementById("whoChip").textContent = u.email || u.name;
+  document.getElementById("helloTitle").textContent = "Welcome, " + (u.name || "Member");
+  document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logout();location.href="index.html";});
+  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+s.ref : s.type==="video" ? "videos.html" : "laws.html";
+  function renderSaved(){
+    const l = RA_DB.savedList();
+    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+s.type+'</span><h3 style="margin-top:.4rem">'+s.title+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+s.type+"|"+s.ref+'">Remove</button></article>').join("")
+      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap ☆ Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
+    document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
+  }
+  function renderConsult(){
+    const c = RA_DB.consultations();
+    document.getElementById("consultList").innerHTML = c.length ? c.map(x=>'<article class="card rv"><span class="tag">'+x.status+'</span><h3 style="margin-top:.4rem">'+(x.to||"Professional")+'</h3><p>'+(x.msg||"")+'</p><p><small>Payment: '+(x.payment&&x.payment.status||"none")+' • '+x.at+'</small></p></article>').join("")
+      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultations yet</h3><p>Requests from the professionals directory will be listed here with payment status.</p><a class="link" href="lawyers.html">Open directory →</a></div>';
+  }
+  function renderNotif(){
+    const n = RA_DB.notifications();
+    document.getElementById("notifList").innerHTML = n.map(x=>'<div class="result"><strong>'+x.title+'</strong> '+(x.read?"":"<span class='tag'>new</span>")+'<br/>'+x.body+'<br/><small>'+x.at+'</small> <button class="btn btn-outline btn-sm" data-read="'+x.id+'">Mark read</button></div>').join("");
+    document.querySelectorAll("[data-read]").forEach(b=>b.addEventListener("click",()=>{RA_DB.markRead(b.dataset.read);renderNotif();}));
+  }
+  const p = RA_DB.profile();
+  document.getElementById("pName").value=p.name||u.name||""; document.getElementById("pEmail").value=p.email||u.email||"";
+  document.getElementById("pPhone").value=p.phone||""; document.getElementById("pState").value=p.state||"Lagos"; document.getElementById("pLang").value=p.language||"English";
+  document.getElementById("profileForm").addEventListener("submit",e=>{e.preventDefault();
+    RA_DB.saveProfile({name:document.getElementById("pName").value,email:document.getElementById("pEmail").value,phone:document.getElementById("pPhone").value,state:document.getElementById("pState").value,language:document.getElementById("pLang").value});
+    document.getElementById("pOut").textContent="Profile saved on this device (demo).";});
+  const s = RA_DB.settings();
+  document.getElementById("sRem").checked=!!s.reminders; document.getElementById("sOff").checked=!!s.offlineMode;
+  document.getElementById("setForm").addEventListener("submit",e=>{e.preventDefault();
+    RA_DB.saveSettings({reminders:document.getElementById("sRem").checked,offlineMode:document.getElementById("sOff").checked,language:RA_DB.profile().language});});
+  renderSaved(); renderConsult(); renderNotif();
+})();
+</script>
+</body>
+</html>

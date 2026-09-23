@@ -110,17 +110,28 @@ window.RA_SEARCH_INDEX = function(){
     { title:"Home", url:"index.html", text:"home rightaware understand rights know power get started explore" },
     { title:"About Us", url:"about.html", text:"about mission vision purpose civic tech" },
     { title:"Explore Rights (library)", url:"rights.html", text:"explore rights library categories search" },
+    { title:"Laws & Constitution Library", url:"laws.html", text:"laws constitution acts regulations documents legal library search download" },
+    { title:"Video Library", url:"videos.html", text:"videos watch learn visual explainers" },
+    { title:"Organizations Directory", url:"organizations.html", text:"organisations organizations directory help support ngo legal aid" },
     { title:"Resources", url:"resources.html", text:"resources constitution guides videos faqs downloads links organisations" },
     { title:"Get Help", url:"help.html", text:"get help emergency report concern legal aid organisations contacts" },
     { title:"Legal Professionals (Demo)", url:"lawyers.html", text:"lawyer professionals directory demo rating review book" },
+    { title:"My Account (Demo)", url:"account.html", text:"account profile saved items consultations notifications settings" },
+    { title:"Admin (Demo)", url:"admin.html", text:"admin manage content users reviews messages dashboard" },
     { title:"RightAware AI (Demo)", url:"ai.html", text:"ai assistant chat ask question demo" },
     { title:"Contact Us", url:"contact.html", text:"contact email form message phone address" }
   ];
-  const rights = (window.RA_RIGHTS||[]).map(r=>({
-    title:r.title, url: r.fullGuide ? r.fullGuide : ("rights/topic.html?id="+r.id),
-    text:(r.title+" "+r.summary+" "+r.points.join(" ")+" "+r.keywords).toLowerCase()
-  }));
+  const seen = {};
+  const rights = [];
+  (window.RA_RIGHTS||[]).forEach(r=>{ seen[r.title]=1; rights.push({
+    title:r.title, url: (r.fullGuide || r.slug || "rights.html"),
+    text:(r.title+" "+r.summary+" "+(r.keywords||"")).toLowerCase() }); });
+  (window.RA_RIGHTS_DETAIL||[]).forEach(r=>{ if(seen[r.title]||r.fullGuide) return;
+    rights.push({ title:r.title, url:"rights/topic.html?id="+r.id,
+      text:(r.title+" "+r.summary+" "+(r.keywords||"")).toLowerCase() }); });
+  const laws = (window.RA_LAWS||[]).map(l=>({ title:"Law: "+l.title, url:"laws.html",
+    text:(l.title+" "+l.description+" "+l.category).toLowerCase() }));
   const faqs = (window.RA_FAQS||[]).map(f=>({ title:"FAQ: "+f.q, url:"resources.html#faqs", text:(f.q+" "+f.a).toLowerCase() }));
   const videos = (window.RA_VIDEOS||[]).map(v=>({ title:"Video: "+v.title, url:"resources.html#videos", text:(v.title+" "+v.desc+" "+v.tag).toLowerCase() }));
-  return pages.concat(rights, faqs, videos);
+  return pages.concat(rights, laws, faqs, videos);
 };
