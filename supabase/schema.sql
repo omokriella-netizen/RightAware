@@ -3,17 +3,11 @@
 -- Roles: admin | editor | moderator | professional | user (see user_roles; enforced in policies).
 -- Frontend v2 runs WITHOUT this (local demo mode) until SUPABASE_URL + keys are set.
 
--- ============ helpers ============
+-- ============ extensions ============
 create extension if not exists "pgcrypto";
 
-create or replace function ra_is_admin() returns boolean language sql stable as
-$$ select exists (select 1 from user_roles where user_id = auth.uid() and role = 'admin') $$;
-
-create or replace function ra_has_role(r text) returns boolean language sql stable as
-$$ select exists (select 1 from user_roles where user_id = auth.uid() and role = r) $$;
-
-create or replace function ra_touch_updated() returns trigger language plpgsql as
-$$ begin new.updated_at = now(); return new; end $$;
+-- NOTE: helper functions live AFTER all CREATE TABLEs below. LANGUAGE sql
+-- functions are validated at creation time, so user_roles must exist first.
 
 -- ============ users / profiles ============
 create table profiles (
@@ -137,6 +131,16 @@ create table audit_logs (
   id bigint generated always as identity primary key, actor uuid references auth.users(id),
   action text, entity text, entity_id text, meta jsonb, created_at timestamptz default now()
 );
+
+-- ============ helper functions (after tables: user_roles must exist first) ============
+create or replace function ra_is_admin() returns boolean language sql stable as
+$$ select exists (select 1 from user_roles where user_id = auth.uid() and role = 'admin') $$;
+
+create or replace function ra_has_role(r text) returns boolean language sql stable as
+$$ select exists (select 1 from user_roles where user_id = auth.uid() and role = r) $$;
+
+create or replace function ra_touch_updated() returns trigger language plpgsql as
+$$ begin new.updated_at = now(); return new; end $$;
 
 -- ============ updated_at triggers ============
 create trigger t_profiles before update on profiles for each row execute function ra_touch_updated();
