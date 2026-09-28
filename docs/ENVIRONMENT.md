@@ -26,7 +26,10 @@
 | APP_ENV / SUPPORT_EMAIL | anywhere | labels, support display |
 
 ## Wiring checklist
-- [ ] `.env` created locally from `.env.example` (values filled when supplied)
+- [ ] `.env.local` created from `.env.example` (Supabase URL + publishable key filled; secrets empty)
+- [ ] Local static testing (no server): in the browser console run
+  `RA_SUPA.configure("https://YOUR-REF.supabase.co", "YOUR-PUBLISHABLE-KEY")` —
+  stored in that browser only, never in the repo. Clear with `RA_SUPA.clearLocal()`.
 - [ ] Vercel → Project → Settings → Environment Variables set per environment
 - [ ] `/api/health` returns `backend: supabase-configured` after Supabase set
 - [ ] No secret string appears in any committed file (`grep -ri "sk_live\|service_role\|pat_" — expect zero hits)

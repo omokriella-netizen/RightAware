@@ -50,5 +50,15 @@
     if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
       navigator.serviceWorker.register("/sw.js").catch(function(){});
     }
+    // Supabase connector: loads js/supabase-client.js relative to this file's location.
+    // No-ops safely when no credentials are configured (stays in demo mode).
+    try{
+      var me = (document.currentScript && document.currentScript.src) || "";
+      var rootBase = me ? me.slice(0, me.lastIndexOf("/") + 1) : "";
+      var supa = document.createElement("script");
+      supa.src = rootBase + "js/supabase-client.js";
+      supa.defer = true;
+      document.head.appendChild(supa);
+    }catch(_){}
   });
 })();
