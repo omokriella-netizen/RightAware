@@ -33,8 +33,20 @@
   document.getElementById("loginForm").addEventListener("submit",function(e){
     e.preventDefault();
     var em = document.getElementById("lEmail").value.trim();
+    var pw = document.getElementById("lPass").value;
+    var out = document.getElementById("lOut");
+    if(RA_AUTH.supabaseReady()){
+      if(!pw){ out.textContent="Enter your password (secure login needs it)."; return; }
+      out.textContent="Signing in securely…";
+      RA_AUTH.loginLive(em,pw).then(function(r){
+        if(!r.ok){ out.textContent="Error: "+r.error; return; }
+        out.textContent="Signed in. Redirecting…";
+        setTimeout(function(){ location.href = next; }, 600);
+      });
+      return;
+    }
     RA_AUTH.login(em);
-    document.getElementById("lOut").textContent="Demo login saved on this device. Redirecting…";
+    out.textContent="Demo login saved on this device. Redirecting…";
     setTimeout(function(){ location.href = next; }, 600);
   });
 })();

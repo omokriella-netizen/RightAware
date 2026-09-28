@@ -42,7 +42,7 @@
   const u = RA_AUTH.guard(); if(!u) return;
   document.getElementById("whoChip").textContent = u.email || u.name;
   document.getElementById("helloTitle").textContent = "Welcome, " + (u.name || "Member");
-  document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logout();location.href="index.html";});
+  document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logoutLive().then(function(){ location.href="index.html"; });});
   const linkFor = s => s.type==="right" ? "rights/topic.html?id="+s.ref : s.type==="video" ? "videos.html" : "laws.html";
   function renderSaved(){
     const l = RA_DB.savedList();

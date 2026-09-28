@@ -23,4 +23,71 @@
     }
   };
   window.RA_AUTH = Auth;
+
+  /* ---- Supabase-backed methods (used when RA_SUPA is ready; demo otherwise) ---- */
+  Auth.supabaseReady = function(){ try{ return !!(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client); }catch(_){ return false; } };
+  Auth.mirrorSession = function(sbUser){
+    if(!sbUser) return null;
+    var meta = sbUser.user_metadata || {};
+    var u = { name: meta.name || (sbUser.email || "").split("@")[0] || "Member",
+      email: sbUser.email || "", supabaseId: sbUser.id, role: "user",
+      demo: false, at: new Date().toISOString() };
+    try{ localStorage.setItem(KEY, JSON.stringify(u)); }catch(_){}
+    try{ Auth.mode = "supabase"; Auth.fetchRole(); }catch(_){}
+    return u;
+  };
+  Auth.fetchRole = async function(){
+    try{
+      if(!this.supabaseReady()) return "user";
+      var r = await RA_SUPA.client.from("user_roles").select("role");
+      var roles = ((r.data) || []).map(function(x){ return x.role; });
+      var u = this.current() || {};
+      u.role = roles.includes("admin") ? "admin" : roles.includes("editor") ? "editor" : roles.includes("moderator") ? "moderator" : "user";
+      try{ localStorage.setItem(KEY, JSON.stringify(u)); }catch(_){}
+      return u.role;
+    }catch(_){ return "user"; }
+  };
+  Auth.signupLive = async function(name, email, pass){
+    if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };
+    try{
+      var r = await RA_SUPA.client.auth.signUp({ email:email, password:pass, options:{ data:{ name:name } } });
+      if(r.error) return { ok:false, error:r.error.message };
+      if(r.data && r.data.user) this.mirrorSession(r.data.user);
+      var needsConfirm = !(r.data && r.data.session);
+      return { ok:true, note: needsConfirm ? "Check your inbox to confirm email before login." : "Signed in." };
+    }catch(_){ return { ok:false, error:"Signup failed. Try again." }; }
+  };
+  Auth.loginLive = async function(email, pass){
+    if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };
+    try{
+      var r = await RA_SUPA.client.auth.signInWithPassword({ email:email, password:pass });
+      if(r.error) return { ok:false, error:r.error.message };
+      if(r.data && r.data.user) this.mirrorSession(r.data.user);
+      return { ok:true };
+    }catch(_){ return { ok:false, error:"Login failed. Try again." }; }
+  };
+  Auth.logoutLive = async function(){
+    try{ if(this.supabaseReady()){ await RA_SUPA.client.auth.signOut(); } }catch(_){}
+    this.logout();
+    try{ Auth.mode = "demo"; }catch(_){}
+  };
+  Auth.recoverLive = async function(email){
+    if(!this.supabaseReady()) return this.requestRecovery(email);
+    try{
+      var r = await RA_SUPA.client.auth.resetPasswordForEmail(email);
+      return r.error ? r.error.message : "Recovery email sent — check inbox (and spam).";
+    }catch(_){ return this.requestRecovery(email); }
+  };
+  try{
+    document.addEventListener("ra:backend-ready", function(){
+      try{
+        Auth.mode = "supabase";
+        RA_SUPA.client.auth.getSession().then(function(r){ if(r && r.data && r.data.session && r.data.session.user) Auth.mirrorSession(r.data.session.user); });
+        RA_SUPA.client.auth.onAuthStateChange(function(ev, session){
+          if(session && session.user) Auth.mirrorSession(session.user);
+          if(ev === "SIGNED_OUT") Auth.logout();
+        });
+      }catch(_){}
+    });
+  }catch(_){}
 })();

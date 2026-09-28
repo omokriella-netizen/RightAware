@@ -33,14 +33,30 @@
 <script>
 document.getElementById("suForm").addEventListener("submit",e=>{
   e.preventDefault();
-  const u=RA_AUTH.signup(document.getElementById("suName").value.trim(), document.getElementById("suEmail").value.trim());
+  var name=document.getElementById("suName").value.trim(),
+      em=document.getElementById("suEmail").value.trim(),
+      pw=document.getElementById("suPass").value,
+      out=document.getElementById("suOut");
+  if(RA_AUTH.supabaseReady()){
+    out.textContent="Creating secure account…";
+    RA_AUTH.signupLive(name,em,pw).then(function(r){
+      if(!r.ok){ out.textContent="Error: "+r.error; return; }
+      RA_DB.saveProfile({name:name,email:em,phone:"",state:"",language:"English"});
+      out.textContent="Account created. "+(r.note||"")+" Redirecting…";
+      setTimeout(()=>location.href="account.html",900);
+    });
+    return;
+  }
+  const u=RA_AUTH.signup(name,em);
   RA_DB.saveProfile({name:u.name,email:u.email,phone:"",state:"",language:"English"});
-  document.getElementById("suOut").textContent="Demo account created on this device. Redirecting…";
+  out.textContent="Demo account created on this device. Redirecting…";
   setTimeout(()=>location.href="account.html",700);
 });
 document.getElementById("recForm").addEventListener("submit",e=>{
   e.preventDefault();
-  document.getElementById("recOut").textContent=RA_AUTH.requestRecovery(document.getElementById("recEmail").value.trim());
+  var em=document.getElementById("recEmail").value.trim(), out=document.getElementById("recOut");
+  out.textContent="Sending…";
+  RA_AUTH.recoverLive(em).then(function(msg){ out.textContent=msg; });
 });
 </script>
 </body>

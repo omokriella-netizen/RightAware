@@ -40,4 +40,89 @@
     saveSettings(s){ LS.set("ra_settings", s); }
   };
   window.RA_DB = DB;
+
+  /* ---- Supabase remote (used when RA_SUPA is ready; local-first otherwise) ----
+     Local collections stay the offline cache; syncNow() mirrors them to Supabase
+     tables (see DATABASE.md). Contact messages use the anon-insert policy, so
+     they deliver even before login. Failures never break local use. */
+  DB.remote = {
+    ready(){ try{ return !!(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client); }catch(_){ return false; } },
+    uid(){ try{ var u = (window.RA_AUTH && RA_AUTH.current()) || {}; return u.supabaseId || null; }catch(_){ return null; } },
+    async pushSaved(){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      var self = this;
+      var rows = DB.savedList().map(function(s){ return { user_id:self.uid(), item_type:s.type, ref:s.ref, title:s.title }; });
+      if(!rows.length) return { ok:true, pushed:0 };
+      var r = await RA_SUPA.client.from("saved_items").upsert(rows, { onConflict:"user_id,item_type,ref" });
+      return r.error ? { ok:false, error:r.error.message } : { ok:true, pushed:rows.length };
+    },
+    async pullSaved(){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      var r = await RA_SUPA.client.from("saved_items").select("item_type,ref,title").eq("user_id", this.uid());
+      if(r.error) return { ok:false, error:r.error.message };
+      var list = ((r.data) || []).map(function(x){ return { type:x.item_type, ref:x.ref, title:x.title, at:new Date().toISOString() }; });
+      try{ localStorage.setItem("ra_saved", JSON.stringify(list)); }catch(_){}
+      return { ok:true, pulled:list.length };
+    },
+    async pushConsultation(c){
+      if(!this.ready()) return { ok:false, error:"backend not connected" };
+      try{
+        var r = await RA_SUPA.client.from("consultations").insert({
+          user_id:this.uid(), professional_id:null,
+          message:("To: " + (c.to || "Professional") + " | " + (c.msg || "")), status:"requested" }).select("id").single();
+        return r.error ? { ok:false, error:r.error.message } : { ok:true, id:r.data && r.data.id };
+      }catch(_){ return { ok:false, error:"request failed" }; }
+    },
+    async pushMessage(m){
+      if(!this.ready()) return { ok:false, error:"backend not connected" };
+      try{
+        var r = await RA_SUPA.client.from("contact_messages").insert({
+          name:m.name, email:m.email, topic:m.topic, message:m.msg }).select("id").single();
+        return r.error ? { ok:false, error:r.error.message } : { ok:true, id:r.data && r.data.id };
+      }catch(_){ return { ok:false, error:"send failed" }; }
+    },
+    async pushProfile(p){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("profiles").upsert({
+          id:this.uid(), name:p.name, email:p.email, phone:p.phone, state:p.state, language:p.language });
+        return r.error ? { ok:false, error:r.error.message } : { ok:true };
+      }catch(_){ return { ok:false, error:"save failed" }; }
+    },
+    async pullNotifications(){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("notifications").select("id,title,body,read,created_at").eq("user_id", this.uid()).order("created_at", { ascending:false }).limit(20);
+        if(r.error) return { ok:false, error:r.error.message };
+        var local = []; try{ local = JSON.parse(localStorage.getItem("ra_notifications") || "[]"); }catch(_){}
+        var seen = {}; local.forEach(function(n){ seen[n.id] = 1; });
+        ((r.data) || []).forEach(function(n){ if(!seen[n.id]) local.unshift({ id:n.id, title:n.title, body:n.body, at:n.created_at, read:!!n.read }); });
+        try{ localStorage.setItem("ra_notifications", JSON.stringify(local.slice(0, 50))); }catch(_){}
+        return { ok:true, pulled:((r.data) || []).length };
+      }catch(_){ return { ok:false, error:"sync failed" }; }
+    },
+    async syncNow(){
+      if(!this.ready()) return { ok:false, error:"backend not connected (demo mode)" };
+      var out = { ok:true };
+      try{
+        var m = DB.messages(); out.messages = 0;
+        for(var i = 0; i < m.length; i++){
+          if(m[i].status === "stored-local"){
+            var pr = await this.pushMessage(m[i]);
+            if(pr.ok){ m[i].status = "sent"; out.messages++; }
+          }
+        }
+        try{ localStorage.setItem("ra_messages", JSON.stringify(m)); }catch(_){}
+        if(this.uid()){
+          out.saved = await this.pushSaved();
+          out.profile = await this.pushProfile(DB.profile());
+          out.notif = await this.pullNotifications();
+        }
+      }catch(_){ out.ok = false; out.error = "sync interrupted"; }
+      return out;
+    }
+  };
+  try{
+    document.addEventListener("ra:backend-ready", function(){ try{ DB.remote.syncNow(); }catch(_){} });
+  }catch(_){}
 })();
