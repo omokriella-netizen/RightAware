@@ -50,3 +50,30 @@ relatedRights[],lang,status:"draft"}`. Ship as `draft` until reviewed, then
 - [ ] Status label correct; no `verified` without a source + date
 - [ ] No real names, contacts, numbers or addresses unless verified
 - [ ] Disclaimer present (templates already include it)
+
+## Laws library & text indexes (this build)
+The laws library ships 11 real PDFs in `assets/legal/` with per-page text indexes
+in `content/law-text/*.js`. To add or update a document:
+
+1. Drop the PDF in `assets/legal/` and add/adjust its entry in `content/laws.js`
+   (`id`, `title`, `file`, `textFile`, `pages`, `textAvailable`, verification note).
+2. Produce the text index `content/law-text/<name>.js` with the PdfPig extraction
+   helper (PowerShell + `Add-Type`, no Python/Node needed) writing
+   `window.RA_LAW_TEXT["<id>"] = { pageCount, emptyPages, chars, pages:[…] }`.
+3. **The registry key inside the text file MUST equal the `laws.js` `id`**
+   (e.g. id `constitution-1999` → key `constitution-1999`). If they differ the
+   document loads but its text is silently skipped in search — this exact bug was
+   found and fixed for 6 documents during QA; the id↔key pairs are checked in QA.
+4. Scanned/image-only PDFs get `textFile: null, textAvailable: false`; the UI then
+   shows the honest “scanned copy — open it in the viewer” message instead of
+   pretending they are searchable.
+
+## Pidgin translations (`content/i18n.js`)
+- Every UI string is an `{ en, pcm }` pair where `en` must match the visible
+  English text exactly (whitespace-insensitive).
+- `pcm` values are **drafts**; the `status` block must stay `draft` until a
+  qualified Nigerian Pidgin reviewer approves them.
+- Never translate statutory wording, section numbers, or quotes from the supplied
+  PDFs — translate only UI/labels/explanations you authored.
+- Adding a language: add it to `meta.languages`, add that field to entries
+  (missing entries fall back to English), and extend the selector normalizer.

@@ -44,3 +44,31 @@ Seed **categories + FAQs only** at first. Do NOT seed laws text, organizations,
 or professionals until each record is verified. Demo professionals stay
 `is_demo=true` and hidden from public queries (`verification_status='verified'
 AND is_demo=false` policy).
+
+## Optional add-on: applications & roles (`supabase/applications-access.sql`)
+The base schema + `fix-access.sql` were applied as-is and must not be re-run.
+One gap was identified later: `professionals` had **no** write policy at all and
+applicants could not read back their own pending rows, so the signup flow
+degrades to the `contact_messages` queue (which works today). The additive file
+`supabase/applications-access.sql` (safe to re-run, touches no tables/data) adds:
+
+- `edit_profs` — admins/editors can insert/update professional rows (approval);
+- `apply_profs` / `own_profs` — an applicant may insert their own pending row and
+  read it back (never others');
+- `apply_specs` — specialisations attach only to the applicant's own row;
+- `apply_orgs` / `own_orgs` — same for organisations (public still only ever sees
+  `verification_status='verified'` rows via the existing policy);
+- `own_roles` + `ra_my_roles()` — a signed-in user can resolve their own roles
+  (used by `RA_AUTH.fetchRole()` in `js/auth.js`);
+- `ra_approve_professional(id)` / `ra_approve_organization(id)` — SECURITY DEFINER
+  helpers callable only by admins; the professional variant also grants the
+  `professional` role (the check constraint allows
+  `admin|editor|moderator|professional|user`; there is no `organisation` role —
+  org accounts stay `user` and their status is tracked on the organisation row).
+
+Frontend behaviour with/without it:
+- **without** — signup applications are queued in `contact_messages` (admin sees
+  them in admin.html → Applications), professional pending lists are empty with an
+  explanatory note; nothing breaks.
+- **with** — direct application rows, own-status panel entries, and one-click
+  approve/reject from admin.html.
