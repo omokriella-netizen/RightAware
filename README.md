@@ -52,23 +52,29 @@ labelled `AWAITING UPLOAD / OVERVIEW / DRAFT / DEMO / PLACEHOLDER`.
 
 ## How to run
 
-No build, no backend required:
+No build step required. The Supabase connection is picked up from
+`.env.local` automatically:
 
-1. Open `index.html` in a browser (double-click), **or**
-2. Serve locally (any static server), e.g. `npx serve` → `http://localhost:8000`.
+1. Fill `.env.local` (copy `.env.example`) with your public values.
+2. Generate the browser-safe env file (public whitelist only — secrets are
+   never copied): `powershell -NoProfile -ExecutionPolicy Bypass -File tools\make-env.ps1`
+   → writes `env.local.js` (git-ignored).
+3. Serve the folder (`npx serve`, or any static server) **or** open
+   `index.html` directly — both connect; without step 2 the site runs fully
+   in local demo mode (never crashes, honest "not connected" messages).
 
-To test live features (login, applications, delivery), configure the connector once
-in the browser console (values live in `.env.local`, git-ignored):
-
-```js
-RA_SUPA.configure("https://<project>.supabase.co", "sb_publishable_…")
-```
+Credential priority in `js/supabase-client.js`: `window.__ENV__` (server
+injection on Vercel) → localStorage `ra_env` (`RA_SUPA.configure` override)
+→ `env.local.js` (generated local file). The manual override wins locally;
+clear it with `RA_SUPA.clearLocal()`.
 
 ## Environment variables
 
-Copy `.env.example` → `.env` (local) or set values in the Vercel dashboard.
-Only **public** keys may reach the browser via `window.__ENV__`; secrets stay
-server-side. Details: docs/ENVIRONMENT.md.
+Copy `.env.example` → `.env.local` (local) or set values in the Vercel
+dashboard. Only **public** keys may reach the browser via `window.__ENV__`
+/ `env.local.js`; secrets stay server-side — `tools/make-env.ps1` enforces a
+whitelist so `SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_SECRET_KEY` and `AI_API_KEY`
+are never written to any browser file. Details: docs/ENVIRONMENT.md.
 
 ```bash
 SUPABASE_URL= SUPABASE_PUBLISHABLE_KEY=        # public — browser OK
@@ -90,21 +96,33 @@ AI_API_KEY= AI_MODEL=                          # SERVER ONLY (/api/ai/chat)
 
 ## Quality checks run for this build
 
-- Static link/asset checker: no missing local links (19 HTML files, 675 links).
-- Headless-browser pass over all 19 pages: **zero console errors**, all key
-  markers present, no `[object Object]`/`undefined` leaks.
+- Static link/asset checker: no missing local links (676 links; 19 flagged
+  strings are JS-concatenation false positives).
+- Headless-browser pass over all 19 pages in **both modes** (live backend and
+  demo): **zero console errors**, all key markers present, no
+  `[object Object]`/`undefined` leaks.
 - Functional tests: laws full-text search (11 extracts for “arrest” across 5
   documents after fixing text-index keys), doc viewer deep links, site search,
-  Pidgin render (`lang=pcm`), signup pathway switching, 7 signup validation/submission
-  cases, 6 contact validation/spam/delivery cases — all passing.
+  Pidgin render (`lang=pcm`), signup pathway switching, signup validation suite
+  (7 cases, both modes), contact validation/spam suite (6 cases, both modes) —
+  all passing.
+- **Supabase connection (live, read-only):** connector boots from
+  `env.local.js`; 19 table reads + 3 RPC probes + 2 grant probes all behaved
+  exactly as the schema/RLS define (details in the delivery report). Same test
+  passes from `file://`.
 - Manual checks still required by a human: visual/responsive feel on real devices,
-  keyboard-only navigation, screen-reader pass, live-backend flows (see final report).
+  keyboard-only navigation, screen-reader pass, and every flow that WRITES with
+  a signed-in session (signup → login → role → approve), because the owner
+  requested read-only testing (no rows created during QA).
 
 ## Status
 
 Current build: laws library, Pidgin selector, three registration pathways with
-admin approval, live contact delivery and hardened offline caching implemented and
-statically tested. External services **not** connected (no credentials supplied);
-Paystack/AI stay stubs. Pidgin translations await qualified review; the optional
-`supabase/applications-access.sql` has **not** been applied yet (applications fall
-back to the contact queue until it is).
+admin approval, hardened offline caching, and a **live Supabase connection**
+(auth mode, role reads, application status, admin queue against the real
+database — verified read-only). `supabase/applications-access.sql` has been
+**applied** on the project (probes confirm `ra_my_roles`,
+`ra_approve_professional`, `ra_approve_organization` exist); re-run it once to
+pick up the newly added `admin_msg_update` policy (inbox “Mark reviewed”
+otherwise reports an honest 0-rows error). Paystack/AI stay stubs. Pidgin
+translations await qualified review.

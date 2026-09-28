@@ -115,6 +115,9 @@
         try{ localStorage.setItem("ra_messages", JSON.stringify(m)); }catch(_){}
         if(this.uid()){
           out.saved = await this.pushSaved();
+          // Only restore the server copy after a successful push, so a failed
+          // push can never wipe items that exist only on this device.
+          if(out.saved && out.saved.ok) out.savedPull = await this.pullSaved();
           out.profile = await this.pushProfile(DB.profile());
           out.notif = await this.pullNotifications();
         }

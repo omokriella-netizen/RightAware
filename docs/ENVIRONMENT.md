@@ -25,9 +25,26 @@
 | AI_API_KEY / AI_MODEL | server only | provider calls in `/api/ai/chat` |
 | APP_ENV / SUPPORT_EMAIL | anywhere | labels, support display |
 
+## Local connection from `.env.local`
+The browser never reads `.env.local` (it contains secret **names**; only the
+values below are public). Generate the browser file instead:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\make-env.ps1
+```
+
+This writes `env.local.js` at the project root (git-ignored) with a **strict
+whitelist**: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PAYSTACK_PUBLIC_KEY`
+— nothing else. `SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_SECRET_KEY` and
+`AI_API_KEY` are never copied, even when present in `.env.local`.
+`js/supabase-client.js` loads it as the lowest-priority credential source
+(server-injected `window.__ENV__` and the `ra_env` localStorage override still
+win). Re-run the script after editing `.env.local`.
+
 ## Wiring checklist
-- [ ] `.env.local` created from `.env.example` (Supabase URL + publishable key filled; secrets empty)
-- [ ] Local static testing (no server): in the browser console run
+- [x] `.env.local` created from `.env.example` (Supabase URL + publishable key filled; secrets empty)
+- [x] `tools\make-env.ps1` run → `env.local.js` present (regenerate after env changes)
+- [ ] Optional per-browser override: in the console run
   `RA_SUPA.configure("https://YOUR-REF.supabase.co", "YOUR-PUBLISHABLE-KEY")` —
   stored in that browser only, never in the repo. Clear with `RA_SUPA.clearLocal()`.
 - [ ] Vercel → Project → Settings → Environment Variables set per environment

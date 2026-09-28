@@ -21,6 +21,8 @@
 --     (needed for the "my application status" panel).
 --  4) non-admin users could not resolve their own roles (user_roles had only
 --     an admin-read policy), so role-aware dashboards only worked for admins.
+--  5) admins could SELECT contact_messages but not UPDATE them, so the inbox
+--     "Mark reviewed" button silently changed 0 rows (admin_msg_update below).
 
 -- ---------------------------------------------------------------------------
 -- 1. Professionals: applicant insert + own-row read, admin/editor approval
@@ -122,5 +124,15 @@ end $$;
 
 grant execute on function public.ra_approve_professional(text) to authenticated;
 grant execute on function public.ra_approve_organization(text) to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- 5. Contact inbox: administrators may update the messages they can read
+--    (base schema granted admin SELECT only, so "Mark reviewed" changed 0 rows)
+-- ---------------------------------------------------------------------------
+drop policy if exists admin_msg_update on public.contact_messages;
+create policy admin_msg_update on public.contact_messages
+  for update to authenticated
+  using (ra_is_admin())
+  with check (ra_is_admin());
 
 -- After running this file you do NOT need to re-run the schema.

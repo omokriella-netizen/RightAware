@@ -1,6 +1,7 @@
-# Local/dev ignores — keep secrets and OS noise out of git.
+# Local/dev ignores - keep secrets and OS noise out of git.
 .env
 .env.local
+env.local.js
 *.log
 .DS_Store
 Thumbs.db

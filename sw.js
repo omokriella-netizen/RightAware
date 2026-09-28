@@ -39,6 +39,8 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(fetch(req).catch(() => new Response(JSON.stringify({ ok: false, error: "offline" }), { headers: { "Content-Type": "application/json" } })));
     return;
   }
+  // Connection files: always fresh so regenerated keys / connector updates apply at once.
+  if (url.pathname.endsWith("/env.local.js") || url.pathname.endsWith("/js/supabase-client.js")) { e.respondWith(fetch(req)); return; }
   if (!sameOrigin) { e.respondWith(fetch(req)); return; } // Supabase/fonts: network only
   if (PRIVATE.includes(url.pathname)) {                   // auth shells: network-first, uncached
     e.respondWith(fetch(req).catch(() => caches.match("./offline.html")));

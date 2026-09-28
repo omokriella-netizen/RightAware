@@ -192,6 +192,15 @@
       + '</details></div>';
   }
 
+  /* Update a row by id with an honest outcome: PostgREST reports an RLS-blocked
+     UPDATE as "success, 0 rows", so we select the touched rows back and fail
+     loudly instead of pretending the decision was saved. */
+  async function upd(table, values, id){
+    var r = await RA_SUPA.client.from(table).update(values).eq("id", id).select("id");
+    if(r.error) throw r.error;
+    if(!r.data || !r.data.length) throw { message:"0 rows changed — row-level security blocked the update (apply supabase/applications-access.sql once, then reload)" };
+  }
+
   async function loadApplications(){
     var box = document.getElementById("appsBox");
     if(!box) return;
@@ -245,17 +254,13 @@
             var r = await RA_SUPA.client.rpc("ra_approve_professional", { p_id:id });
             if(r.error) throw r.error;
           } else if(act === "reject-pro"){
-            var r2 = await RA_SUPA.client.from("professionals").update({ verification_status:"unverified", verified_at:null }).eq("id", id);
-            if(r2.error) throw r2.error;
+            await upd("professionals", { verification_status:"unverified", verified_at:null }, id);
           } else if(act === "approve-org"){
-            var r3 = await RA_SUPA.client.from("organizations").update({ verification_status:"verified", verified_at:new Date().toISOString() }).eq("id", id);
-            if(r3.error) throw r3.error;
+            await upd("organizations", { verification_status:"verified", verified_at:new Date().toISOString() }, id);
           } else if(act === "reject-org"){
-            var r4 = await RA_SUPA.client.from("organizations").update({ verification_status:"unverified", verified_at:null }).eq("id", id);
-            if(r4.error) throw r4.error;
+            await upd("organizations", { verification_status:"unverified", verified_at:null }, id);
           } else if(act === "mark-read"){
-            var r5 = await RA_SUPA.client.from("contact_messages").update({ status:"read" }).eq("id", id);
-            if(r5.error) throw r5.error;
+            await upd("contact_messages", { status:"read" }, id);
           }
           loadApplications();
         }catch(err){
@@ -280,8 +285,8 @@
       box.querySelectorAll("button[data-act]").forEach(function(b){
         b.addEventListener("click", async function(){
           b.disabled = true;
-          var r2 = await RA_SUPA.client.from("contact_messages").update({ status:"read" }).eq("id", b.dataset.id);
-          if(r2.error){ b.disabled = false; alert("Could not update: " + r2.error.message); return; }
+          try{ await upd("contact_messages", { status:"read" }, b.dataset.id); }
+          catch(err){ b.disabled = false; alert("Could not update: " + (err && err.message ? err.message : err)); return; }
           loadMessages();
         });
       });

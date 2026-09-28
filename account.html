@@ -68,8 +68,19 @@
   document.getElementById("pName").value=p.name||u.name||""; document.getElementById("pEmail").value=p.email||u.email||"";
   document.getElementById("pPhone").value=p.phone||""; document.getElementById("pState").value=p.state||"Lagos"; document.getElementById("pLang").value=p.language||"English";
   document.getElementById("profileForm").addEventListener("submit",e=>{e.preventDefault();
-    RA_DB.saveProfile({name:document.getElementById("pName").value,email:document.getElementById("pEmail").value,phone:document.getElementById("pPhone").value,state:document.getElementById("pState").value,language:document.getElementById("pLang").value});
-    document.getElementById("pOut").textContent="Profile saved on this device (demo).";});
+    var prof={name:document.getElementById("pName").value,email:document.getElementById("pEmail").value,phone:document.getElementById("pPhone").value,state:document.getElementById("pState").value,language:document.getElementById("pLang").value};
+    RA_DB.saveProfile(prof);
+    var pOut=document.getElementById("pOut");
+    if(RA_DB.remote.ready() && RA_DB.remote.uid()){
+      pOut.textContent="Profile saved on this device — syncing…";
+      RA_DB.remote.pushProfile(prof).then(function(r){
+        pOut.textContent = r.ok ? "Profile saved on this device and synced to your account."
+          : "Profile saved on this device (sync failed: " + (r.error||"error") + "). It will retry on your next visit.";
+      });
+    } else {
+      pOut.textContent = RA_DB.remote.ready() ? "Profile saved on this device. Sign in to sync it to your account."
+        : "Profile saved on this device (backend not connected).";
+    }});
   const s = RA_DB.settings();
   document.getElementById("sRem").checked=!!s.reminders; document.getElementById("sOff").checked=!!s.offlineMode;
   document.getElementById("setForm").addEventListener("submit",e=>{e.preventDefault();
@@ -84,10 +95,11 @@
   }
   function renderStatus(){
     var box = document.getElementById("statusBox");
-    var role = u.role || "user";
+    var me = RA_AUTH.current() || u;           // fresh (role may arrive after backend-ready)
+    var role = me.role || "user";
     var icon = role==="admin" ? "👑" : role==="professional" ? "⚖️" : "🙋";
     var html = '<article class="card"><span class="tag">Account</span><h3>'+icon+' '+esc(ROLE_LABEL[role]||"General user")+'</h3>'
-      + '<p>Signed in as <strong>'+esc(u.email||u.name||"member")+'</strong>'
+      + '<p>Signed in as <strong>'+esc(me.email||me.name||"member")+'</strong>'
       + (RA_AUTH.mode==="demo" ? ' <span class="pill">DEMO SESSION</span>' : '')+'</p>'
       + (role==="admin" ? '<a class="btn btn-primary btn-sm" href="admin.html">Open admin dashboard</a>' : '')
       + '</article>';

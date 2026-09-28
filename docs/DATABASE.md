@@ -45,12 +45,10 @@ or professionals until each record is verified. Demo professionals stay
 `is_demo=true` and hidden from public queries (`verification_status='verified'
 AND is_demo=false` policy).
 
-## Optional add-on: applications & roles (`supabase/applications-access.sql`)
+## Applications & roles add-on (`supabase/applications-access.sql`)
 The base schema + `fix-access.sql` were applied as-is and must not be re-run.
-One gap was identified later: `professionals` had **no** write policy at all and
-applicants could not read back their own pending rows, so the signup flow
-degrades to the `contact_messages` queue (which works today). The additive file
-`supabase/applications-access.sql` (safe to re-run, touches no tables/data) adds:
+The additive file `supabase/applications-access.sql` (safe to re-run, touches no
+tables/data) adds:
 
 - `edit_profs` — admins/editors can insert/update professional rows (approval);
 - `apply_profs` / `own_profs` — an applicant may insert their own pending row and
@@ -64,9 +62,19 @@ degrades to the `contact_messages` queue (which works today). The additive file
   helpers callable only by admins; the professional variant also grants the
   `professional` role (the check constraint allows
   `admin|editor|moderator|professional|user`; there is no `organisation` role —
-  org accounts stay `user` and their status is tracked on the organisation row).
+  org accounts stay `user` and their status is tracked on the organisation row);
+- `admin_msg_update` — administrators can UPDATE `contact_messages` (the base
+  schema granted SELECT only, so the inbox "Mark reviewed" button changed 0 rows).
 
-Frontend behaviour with/without it:
+**Status (verified 2026-09-28 by read-only probes from the site itself):**
+sections 1–4 are **applied** on the live project — `ra_my_roles()` answers for
+anonymous callers, and both approve functions answer "admins only" (i.e. exist
+and are correctly guarded). The `admin_msg_update` policy is newer: **re-run the
+file once** in the SQL editor to pick it up. Until then admin.html reports an
+honest "0 rows changed — row-level security blocked the update" instead of
+pretending the action succeeded.
+
+Frontend behaviour with/without the file:
 - **without** — signup applications are queued in `contact_messages` (admin sees
   them in admin.html → Applications), professional pending lists are empty with an
   explanatory note; nothing breaks.
