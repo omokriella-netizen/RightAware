@@ -36,7 +36,7 @@
   </div>
   <div class="guide-grid">
     <aside class="toc"><strong>On this page</strong>
-      <a href="#s-what">What this right means</a><a href="#s-basis">Legal basis</a><a href="#s-do">What you can do</a><a href="#s-avoid">What to avoid</a><a href="#s-examples">Examples</a><a href="#s-faq">FAQs</a><a href="#s-orgs">Organisations</a><a href="#s-sources">Sources</a>
+      <a href="#s-what">What this right means</a><a href="#s-basis">Legal basis</a><a href="#s-provisions">Relevant provisions</a><a href="#s-do">What you can do</a><a href="#s-avoid">What to avoid</a><a href="#s-examples">Examples</a><a href="#s-faq">FAQs</a><a href="#s-orgs">Organisations</a><a href="#s-sources">Sources</a>
     </aside>
     <article class="guide-content" id="guideBody"></article>
   </div>
@@ -54,6 +54,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/db.js"></script>
 <script src="../content/rights.js"></script>
+<script src="../content/laws.js"></script>
 <script src="../content/organizations.js"></script>
 <script src="../app.js"></script>
 <script>
@@ -81,11 +82,25 @@
     const url = o.fullGuide ? ("../"+o.fullGuide) : ("topic.html?id="+o.id);
     return '<article class="card"><div class="icon">'+o.icon+'</div><h3>'+esc(o.title)+'</h3><a class="link" href="'+url+'">Open →</a></article>';
   }).join("");
+  /* Relevant provisions → pre-searched links into the laws library (original supplied PDFs) */
+  const lawRefs = ((window.RA_TOPIC_LAWS||{})[r.id]||[]).filter(f => (window.RA_LAWS||[]).some(l => l.id===f.doc && l.status==="uploaded"));
+  const lawChips = lawRefs.map(f => {
+    const l = (window.RA_LAWS||[]).find(x => x.id===f.doc);
+    const href = "../laws.html?doc="+encodeURIComponent(f.doc)+"&q="+encodeURIComponent(f.q);
+    const scan = l.textAvailable ? "" : " ⚠ scanned copy — viewer only";
+    return '<a class="btn btn-outline btn-sm" style="margin:.25rem .3rem 0 0" href="'+href+'">📄 '+esc(l.title)+' — search “'+esc(f.q)+'”'+scan+'</a>';
+  }).join("");
+  const lawBlock = lawChips
+    ? '<h2 id="s-provisions">Relevant provisions in the supplied laws</h2>'
+      + '<p style="color:var(--muted);font-size:.9rem">Each button opens the laws library pre-searched for this topic inside the <strong>original documents supplied for this platform</strong>. Results show the documents’ own wording with page numbers — never wording invented here.</p>'
+      + '<div>'+lawChips+'</div>'
+    : '';
   document.getElementById("guideBody").innerHTML =
     '<div class="key-box"><strong>⚡ In short:</strong><p style="margin:.4rem 0 0">'+esc((r.explanation||[])[0]||r.summary)+'</p></div>'
     + '<h2 id="s-what">What this right means</h2><ul class="checklist">'+li(r.meaning)+'</ul>'
     + '<h2>Simple explanation</h2>' + (r.explanation||[]).slice(1).map(p=>"<p>"+esc(p)+"</p>").join("")
     + '<h2 id="s-basis">Legal basis / source</h2><div class="key-box">⚖ '+esc(r.legalBasis.text)+'<br/><small>Status: '+(r.legalBasis.status==="verified"?"verified":"<strong>awaiting verification</strong> — confirm against the official text")+'.</small></div>'
+    + lawBlock
     + '<h2 id="s-do">What you can do</h2><div class="do-dont do"><ul>'+li(r.canDo)+'</ul></div>'
     + '<h2 id="s-avoid">What to avoid</h2><div class="do-dont dont"><ul>'+li(r.avoid)+'</ul></div>'
     + '<h2 id="s-examples">Practical examples</h2>' + (r.examples||[]).map(e=>'<div class="result"><strong>'+esc(e.t)+'</strong><br/>'+esc(e.d)+'</div>').join("")

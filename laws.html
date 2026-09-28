@@ -2,15 +2,39 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Laws & Constitution Library — RightAware</title>
-<meta name="description" content="Browse Nigeria's Constitution, Acts and legal documents. Verified uploads arrive later — catalog placeholders only in v1."/>
+<title>Laws & Legal Documents Library — RightAware</title>
+<meta name="description" content="Search and read the actual legal documents supplied for RightAware: the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, ACJA 2015 and more — with in-browser reading and downloads."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  .doc-card h3{margin:.4rem 0 .3rem}
+  .doc-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .6rem}
+  .badge-available{background:#064e3b;color:#4ade80}
+  .badge-pending{background:#334155;color:#cbd5e1}
+  .badge-text{background:#083344;color:#38bdf8}
+  .badge-scan{background:#422006;color:#fbbf24}
+  .badge-type{background:#1e293b;color:#e2e8f0}
+  .badge-juris{background:#3b0764;color:#d8b4fe}
+  .snippet{background:#0f172a;border-left:3px solid #22c55e;padding:.6rem .7rem;border-radius:.4rem;font-size:.88rem;line-height:1.5;margin:.5rem 0;white-space:normal}
+  .snippet mark{background:#fde047;color:#111;padding:0 .1em;border-radius:2px}
+  .snippet .pg{display:inline-block;background:#1d4ed8;color:#fff;font-size:.72rem;padding:.05rem .4rem;border-radius:.3rem;margin-right:.4rem}
+  .search-inside-bar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:.7rem 0}
+  .viewer-dialog{border:none;padding:0;border-radius:.8rem;width:min(1000px,94vw);height:min(86vh,900px);background:#0b1220;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+  .viewer-dialog::backdrop{background:rgba(2,6,23,.75)}
+  .viewer-head{display:flex;gap:.5rem;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:#111a2e;color:#e2e8f0;flex-wrap:wrap}
+  .viewer-head strong{font-size:.92rem}
+  .viewer-frame{width:100%;height:calc(100% - 54px);border:0;background:#111}
+  .no-text-note{background:#422006;color:#fde68a;padding:.5rem .7rem;border-radius:.4rem;font-size:.85rem;margin:.5rem 0}
+  .filter-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+  .filter-bar input[type=search]{flex:1 1 240px}
+  #fulltextStatus{font-size:.85rem;color:var(--muted);margin-top:.6rem}
+  .ft-doc-head{font-weight:700;margin:1rem 0 .3rem;color:var(--ink)}
+</style>
 </head>
 <body>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
     <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
     <div class="header-actions">
       <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
@@ -24,58 +48,312 @@
     <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
+
 <main>
-<section class="page-hero"><div class="container rv">
-  <span class="eyebrow">Laws library</span><h1>Constitution, Acts & legal documents</h1>
-  <p class="lead-dark">A catalog of key Nigerian legal instruments. <strong>No document text is published yet</strong> — entries are placeholders awaiting verified uploads. Never quote a law from memory for serious matters.</p>
-  <div class="filter-bar">
-    <input id="lawQ" type="search" placeholder="Search title or description…" aria-label="Search laws"/>
-    <select id="lawCat" aria-label="Filter by category"><option value="">All categories</option></select>
+<section class="page-hero"><div class="container page-hero-grid rv">
+  <div>
+    <span class="eyebrow">Laws & legal documents</span>
+    <h1>Read the actual laws. Search their actual words.</h1>
+    <p class="lead-dark">Every document below is the <strong>original file supplied for this platform</strong> — open it in the in-browser viewer, download it as-is, or search inside its text. Explanations are kept separate from the law itself, and nothing here is quoted from memory.</p>
+    <div class="filter-bar" role="search">
+      <input id="lawQ" type="search" placeholder='Search inside the laws… e.g. "arrest", "tenant", "Section 35"' aria-label="Search laws by title, topic, section or keyword"/>
+      <select id="lawCat" aria-label="Filter by category"><option value="">All categories</option></select>
+      <select id="lawType" aria-label="Filter by document type">
+        <option value="">All document types</option>
+        <option value="legislation">Legislation / gazettes</option>
+        <option value="compilation">Compilations</option>
+        <option value="government-publication">Government publications</option>
+        <option value="academic-paper">Academic papers (not law)</option>
+        <option value="placeholder">Awaiting upload</option>
+      </select>
+      <button class="btn btn-primary" id="lawSearchBtn" type="button">Search</button>
+    </div>
+    <p id="fulltextStatus" aria-live="polite"></p>
   </div>
+  <div class="page-hero-media"><img src="assets/images/laws-scales-gavel.jpg" alt="Golden scales of justice beside a wooden gavel" loading="lazy"/></div>
 </div></section>
+
 <section class="section"><div class="container">
+  <div id="ftResults" class="rv" aria-live="polite"></div>
   <div id="lawGrid" class="cards-grid"></div>
-  <div class="notice rv" style="margin-top:1.5rem">📤 <strong>Upload architecture ready:</strong> documents will live in versioned storage with title, description, source, date, category, related rights and verification fields. See CONTENT_UPLOAD_GUIDE.md. No invented documents are listed above.</div>
+  <div class="notice rv" style="margin-top:1.5rem">🔎 <strong>How this library stays honest:</strong> documents show their source, year note and verification state. Academic papers are labelled “not legislation”. Scanned files with no text layer say so instead of pretending to be searchable. Administrators can update metadata in <code>content/laws.js</code> (and drop new PDFs into <code>assets/legal/</code>) without rebuilding the site — see CONTENT_UPLOAD_GUIDE.md.</div>
 </div></section>
 </main>
+
+<dialog class="viewer-dialog" id="viewerDlg" aria-label="Document viewer">
+  <div class="viewer-head">
+    <strong id="viewerTitle">Document</strong>
+    <span style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <a class="btn btn-primary btn-sm" id="viewerDl" download>⬇ Download original</a>
+      <a class="btn btn-outline btn-sm" id="viewerNew" target="_blank" rel="noopener">Open in new tab</a>
+      <button class="btn btn-ghost btn-sm" id="viewerClose" type="button">✕ Close</button>
+    </span>
+  </div>
+  <iframe class="viewer-frame" id="viewerFrame" title="PDF viewer"></iframe>
+</dialog>
+
 <footer class="footer"><div class="container footer-grid">
   <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
-  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="resources.html">Resources</a><a href="organizations.html">Organizations</a></div>
+  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
   <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+
 <script src="js/config.js"></script>
 <script src="content/laws.js"></script>
 <script src="content/rights.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
-  const grid = document.getElementById("lawGrid"), q = document.getElementById("lawQ"), cat = document.getElementById("lawCat");
-  (window.RA_LAW_CATEGORIES||[]).forEach(c => { const o=document.createElement("option"); o.textContent=c; cat.appendChild(o); });
+  "use strict";
+  var grid = document.getElementById("lawGrid"),
+      qInput = document.getElementById("lawQ"),
+      catSel = document.getElementById("lawCat"),
+      typeSel = document.getElementById("lawType"),
+      statusEl = document.getElementById("fulltextStatus"),
+      ftResults = document.getElementById("ftResults");
+  var loadedText = {};   // docId -> {pageCount, pages:[...]}
+  var textLoading = false;
+
+  /* URL params: ?q=… (search) / ?doc=…&q=… (open a doc search) / ?docs=a,b&q=… */
+  var params = new URLSearchParams(location.search);
+  var initialQ = params.get("q") || "";
+  var initialDoc = params.get("doc") || "";
+
+  /* ---------- categories ---------- */
+  (window.RA_LAW_CATEGORIES||[]).forEach(function(c){
+    var o = document.createElement("option"); o.textContent = c; catSel.appendChild(o);
+  });
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+  function lawById(id){ return (window.RA_LAWS||[]).find(function(l){ return l.id===id; }); }
+
   function relatedLinks(ids){
-    return (ids||[]).map(id => {
-      const hit = (window.RA_RIGHTS_DETAIL||[]).find(r=>r.id===id) || (window.RA_RIGHTS||[]).find(r=>(r.keywords||"").includes(id));
+    return (ids||[]).map(function(id){
+      var hit = (window.RA_RIGHTS_DETAIL||[]).find(function(r){ return r.id===id; }) ||
+                (window.RA_RIGHTS||[]).find(function(r){ return r.id===id; });
       if(!hit) return "";
-      const url = hit.fullGuide ? hit.fullGuide : ("rights/topic.html?id="+(hit.id||""));
-      return '<a class="link" style="font-size:.82rem;margin-right:.5rem" href="'+url+'">'+hit.title+' →</a>';
+      var url = hit.fullGuide ? hit.fullGuide : ("rights/topic.html?id="+(hit.id||id));
+      return '<a class="link" style="font-size:.82rem;margin-right:.5rem" href="'+url+'">'+esc(hit.title)+' →</a>';
     }).join("");
   }
-  function render(){
-    const qv=(q.value||"").toLowerCase();
-    const list=(window.RA_LAWS||[]).filter(l =>
-      (!cat.value || l.category===cat.value) &&
-      (!qv || (l.title+" "+l.description+" "+l.category).toLowerCase().includes(qv)));
-    grid.innerHTML = list.length ? list.map(l =>
-      '<article class="card rv"><span class="pill">AWAITING UPLOAD</span> <span class="tag">'+l.category+'</span>'
-      + '<h3 style="margin-top:.5rem">📜 '+l.title+'</h3><p>'+l.description+'</p>'
-      + '<p><small><strong>Source hint:</strong> '+l.sourceHint+'<br/><strong>Year:</strong> '+l.yearNote+'<br/><strong>Verification:</strong> '+l.verification.status+'</small></p>'
-      + '<div>'+relatedLinks(l.relatedRights)+'</div>'
-      + '<br/><button class="btn btn-secondary btn-sm" disabled title="Enabled after a verified upload">⬇ Download (pending upload)</button> '
-      + '<button class="btn btn-outline btn-sm" disabled title="Enabled after a verified upload">👁 View (pending upload)</button></article>'
-    ).join("") : '<div class="result">No documents match. The catalog grows only through verified uploads — nothing here is invented.</div>';
+
+  /* ---------- viewer ---------- */
+  var dlg = document.getElementById("viewerDlg");
+  function openDoc(id, page){
+    var l = lawById(id); if(!l || !l.file){ return; }
+    var url = l.file + (page ? ("#page=" + page) : "");
+    document.getElementById("viewerTitle").textContent = l.title + (page ? (" — page " + page) : "");
+    document.getElementById("viewerDl").href = l.file;
+    document.getElementById("viewerNew").href = url;
+    document.getElementById("viewerFrame").src = url;
+    if(typeof dlg.showModal === "function"){ dlg.showModal(); }
+    else { window.open(url, "_blank", "noopener"); }
   }
-  [q,cat].forEach(el=>{el.addEventListener("input",render);el.addEventListener("change",render);});
-  render();
+  document.getElementById("viewerClose").addEventListener("click", function(){
+    document.getElementById("viewerFrame").src = "about:blank";
+    if(dlg.open) dlg.close();
+  });
+
+  /* ---------- document cards ---------- */
+  function docTypeLabel(l){
+    if(l.status !== "uploaded") return "Catalog placeholder";
+    var m = { "legislation":"Legislation / gazette", "compilation":"Compilation", "government-publication":"Government publication", "academic-paper":"Academic paper (not law)", "regulations":"Regulations" };
+    return m[l.docType] || l.docType || "Document";
+  }
+  function card(l){
+    var uploaded = l.status === "uploaded" && l.file;
+    var h = '<article class="card doc-card rv">';
+    h += uploaded
+      ? '<span class="pill badge-available">AVAILABLE NOW</span>'
+      : '<span class="pill">AWAITING UPLOAD</span>';
+    h += ' <span class="tag badge-type">'+esc(docTypeLabel(l))+'</span>';
+    if(l.jurisdiction && l.jurisdiction !== "—") h += ' <span class="tag badge-juris">'+esc(l.jurisdiction)+'</span>';
+    h += '<h3>📜 '+esc(l.title)+'</h3><p>'+esc(l.description)+'</p>';
+    h += '<div class="doc-badges">';
+    if(uploaded){
+      h += '<span class="tag badge-text">'+(l.textAvailable ? ("Searchable text • "+(l.pages||"?")+" pages") : ("Scanned copy • "+(l.pages||"?")+" pages — view only"))+'</span>';
+    }
+    h += '<span class="tag">'+esc(l.category)+'</span></div>';
+    var meta = uploaded
+      ? '<strong>Source:</strong> '+esc(l.sourceNote)+'<br/><strong>Year:</strong> '+esc(l.yearNote)+'<br/><strong>Verification:</strong> '+esc(l.verification.status)+' — '+esc(l.verification.note)
+      : '<strong>Source hint:</strong> '+esc(l.sourceHint||"")+'<br/><strong>Year:</strong> '+esc(l.yearNote||"")+'<br/><strong>Verification:</strong> '+esc((l.verification&&l.verification.status)||"");
+    h += '<p><small>'+meta+'</small></p>';
+    if(l.relatedRights && l.relatedRights.length){
+      h += '<div>'+relatedLinks(l.relatedRights)+'</div>';
+    }
+    h += '<br/>';
+    if(uploaded){
+      h += '<button class="btn btn-primary btn-sm" data-open="'+l.id+'">👁 View in browser</button> ';
+      h += '<a class="btn btn-secondary btn-sm" href="'+l.file+'" download>⬇ Download original</a> ';
+      if(l.textAvailable){
+        h += '<button class="btn btn-outline btn-sm" data-search="'+l.id+'">🔎 Search inside</button>';
+      } else {
+        h += '<span class="tag badge-scan" title="Image-only PDF — no text layer">Scanned — no text search</span>';
+      }
+    } else {
+      h += '<button class="btn btn-secondary btn-sm" disabled title="Enabled after a verified upload">⬇ Download (pending upload)</button> ';
+      h += '<button class="btn btn-outline btn-sm" disabled title="Enabled after a verified upload">👁 View (pending upload)</button>';
+    }
+    h += '</article>';
+    return h;
+  }
+
+  function visibleList(){
+    var qv = (qInput.value||"").trim().toLowerCase();
+    var cat = catSel.value, type = typeSel.value;
+    return (window.RA_LAWS||[]).filter(function(l){
+      if(cat && l.category !== cat) return false;
+      if(type){
+        if(type === "placeholder"){ if(l.status !== "awaiting-upload") return false; }
+        else if(l.docType !== type) return false;
+      }
+      if(!qv) return true;
+      var hay = (l.title+" "+(l.description||"")+" "+l.category+" "+(l.keywords||"")+" "+(l.sourceNote||l.sourceHint||"")+" "+(l.yearNote||"")).toLowerCase();
+      if(hay.indexOf(qv) >= 0) return true;
+      if(loadedText[l.id]){
+        var pages = loadedText[l.id].pages;
+        for(var i=0;i<pages.length;i++){ if(pages[i].toLowerCase().indexOf(qv) >= 0) return true; }
+      }
+      return false;
+    });
+  }
+  function renderCards(){
+    var list = visibleList();
+    grid.innerHTML = list.length ? list.map(card).join("")
+      : '<div class="result">No documents match those filters. The catalog grows only through verified uploads — nothing here is invented.</div>';
+    grid.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ openDoc(b.dataset.open); }); });
+    grid.querySelectorAll("[data-search]").forEach(function(b){ b.addEventListener("click", function(){
+      qInput.value = qInput.value || "Section";
+      runFullText(b.dataset.search);
+    }); });
+  }
+
+  /* ---------- full-text search ---------- */
+  function ensureText(ids, cb){
+    var need = (ids||[]).filter(function(id){
+      var l = lawById(id);
+      return l && l.textFile && !loadedText[id];
+    });
+    if(!need.length){ cb(null); return; }
+    var pending = need.length, failed = [];
+    need.forEach(function(id){
+      var l = lawById(id);
+      var s = document.createElement("script");
+      s.src = l.textFile;
+      s.onload = function(){ if(window.RA_LAW_TEXT && RA_LAW_TEXT[id]) loadedText[id] = RA_LAW_TEXT[id]; done(); };
+      s.onerror = function(){ failed.push(id); done(); };
+      document.head.appendChild(s);
+    });
+    function done(){ if(--pending === 0){ cb(failed.length ? failed : null); } }
+  }
+
+  function snippetAround(text, q, page, docId){
+    var lower = text.toLowerCase(), qi = lower.indexOf(q);
+    if(qi < 0) return null;
+    var start = Math.max(0, qi - 130), end = Math.min(text.length, qi + q.length + 170);
+    var pre = (start > 0 ? "…" : "") + text.slice(start, qi);
+    var hit = text.slice(qi, qi + q.length);
+    var post = text.slice(qi + q.length, end) + (end < text.length ? "…" : "");
+    return '<div class="snippet" role="button" tabindex="0" data-doc="'+esc(docId)+'" data-page="'+page+'" title="Open this document at page '+page+'"><span class="pg">p. '+page+'</span>'+esc(pre)+'<mark>'+esc(hit)+'</mark>'+esc(post)+'</div>';
+  }
+
+  function searchDocs(docs, q, limitPerDoc){
+    var out = [], phrase = q.trim().toLowerCase();
+    var words = phrase.split(/\s+/).filter(Boolean);
+    var usePhrase = phrase.length >= 3;
+    docs.forEach(function(id){
+      var t = loadedText[id]; if(!t) return;
+      var l = lawById(id), hits = [], seenPages = 0;
+      for(var i = 0; i < t.pages.length && hits.length < limitPerDoc; i++){
+        var pageText = t.pages[i] || "";
+        var low = pageText.toLowerCase();
+        if(usePhrase && low.indexOf(phrase) >= 0){
+          var sn = snippetAround(pageText, phrase, i+1, id);
+          if(sn){ hits.push(sn); seenPages++; }
+        } else if(!usePhrase || !hits.length){
+          /* fallback: all words present on the page (order-free) */
+          if(words.length > 1 && words.every(function(w){ return low.indexOf(w) >= 0; })){
+            var sn2 = snippetAround(pageText, words[0], i+1, id);
+            if(sn2 && hits.indexOf(sn2) < 0){ hits.push(sn2); }
+          }
+        }
+      }
+      if(hits.length) out.push({ id:id, title:l?l.title:id, hits:hits, scanned:l? !l.textAvailable : false });
+    });
+    return out;
+  }
+
+  function sectionVariants(q){
+    var m = q.match(/^\s*[sS](?:ection)?\.?\s*(\d+)\s*$/);
+    if(!m) return [];
+    return ["Section " + m[1], "SECTION " + m[1], "s. " + m[1]];
+  }
+
+  function runFullText(onlyDoc){
+    var q = (onlyDoc ? (qInput.value || "Section") : qInput.value).trim();
+    if(q.length < 2){ ftResults.innerHTML = ""; statusEl.textContent = ""; renderCards(); return; }
+    if(onlyDoc){
+      var dl2 = lawById(onlyDoc);
+      if(dl2 && !dl2.textAvailable){
+        renderCards();
+        ftResults.innerHTML = '<div class="result"><strong>⚠ “'+esc(dl2.title)+'” is a scanned copy (image pages, no text layer) — full-text search is not available for it.</strong><br/>Open it in the viewer and read it directly:<div style="margin-top:.6rem"><button class="btn btn-primary btn-sm" data-open="'+esc(onlyDoc)+'">👁 Open document</button> <a class="btn btn-secondary btn-sm" href="'+dl2.file+'" download>⬇ Download original</a></div></div>';
+        ftResults.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ openDoc(b.dataset.open); }); });
+        statusEl.textContent = "";
+        return;
+      }
+    }
+    var docs = onlyDoc ? [onlyDoc] : (window.RA_LAWS||[]).filter(function(l){ return l.textFile; }).map(function(l){ return l.id; });
+    statusEl.textContent = "Loading document text… (first search downloads the indexes, then it works offline)";
+    ensureText(docs, function(failed){
+      statusEl.textContent = "";
+      var warn = (failed && failed.length)
+        ? '<div class="result">⚠ Could not load the text index for: '+failed.map(esc).join(", ")+'. The original files still open in the viewer.</div>'
+        : "";
+      var all = searchDocs(docs, q, 4);
+      /* try section variants if phrase found nothing */
+      if(!all.length){
+        var vars = sectionVariants(q);
+        for(var v = 0; v < vars.length && !all.length; v++){ all = searchDocs(docs, vars[v], 4); }
+      }
+      renderCards();
+      if(!all.length){
+        ftResults.innerHTML = warn + '<div class="result"><strong>No match for "'+esc(q)+'" inside the searchable documents.</strong><br/>Tips: try fewer words, a section reference like <em>Section 35</em>, or remember that two supplied files are <em>scanned</em> (ACJA 2015, National Policy on Education) — open them in the viewer and read them directly. <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search the whole site →</a></div>';
+        return;
+      }
+      var totalHits = all.reduce(function(n,x){ return n + x.hits.length; }, 0);
+      var html = warn + '<div class="section-head rv"><span class="eyebrow">Inside the documents</span><h2>'+totalHits+' extract'+(totalHits===1?"":"s")+' for “'+esc(q)+'”</h2><p>Original wording from the supplied files, with page numbers. Open a hit to read it in context.</p></div>';
+      all.forEach(function(g){
+        html += '<div class="ft-doc-head">📄 '+esc(g.title)+' <a class="link" style="font-size:.85rem" href="laws.html?doc='+g.id+'&q='+encodeURIComponent(q)+'">pin →</a></div>';
+        html += g.hits.join("");
+        var l = lawById(g.id);
+        html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.3rem 0 .8rem">'
+              + '<button class="btn btn-outline btn-sm" data-open="'+g.id+'">👁 Open document</button> '
+              + '<a class="btn btn-secondary btn-sm" href="'+(l?l.file:"#")+'" download>⬇ Download</a></div>';
+      });
+      ftResults.innerHTML = html;
+      ftResults.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ openDoc(b.dataset.open); }); });
+      ftResults.querySelectorAll(".snippet").forEach(function(sn){
+        function go(){ openDoc(sn.dataset.doc, parseInt(sn.dataset.page, 10)); }
+        sn.addEventListener("click", go);
+        sn.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); go(); } });
+      });
+      statusEl.textContent = "Text indexes: " + Object.keys(loadedText).length + " document(s) loaded • extracted from the supplied PDFs.";
+    });
+  }
+
+  document.getElementById("lawSearchBtn").addEventListener("click", function(){ runFullText(); });
+  qInput.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); runFullText(); } });
+
+  /* filter-only inputs (category/type) re-render cards; a keyword query also re-runs full text on Enter/button */
+  [catSel, typeSel].forEach(function(el){ el.addEventListener("change", renderCards); });
+  qInput.addEventListener("input", renderCards);
+
+  /* deep-link: ?doc=id&q=text */
+  if(initialDoc){ var dl = lawById(initialDoc); if(dl) qInput.value = initialQ || dl.title; }
+  else if(initialQ){ qInput.value = initialQ; }
+  renderCards();
+  if(initialQ || initialDoc){ runFullText(initialDoc || undefined); }
 })();
 </script>
 </body>

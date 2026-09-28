@@ -130,7 +130,8 @@ window.RA_SEARCH_INDEX = function(){
     rights.push({ title:r.title, url:"rights/topic.html?id="+r.id,
       text:(r.title+" "+r.summary+" "+(r.keywords||"")).toLowerCase() }); });
   const laws = (window.RA_LAWS||[]).map(l=>({ title:"Law: "+l.title, url:"laws.html",
-    text:(l.title+" "+l.description+" "+l.category).toLowerCase() }));
+    lawId:l.id, textAvailable:!!l.textAvailable,
+    text:(l.title+" "+(l.description||"")+" "+l.category+" "+(l.keywords||"")+" "+(l.sourceNote||l.sourceHint||"")).toLowerCase() }));
   const faqs = (window.RA_FAQS||[]).map(f=>({ title:"FAQ: "+f.q, url:"resources.html#faqs", text:(f.q+" "+f.a).toLowerCase() }));
   const videos = (window.RA_VIDEOS||[]).map(v=>({ title:"Video: "+v.title, url:"resources.html#videos", text:(v.title+" "+v.desc+" "+v.tag).toLowerCase() }));
   return pages.concat(rights, laws, faqs, videos);
