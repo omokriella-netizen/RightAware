@@ -42,20 +42,13 @@
       </div>
       <div class="hero-stats">
         <div><strong>12</strong><span>Rights categories</span></div>
-        <div><strong>6+</strong><span>Demo videos</span></div>
+        <div><strong>11</strong><span>Law documents readable</span></div>
         <div><strong>100%</strong><span>Free awareness</span></div>
       </div>
     </div>
-    <div class="hero-card-wrap rv">
-      <div class="hero-card">
-        <div class="hero-card-head"><span class="shield">⚖</span><div><strong>Know your rights at a stop</strong><small>Police & Arrest Rights • Simplified</small></div></div>
-        <ul class="checklist"><li>You have the right to remain silent</li><li>You have the right to a lawyer</li><li>You must be charged within 24–48 hours</li></ul>
-        <div class="search-mini">
-          <input id="heroSearchInput" type="search" placeholder="Try: 'bail', 'rent', 'voting'…" aria-label="Search rights"/>
-          <button class="btn btn-primary btn-sm" id="heroSearchBtn">Search</button>
-        </div>
-      </div>
-      <div class="hero-card floating"><strong>🇳🇬 Built for Nigeria</strong><p>Plain-language guides with source hints to verify against official legal texts.</p></div>
+    <div class="hero-media rv">
+      <img src="assets/images/hero-citizens.jpg" alt="A group of young Nigerians smiling together while looking at a phone" width="2000" height="2000"/>
+      <div class="hero-chip"><strong>🇳🇬 Built for Nigeria</strong><p>Plain-language guides with links to the original source documents.</p></div>
     </div>
   </div>
 </section>
@@ -79,19 +72,19 @@
 <section class="section section-alt" id="libraries"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Libraries</span><h2>Browse every collection</h2><p>Laws, videos, organizations and FAQs — each with search, filters and room to grow.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><div class="icon">📜</div><h3>Laws & Constitution Library</h3><p>Catalog of key instruments with sources, dates and related rights. Verified uploads arrive later.</p><a class="link" href="laws.html">Open library →</a></article>
+    <article class="card rv"><div class="icon">📜</div><h3>Laws & Legal Documents Library</h3><p>Read and search the actual supplied documents — Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law and more — with page-accurate results and downloads.</p><a class="link" href="laws.html">Open library →</a></article>
     <article class="card rv"><div class="icon">🎬</div><h3>Video Library</h3><p>Explainers with search, filters, featured rail and save-for-offline. Ready for your uploads.</p><a class="link" href="videos.html">Open library →</a></article>
     <article class="card rv"><div class="icon">🏛</div><h3>Organizations Directory</h3><p>Support-body types today; verified records with contacts publish after confirmation.</p><a class="link" href="organizations.html">Open directory →</a></article>
   </div>
 </div></section>
 
-<section class="section section-alt" id="videos"><div class="container">
+<section class="section" id="videos"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Learn visually</span><h2>Educational videos</h2><p>Short explainers (placeholders in v1 — full production list on the Resources page).</p></div>
   <div class="cards-grid" id="homeVideos"></div>
   <p style="margin-top:1rem"><a class="link" href="resources.html#videos">All videos & resources →</a></p>
 </div></section>
 
-<section class="section" id="featured-resources"><div class="container">
+<section class="section section-alt" id="featured-resources"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Featured resources</span><h2>Free guides & downloads</h2><p>Printable checklists you can save or share on WhatsApp.</p></div>
   <div class="cards-grid">
     <article class="card rv"><h3>✅ Police Encounter Checklist</h3><p>What to say, what not to sign, what to record. One-page printable.</p><a class="link" href="rights/arrest-rights.html">Open guide →</a></article>
@@ -112,19 +105,6 @@
     <button class="btn btn-primary" id="triageBtn" type="button">Where do I go?</button>
     <p class="form-note" id="triageOut">General information only — not legal advice.</p>
   </div></div>
-</div></section>
-
-<section class="section" id="orgs"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Support network</span><h2>Rights-protection organisations</h2><p>Types of bodies that can help. Contacts must be verified via official directories before use — see Get Help.</p></div>
-  <div class="cards-grid" id="homeOrgs"></div>
-  <p style="margin-top:1rem"><a class="link" href="help.html#organisations">All organisations & reporting paths →</a></p>
-</div></section>
-
-<section class="section section-alt" id="lawyers"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Legal professionals</span><h2>Talk to a professional <span class="pill">DEMO DATA</span></h2><p>Directory interface preview with fictional placeholder profiles — not real lawyers. Verification still to be built.</p></div>
-  <div class="cards-grid" id="homeLawyers"></div>
-  <p style="margin-top:1rem"><a class="link" href="lawyers.html">Open the full directory →</a></p>
-  <div class="cta-banner rv"><div><h3>Are you a lawyer, clinic or NGO?</h3><p>Register interest — professional onboarding opens after verification is built.</p></div><a href="contact.html" class="btn btn-primary">Contact Us</a></div>
 </div></section>
 
 <section class="section"><div class="container cta-banner rv">
@@ -168,12 +148,6 @@
   document.getElementById("homeVideos").innerHTML = (window.RA_VIDEOS||[]).slice(0,3).map(function(v){
     return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+v.meta+'</small></div><h3>'+v.title+'</h3><p>'+v.desc+'</p><span class="tag">'+v.tag+'</span></article>';
   }).join("");
-  document.getElementById("homeOrgs").innerHTML = (window.RA_ORGS||[]).slice(0,3).map(function(o){
-    return '<article class="card rv"><h3>🏛 '+o.name+'</h3><p>'+o.help+'</p><span class="tag tag-soon">Verify contact officially</span></article>';
-  }).join("");
-  document.getElementById("homeLawyers").innerHTML = (window.RA_LAWYERS||[]).slice(0,3).map(function(l){
-    return '<article class="card lawyer rv"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+'</small><p>⭐ '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><a class="btn btn-outline btn-sm" href="lawyers.html#'+l.id+'">View Profile</a></article>';
-  }).join("");
   // Home live search -> top matches inline + link to search page
   var input = document.getElementById("homeSearchInput"), out = document.getElementById("homeSearchResults");
   function run(q){
@@ -187,7 +161,6 @@
   document.getElementById("homeSearchForm").addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
   input.addEventListener("input", function(){ run(input.value); });
   document.querySelectorAll(".quick-tags button").forEach(function(b){ b.addEventListener("click", function(){ input.value=b.dataset.q; run(b.dataset.q); }); });
-  document.getElementById("heroSearchBtn").addEventListener("click", function(){ var v=document.getElementById("heroSearchInput").value.trim(); location.href="search.html?q="+encodeURIComponent(v); });
   // Triage
   document.getElementById("triageBtn").addEventListener("click", function(){
     var i=document.getElementById("triageIssue").value, d=document.getElementById("triageDanger").value, o=document.getElementById("triageOut");

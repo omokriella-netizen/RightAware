@@ -25,9 +25,12 @@
   </div>
 </header>
 <main>
-<section class="page-hero"><div class="container rv">
+<section class="page-hero"><div class="container page-hero-grid rv">
+  <div>
   <span class="eyebrow">Contact Us</span><h1>Talk to the RightAware team</h1>
-  <p class="lead-dark">Contact details below are <strong>placeholders</strong> until real ones are provided. The form works as a demo — messages are saved on this device only.</p>
+  <p class="lead-dark">Contact details below are <strong>placeholders</strong> until real ones are provided. The form validates your input, blocks obvious spam, and delivers messages to RightAware when the backend is connected (otherwise it stays on this device).</p>
+  </div>
+  <figure class="page-hero-media"><img src="assets/images/contact-hands-together.jpg" alt="Many hands joined together in the centre of a circle" loading="lazy"/></figure>
 </div></section>
 <section class="section"><div class="container contact-grid">
   <div class="rv">
@@ -36,13 +39,15 @@
     <article class="card"><h3>🕘 Hours</h3><p>Mon–Fri, 9am–5pm (WAT) <span class="pill">PLACEHOLDER</span></p><p><small>Support hours to be confirmed.</small></p></article><br/>
     <article class="card"><h3>🚨 Urgent rights issue?</h3><p>Don't wait for email — use <a class="link" href="help.html">Get Help</a> and official emergency channels.</p></article>
   </div>
-  <form class="form-card rv" id="contactForm">
-    <h2>Send a message (demo)</h2>
-    <div class="form-row"><label>Full name<input id="cName" required placeholder="Your name"/></label><label>Email<input id="cEmail" type="email" required placeholder="you@example.com"/></label></div>
+  <form class="form-card rv" id="contactForm" novalidate>
+    <h2>Send a message</h2>
+    <div class="form-row"><label>Full name<input id="cName" required placeholder="Your name" autocomplete="name"/></label><label>Email<input id="cEmail" type="email" required placeholder="you@example.com" autocomplete="email"/></label></div>
     <label>Topic<select id="cTopic"><option>General question</option><option>Correction to a guide</option><option>Professional onboarding (lawyer/clinic/NGO)</option><option>Partnership</option><option>Press</option></select></label>
     <label>Message<textarea id="cMsg" rows="5" required placeholder="How can we help?"></textarea></label>
+    <!-- spam trap: hidden from people, tempting to bots -->
+    <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>Leave this empty<input id="cWebsite" tabindex="-1" autocomplete="off"/></label></div>
     <button class="btn btn-primary" type="submit">Send Message</button>
-    <p class="form-note" id="cOut">Demo: stored in this browser only. Email delivery still needs to be connected.</p>
+    <p class="form-note" id="cOut" aria-live="polite">Validated client-side; a copy is always kept on this device. Delivery goes to RightAware when the backend is connected.</p>
   </form>
 </div></section>
 </main>
@@ -54,13 +59,82 @@
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="app.js"></script>
 <script>
-document.getElementById("contactForm").addEventListener("submit",function(e){
-  e.preventDefault();
-  var m={at:new Date().toISOString(),name:document.getElementById("cName").value,email:document.getElementById("cEmail").value,topic:document.getElementById("cTopic").value,msg:document.getElementById("cMsg").value};
-  try{var a=JSON.parse(localStorage.getItem("ra_messages")||"[]");a.push(m);localStorage.setItem("ra_messages",JSON.stringify(a));}catch(_){}
-  document.getElementById("cOut").textContent="Message saved on this device (demo). Connect a backend/email service to receive real messages.";
-  e.target.reset();
-});
+(function(){
+  "use strict";
+  var form = document.getElementById("contactForm"),
+      out  = document.getElementById("cOut");
+  var loadedAt = Date.now();
+
+  function fail(msg){ out.textContent = "⚠ " + msg; out.style.color = "#b91c1c"; }
+  function ok(msg){ out.textContent = "✅ " + msg; out.style.color = ""; }
+  function throttleOK(){
+    try{
+      var t = JSON.parse(localStorage.getItem("ra_contact_times") || "[]");
+      var cut = Date.now() - 10*60*1000;
+      t = t.filter(function(x){ return x > cut; });
+      if(t.length >= 3) return false;
+      t.push(Date.now());
+      localStorage.setItem("ra_contact_times", JSON.stringify(t));
+      return true;
+    }catch(_){ return true; }
+  }
+
+  function deliver(payload){
+    function withClient(cb){
+      if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client){ cb(RA_SUPA.client); return; }
+      var done = false;
+      function once(){ if(done) return; done = true;
+        if(window.RA_SUPA && RA_SUPA.client) cb(RA_SUPA.client); else cb(null); }
+      document.addEventListener("ra:backend-ready", once, { once:true });
+      setTimeout(once, 6000); // connector still unavailable → local-only
+    }
+    withClient(function(client){
+      if(!client){ ok("Saved on this device only — the backend is not connected, so this message was NOT delivered to RightAware."); return; }
+      client.from("contact_messages").insert(payload).then(function(r){
+        if(r && !r.error){ ok("Message sent to RightAware. We'll only use your email to reply."); }
+        else { ok("Saved on this device only — delivery failed (" + ((r && r.error && r.error.message) || "unknown") + "). You can retry."); }
+      }).catch(function(){
+        ok("Saved on this device only — delivery failed (network). You can retry.");
+      });
+    });
+  }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    out.style.color = "";
+    var name = document.getElementById("cName").value.trim(),
+        email = document.getElementById("cEmail").value.trim(),
+        topic = document.getElementById("cTopic").value,
+        msg = document.getElementById("cMsg").value.trim();
+
+    /* --- validation --- */
+    if(name.length < 2){ fail("Please enter your full name."); document.getElementById("cName").focus(); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ fail("Please enter a valid email address (e.g. you@example.com)."); document.getElementById("cEmail").focus(); return; }
+    if(msg.length < 10){ fail("Please write a message of at least 10 characters so we can understand it."); document.getElementById("cMsg").focus(); return; }
+    if(/https?:\/\//i.test(msg) && (msg.match(/https?:\/\//gi) || []).length > 3){ fail("Your message contains too many links — please remove some."); return; }
+
+    /* --- spam protection: honeypot + time trap + per-device throttle --- */
+    if(document.getElementById("cWebsite").value !== ""){ form.reset(); ok("Message sent. We'll only use your email to reply."); return; }
+    if(Date.now() - loadedAt < 3000){ fail("That was quick — please take a moment to review your message and send again."); return; }
+    if(!throttleOK()){ fail("You've sent several messages in the last few minutes. Please wait a little before sending another."); return; }
+
+    var payload = { name:name, email:email, topic:topic, message:msg };
+
+    /* always keep the visitor's own copy on this device */
+    try{
+      var all = JSON.parse(localStorage.getItem("ra_messages") || "[]");
+      all.push({ at:new Date().toISOString(), name:name, email:email, topic:topic, msg:msg });
+      localStorage.setItem("ra_messages", JSON.stringify(all));
+    }catch(_){}
+
+    var btn = form.querySelector("button[type=submit]");
+    btn.disabled = true; out.style.color = "";
+    out.textContent = "Sending…";
+    deliver(payload);
+    setTimeout(function(){ btn.disabled = false; }, 8000);
+    form.reset();
+  });
+})();
 </script>
 </body>
 </html>

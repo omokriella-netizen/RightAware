@@ -50,6 +50,23 @@
     if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
       navigator.serviceWorker.register("/sw.js").catch(function(){});
     }
+    // Offline indicator (persistent banner while offline; live features pause)
+    try{
+      var bar = null;
+      function paintNet(){
+        var off = !navigator.onLine;
+        if(off && !bar){
+          bar = document.createElement("div");
+          bar.setAttribute("role", "status");
+          bar.style.cssText = "position:sticky;top:0;z-index:999;background:#7c2d12;color:#fff;text-align:center;padding:.45rem .8rem;font-size:.85rem;font-weight:600";
+          bar.textContent = "📴 You are offline — reading cached content (may be out of date). Search, AI, account sync and payments are paused.";
+          document.body.insertBefore(bar, document.body.firstChild);
+        } else if(!off && bar){ bar.remove(); bar = null; }
+      }
+      window.addEventListener("online", paintNet);
+      window.addEventListener("offline", paintNet);
+      paintNet();
+    }catch(_){}
     // Supabase connector: loads js/supabase-client.js relative to this file's location.
     // No-ops safely when no credentials are configured (stays in demo mode).
     try{
@@ -59,6 +76,14 @@
       supa.src = rootBase + "js/supabase-client.js";
       supa.defer = true;
       document.head.appendChild(supa);
+      // i18n: dictionary first, engine second (English ⇄ Nigerian Pidgin, more later).
+      var dictS = document.createElement("script");
+      dictS.src = rootBase + "content/i18n.js";
+      var engS = document.createElement("script");
+      engS.src = rootBase + "js/i18n.js";
+      dictS.onload = function(){ document.head.appendChild(engS); };
+      dictS.onerror = function(){ /* English-only; site keeps working */ };
+      document.head.appendChild(dictS);
     }catch(_){}
   });
 })();
