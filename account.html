@@ -15,8 +15,12 @@
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="account.html">My Account</a><a href="contact.html">Contact Us</a></div></header>
 <main>
-<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill">DEMO — ON THIS DEVICE ONLY</span> Saved items, history and settings sync to Supabase after backend setup.</p>
-<div class="chip-row"><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Saved items live on this device; account, role and application status sync when the backend is connected.</p>
+<div class="chip-row"><a href="#mystatus">My status</a><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
+<section class="section section-alt" id="mystatus"><div class="container">
+  <div class="section-head"><span class="eyebrow">Access & applications</span><h2>My status</h2></div>
+  <div id="statusBox" class="cards-grid" aria-live="polite"></div>
+</div></section>
 <section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights, laws & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
 <section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p>Requests made through the demo directory. Payments stay “none” until Paystack is configured.</p></div><div id="consultList" class="cards-grid"></div></div></section>
 <section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div><div id="notifList" style="max-width:760px"></div></div></section>
@@ -70,6 +74,59 @@
   document.getElementById("sRem").checked=!!s.reminders; document.getElementById("sOff").checked=!!s.offlineMode;
   document.getElementById("setForm").addEventListener("submit",e=>{e.preventDefault();
     RA_DB.saveSettings({reminders:document.getElementById("sRem").checked,offlineMode:document.getElementById("sOff").checked,language:RA_DB.profile().language});});
+  /* ---- role & application status ---- */
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+  var ROLE_LABEL = { admin:"Administrator", editor:"Content editor", moderator:"Moderator", professional:"Legal professional", user:"General user" };
+  function paintSync(){
+    var pill = document.getElementById("syncPill");
+    if(window.RA_SUPA && RA_SUPA.ready){ pill.textContent = "BACKEND CONNECTED"; }
+    else { pill.textContent = "LOCAL / DEMO — NOT CONNECTED"; }
+  }
+  function renderStatus(){
+    var box = document.getElementById("statusBox");
+    var role = u.role || "user";
+    var icon = role==="admin" ? "👑" : role==="professional" ? "⚖️" : "🙋";
+    var html = '<article class="card"><span class="tag">Account</span><h3>'+icon+' '+esc(ROLE_LABEL[role]||"General user")+'</h3>'
+      + '<p>Signed in as <strong>'+esc(u.email||u.name||"member")+'</strong>'
+      + (RA_AUTH.mode==="demo" ? ' <span class="pill">DEMO SESSION</span>' : '')+'</p>'
+      + (role==="admin" ? '<a class="btn btn-primary btn-sm" href="admin.html">Open admin dashboard</a>' : '')
+      + '</article>';
+    var local = [];
+    try{ local = JSON.parse(localStorage.getItem("ra_applications")||"[]"); }catch(_){}
+    if(local.length){
+      var a = local[0];
+      html += '<article class="card"><span class="tag">Application (this device)</span><h3>'
+        + (a.path==="professional" ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
+        + '<p>Reference <strong>'+esc(a.ref)+'</strong> — '+esc(a.status)+' — '+esc(String(a.at).slice(0,10))+'</p>'
+        + '<p><small>' + (window.RA_SUPA && RA_SUPA.ready
+            ? "Live delivery also requires supabase/applications-access.sql."
+            : "Backend not connected — this copy has NOT been submitted to RightAware. Re-submit when connected.")
+        + '</small></p></article>';
+    } else {
+      html += '<article class="card"><span class="tag">Application</span><h3>No pending application</h3>'
+        + '<p>You joined through the general-user pathway. Want a professional or organisation listing? <a class="link" href="signup.html">Choose a pathway →</a></p></article>';
+    }
+    box.innerHTML = html;
+    if(RA_AUTH.supabaseReady()){
+      RA_AUTH.myApplication().then(function(app){
+        if(!app) return;
+        var st = app.row.verification_status;
+        var label = st==="verified" ? "APPROVED — publicly listed" : st==="pending" ? "AWAITING ADMIN REVIEW" : "UNVERIFIED";
+        var extra = document.createElement("article");
+        extra.className = "card";
+        extra.innerHTML = '<span class="tag">Application (live)</span><h3>'
+          + (app.path==="professional" ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
+          + '<p>'+esc(app.row.name)+' — <strong>'+label+'</strong></p>'
+          + '<p><small>'+(st==="verified"
+              ? "Approved by an administrator."
+              : "Your details stay private — only administrators can see them until approval.")+'</small></p>';
+        box.appendChild(extra);
+      }).catch(function(){});
+    }
+  }
+  document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); });
+  paintSync(); renderStatus();
+
   renderSaved(); renderConsult(); renderNotif();
 })();
 </script>

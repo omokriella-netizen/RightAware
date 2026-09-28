@@ -39,13 +39,45 @@
   Auth.fetchRole = async function(){
     try{
       if(!this.supabaseReady()) return "user";
-      var r = await RA_SUPA.client.from("user_roles").select("role");
-      var roles = ((r.data) || []).map(function(x){ return x.role; });
+      var roles = [];
+      // Preferred: own-roles helper (works for every signed-in user; see applications-access.sql)
+      try{
+        var rpc = await RA_SUPA.client.rpc("ra_my_roles");
+        if(rpc && !rpc.error && Array.isArray(rpc.data)) roles = rpc.data;
+      }catch(_){}
+      // Fallback: direct read (admins pass admin_roles policy; others may get [])
+      if(!roles.length){
+        try{
+          var r = await RA_SUPA.client.from("user_roles").select("role");
+          roles = ((r.data) || []).map(function(x){ return x.role; });
+        }catch(_){}
+      }
       var u = this.current() || {};
-      u.role = roles.includes("admin") ? "admin" : roles.includes("editor") ? "editor" : roles.includes("moderator") ? "moderator" : "user";
+      u.role = roles.includes("admin") ? "admin" : roles.includes("editor") ? "editor" : roles.includes("moderator") ? "moderator" : roles.includes("professional") ? "professional" : "user";
       try{ localStorage.setItem(KEY, JSON.stringify(u)); }catch(_){}
       return u.role;
     }catch(_){ return "user"; }
+  };
+  /* Application status for the signed-in user (professional/org pathways).
+     Returns null when nothing is found or the add-on policies are not applied. */
+  Auth.myApplication = async function(){
+    if(!this.supabaseReady()) return null;
+    try{
+      var pro = await RA_SUPA.client.from("professionals")
+        .select("id,name,verification_status,qualification,location,created_at")
+        .eq("user_id", (this.current()||{}).supabaseId || "").limit(1);
+      if(pro && !pro.error && pro.data && pro.data.length) return { path:"professional", row:pro.data[0] };
+    }catch(_){}
+    try{
+      var email = (this.current()||{}).email;
+      if(email){
+        var org = await RA_SUPA.client.from("organizations")
+          .select("id,name,verification_status,created_at")
+          .eq("email", email).limit(1);
+        if(org && !org.error && org.data && org.data.length) return { path:"organisation", row:org.data[0] };
+      }
+    }catch(_){}
+    return null;
   };
   Auth.signupLive = async function(name, email, pass){
     if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };

@@ -25,22 +25,27 @@
   </div>
 </header>
 <main>
-<section class="page-hero"><div class="container rv">
+<section class="page-hero"><div class="container page-hero-grid rv">
+  <div>
   <span class="eyebrow">Legal professionals</span><h1>Directory <span class="pill">DEMO DATA — NOT REAL LAWYERS</span></h1>
-  <p class="lead-dark">Interface preview with fictional placeholder profiles. No real names, phone numbers or emails are listed. Contact happens through an on-site demo request (stored on your device). Real verification still needs to be built.</p>
+  <p class="lead-dark">Below the <strong>VERIFIED</strong> list (real, but only ever shown after an administrator approves an application) sit clearly-marked <span class="pill">DEMO</span> placeholder profiles for interface preview. No real phone numbers or emails are ever listed — contact happens through an on-site request. Professional applications open via <a class="link" href="signup.html">Sign Up</a>.</p>
   <div class="filter-bar">
     <input id="fQ" type="search" placeholder="Search name, practice, keyword…" aria-label="Search professionals"/>
     <select id="fLoc" aria-label="Filter by location"><option value="">All locations</option><option>Lagos</option><option>Abuja FCT</option><option>Rivers</option><option>Oyo</option><option>Kano</option><option>Enugu</option></select>
     <select id="fArea" aria-label="Filter by area"><option value="">All areas</option><option>Human Rights & Police Matters</option><option>Family & Gender-Based Violence</option><option>Employment & Workplace Disputes</option><option>Tenancy & Property</option><option>Consumer & Digital Fraud</option><option>Free Clinic — Students & Low Income</option></select>
   </div>
+  </div>
+  <figure class="page-hero-media"><img src="assets/images/lawyers-professional-tablet.jpg" alt="A professional woman holding a tablet" loading="lazy"/></figure>
 </div></section>
-<section class="section"><div class="container"><div id="dirGrid" class="cards-grid"></div>
+<section class="section"><div class="container">
+<div id="liveBox" aria-live="polite"></div>
+<div id="dirGrid" class="cards-grid"></div>
 <div class="cta-banner rv" style="margin-top:1.5rem"><div><h3>Are you a lawyer, clinic or NGO?</h3><p>Professional onboarding with credential checks opens after verification is built. Leave a message via Contact.</p></div><a href="contact.html" class="btn btn-primary">Register Interest</a></div>
 </div></section>
 </main>
 <div class="modal" id="reqModal" aria-hidden="true"><div class="modal-box">
   <h3 id="reqTitle">Request help</h3>
-  <p style="color:var(--muted);font-size:.9rem">Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.</p>
+  <p style="color:var(--muted);font-size:.9rem" id="reqNote">Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.</p>
   <label>Your name<input id="reqName" placeholder="e.g. Jane Doe"/></label>
   <label>Briefly describe your issue<textarea id="reqMsg" rows="3" placeholder="Facts only, no sensitive data"></textarea></label>
   <div style="display:flex;gap:.6rem"><button class="btn btn-primary" id="reqSend">Send Request (demo)</button><button class="btn btn-secondary" id="reqClose">Close</button></div>
@@ -62,7 +67,44 @@
 <script>
 (function(){
   var grid=document.getElementById("dirGrid"), q=document.getElementById("fQ"), loc=document.getElementById("fLoc"), area=document.getElementById("fArea");
-  var current=null;
+  var current=null, currentIsLive=false;
+  /* ---- live directory: admin-approved professionals (only is_demo=false AND
+     verification_status='verified' are readable thanks to database RLS) ---- */
+  var live=[];
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+  function renderLive(){
+    var box=document.getElementById("liveBox");
+    if(!live.length){ box.innerHTML=""; return; }
+    box.innerHTML='<div class="section-head" style="margin-bottom:.9rem"><span class="eyebrow">Approved by RightAware</span><h2 style="font-size:1.25rem">Verified professionals</h2><p>Listed here only after an administrator checked the application.</p></div>'
+      +'<div class="cards-grid">'+live.map(function(p){
+        var areas=Array.isArray(p.consultation_options)?p.consultation_options.join(", "):(p.consultation_options||"");
+        var langs=Array.isArray(p.languages)?p.languages.join(", "):(p.languages||"");
+        var rating=(p.rating_avg&&p.ratings_count)?(' • ⭐ '+p.rating_avg+' ('+p.ratings_count+')'):'';
+        return '<article class="card lawyer" id="'+p.id+'"><span class="pill">VERIFIED</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
+          +'<small>'+esc(p.location||"")+(p.qualification?' • '+esc(p.qualification):'')+(p.experience_yrs?' • '+esc(p.experience_yrs)+' yrs':'')+rating+'</small>'
+          +(areas?'<p><small>Areas: '+esc(areas)+'</small></p>':'')
+          +(langs?'<p><small>Languages: '+esc(langs)+'</small></p>':'')
+          +(p.availability?'<p><small>Availability: '+esc(p.availability)+'</small></p>':'')
+          +(p.bio?'<p>'+esc(p.bio)+'</p>':'')
+          +(p.fee_note?'<p><small>'+esc(p.fee_note)+'</small></p>':'')
+          +'<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-livereq="'+p.id+'">Request help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
+      }).join("")+'</div>';
+    box.querySelectorAll("[data-livereq]").forEach(function(b){b.addEventListener("click",function(){openReq(b.dataset.livereq);});});
+  }
+  function loadLive(){
+    if(!(window.RA_SUPA&&RA_SUPA.ready&&RA_SUPA.client)){
+      document.addEventListener("ra:backend-ready",function(){loadLive();},{once:true});
+      return;
+    }
+    RA_SUPA.client.from("professionals").select("*")
+      .eq("verification_status","verified").eq("is_demo",false)
+      .order("created_at",{ascending:false}).limit(12)
+      .then(function(r){
+        if(r&&!r.error&&r.data&&r.data.length){ live=r.data; renderLive(); }
+      }).catch(function(){});
+  }
+  loadLive();
+
   function render(){
     var qv=(q.value||"").toLowerCase();
     var list=(window.RA_LAWYERS||[]).filter(function(l){
@@ -86,13 +128,39 @@
     });});
     if(location.hash){var t=document.querySelector(location.hash);if(t){t.style.borderColor="var(--green)";}}
   }
-  function openReq(id){current=(window.RA_LAWYERS||[]).find(function(l){return l.id===id;});document.getElementById("reqTitle").textContent="Request help — "+(current?current.name:"");document.getElementById("reqOut").textContent="";document.getElementById("reqModal").classList.add("open");}
+  function openReq(id){
+    current=(window.RA_LAWYERS||[]).find(function(l){return l.id===id;});
+    var isLive=false;
+    if(!current){ current=(live||[]).find(function(p){return p.id===id;}); isLive=!!current; }
+    else { isLive=false; }
+    document.getElementById("reqTitle").textContent="Request help — "+(current?current.name:"");
+    document.getElementById("reqNote").textContent = isLive
+      ? "This is a verified professional. Your request is recorded and reviewed by RightAware (their direct contact details are never shown publicly). Never share passwords, OTPs or bank details."
+      : "Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.";
+    currentIsLive=isLive;
+    document.getElementById("reqOut").textContent="";
+    document.getElementById("reqModal").classList.add("open");
+  }
   document.getElementById("reqClose").addEventListener("click",function(){document.getElementById("reqModal").classList.remove("open");});
   document.getElementById("reqSend").addEventListener("click",function(){
     var n=document.getElementById("reqName").value.trim(),m=document.getElementById("reqMsg").value.trim();
     if(!n||!m){document.getElementById("reqOut").textContent="Please add your name and a brief description.";return;}
     try{var a=JSON.parse(localStorage.getItem("ra_requests")||"[]");a.push({to:current&&current.id,at:new Date().toISOString(),name:n,msg:m});localStorage.setItem("ra_requests",JSON.stringify(a));}catch(_){}
     RA_DB.addConsultation({ to:(current&&current.name)||"Professional", msg:m, status:"requested", payment:{status:"none"} });
+    if(currentIsLive && window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client){
+      var out=document.getElementById("reqOut");
+      out.textContent="Sending…";
+      RA_SUPA.client.from("contact_messages").insert({
+        name:n, email:(RA_AUTH.current()||{}).email||"",
+        topic:"Directory request — "+((current&&current.name)||"professional"),
+        message:"Request for help directed to "+((current&&current.name)||"a verified professional")+" ("+(current&&current.id)+"):\n"+m, status:"new"
+      }).then(function(r){
+        out.textContent = (r&&!r.error)
+          ? "✅ Request sent to RightAware for follow-up with this professional. Payments remain disabled until Paystack is configured."
+          : "⚠ Could not deliver ("+((r&&r.error&&r.error.message)||"network")+"). Your copy is saved on this device — please retry or use the contact page.";
+      }).catch(function(){ out.textContent="⚠ Delivery failed (network). Saved on this device only."; });
+      return;
+    }
     document.getElementById("reqOut").textContent="Demo request saved on this device (also in My Account → Consultations). A real directory would notify the professional here. Payments stay disabled until Paystack is configured.";
   });
   [q,loc,area].forEach(function(el){el.addEventListener("input",render);el.addEventListener("change",render);});

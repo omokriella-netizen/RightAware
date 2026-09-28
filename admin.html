@@ -2,24 +2,38 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin (Architecture Demo) — RightAware</title>
-<meta name="description" content="Admin area architecture preview. Role-gated; no real admin powers in demo mode."/>
+<title>Admin — RightAware</title>
+<meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  .app-item{border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:.8rem;background:#fff;box-shadow:var(--shadow)}
+  .app-item summary{cursor:pointer;font-weight:700}
+  .app-item summary::marker{color:var(--green)}
+  .app-meta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.4rem 0;font-size:.85rem;color:var(--muted)}
+  .app-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
+  .app-dl{font-size:.85rem;margin:.5rem 0 0}
+  .app-dl dt{font-weight:700;margin-top:.4rem}
+  .app-dl dd{margin:0;color:var(--muted);white-space:pre-wrap}
+  .empty{color:var(--muted);font-size:.9rem;padding:.6rem 0}
+  .admin-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+  .admin-tabs button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:.45rem 1rem;font-weight:700;cursor:pointer}
+  .admin-tabs button[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+</style>
 </head>
 <body>
 <header class="site-header"><div class="container header-inner">
   <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
-  <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+  <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
   <div class="header-actions"><a class="btn btn-outline btn-sm" href="index.html">← Site</a>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="contact.html">Contact Us</a></div></header>
+</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="contact.html">Contact</a></div></header>
 <main>
-<section class="page-hero"><div class="container rv"><span class="eyebrow">Admin</span><h1>Content management <span class="pill">ARCHITECTURE DEMO</span></h1>
-<p class="lead-dark" id="adminLine">Checking access…</p></div></section>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">Admin</span><h1 id="adminTitle">Checking access…</h1>
+<p class="lead-dark" id="adminLine">Verifying your account role against the database…</p></div></section>
 <section class="section"><div class="container" id="adminBody"></div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 • Admin routes enforce roles server-side in production.</small></div></footer>
+<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 • Roles and every row are protected by database row-level security — this page only shows what the database already allows.</small></div></footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/db.js"></script>
@@ -33,25 +47,259 @@
 <script src="app.js"></script>
 <script>
 (function(){
-  const body=document.getElementById("adminBody"), line=document.getElementById("adminLine");
-  const ENTITIES=[
+  "use strict";
+  var body = document.getElementById("adminBody"),
+      line = document.getElementById("adminLine"),
+      title = document.getElementById("adminTitle");
+
+  var ENTITIES = [
     ["Rights guides","rights.html","RA_RIGHTS_DETAIL"],["Legal documents","laws.html","RA_LAWS"],
     ["Videos","videos.html","RA_VIDEOS_LIB"],["Organization types","organizations.html","RA_ORG_TYPES"],
-    ["Verified organizations","organizations.html","RA_ORGANIZATIONS"],["Professionals (demo)","lawyers.html","RA_PROFESSIONALS"],
+    ["Verified organizations","organizations.html","RA_ORGANIZATIONS"],["Professionals","lawyers.html","RA_PROFESSIONALS"],
     ["FAQs","resources.html#faqs","RA_FAQS"]
   ];
-  function count(key){ try{ const v=eval("("+key+")"); return Array.isArray(v)?v.length:"—"; }catch(_){ return "—"; } }
-  // Demo mode NEVER grants admin (see js/auth.js). Show locked state + read-only preview.
-  line.innerHTML='Signed in as <strong>'+((RA_AUTH.current()||{}).email||"guest")+'</strong> — role: <strong>none (demo)</strong>. Real admin roles are assigned server-side after Supabase setup (see DATABASE.md). Nothing here can change live content.';
-  body.innerHTML =
-    '<div class="notice rv">🔒 <strong>Locked in demo mode.</strong> The dashboard below is a read-only architecture preview. <button class="btn btn-secondary btn-sm" id="prevBtn">Preview dashboard layout (read-only)</button></div><div id="prev"></div>';
-  document.getElementById("prevBtn").addEventListener("click",()=>{
-    document.getElementById("prev").innerHTML =
-      '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to a Supabase table + admin API. Local demo queues are shown where they exist on this device.</p></div>'
-      + '<div class="cards-grid">' + ENTITIES.map(e=>'<article class="card rv"><h3>'+e[0]+'</h3><p><strong>'+count("window."+e[2])+'</strong> records in local catalog</p><a class="link" href="'+e[1]+'">Open public page →</a><br/><button class="btn btn-outline btn-sm" disabled title="Requires admin role + backend">Manage (locked)</button></article>').join("") + '</div>'
-      + '<div class="two-col"><div class="card rv"><h3>🚩 Review moderation queue (this device)</h3><p>'+RA_REVIEWS.queue().length+' flagged item(s). Moderation UI activates with backend roles.</p></div>'
-      + '<div class="card rv"><h3>✉️ Contact messages (this device)</h3><p>'+RA_DB.messages().length+' stored message(s). Secure inbox arrives with backend.</p></div></div>'
-      + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS + audit_logs — never by frontend code. See DATABASE.md.</div>';
+  function count(key){ try{ var v = eval("(" + key + ")"); return Array.isArray(v) ? v.length : "—"; }catch(_){ return "—"; } }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+  function whenReady(cb){
+    if(window.RA_SUPA && RA_SUPA.ready){ cb(true); return; }
+    var done = false;
+    function once(v){ if(done) return; done = true; cb(v); }
+    document.addEventListener("ra:backend-ready", function(){ once(true); }, { once:true });
+    setTimeout(function(){ once(false); }, 6000);
+  }
+
+  /* ==================== LOCKED: demo / no backend ==================== */
+  function renderLocked(){
+    title.innerHTML = 'Content management <span class="pill">LOCKED — NO BACKEND</span>';
+    line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "guest")
+      + '</strong> — role: <strong>none</strong>. This device has no database connection, so the dashboard stays locked. Applications and messages below are copies stored only in this browser.';
+    var local = [];
+    try{ local = JSON.parse(localStorage.getItem("ra_applications") || "[]"); }catch(_){}
+    body.innerHTML =
+      '<div class="notice rv">🔒 <strong>Locked.</strong> Admin access requires a signed-in account whose role is <code>admin</code> in the database (row-level security enforces this server-side — hiding buttons is not enough). '
+      + '<button class="btn btn-secondary btn-sm" id="prevBtn">Preview dashboard layout (read-only)</button></div>'
+      + '<div id="prev"></div>'
+      + '<div class="section-head" style="margin-top:1.5rem"><span class="eyebrow">Applications</span><h2>Registration applications on this device</h2></div>'
+      + (local.length
+          ? local.map(function(a){
+              return '<div class="app-item"><strong>' + (a.path==="professional" ? "⚖️ Professional" : "🏛 Organisation") + '</strong> — ' + esc(a.name)
+                + ' &lt;' + esc(a.email) + '&gt;<div class="app-meta">Ref ' + esc(a.ref) + ' · ' + esc(a.status) + ' · ' + esc(String(a.at).slice(0,19).replace("T"," ")) + '</div>'
+                + '<div class="empty">Not submitted anywhere (backend never connected). Re-submit from signup when the site is live.</div></div>';
+            }).join("")
+          : '<p class="empty">No applications have been made from this browser.</p>');
+    document.getElementById("prevBtn").addEventListener("click", function(){
+      document.getElementById("prev").innerHTML =
+        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to a Supabase table + admin API.</p></div>'
+        + '<div class="cards-grid">' + ENTITIES.map(function(e){
+            return '<article class="card rv"><h3>' + e[0] + '</h3><p><strong>' + count("window." + e[2]) + '</strong> records in local catalog</p>'
+              + '<a class="link" href="' + e[1] + '">Open public page →</a><br/><button class="btn btn-outline btn-sm" disabled title="Requires admin role + backend">Manage (locked)</button></article>';
+          }).join("") + '</div>'
+        + '<div class="two-col"><div class="card rv"><h3>🚩 Review moderation queue (this device)</h3><p>' + RA_REVIEWS.queue().length + ' flagged item(s).</p></div>'
+        + '<div class="card rv"><h3>✉️ Contact messages (this device)</h3><p>' + RA_DB.messages().length + ' stored message(s).</p></div></div>'
+        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS — never by frontend code.</div>';
+    });
+  }
+
+  /* ==================== DENIED: backend on, role not admin ==================== */
+  function renderDenied(role){
+    title.textContent = "Access denied";
+    line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "?") + '</strong> — role: <strong>' + esc(role || "user") + '</strong>. Only administrators can open this dashboard.';
+    body.innerHTML = '<div class="notice rv">🚫 Your account does not have the <code>admin</code> role. The database would refuse every query here anyway (row-level security). '
+      + 'If you believe this is wrong, an existing administrator must grant the role — see <code>docs/DATABASE.md</code>.</div>'
+      + '<p><a class="btn btn-primary" href="account.html">Back to my account</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
+  }
+
+  /* ==================== UNLOCKED: admin dashboard ==================== */
+  function renderAdmin(user){
+    title.innerHTML = 'Admin dashboard <span class="pill">ADMIN</span>';
+    line.innerHTML = 'Signed in as <strong>' + esc(user.email || "admin") + '</strong> — role: <strong>admin</strong>. '
+      + 'Everything below is read live from the database; row-level security blocks anyone else.';
+    body.innerHTML =
+      '<div class="admin-tabs" role="tablist" aria-label="Admin sections">'
+      + '<button role="tab" id="tabApps" aria-selected="true" aria-controls="panelApps">📋 Applications</button>'
+      + '<button role="tab" id="tabContent" aria-selected="false" aria-controls="panelContent">📚 Content overview</button>'
+      + '<button role="tab" id="tabMsgs" aria-selected="false" aria-controls="panelMsgs">✉️ Contact messages</button>'
+      + '</div>'
+      + '<div id="panelApps" role="tabpanel" aria-labelledby="tabApps">'
+        + '<div class="section-head"><span class="eyebrow">Registration applications</span><h2>Awaiting your decision</h2>'
+        + '<p>Approving publishes a listing; nothing here is public while it is pending. Rejected/unverified rows stay private too.</p></div>'
+        + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
+        + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
+      + '</div>'
+      + '<div id="panelContent" role="tabpanel" aria-labelledby="tabContent" hidden>'
+        + '<div class="section-head"><span class="eyebrow">Content</span><h2>Catalogues</h2></div>'
+        + '<div class="cards-grid">' + ENTITIES.map(function(e){
+            return '<article class="card"><h3>' + e[0] + '</h3><p><strong>' + count("window." + e[2]) + '</strong> records in local catalog</p><a class="link" href="' + e[1] + '">Open public page →</a></article>';
+          }).join("") + '</div>'
+        + '<div class="notice" style="margin-top:1rem">Editing content happens through the database (RLS <code>editor</code>/<code>admin</code> policies). The in-page content editor remains an architecture preview until it is wired to those APIs.</div>'
+      + '</div>'
+      + '<div id="panelMsgs" role="tabpanel" aria-labelledby="tabMsgs" hidden>'
+        + '<div class="section-head"><span class="eyebrow">Inbox</span><h2>Contact messages</h2></div>'
+        + '<div id="msgsBox"><p class="empty">Loading…</p></div>'
+      + '</div>';
+
+    var tabs = [["tabApps","panelApps"],["tabContent","panelContent"],["tabMsgs","panelMsgs"]];
+    tabs.forEach(function(t){
+      document.getElementById(t[0]).addEventListener("click", function(){
+        tabs.forEach(function(x){
+          var on = x[0] === t[0];
+          document.getElementById(x[0]).setAttribute("aria-selected", on ? "true" : "false");
+          document.getElementById(x[1]).hidden = !on;
+        });
+        if(t[0] === "tabMsgs") loadMessages();
+      });
+    });
+    loadApplications();
+  }
+
+  /* ---------- application list ---------- */
+  function proItem(p){
+    var specs = Array.isArray(p.consultation_options) ? p.consultation_options.join(", ") : (p.consultation_options || "—");
+    return '<div class="app-item"><details><summary>⚖️ ' + esc(p.name) + ' — ' + esc(p.qualification || "professional") + '</summary>'
+      + '<div class="app-meta"><span class="pill">PENDING</span> ' + esc(p.location || "") + (p.experience_yrs ? " · " + esc(p.experience_yrs) + " yrs" : "")
+      + ' · applied ' + esc(String(p.created_at || "").slice(0,10)) + (p.id ? ' · <code>' + esc(p.id) + '</code>' : '') + '</div>'
+      + '<dl class="app-dl"><dt>Areas</dt><dd>' + esc(specs) + '</dd>'
+      + (p.languages && p.languages.length ? '<dt>Languages</dt><dd>' + esc(p.languages.join(", ")) + '</dd>' : '')
+      + (p.availability ? '<dt>Availability</dt><dd>' + esc(p.availability) + '</dd>' : '')
+      + (p.fee_note ? '<dt>Fee note</dt><dd>' + esc(p.fee_note) + '</dd>' : '')
+      + (p.photo_path ? '<dt>Photo file</dt><dd>' + esc(p.photo_path) + ' (filename recorded; original to be checked)</dd>' : '')
+      + (p.bio ? '<dt>Bio</dt><dd>' + esc(p.bio) + '</dd>' : '') + '</dl>'
+      + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-pro" data-id="' + esc(p.id) + '">Approve (publish listing)</button>'
+      + '<button class="btn btn-outline btn-sm" data-act="reject-pro" data-id="' + esc(p.id) + '">Keep private / reject</button></div>'
+      + '</details></div>';
+  }
+  function orgItem(o){
+    var svc = Array.isArray(o.services) ? o.services.join(", ") : (o.services || "—");
+    return '<div class="app-item"><details><summary>🏛 ' + esc(o.name) + ' — ' + esc(o.specialization || "organisation") + '</summary>'
+      + '<div class="app-meta"><span class="pill">PENDING</span> ' + esc(o.location || "")
+      + ' · applied ' + esc(String(o.created_at || "").slice(0,10)) + (o.id ? ' · <code>' + esc(o.id) + '</code>' : '') + '</div>'
+      + '<dl class="app-dl"><dt>Contact</dt><dd>' + esc(o.email || "—") + ' · ' + esc(o.phone || "—") + '</dd>'
+      + (o.website ? '<dt>Website</dt><dd>' + esc(o.website) + '</dd>' : '')
+      + '<dt>Services</dt><dd>' + esc(svc) + '</dd>'
+      + (o.verification_source ? '<dt>Verification hints</dt><dd>' + esc(o.verification_source) + '</dd>' : '')
+      + (o.description ? '<dt>About</dt><dd>' + esc(o.description) + '</dd>' : '') + '</dl>'
+      + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-org" data-id="' + esc(o.id) + '">Approve (verify listing)</button>'
+      + '<button class="btn btn-outline btn-sm" data-act="reject-org" data-id="' + esc(o.id) + '">Keep private / reject</button></div>'
+      + '</details></div>';
+  }
+  function queueItem(m){
+    return '<div class="app-item"><details><summary>📨 ' + esc(m.topic || "Application") + ' — ' + esc(m.name || "") + '</summary>'
+      + '<div class="app-meta">from ' + esc(m.email || "?") + ' · ' + esc(String(m.created_at || m.at || "").slice(0,19).replace("T"," "))
+      + ' · status ' + esc(m.status || "new") + '</div>'
+      + '<dl class="app-dl"><dt>Message</dt><dd>' + esc(m.message || "") + '</dd></dl>'
+      + '<div class="app-actions"><a class="btn btn-outline btn-sm" href="mailto:' + esc(m.email || "") + '">Reply by email</a>'
+      + '<button class="btn btn-secondary btn-sm" data-act="mark-read" data-id="' + esc(m.id) + '">Mark reviewed</button></div>'
+      + '</details></div>';
+  }
+
+  async function loadApplications(){
+    var box = document.getElementById("appsBox");
+    if(!box) return;
+    var out = "", any = false;
+
+    // 1) queued applications in contact_messages (works today)
+    try{
+      var q = await RA_SUPA.client.from("contact_messages").select("*")
+        .like("topic", "Application%")
+        .order("created_at", { ascending:false }).limit(20);
+      if(!q.error && q.data && q.data.length){
+        any = true;
+        out += '<div class="section-head"><h3>📨 Queued applications (contact queue)</h3></div>' + q.data.map(queueItem).join("");
+      }
+    }catch(_){}
+
+    // 2) pending organisations (admin policy exists in the base schema)
+    try{
+      var o = await RA_SUPA.client.from("organizations").select("*")
+        .eq("verification_status", "pending")
+        .order("created_at", { ascending:false }).limit(20);
+      if(!o.error && o.data && o.data.length){
+        any = true;
+        out += '<div class="section-head"><h3>🏛 Organisation applications (direct)</h3></div>' + o.data.map(orgItem).join("");
+      }
+    }catch(_){}
+
+    // 3) pending professionals (needs supabase/applications-access.sql)
+    var proNote = "";
+    try{
+      var p = await RA_SUPA.client.from("professionals").select("*")
+        .eq("verification_status", "pending")
+        .order("created_at", { ascending:false }).limit(20);
+      if(!p.error && p.data && p.data.length){
+        any = true;
+        out += '<div class="section-head"><h3>⚖️ Professional applications (direct)</h3></div>' + p.data.map(proItem).join("");
+      } else if(p.error){
+        proNote = '<p class="empty">⚠ Could not read professional applications: ' + esc(p.error.message) + '</p>';
+      } else {
+        proNote = '<p class="empty">No professional applications visible. If applicants used signup, they are either in the contact queue above, or the add-on policies in <code>supabase/applications-access.sql</code> still need to be applied.</p>';
+      }
+    }catch(_){}
+
+    box.innerHTML = (any ? out : '<p class="empty">No applications are awaiting review right now.</p>') + proNote;
+    box.querySelectorAll("button[data-act]").forEach(function(b){
+      b.addEventListener("click", async function(){
+        b.disabled = true;
+        var id = b.dataset.id, act = b.dataset.act;
+        try{
+          if(act === "approve-pro"){
+            var r = await RA_SUPA.client.rpc("ra_approve_professional", { p_id:id });
+            if(r.error) throw r.error;
+          } else if(act === "reject-pro"){
+            var r2 = await RA_SUPA.client.from("professionals").update({ verification_status:"unverified", verified_at:null }).eq("id", id);
+            if(r2.error) throw r2.error;
+          } else if(act === "approve-org"){
+            var r3 = await RA_SUPA.client.from("organizations").update({ verification_status:"verified", verified_at:new Date().toISOString() }).eq("id", id);
+            if(r3.error) throw r3.error;
+          } else if(act === "reject-org"){
+            var r4 = await RA_SUPA.client.from("organizations").update({ verification_status:"unverified", verified_at:null }).eq("id", id);
+            if(r4.error) throw r4.error;
+          } else if(act === "mark-read"){
+            var r5 = await RA_SUPA.client.from("contact_messages").update({ status:"read" }).eq("id", id);
+            if(r5.error) throw r5.error;
+          }
+          loadApplications();
+        }catch(err){
+          b.disabled = false;
+          alert("Could not save the decision: " + (err && err.message ? err.message : err)
+            + "\n\nIf this mentions permissions or policy, apply supabase/applications-access.sql once, then retry.");
+        }
+      });
+    });
+  }
+
+  async function loadMessages(){
+    var box = document.getElementById("msgsBox");
+    if(!box) return;
+    try{
+      var r = await RA_SUPA.client.from("contact_messages").select("*")
+        .not("topic", "like", "Application%")
+        .order("created_at", { ascending:false }).limit(50);
+      if(r.error) throw r.error;
+      var rows = (r.data || []).filter(function(m){ return !/^Application/i.test(m.topic || ""); });
+      box.innerHTML = rows.length ? rows.map(queueItem).join("") : '<p class="empty">Inbox is empty.</p>';
+      box.querySelectorAll("button[data-act]").forEach(function(b){
+        b.addEventListener("click", async function(){
+          b.disabled = true;
+          var r2 = await RA_SUPA.client.from("contact_messages").update({ status:"read" }).eq("id", b.dataset.id);
+          if(r2.error){ b.disabled = false; alert("Could not update: " + r2.error.message); return; }
+          loadMessages();
+        });
+      });
+    }catch(err){
+      box.innerHTML = '<p class="empty">⚠ Could not load messages: ' + esc(err && err.message ? err.message : err) + '</p>';
+    }
+  }
+
+  /* ==================== boot ==================== */
+  whenReady(function(connected){
+    if(!connected){ renderLocked(); return; }
+    line.textContent = "Signed in — checking your role…";
+    RA_AUTH.fetchRole().then(function(role){
+      var u = RA_AUTH.current() || {};
+      if(!u.email){ renderDenied("not signed in"); return; }
+      if(role !== "admin"){ renderDenied(role); return; }
+      renderAdmin(u);
+    }).catch(function(){ renderDenied("role check failed"); });
   });
 })();
 </script>
