@@ -1,8 +1,28 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/index", "destination": "/", "permanent": true },
+    { "source": "/about", "destination": "/about.html", "permanent": true },
+    { "source": "/account", "destination": "/account.html", "permanent": true },
+    { "source": "/admin", "destination": "/admin.html", "permanent": true },
+    { "source": "/ai", "destination": "/ai.html", "permanent": true },
+    { "source": "/contact", "destination": "/contact.html", "permanent": true },
+    { "source": "/help", "destination": "/help.html", "permanent": true },
+    { "source": "/laws", "destination": "/laws.html", "permanent": true },
+    { "source": "/lawyers", "destination": "/lawyers.html", "permanent": true },
+    { "source": "/login", "destination": "/login.html", "permanent": true },
+    { "source": "/offline", "destination": "/offline.html", "permanent": true },
+    { "source": "/organizations", "destination": "/organizations.html", "permanent": true },
+    { "source": "/resources", "destination": "/resources.html", "permanent": true },
+    { "source": "/rights", "destination": "/rights.html", "permanent": true },
+    { "source": "/search", "destination": "/search.html", "permanent": true },
+    { "source": "/signup", "destination": "/signup.html", "permanent": true },
+    { "source": "/videos", "destination": "/videos.html", "permanent": true },
+    { "source": "/rights/topic", "destination": "/rights/topic.html", "permanent": true },
+    { "source": "/rights/arrest-rights", "destination": "/rights/arrest-rights.html", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",

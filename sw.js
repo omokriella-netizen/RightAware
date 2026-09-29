@@ -1,4 +1,4 @@
-/* RightAware service worker (v3): offline-first public content + privacy rules.
+/* RightAware service worker (v4): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,7 +7,9 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-const CACHE = "rightaware-v3";
+/* v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
+   redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
+const CACHE = "rightaware-v4";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
@@ -50,7 +52,7 @@ self.addEventListener("fetch", (e) => {
   // Public content: cache-first, write-through; offline falls back to offline page.
   e.respondWith(
     caches.match(req).then((hit) => hit || fetch(req).then((res) => {
-      if (res && res.ok && res.type === "basic") {
+      if (res && res.ok && res.type === "basic" && !res.redirected) { // never cache a redirect-followed body
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(req, copy));
       }

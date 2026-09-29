@@ -71,6 +71,12 @@
     // No-ops safely when no credentials are configured (stays in demo mode).
     try{
       var me = (document.currentScript && document.currentScript.src) || "";
+      if (!me) { // currentScript is null inside DOMContentLoaded: find our own <script> tag instead
+        var tags = document.getElementsByTagName("script");
+        for (var ti = 0; ti < tags.length; ti++) {
+          if (/(^|\/)app\.js(\?|#|$)/.test(tags[ti].src || "")) { me = tags[ti].src; break; }
+        }
+      }
       var rootBase = me ? me.slice(0, me.lastIndexOf("/") + 1) : "";
       var supa = document.createElement("script");
       supa.src = rootBase + "js/supabase-client.js";
