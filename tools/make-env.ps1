@@ -24,7 +24,7 @@ if (-not $EnvFile) { $EnvFile = Join-Path $root ".env.local" }
 if (-not $OutFile) { $OutFile = Join-Path $root "env.local.js" }
 
 # Strict whitelist: only names that are safe in frontend code (ENVIRONMENT.md).
-$PUBLIC = @("SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "PAYSTACK_PUBLIC_KEY")
+$PUBLIC = @("SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "PAYSTACK_PUBLIC_KEY", "TURNSTILE_SITE_KEY")
 
 if (-not (Test-Path $EnvFile)) {
   Write-Host "make-env: no $EnvFile found - skipping (site stays in demo mode)."

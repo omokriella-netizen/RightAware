@@ -2,35 +2,88 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Log In (Demo) — RightAware</title>
-<meta name="description" content="Demo login for RightAware v1. Accounts backend still to be built."/>
+<title>Log In — RightAware</title>
+<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
-  <div class="header-actions"><a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+  <div class="header-actions"><a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></div></header>
 <main><section class="section"><div class="container" style="max-width:480px">
-  <div class="form-card rv"><span class="pill" id="loginPill">SECURE LOGIN WHEN CONNECTED</span><h1>Log in</h1>
-  <p style="color:var(--muted)">Sign in with your email and password. If the backend is not connected, login falls back to a demo session stored on this device only.</p>
-  <form id="loginForm"><label>Email<input type="email" id="lEmail" required placeholder="you@example.com" autocomplete="email"/></label><label>Password<input type="password" id="lPass" required placeholder="Your password" autocomplete="current-password"/></label><button class="btn btn-primary" type="submit" style="width:100%">Log In</button></form>
-  <p class="form-note" id="lOut" aria-live="polite"></p>
-  <p><a class="link" href="signup.html">No account? Choose a signup pathway →</a></p>
-  <p><a class="link" href="signup.html">Forgot password? Reset from signup →</a></p>
-  <p><a class="link" href="index.html">← Back home</a></p></div>
+  <div class="form-card rv">
+    <div class="auth-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" loading="lazy"/></div>
+    <span class="pill" id="loginPill">SECURE LOGIN WHEN CONNECTED</span><h1>Log in</h1>
+    <p style="color:var(--muted)">Sign in with your email and password. New here? <a class="link" href="signup.html">Create an account →</a></p>
+
+    <!-- Password reset landing: the emailed reset link opens this page (?recovery=1).
+         A fresh session from the link lets the user choose a new password here. -->
+    <form id="recoveryForm" hidden>
+      <!-- Chromium's password-form heuristic wants a username field before the
+           first password; the session already identifies the user, so this one
+           is a hidden anti-heuristic field (never autofilled, never focused). -->
+      <input type="text" name="username" autocomplete="username" tabindex="-1" aria-hidden="true" style="display:none"/>
+      <h2 style="font-size:1.15rem">Choose a new password</h2>
+      <p style="color:var(--muted);font-size:.9rem">You arrived from a password-reset link. Pick a new password of at least 8 characters.</p>
+      <label>New password<input type="password" id="rPass" minlength="8" required placeholder="At least 8 characters" autocomplete="new-password"/></label>
+      <label>Confirm new password<input type="password" id="rPass2" required placeholder="Repeat password" autocomplete="new-password"/></label>
+      <button class="btn btn-primary" type="submit" style="width:100%">Set new password</button>
+      <p class="form-note" id="rOut" aria-live="polite"></p>
+    </form>
+
+    <form id="loginForm">
+      <label>Email<input type="email" id="lEmail" required placeholder="you@example.com" autocomplete="username"/></label>
+      <label>Password<input type="password" id="lPass" required placeholder="Your password" autocomplete="current-password"/></label>
+      <div class="ra-captcha" data-captcha></div>
+      <button class="btn btn-primary" type="submit" style="width:100%">Log In</button>
+    </form>
+    <p class="form-note" id="lOut" aria-live="polite"></p>
+
+    <!-- Shown when GoTrue refuses the sign-in because the address is unconfirmed -->
+    <div id="unverifiedBox" class="notice" hidden>
+      <strong>Email not confirmed.</strong> Open the confirmation link we sent you (check spam too), or
+      <button class="link" style="border:none;background:none;cursor:pointer;font-size:inherit;font-weight:700;padding:0" id="resendBtn" type="button">resend the confirmation email →</button>
+      <p class="form-note" id="resendOut" aria-live="polite"></p>
+    </div>
+
+    <div id="resetBox" hidden>
+      <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0"/>
+      <p><strong>Forgot your password?</strong> We email you a secure reset link.</p>
+      <form id="resetForm">
+        <label>Email for the reset link<input type="email" id="resetEmail" required placeholder="you@example.com" autocomplete="email"/></label>
+        <div class="ra-captcha" data-captcha></div>
+        <button class="btn btn-secondary" type="submit" style="width:100%">Send password reset link</button>
+      </form>
+      <p class="form-note" id="resetOut" aria-live="polite"></p>
+    </div>
+    <p style="margin-top:1rem"><a class="link" href="#" id="forgotToggle">Forgot password? Send a reset link →</a></p>
+    <p><a class="link" href="signup.html">No account? Choose a signup pathway →</a></p>
+    <p><a class="link" href="index.html">← Back home</a></p>
+  </div>
 </div></section></main>
 <footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="js/config.js"></script>
+<script src="js/turnstile.js"></script>
 <script src="js/auth.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
-  var next = new URLSearchParams(location.search).get("next") || "account.html";
+  var params = new URLSearchParams(location.search);
+  var next = params.get("next") || "account.html";
   var out = document.getElementById("lOut");
+  var loginForm = document.getElementById("loginForm");
+  var recoveryForm = document.getElementById("recoveryForm");
+  var unverifiedBox = document.getElementById("unverifiedBox");
+  var pendingEmail = "";
+
+  function hashParams(){
+    try{ return new URLSearchParams((location.hash || "").replace(/^#/, "")); }
+    catch(_){ return new URLSearchParams(""); }
+  }
   function afterSignIn(){
     // Role-aware destination: admins go to the dashboard, everyone else to their account.
     if(RA_AUTH.supabaseReady()){
@@ -41,18 +94,125 @@
       location.href = next;
     }
   }
-  document.getElementById("loginForm").addEventListener("submit",function(e){
+
+  /* ---- CAPTCHA helper (Cloudflare Turnstile; configured via TURNSTILE_SITE_KEY) ---- */
+  function capBox(scope){ return (scope || document).querySelector("[data-captcha]"); }
+  function gateCaptcha(scope){
+    if(!(window.RA_SUPA && RA_SUPA.ready) || !window.RA_TURNSTILE) return Promise.resolve({ token:null });
+    return RA_TURNSTILE.gate(capBox(scope)).then(function(g){
+      if(g.unconfigured) return { token:null };
+      if(g.blocked) return { error: g.error
+        ? "CAPTCHA could not load — check your connection (or disable blocking) and try again."
+        : "Please complete the CAPTCHA check to continue." };
+      return { token:g.token };
+    });
+  }
+  function mountCaptcha(scope){
+    try{
+      if(window.RA_TURNSTILE && RA_TURNSTILE.configured() && window.RA_SUPA && RA_SUPA.ready){
+        var b = capBox(scope); if(b) RA_TURNSTILE.mount(b);
+      }
+    }catch(_){}
+  }
+
+  /* ---- states arriving from Supabase email links ---- */
+  var linkState = (function(){
+    var hp = hashParams();
+    var type = (hp.get("type") || params.get("type") || "").toLowerCase();
+    var errCode = params.get("error_code") || hp.get("error_code") || "";
+    var err = params.get("error") || hp.get("error") || "";
+    var errDesc = (params.get("error_description") || hp.get("error_description") || "").replace(/\+/g, " ");
+    var hasCode = !!params.get("code");
+    var confirmed = params.get("confirmed") === "1";
+    /* PKCE flows pass only ?recovery=1 / ?confirmed=1 + ?code=... (the "type"
+       lives in the hash for implicit flows). Treat the marker param itself as
+       authoritative so the reset landing works in both flows. */
+    var recoveryParam = params.get("recovery") === "1";
+
+    if(err || errCode){
+      var blob = (errCode + " " + err + " " + errDesc);
+      if(/recovery|password/i.test(blob)){
+        out.innerHTML = "⚠ That password-reset link has expired or was already used. Send yourself a fresh one below.";
+        document.getElementById("resetBox").hidden = false;
+        return "error";
+      }
+      if(/otp|expired|invalid/i.test(blob)){
+        out.innerHTML = "⚠ That confirmation link has expired or is no longer valid. Enter your email below and resend the confirmation email (or sign up again).";
+        unverifiedBox.hidden = false;
+        return "error";
+      }
+      out.innerHTML = "⚠ " + (errDesc || err || "This link is not valid.");
+      return "error";
+    }
+    if(type === "recovery" || recoveryParam){
+      recoveryForm.hidden = false;
+      loginForm.hidden = true;
+      document.getElementById("resetBox").hidden = true;
+      document.getElementById("forgotToggle").parentElement.hidden = true;
+      return "recovery";
+    }
+    if(type === "signup" || type === "email" || confirmed || hasCode){
+      out.innerHTML = "✅ Email confirmed! You can now sign in with your email and password.";
+      return "confirmed";
+    }
+    return null;
+  })();
+
+  /* Backend-ready: pill, CAPTCHA mount, and finish the link states. */
+  document.addEventListener("ra:backend-ready", function(){
+    document.getElementById("loginPill").textContent = "SUPABASE — SECURE LOGIN";
+    if(linkState === "recovery" || linkState === "confirmed"){ /* session handled below */ }
+    if(!loginForm.hidden) mountCaptcha(loginForm);   // hidden during the recovery landing: mounted on reveal below
+    if(recoveryForm.hidden === false || linkState === "recovery"){
+      RA_AUTH.supabaseReady() && RA_SUPA.client.auth.getSession().then(function(r){
+        var s = r && r.data && r.data.session;
+        if(s){ document.getElementById("rPass").focus(); }
+        else {
+          recoveryForm.hidden = true; loginForm.hidden = false;
+          mountCaptcha(loginForm);
+          out.innerHTML = "⚠ That reset link is invalid or has expired. Send yourself a fresh one below.";
+          document.getElementById("resetBox").hidden = false;
+          mountCaptcha(document.getElementById("resetBox"));
+        }
+      });
+    } else if(linkState === "confirmed"){
+      RA_AUTH.supabaseReady() && RA_SUPA.client.auth.getSession().then(function(r){
+        if(r && r.data && r.data.session){ out.innerHTML = "✅ Email confirmed — signing you in…"; setTimeout(afterSignIn, 600); }
+      });
+    }
+  });
+  setTimeout(function(){ // no backend after timeout: honest demo note
+    if(!(window.RA_SUPA && RA_SUPA.ready) && !document.getElementById("loginPill").textContent.match("SUPABASE")){
+      document.getElementById("loginPill").textContent = "DEMO MODE";
+    }
+  }, 6500);
+
+  /* ---- login ---- */
+  loginForm.addEventListener("submit", function(e){
     e.preventDefault();
     var em = document.getElementById("lEmail").value.trim();
     var pw = document.getElementById("lPass").value;
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ out.textContent = "Please enter a valid email address."; return; }
     if(RA_AUTH.supabaseReady()){
       if(pw.length < 6){ out.textContent = "Enter your password (at least 6 characters)."; return; }
+      unverifiedBox.hidden = true;
       out.textContent = "Signing in securely…";
-      RA_AUTH.loginLive(em,pw).then(function(r){
-        if(!r.ok){ out.textContent = "Error: " + r.error; return; }
-        out.textContent = "Signed in. Redirecting…";
-        setTimeout(afterSignIn, 500);
+      gateCaptcha(loginForm).then(function(cap){
+        if(cap.error){ out.textContent = "⚠ " + cap.error; return; }
+        RA_AUTH.loginLive(em, pw, { captchaToken: cap.token || undefined }).then(function(r){
+          if(!r.ok){
+            if(r.needsConfirm){
+              pendingEmail = em;
+              out.textContent = "⚠ " + r.error + " — open the confirmation link first, or resend it below.";
+              unverifiedBox.hidden = false;
+              return;
+            }
+            out.textContent = "Error: " + r.error;
+            return;
+          }
+          out.textContent = "Signed in. Redirecting…";
+          setTimeout(afterSignIn, 500);
+        });
       });
       return;
     }
@@ -61,6 +221,56 @@
     out.textContent = "Backend not connected — demo session saved on this device only. Redirecting…";
     setTimeout(afterSignIn, 700);
   });
+
+  /* ---- resend confirmation email ---- */
+  document.getElementById("resendBtn").addEventListener("click", function(){
+    var ro = document.getElementById("resendOut");
+    var em = document.getElementById("lEmail").value.trim() || pendingEmail;
+    if(!em){ ro.textContent = "Enter your email address first, then resend."; return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ ro.textContent = "Enter a valid email address first."; return; }
+    pendingEmail = em;
+    ro.textContent = "Sending…";
+    gateCaptcha(loginForm).then(function(cap){
+      return RA_AUTH.resendConfirmation(em, { captchaToken: cap.token || undefined });
+    }).then(function(msg){ ro.textContent = msg; })
+      .catch(function(){ ro.textContent = "⚠ Could not resend — try again shortly."; });
+  });
+
+  /* ---- forgot password: send reset link ---- */
+  document.getElementById("forgotToggle").addEventListener("click", function(e){
+    e.preventDefault();
+    var box = document.getElementById("resetBox");
+    box.hidden = !box.hidden;
+    if(!box.hidden){ mountCaptcha(box); document.getElementById("resetEmail").focus(); }
+  });
+  document.getElementById("resetForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var em = document.getElementById("resetEmail").value.trim();
+    var ro = document.getElementById("resetOut");
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ ro.textContent = "Please enter a valid email address."; return; }
+    ro.textContent = "Sending…";
+    gateCaptcha(document.getElementById("resetBox")).then(function(cap){
+      if(cap.error){ ro.textContent = "⚠ " + cap.error; return; }
+      return RA_AUTH.recoverLive(em, { captchaToken: cap.token || undefined }).then(function(msg){ ro.textContent = msg; });
+    }).catch(function(){ ro.textContent = "⚠ Could not send — try again shortly."; });
+  });
+
+  /* ---- set new password (recovery landing) ---- */
+  recoveryForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    var p1 = document.getElementById("rPass").value, p2 = document.getElementById("rPass2").value;
+    var ro = document.getElementById("rOut");
+    if(p1.length < 8){ ro.textContent = "Password must be at least 8 characters."; return; }
+    if(p1 !== p2){ ro.textContent = "Passwords do not match."; return; }
+    ro.textContent = "Saving…";
+    RA_AUTH.completeRecovery(p1).then(function(r){
+      if(!r.ok){ ro.textContent = "⚠ " + r.error; return; }
+      ro.textContent = "✅ Password updated — redirecting to your account…";
+      setTimeout(afterSignIn, 700);
+    });
+  });
+
+  if(linkState === "recovery"){ document.getElementById("rPass").focus(); }
 })();
 </script>
 </body>

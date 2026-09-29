@@ -23,7 +23,7 @@
 </head>
 <body>
 <header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
   <div class="header-actions"><a class="btn btn-outline btn-sm" href="index.html">← Site</a>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
@@ -122,7 +122,7 @@
       + '</div>'
       + '<div id="panelApps" role="tabpanel" aria-labelledby="tabApps">'
         + '<div class="section-head"><span class="eyebrow">Registration applications</span><h2>Awaiting your decision</h2>'
-        + '<p>Approving publishes a listing; nothing here is public while it is pending. Rejected/unverified rows stay private too.</p></div>'
+        + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p></div>'
         + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
         + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
       + '</div>'
@@ -192,6 +192,34 @@
       + '</details></div>';
   }
 
+  /* Reject stores a distinct 'rejected' state (workflow: submitted → pending →
+     verified | rejected). The value exists only after supabase/verification-states.sql
+     is applied — until then the CHECK constraint refuses it, so fall back to
+     'unverified' (still private) and tell the admin honestly. */
+  async function rejectRow(table, id){
+    try{
+      await upd(table, { verification_status:"rejected", verified_at:null }, id);
+      return null;
+    }catch(err){
+      if(/verification_status|check constraint|violates/i.test((err && err.message) || "")){
+        await upd(table, { verification_status:"unverified", verified_at:null }, id);
+        return "The distinct Rejected state is not available yet — the row was kept private as UNVERIFIED. Run supabase/verification-states.sql once (additive) to enable the Rejected state.";
+      }
+      throw err;
+    }
+  }
+  function decidedItem(d){
+    var x = d.row, isRej = x.verification_status === "rejected";
+    return '<div class="app-item"><details><summary>' + (d.kind === "pro" ? "⚖️ " : "🏛 ") + esc(x.name) + '</summary>'
+      + '<div class="app-meta"><span class="' + (isRej ? "pill-red" : "pill-green") + '">' + (isRej ? "REJECTED" : "VERIFIED") + '</span> '
+      + (d.kind === "pro" ? "professional" : "organisation")
+      + ' · applied ' + esc(String(x.created_at || "").slice(0,10))
+      + (x.verified_at ? ' · decided ' + esc(String(x.verified_at).slice(0,10)) : '')
+      + (x.id ? ' · <code>' + esc(x.id) + '</code>' : '') + '</div>'
+      + '<div class="app-actions"><button class="btn btn-outline btn-sm" data-act="reopen-' + d.kind + '" data-id="' + esc(x.id) + '">Reopen (back to pending)</button></div>'
+      + '</details></div>';
+  }
+
   /* Update a row by id with an honest outcome: PostgREST reports an RLS-blocked
      UPDATE as "success, 0 rows", so we select the touched rows back and fail
      loudly instead of pretending the decision was saved. */
@@ -244,6 +272,25 @@
       }
     }catch(_){}
 
+    // 4) decided history: verified (approved) + rejected — the admin's record of
+    //    past decisions. Safe to query even before verification-states.sql is run
+    //    (the 'rejected' value simply matches no rows yet).
+    try{
+      var decided = [];
+      var ro = await RA_SUPA.client.from("organizations").select("id,name,verification_status,verified_at,created_at")
+        .in("verification_status", ["rejected","verified"])
+        .order("created_at", { ascending:false }).limit(8);
+      if(!ro.error && ro.data) decided = decided.concat(ro.data.map(function(x){ return { row:x, kind:"org" }; }));
+      var rp = await RA_SUPA.client.from("professionals").select("id,name,verification_status,verified_at,created_at")
+        .in("verification_status", ["rejected","verified"])
+        .order("created_at", { ascending:false }).limit(8);
+      if(!rp.error && rp.data) decided = decided.concat(rp.data.map(function(x){ return { row:x, kind:"pro" }; }));
+      decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
+      if(decided.length){
+        out += '<div class="section-head"><h3>🗂 Recently decided</h3></div>' + decided.map(decidedItem).join("");
+      }
+    }catch(_){}
+
     box.innerHTML = (any ? out : '<p class="empty">No applications are awaiting review right now.</p>') + proNote;
     box.querySelectorAll("button[data-act]").forEach(function(b){
       b.addEventListener("click", async function(){
@@ -254,11 +301,17 @@
             var r = await RA_SUPA.client.rpc("ra_approve_professional", { p_id:id });
             if(r.error) throw r.error;
           } else if(act === "reject-pro"){
-            await upd("professionals", { verification_status:"unverified", verified_at:null }, id);
+            var note = await rejectRow("professionals", id);
+            if(note) alert("Decision saved.\n\nNote: " + note);
           } else if(act === "approve-org"){
             await upd("organizations", { verification_status:"verified", verified_at:new Date().toISOString() }, id);
           } else if(act === "reject-org"){
-            await upd("organizations", { verification_status:"unverified", verified_at:null }, id);
+            var note2 = await rejectRow("organizations", id);
+            if(note2) alert("Decision saved.\n\nNote: " + note2);
+          } else if(act === "reopen-pro"){
+            await upd("professionals", { verification_status:"pending", verified_at:null }, id);
+          } else if(act === "reopen-org"){
+            await upd("organizations", { verification_status:"pending", verified_at:null }, id);
           } else if(act === "mark-read"){
             await upd("contact_messages", { status:"read" }, id);
           }

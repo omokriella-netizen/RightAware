@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Sign Up — RightAware</title>
-<meta name="description" content="Three registration pathways: general user, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
+<meta name="description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -28,9 +28,9 @@
 </head>
 <body>
 <header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
-  <div class="header-actions"><a class="btn btn-outline btn-sm" href="login.html">Log In</a><a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+  <div class="header-actions"><a class="btn btn-outline btn-sm" href="login.html">Log In</a><a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="login.html">Log In</a><a href="contact.html">Contact Us</a></div></header>
 
@@ -53,7 +53,7 @@
     <div id="stepChoose">
       <div class="path-grid" role="group" aria-label="Registration pathway">
         <button type="button" class="path-card" data-path="user" aria-pressed="false">
-          <div class="icon">🙋</div><h3>General user</h3>
+          <div class="icon">🙋</div><h3>Individual</h3>
           <p>Read the guides, save rights, keep private reports on your account. Free, no approval needed.</p>
         </button>
         <button type="button" class="path-card" data-path="professional" aria-pressed="false">
@@ -71,7 +71,7 @@
     <!-- STEP 2a: general user -->
     <form id="formUser" hidden>
       <button type="button" class="btn btn-outline btn-sm" id="backBtnUser">← Choose a different pathway</button>
-      <h3>🙋 General user</h3>
+      <h3>🙋 Individual</h3>
       <label>Full name<input id="uName" required placeholder="Your name" autocomplete="name"/></label>
       <label>Email<input id="uEmail" type="email" required placeholder="you@example.com" autocomplete="email"/></label>
       <div class="form-row">
@@ -79,6 +79,7 @@
         <label>Confirm password<input id="uPass2" type="password" required placeholder="Repeat password" autocomplete="new-password"/></label>
       </div>
       <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="uConsent" required/> I agree that RightAware stores my account details to provide the service. <a class="link" href="about.html#privacy">How my data is handled →</a></label>
+      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" style="width:100%" type="submit">Create account</button>
       <p class="form-note" id="uOut" aria-live="polite"></p>
     </form>
@@ -135,6 +136,7 @@
       </fieldset>
 
       <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="pConsent" required/> I confirm these details are accurate, that I have the right to list them, and I consent to RightAware storing this application for review. I understand my profile stays private until an administrator approves it.</label>
+      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" style="width:100%" type="submit">Submit professional application</button>
       <p class="form-note" id="pOut" aria-live="polite"></p>
     </form>
@@ -184,6 +186,7 @@
       </fieldset>
 
       <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="oConsent" required/> I confirm I am authorised to apply for this organisation and consent to RightAware storing this application for review. The listing stays private until an administrator approves it.</label>
+      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" style="width:100%" type="submit">Submit organisation application</button>
       <p class="form-note" id="oOut" aria-live="polite"></p>
     </form>
@@ -199,6 +202,21 @@
         <a class="btn btn-secondary" href="rights.html">Explore rights while you wait</a>
       </div>
     </div>
+
+    <!-- STEP 3b: email confirmation required / already registered -->
+    <div id="stepConfirm" hidden>
+      <div class="icon" style="font-size:2.4rem">📧</div>
+      <h2 id="confirmTitle">Confirm your email</h2>
+      <p id="confirmLine"></p>
+      <div id="confirmDetail" class="notice"></div>
+      <div class="ra-captcha" data-captcha></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-secondary" id="resendBtn" type="button">Resend confirmation email</button>
+        <a class="btn btn-primary" href="login.html">Open Log In</a>
+        <a class="btn btn-outline" href="index.html">Back home</a>
+      </div>
+      <p class="form-note" id="resendOut" aria-live="polite"></p>
+    </div>
   </div>
 </div>
 </section>
@@ -207,6 +225,7 @@
 <footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 — General legal information only, not legal advice.</small></div></footer>
 
 <script src="js/config.js"></script>
+<script src="js/turnstile.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/db.js"></script>
 <script src="app.js"></script>
@@ -217,19 +236,26 @@
   var stepTitle = document.getElementById("stepTitle");
   var panes = { choose:document.getElementById("stepChoose"), user:document.getElementById("formUser"),
                 pro:document.getElementById("formPro"), org:document.getElementById("formOrg"),
-                done:document.getElementById("stepDone") };
+                done:document.getElementById("stepDone"), confirm:document.getElementById("stepConfirm") };
 
   function show(which, title){
     Object.keys(panes).forEach(function(k){ panes[k].hidden = (k !== which); });
     stepTitle.textContent = title;
     stepTitle.scrollIntoView({ behavior:"smooth", block:"start" });
+    // Start the CAPTCHA widget early (only when configured) so it is ready on submit.
+    try{
+      if(window.RA_TURNSTILE && RA_TURNSTILE.configured() && window.RA_SUPA && RA_SUPA.ready){
+        var box = panes[which] && panes[which].querySelector("[data-captcha]");
+        if(box) RA_TURNSTILE.mount(box);
+      }
+    }catch(_){}
   }
   function back(btn, form){ btn.addEventListener("click", function(){ show("choose", "1. Choose how you're joining"); }); }
 
   document.querySelectorAll(".path-card").forEach(function(c){
     c.addEventListener("click", function(){
       document.querySelectorAll(".path-card").forEach(function(x){ x.setAttribute("aria-pressed", x===c ? "true":"false"); });
-      if(c.dataset.path === "user") show("user", "2. General user — create your account");
+      if(c.dataset.path === "user") show("user", "2. Individual — create your account");
       if(c.dataset.path === "professional") show("pro", "2. Legal professional — your application");
       if(c.dataset.path === "organisation") show("org", "2. Organisation — your application");
     });
@@ -289,6 +315,50 @@
     if(f.size > 5*1024*1024) return { error:"“"+f.name+"” is larger than 5MB — please use a smaller file." };
     return { name:f.name, size:f.size, recordedOnly:true };
   }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+
+  /* ---- CAPTCHA (Cloudflare Turnstile; public site key via TURNSTILE_SITE_KEY).
+     Runs only when the Supabase backend is up; with no site key configured the
+     widget area stays empty and submission continues (CAPTCHA not yet enabled). */
+  var lastSignupEmail = "";
+  function capBox(scope){ return (scope || document).querySelector("[data-captcha]"); }
+  function withCaptcha(scope){
+    if(!(window.RA_SUPA && RA_SUPA.ready) || !window.RA_TURNSTILE) return Promise.resolve({ token:null });
+    return RA_TURNSTILE.gate(capBox(scope)).then(function(g){
+      if(g.unconfigured) return { token:null };
+      if(g.blocked) return { error: g.error
+        ? "CAPTCHA could not load — check your connection (or disable blocking) and try again."
+        : "Please complete the CAPTCHA check to continue." };
+      return { token:g.token };
+    });
+  }
+
+  /* ---- "Check your inbox" / "Already registered" result pane ---- */
+  function showConfirm(email, exists){
+    if(email) lastSignupEmail = email;
+    document.getElementById("confirmTitle").textContent = exists ? "Already registered" : "Confirm your email";
+    document.getElementById("confirmLine").textContent = exists
+      ? "An account with this email address already exists."
+      : "One more step — your account is not active yet.";
+    document.getElementById("confirmDetail").innerHTML = exists
+      ? "If you registered but never opened the confirmation link, request it again below (check your spam folder first). If you already confirmed it, simply <a class='link' href='login.html'>log in →</a>."
+      : "We sent a confirmation link to <strong>" + esc(lastSignupEmail) + "</strong>. RightAware does <strong>not</strong> treat your account as verified until you open that link — afterwards, log in normally. Didn’t get it? Request a resend below (check spam too).";
+    document.getElementById("resendOut").textContent = "";
+    show("confirm", "3. Check your inbox");
+  }
+  document.getElementById("resendBtn").addEventListener("click", function(){
+    var out = document.getElementById("resendOut");
+    if(!lastSignupEmail){ out.textContent = "No signup email to resend to — sign up again."; return; }
+    var box = capBox(panes.confirm);
+    var gate = (window.RA_TURNSTILE && RA_TURNSTILE.configured() && box)
+      ? RA_TURNSTILE.gate(box) : Promise.resolve({ token:null, unconfigured:true });
+    gate.then(function(g){
+      if(g.blocked){ out.textContent = g.error ? ("⚠ " + g.error) : "⚠ Please complete the CAPTCHA check first."; return; }
+      out.textContent = "Sending…";
+      return RA_AUTH.resendConfirmation(lastSignupEmail, { captchaToken: g.token || undefined })
+        .then(function(msg){ out.textContent = msg; });
+    }).catch(function(){ out.textContent = "⚠ Could not resend — try again shortly."; });
+  });
 
   function finish(o){
     document.getElementById("doneTitle").textContent = o.title;
@@ -312,7 +382,7 @@
   }
 
   async function submitApplication(opts){
-    // opts: { path, table, row, extraTable?, extraRows?, account:{name,email,pass}, queue:{topic,message} }
+    // opts: { path, table, row, extraTable?, extraRows?, account:{name,email,pass}, queue:{topic,message}, captchaToken? }
     var ref = refNo(opts.path === "professional" ? "PRO" : "ORG");
     var localRec = { ref:ref, path:opts.path, name:opts.account.name, email:opts.account.email,
                      at:new Date().toISOString(), status:"awaiting-review", mode:"local" };
@@ -327,14 +397,33 @@
       return;
     }
 
-    // 1. account (the password never enters the application payload)
-    var acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass);
-    var acctNote = acctRes.ok ? (acctRes.note || "Account created.")
-      : "⚠ Account step: " + (acctRes.error || "failed") + ". Your application will still be recorded for review.";
+    // Remember the application on this device: while the confirmation email is
+    // unopened there is no session, so the direct insert below would be refused
+    // by row-level security. It attaches automatically after confirm + sign-in.
+    RA_AUTH.savePendingApplication({ table:opts.table, row:opts.row, extraTable:opts.extraTable || null,
+      extraRows:opts.extraRows || [], ref:ref });
 
-    // attach the account to the row where the schema supports it
+    // 1. account (the password never enters the application payload)
+    var acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
+                                           { captchaToken: opts.captchaToken });
+    var acctNote;
+    if(acctRes.ok && acctRes.needsConfirm){
+      acctNote = acctRes.note + " After confirming, sign in — this application attaches to your account automatically.";
+    } else if(acctRes.ok){
+      acctNote = acctRes.note || "Account created.";
+    } else if(acctRes.alreadyRegistered){
+      acctNote = "⚠ " + acctRes.error + " Sign in (or confirm your email first) and this application will attach to your account automatically.";
+    } else {
+      acctNote = "⚠ Account step: " + (acctRes.error || "failed") + ". Your application will still be recorded for review.";
+    }
+
+    // attach the account to the row where the schema supports it — only when a
+    // REAL signed-in session for THIS applicant's email exists (never a stale
+    // session from another account on the same browser).
     var me = null; try{ me = RA_AUTH.current(); }catch(_){}
-    if(opts.table === "professionals" && me && me.supabaseId) opts.row.user_id = me.supabaseId;
+    if(opts.table === "professionals" && me && me.supabaseId && !me.demo && me.email === opts.account.email){
+      opts.row.user_id = me.supabaseId;
+    }
 
     var client = await withClientP();
     if(!client){
@@ -346,6 +435,7 @@
     // 2. direct application row (works once supabase/applications-access.sql is applied)
     var ins = await client.from(opts.table).insert(opts.row);
     if(!ins.error){
+      try{ localStorage.removeItem("ra_pending_app"); }catch(_){}
       if(opts.extraTable){
         var ex = (opts.extraRows || []).filter(function(r){ return r.professional_id; });
         if(ex.length){ try{ await client.from(opts.extraTable).insert(ex); }catch(_){} }
@@ -366,7 +456,7 @@
       detail: acctNote + "<br/><br/>⚠ Delivery to RightAware failed (" + (q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
   }
 
-  /* ---------- pathway: general user ---------- */
+  /* ---------- pathway: individual (general user) ---------- */
   document.getElementById("formUser").addEventListener("submit", function(e){
     e.preventDefault(); current = "user";
     var n=val("uName"), em=val("uEmail"), p=val("uPass"), p2=val("uPass2");
@@ -378,19 +468,27 @@
     var trap = spamTrap(); if(trap) return bad(trap);
     var out = document.getElementById("uOut"); out.textContent = "Creating your account…";
 
-    if(window.RA_SUPA && RA_SUPA.ready){
-      RA_AUTH.signupLive(n, em, p).then(function(r){
-        if(!r.ok){ out.textContent = "⚠ " + r.error + " — if you already have an account, log in instead."; return; }
+    withCaptcha(panes.user).then(function(cap){
+      if(cap.error){ out.textContent = "⚠ " + cap.error; return; }
+      if(window.RA_SUPA && RA_SUPA.ready){
+        RA_AUTH.signupLive(n, em, p, { captchaToken: cap.token || undefined }).then(function(r){
+          if(!r.ok){
+            if(r.alreadyRegistered){ showConfirm(em, true); return; }
+            out.textContent = "⚠ " + r.error + " — if you already have an account, log in instead.";
+            return;
+          }
+          if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
+          RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
+          finish({ title:"Account created", ref:null,
+            detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
+        });
+      } else {
+        RA_AUTH.signup(n, em);
         RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
-        finish({ title:"Account created", ref:null,
-          detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
-      });
-    } else {
-      RA_AUTH.signup(n, em);
-      RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
-      finish({ title:"Demo account created on this device", ref:null,
-        detail:"⚠ The backend is <strong>not connected</strong> — this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
-    }
+        finish({ title:"Demo account created on this device", ref:null,
+          detail:"⚠ The backend is <strong>not connected</strong> — this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
+      }
+    });
   });
 
   /* ---------- pathway: legal professional ---------- */
@@ -409,32 +507,38 @@
     var photo = fileNote("pPhoto"); if(photo && photo.error) return bad(photo.error, "pPhoto");
     var trap = spamTrap(); if(trap) return bad(trap);
 
-    var docLines = [];
-    if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded — original requested during verification).");
-    if(photo) docLines.push("Photo recorded: " + photo.name + " (not uploaded yet).");
-    var queueMsg =
-      "PROFESSIONAL APPLICATION (submitted via signup)\n" +
-      "Name: " + n + "\nEmail: " + em + "\nPhone: " + ph + "\nQualification: " + q + "\n" +
-      "Years: " + (val("pYears") || "not stated") + "\nLocation: " + val("pLoc") + "\n" +
-      "Areas: " + specs.join("; ") + "\nLanguages: " + chips("pLangs").join("; ") + "\n" +
-      "Availability: " + val("pAvail") + "\nFee note: " + (val("pFee") || "—") + "\n" +
-      "Bio: " + val("pBio") + "\n" + docLines.join("\n") +
-      "\nStatus: PENDING — publish only after admin approval.";
+    withCaptcha(panes.pro).then(function(cap){
+      if(cap.error) return bad(cap.error);
+      var docLines = [];
+      if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded — original requested during verification).");
+      if(photo) docLines.push("Photo recorded: " + photo.name + " (not uploaded yet).");
+      var queueMsg =
+        "PROFESSIONAL APPLICATION (submitted via signup)\n" +
+        "Name: " + n + "\nEmail: " + em + "\nPhone: " + ph + "\nQualification: " + q + "\n" +
+        "Years: " + (val("pYears") || "not stated") + "\nLocation: " + val("pLoc") + "\n" +
+        "Areas: " + specs.join("; ") + "\nLanguages: " + chips("pLangs").join("; ") + "\n" +
+        "Availability: " + val("pAvail") + "\nFee note: " + (val("pFee") || "—") + "\n" +
+        "Bio: " + val("pBio") + "\n" + docLines.join("\n") +
+        "\nStatus: PENDING — publish only after admin approval.";
 
-    var pid = "prof-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
-    var row = { id:pid, name:n, qualification:q, experience_yrs:val("pYears") || null,
-      location:val("pLoc"), languages:chips("pLangs"), bio:val("pBio"),
-      consultation_options:specs, fee_note:val("pFee") || null, availability:val("pAvail"),
-      photo_path: photo ? photo.name : null, verification_status:"pending", is_demo:false };
-    try{ row.user_id = (RA_AUTH.current() && RA_AUTH.current().supabaseId) || null; }catch(_){}
-    if(!row.user_id) delete row.user_id;
+      var pid = "prof-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
+      var row = { id:pid, name:n, qualification:q, experience_yrs:val("pYears") || null,
+        location:val("pLoc"), languages:chips("pLangs"), bio:val("pBio"),
+        consultation_options:specs, fee_note:val("pFee") || null, availability:val("pAvail"),
+        photo_path: photo ? photo.name : null, verification_status:"pending", is_demo:false };
+      // Link the row to this applicant's account only when a real session for
+      // THIS email exists (never reuse a stale session from another account).
+      try{ var me1 = RA_AUTH.current(); if(me1 && me1.supabaseId && !me1.demo && me1.email === em) row.user_id = me1.supabaseId; }catch(_){}
+      if(!row.user_id) delete row.user_id;
 
-    submitApplication({
-      path:"professional", table:"professionals", row:row,
-      extraTable:"professional_specializations",
-      extraRows: row.user_id ? specs.map(function(s){ return { professional_id:pid, specialization:s }; }) : [],
-      account:{ name:n, email:em, pass:pw },
-      queue:{ topic:"Application — Legal professional", message:queueMsg }
+      submitApplication({
+        path:"professional", table:"professionals", row:row,
+        extraTable:"professional_specializations",
+        extraRows: row.user_id ? specs.map(function(s){ return { professional_id:pid, specialization:s }; }) : [],
+        account:{ name:n, email:em, pass:pw },
+        queue:{ topic:"Application — Legal professional", message:queueMsg },
+        captchaToken: cap.token || undefined
+      });
     });
   });
 
@@ -455,27 +559,31 @@
     var logo = fileNote("oLogo"); if(logo && logo.error) return bad(logo.error, "oLogo");
     var trap = spamTrap(); if(trap) return bad(trap);
 
-    var docLines = [];
-    if(doc) docLines.push("Registration file recorded: " + doc.name + " (not uploaded — original requested during verification).");
-    if(logo) docLines.push("Logo recorded: " + logo.name + " (not uploaded yet).");
-    var queueMsg =
-      "ORGANISATION APPLICATION (submitted via signup)\n" +
-      "Organisation: " + n + "\nContact: " + person + " (" + val("oType") + ")\nEmail: " + em + "\nPhone: " + ph + "\n" +
-      "State: " + val("oState") + "\nAddress: " + (val("oAddress") || "—") + "\nWebsite: " + (val("oWeb") || "—") + "\n" +
-      "Services: " + services.join("; ") + "\nVerification hints: " + (val("oVerify") || "—") + "\n" +
-      "About: " + val("oAbout") + "\n" + docLines.join("\n") +
-      "\nStatus: PENDING — list publicly only after admin verification.";
+    withCaptcha(panes.org).then(function(cap){
+      if(cap.error) return bad(cap.error);
+      var docLines = [];
+      if(doc) docLines.push("Registration file recorded: " + doc.name + " (not uploaded — original requested during verification).");
+      if(logo) docLines.push("Logo recorded: " + logo.name + " (not uploaded yet).");
+      var queueMsg =
+        "ORGANISATION APPLICATION (submitted via signup)\n" +
+        "Organisation: " + n + "\nContact: " + person + " (" + val("oType") + ")\nEmail: " + em + "\nPhone: " + ph + "\n" +
+        "State: " + val("oState") + "\nAddress: " + (val("oAddress") || "—") + "\nWebsite: " + (val("oWeb") || "—") + "\n" +
+        "Services: " + services.join("; ") + "\nVerification hints: " + (val("oVerify") || "—") + "\n" +
+        "About: " + val("oAbout") + "\n" + docLines.join("\n") +
+        "\nStatus: PENDING — list publicly only after admin verification.";
 
-    var oid = "org-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
-    var row = { id:oid, name:n, description:val("oAbout"), services:services, specialization:val("oType"),
-      location:val("oState"), address:val("oAddress") || null, phone:ph, email:em,
-      website:val("oWeb") || null, logo_path: logo ? logo.name : null,
-      verification_status:"pending", verification_source:val("oVerify") || null, source_note:"Applied via site signup; awaiting admin review." };
+      var oid = "org-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
+      var row = { id:oid, name:n, description:val("oAbout"), services:services, specialization:val("oType"),
+        location:val("oState"), address:val("oAddress") || null, phone:ph, email:em,
+        website:val("oWeb") || null, logo_path: logo ? logo.name : null,
+        verification_status:"pending", verification_source:val("oVerify") || null, source_note:"Applied via site signup; awaiting admin review." };
 
-    submitApplication({
-      path:"organisation", table:"organizations", row:row,
-      account:{ name:person, email:em, pass:pw },
-      queue:{ topic:"Application — Organisation", message:queueMsg }
+      submitApplication({
+        path:"organisation", table:"organizations", row:row,
+        account:{ name:person, email:em, pass:pw },
+        queue:{ topic:"Application — Organisation", message:queueMsg },
+        captchaToken: cap.token || undefined
+      });
     });
   });
 })();

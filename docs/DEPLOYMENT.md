@@ -34,8 +34,10 @@ click test first (SW-controlled navigation + redirect = `ERR_FAILED`).
 2. Dashboard → Settings → Environment Variables: add Supabase / Paystack / AI
    values per environment (Production, Preview). Redeploy after changes.
 3. Inject public keys to the browser: add a tiny snippet before `js/config.js`
-   loads, e.g. `<script>window.__ENV__={SUPABASE_URL:"...",SUPABASE_PUBLISHABLE_KEY:"...",PAYSTACK_PUBLIC_KEY:"...",AI_ENDPOINT:"/api/ai/chat"}</script>`
-   (template this in CI from env vars — never hard-code).
+   loads, e.g. `<script>window.__ENV__={SUPABASE_URL:"...",SUPABASE_PUBLISHABLE_KEY:"...",PAYSTACK_PUBLIC_KEY:"...",TURNSTILE_SITE_KEY:"...",AI_ENDPOINT:"/api/ai/chat"}</script>`
+   (template this in CI from env vars — never hard-code). `TURNSTILE_SITE_KEY`
+   is only the public Cloudflare site key; the Turnstile SECRET key belongs in
+   the Supabase Auth CAPTCHA setting, never in a page (see ENVIRONMENT.md).
 4. Verify: `/api/health` → 200; `/api/paystack/*` + `/api/ai/chat` → 501 until
    secrets are set (expected, safe); test a Paystack **test-mode** transaction
    end-to-end before going live.

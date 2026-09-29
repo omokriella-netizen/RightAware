@@ -1,4 +1,4 @@
-/* RightAware service worker (v4): offline-first public content + privacy rules.
+/* RightAware service worker (v5): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,9 +7,11 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
+/* v5: auth/trust update — new js/turnstile.js, updated index/login/signup,
+   supplied logo in headers/footers, Right of the Day (client-injected).
+   v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v4";
+const CACHE = "rightaware-v5";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
@@ -17,6 +19,7 @@ const CORE = [
   "./rights/topic.html", "./rights/arrest-rights.html",
   "./styles.css", "./app.js", "./data.js",
   "./js/config.js", "./js/db.js", "./js/auth.js", "./js/ai.js",
+  "./js/turnstile.js",
   "./js/i18n.js", "./content/i18n.js",
   "./content/rights.js", "./content/laws.js", "./content/videos.js",
   "./content/organizations.js", "./content/professionals.js",

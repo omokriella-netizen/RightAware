@@ -80,3 +80,17 @@ Frontend behaviour with/without the file:
   explanatory note; nothing breaks.
 - **with** — direct application rows, own-status panel entries, and one-click
   approve/reject from admin.html.
+
+## Verification states add-on (`supabase/verification-states.sql`)
+The schema's CHECK constraint allows `unverified | pending | verified`. The
+workflow needs a fourth distinct state — **`rejected`** (submitted → pending →
+verified **or** rejected). This optional, additive file (safe to re-run, run
+**after** `applications-access.sql`) widens both status CHECK constraints and
+refreshes the applicant's own-row read policies so My Account can show
+"Pending verification" / "Rejected" / "Verified …" truthfully.
+
+- **without** — admin.html stores a rejection as `unverified` (still private,
+  never public) and tells the admin to run the file; nothing breaks.
+- **with** — distinct rejected state, admin "Recently decided" history, and
+  applicant-facing rejected status. Public SELECT policies are unchanged either
+  way: only `verification_status='verified'` rows are ever public.

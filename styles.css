@@ -247,6 +247,43 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .skip{position:absolute;left:-999px;top:0;background:var(--green);color:#fff;padding:.5rem 1rem;z-index:200}
 .skip:focus{left:0}
 
+/* ===== Supplied official logo (assets/images/logo-rightaware.png, 2000x2000
+   transparent canvas; wordmark content box x436-1632, y896-1144).
+   The element is clipped to the wordmark so layout keeps a small footprint —
+   the logo artwork itself is never edited or redrawn. ===== */
+.logo-brand{position:relative;display:block;width:130px;height:30px;overflow:hidden;flex:none}
+.logo-brand img{position:absolute;max-width:none;width:210px;height:210px;left:-44px;top:-92px}
+.logo-brand-chip{background:#fff;border-radius:10px;width:138px;height:38px}
+.logo-brand-chip img{left:-42px;top:-90px}
+/* footers carry class "logo-logo logo-light" (see .logo-light): white chip keeps
+   the dark wordmark legible on the navy footer without editing the artwork */
+.logo-brand.logo-light{background:#fff;border-radius:10px;width:138px;height:38px}
+.logo-brand.logo-light img{left:-42px;top:-90px}
+.auth-brand{position:relative;overflow:hidden;width:206px;height:45px;margin:0 auto .9rem}
+.auth-brand img{position:absolute;max-width:none;width:335px;height:335px;left:-72px;top:-149px}
+
+/* ===== Right of the Day (homepage floating card — informational, non-blocking) ===== */
+.rot-d{position:fixed;right:1rem;bottom:1rem;z-index:60;width:min(340px,calc(100vw - 2rem));background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 18px 45px rgba(15,30,51,.22);padding:1rem 1.1rem 1.05rem;opacity:0;transform:translateY(12px);transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+.rot-d.in{opacity:1;transform:none;pointer-events:auto}
+.rot-d[hidden]{display:none}
+.rot-d-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.rot-d-eyebrow{color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem}
+.rot-d-close{border:1px solid var(--border);background:#f8fafc;border-radius:8px;width:28px;height:28px;cursor:pointer;font-weight:700;line-height:1;color:var(--muted);font-size:.9rem}
+.rot-d-close:hover{border-color:var(--green);color:var(--green)}
+.rot-d h3{font-size:1.05rem;margin:.1rem 0 .35rem}
+.rot-d p{font-size:.88rem;color:var(--muted);margin:0 0 .6rem}
+@media(max-width:600px){ .rot-d{right:.6rem;left:.6rem;width:auto;bottom:.6rem} }
+
+/* ===== CAPTCHA (Cloudflare Turnstile — configured via TURNSTILE_SITE_KEY) ===== */
+.ra-captcha{margin:.4rem 0 .9rem}
+.ra-captcha:empty{display:none}
+.captcha-note{font-size:.78rem;color:var(--muted);margin:.3rem 0 0}
+
+/* ===== Verification status pills (green = verified, gold = pending, red = rejected) ===== */
+.pill-green{display:inline-block;background:#dcfce7;color:#166534;font-size:.68rem;font-weight:800;padding:.15rem .55rem;border-radius:999px;vertical-align:middle;letter-spacing:.04em}
+.pill-red{display:inline-block;background:#fee2e2;color:#991b1b;font-size:.68rem;font-weight:800;padding:.15rem .55rem;border-radius:999px;vertical-align:middle;letter-spacing:.04em}
+.pill-gold{display:inline-block;background:var(--gold);color:#0f1e33;font-size:.68rem;font-weight:800;padding:.15rem .55rem;border-radius:999px;vertical-align:middle;letter-spacing:.04em}
+
 /* ===== v2 components ===== */
 .btn:disabled{opacity:.55;cursor:not-allowed}
 .video-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px}

@@ -10,12 +10,12 @@
 <body>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
     <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
     <div class="header-actions">
       <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -35,12 +35,13 @@
   <div id="orgTypes" class="cards-grid"></div>
 </div></section>
 <section class="section section-alt"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Verified records</span><h2>Verified organizations <span class="pill">0 PUBLISHED</span></h2><p>Full records (logo, services, location, contacts, verification badge) appear here once confirmed. The interface below is ready.</p></div>
+  <div class="section-head rv"><span class="eyebrow">Verified records</span><h2>Verified organizations <span class="pill" id="orgPubPill">0 PUBLISHED</span></h2><p>Full records (logo, services, location, contacts, verification badge) appear here once confirmed. Pending applications are never shown publicly.</p></div>
+  <div id="liveOrgBox"></div>
   <div id="orgRecords" class="cards-grid"></div>
 </div></section>
 </main>
 <footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
   <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
@@ -63,6 +64,50 @@
   render("");
   document.getElementById("orgSearch").addEventListener("submit",e=>{e.preventDefault();render(q.value);});
   q.addEventListener("input",()=>render(q.value));
+
+  /* ---- live verified records from the database ----
+     Public SELECT is row-restricted by RLS to verification_status='verified';
+     the column list is deliberately limited to safe public fields — internal
+     verification data (verification_source, source_note) and account links are
+     never requested. Pending/rejected applications cannot appear here. */
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
+  function setCount(extra){
+    var pill=document.getElementById("orgPubPill");
+    var base=(window.RA_ORGANIZATIONS||[]).filter(o=>o.verification.status==="verified").length;
+    pill.textContent=(base+(extra||0))+" PUBLISHED";
+  }
+  function loadLiveOrgs(){
+    if(!(window.RA_SUPA&&RA_SUPA.ready&&RA_SUPA.client)){
+      document.addEventListener("ra:backend-ready",function(){loadLiveOrgs();},{once:true});
+      return;
+    }
+    RA_SUPA.client.from("organizations")
+      .select("id,name,description,services,specialization,location,address,website,verification_status,verified_at")
+      .eq("verification_status","verified")
+      .order("verified_at",{ascending:false}).limit(8)
+      .then(function(r){
+        var box=document.getElementById("liveOrgBox");
+        if(!box) return;
+        var rows=(r&&!r.error&&Array.isArray(r.data))?r.data:[];
+        if(!rows.length) return;
+        box.innerHTML='<div class="section-head" style="margin-bottom:.9rem"><span class="eyebrow">Approved by RightAware</span><h2 style="font-size:1.25rem">Recently verified organizations</h2><p>Listed only after an administrator confirmed the record from an official source.</p></div>'
+          +'<div class="cards-grid">'+rows.map(function(o){
+            var svc=Array.isArray(o.services)?o.services.join(", "):(o.services||"");
+            var site=(o.website&&/^https?:\/\//i.test(o.website))?o.website:"";
+            var place=[o.location,o.address].filter(Boolean).join(" — ");
+            return '<article class="card rv" id="org-'+esc(o.id)+'"><span class="pill-green">✓ VERIFIED ORGANIZATION</span>'
+              +'<h3 style="margin-top:.5rem">'+esc(o.name)+'</h3>'
+              +(o.specialization?'<p><small>'+esc(o.specialization)+'</small></p>':'')
+              +(o.description?'<p>'+esc(o.description)+'</p>':'')
+              +(svc?'<p><small><strong>Services:</strong> '+esc(svc)+'</small></p>':'')
+              +(place?'<p><small>'+esc(place)+'</small></p>':'')
+              +(site?'<p><small><a class="link" href="'+esc(site)+'" rel="noopener nofollow" target="_blank">Official website ↗</a></small></p>':'')
+              +'<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><a class="btn btn-primary btn-sm" href="help.html#report">Contact via RightAware</a><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
+          }).join("")+'</div>';
+        setCount(rows.length);
+      }).catch(function(){});
+  }
+  loadLiveOrgs();
 })();
 </script>
 </body>

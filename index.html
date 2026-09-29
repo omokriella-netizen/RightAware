@@ -11,14 +11,14 @@
 <body>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
     <nav class="nav" aria-label="Primary">
       <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a>
     </nav>
     <div class="header-actions">
       <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search RightAware"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -36,7 +36,7 @@
       <h1>Understand your Rights.<br/><span class="highlight">Know your power.</span></h1>
       <p class="lead">RightAware helps every Nigerian understand their fundamental rights, civic responsibilities, and the laws that protect them — in simple, clear language. No legal jargon. Just knowledge you can act on.</p>
       <div class="hero-cta">
-        <a href="rights.html" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="signup.html" class="btn btn-primary btn-lg">Get Started</a>
         <a href="rights.html" class="btn btn-secondary btn-lg">Explore Rights →</a>
         <a href="ai.html" class="btn btn-ghost btn-lg">✨ Ask RightAware AI</a>
       </div>
@@ -116,7 +116,7 @@
 <footer class="footer" id="contact">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
       <p>A Nigerian Civil Tech and Legal Awareness Platform. Knowledge is power — we make the law understandable for everyone.</p>
       <p class="disclaimer">General legal information only — not legal advice. v1 uses demo/placeholder content where marked.</p>
     </div>
@@ -167,6 +167,42 @@
     var map={police:"rights/arrest-rights.html",tenancy:"rights/topic.html?id=tenancy",employment:"rights/topic.html?id=employment",women:"rights/topic.html?id=women",digital:"rights/topic.html?id=digital",other:"help.html#report"};
     o.innerHTML=(d==="Yes"?"<strong>Prioritise safety / emergency services first.</strong> Then open: ":"Recommended next page: ")+'<a class="link" href="'+map[i]+'">'+map[i]+'</a>';
   });
+
+  /* ---- Right of the Day ----
+     Highlights one existing right from content/rights.js (no invented content):
+     deterministic day-of-year pick, short explanation = the entry's own summary,
+     "Explore this right" links to its guide/overview. Dismissible card in the
+     corner — never a full-screen overlay — and it is shown at most once per
+     browser session per day (sessionStorage; cleared when the browser session ends). */
+  (function(){
+    try{
+      var det = (window.RA_RIGHTS_DETAIL||[]).filter(function(d){ return d && d.id && d.summary; });
+      if(!det.length) return;
+      var now = new Date();
+      var doy = Math.floor((now - new Date(now.getFullYear(),0,0)) / 86400000);
+      var pick = det[doy % det.length];
+      var seenKey = "ra_rotd_seen_" + now.toDateString();
+      if(sessionStorage.getItem(seenKey)) return;   // already shown this session
+      sessionStorage.setItem(seenKey, "1");
+      var href = pick.fullGuide || ("rights/topic.html?id=" + pick.id);
+      var tag = pick.fullGuide ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
+      var el = document.createElement("aside");
+      el.className = "rot-d";
+      el.id = "rotOfTheDay";
+      el.setAttribute("aria-label", "Right of the Day");
+      el.innerHTML = '<div class="rot-d-head"><span class="rot-d-eyebrow">✦ Right of the Day</span>'
+        + '<button class="rot-d-close" type="button" aria-label="Dismiss Right of the Day">✕</button></div>'
+        + '<h3>' + pick.icon + ' ' + pick.title + '</h3>'
+        + '<p>' + pick.summary + '</p>'
+        + tag + ' <a class="btn btn-primary btn-sm" style="margin-left:.4rem" href="' + href + '">Explore this right</a>';
+      document.body.appendChild(el);
+      setTimeout(function(){ el.classList.add("in"); }, 700);
+      el.querySelector(".rot-d-close").addEventListener("click", function(){
+        el.classList.remove("in");
+        setTimeout(function(){ el.hidden = true; }, 400);
+      });
+    }catch(_){}
+  })();
 })();
 </script>
 </body>

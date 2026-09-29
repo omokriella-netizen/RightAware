@@ -10,12 +10,12 @@
 <body>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+    <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
     <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
     <div class="header-actions">
       <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="rights.html">Get Started</a>
+      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -52,7 +52,7 @@
   <p class="form-note" id="reqOut"></p>
 </div></div>
 <footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a><p>Knowledge is power.</p><p class="disclaimer">Demo profiles only — not real lawyers. General information, not legal advice.</p></div>
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">Demo profiles only — not real lawyers. General information, not legal advice.</p></div>
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
   <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
@@ -80,7 +80,7 @@
         var areas=Array.isArray(p.consultation_options)?p.consultation_options.join(", "):(p.consultation_options||"");
         var langs=Array.isArray(p.languages)?p.languages.join(", "):(p.languages||"");
         var rating=(p.rating_avg&&p.ratings_count)?(' • ⭐ '+p.rating_avg+' ('+p.ratings_count+')'):'';
-        return '<article class="card lawyer" id="'+p.id+'"><span class="pill">VERIFIED</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
+        return '<article class="card lawyer" id="'+p.id+'"><span class="pill-green">✓ VERIFIED LEGAL PROFESSIONAL</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
           +'<small>'+esc(p.location||"")+(p.qualification?' • '+esc(p.qualification):'')+(p.experience_yrs?' • '+esc(p.experience_yrs)+' yrs':'')+rating+'</small>'
           +(areas?'<p><small>Areas: '+esc(areas)+'</small></p>':'')
           +(langs?'<p><small>Languages: '+esc(langs)+'</small></p>':'')
@@ -96,7 +96,10 @@
       document.addEventListener("ra:backend-ready",function(){loadLive();},{once:true});
       return;
     }
-    RA_SUPA.client.from("professionals").select("*")
+    // Safe public columns only: never request user_id, photo_path or the
+    // internal verification fields (verification_source) from the client.
+    RA_SUPA.client.from("professionals")
+      .select("id,name,qualification,experience_yrs,location,languages,bio,consultation_options,fee_note,availability,rating_avg,ratings_count,verified_at,verification_status,created_at")
       .eq("verification_status","verified").eq("is_demo",false)
       .order("created_at",{ascending:false}).limit(12)
       .then(function(r){

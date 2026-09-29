@@ -1,9 +1,13 @@
-/* RightAware auth (v2): demo sessions today, Supabase Auth-ready.
-   DEMO BEHAVIOUR: signup/login store a local session only (NOT secure, NOT synced).
-   Never reuse a real password here. To go live: set BACKEND=supabase + keys in
-   window.__ENV__, implement js/supabase-client.js per DATABASE.md, and flip
-   RA_FEATURES.authMode to "supabase". All call sites use this API, so no page
-   rewrites are needed. Admin roles are checked server-side (never trust client). */
+/* RightAware auth (v3): demo sessions today, Supabase Auth when connected.
+   DEMO BEHAVIOUR: without a backend, signup/login store a local session only
+   (NOT secure, NOT synced) — never reuse a real password there.
+   LIVE BEHAVIOUR (js/auth.js below): email + password with Supabase email
+   confirmation — an address is treated as verified ONLY after Supabase returns a
+   real session; unconfirmed / already-registered / expired-link / resend /
+   password-recovery states each have their own result. CAPTCHA tokens from
+   js/turnstile.js are passed through as captcha_token (secret stays in Supabase).
+   Admin roles are checked server-side (never trust client). All call sites use
+   this API, so no page rewrites are needed. */
 (function(){
   const KEY = "ra_demo_user";
   const Auth = {
@@ -79,36 +83,144 @@
     }catch(_){}
     return null;
   };
-  Auth.signupLive = async function(name, email, pass){
+  /* Root URL of the site (for Supabase email links). js/auth.js is a sync script
+     loaded from <root>/js/auth.js, so document.currentScript gives the root even
+     when the current page is /rights/*. */
+  var ROOT = "";
+  try{
+    var cs = document.currentScript && document.currentScript.src;
+    if(cs) ROOT = cs.replace(/js\/auth\.js(?:\?.*)?$/, "");
+  }catch(_){}
+  if(!ROOT){ try{ ROOT = location.href.replace(/[^/]*$/, ""); }catch(_){} }
+  Auth.signupRedirect = function(){ return ROOT + "login.html?confirmed=1"; };
+  Auth.recoveryRedirect = function(){ return ROOT + "login.html?recovery=1"; };
+
+  /* Create an account with Supabase Auth (email + password).
+     The project REQUIRES email confirmation (mailer_autoconfirm = false), so a
+     signup normally returns a user WITHOUT a session — the address is NOT
+     verified at that point and no local session is created for it. Only a real
+     Supabase session (confirmation completed, or confirmation disabled on the
+     server) is ever mirrored as a login here.
+     Returns: {ok:true, needsConfirm:true, email} | {ok:true, note} |
+              {ok:false, alreadyRegistered:true, error} | {ok:false, error} */
+  Auth.signupLive = async function(name, email, pass, o){
+    o = o || {};
     if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };
     try{
-      var r = await RA_SUPA.client.auth.signUp({ email:email, password:pass, options:{ data:{ name:name } } });
-      if(r.error) return { ok:false, error:r.error.message };
-      if(r.data && r.data.user) this.mirrorSession(r.data.user);
-      var needsConfirm = !(r.data && r.data.session);
-      return { ok:true, note: needsConfirm ? "Check your inbox to confirm email before login." : "Signed in." };
+      var opts = { data:{ name:name }, emailRedirectTo: this.signupRedirect() };
+      if(o.captchaToken) opts.captchaToken = o.captchaToken;
+      var r = await RA_SUPA.client.auth.signUp({ email:email, password:pass, options:opts });
+      if(r.error){
+        var m = r.error.message || "";
+        if(/already (been )?registered/i.test(m))
+          return { ok:false, alreadyRegistered:true, error:"An account with this email already exists." };
+        return { ok:false, error:m };
+      }
+      var user = r.data && r.data.user;
+      // Supabase reports "email exists but is still unconfirmed" as an empty
+      // identities list — offer the confirmation-email path, never a silent login.
+      if(user && Array.isArray(user.identities) && user.identities.length === 0)
+        return { ok:false, alreadyRegistered:true, error:"An account with this email already exists." };
+      if(r.data && r.data.session){         // server has confirmation disabled: signed in at once
+        if(user) this.mirrorSession(user);
+        return { ok:true, note:"Signed in." };
+      }
+      // Account exists, EMAIL NOT CONFIRMED yet: no session and no local login.
+      return { ok:true, needsConfirm:true, email:(user && user.email) || email,
+        note:"Check your inbox — a confirmation link was sent to " + ((user && user.email) || email)
+           + ". Your account activates only after you open it." };
     }catch(_){ return { ok:false, error:"Signup failed. Try again." }; }
   };
-  Auth.loginLive = async function(email, pass){
+  /* Sign in. With confirmation required, GoTrue refuses unconfirmed addresses —
+     surface that as its own state (with a resend action) instead of a raw error. */
+  Auth.loginLive = async function(email, pass, o){
+    o = o || {};
     if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };
     try{
-      var r = await RA_SUPA.client.auth.signInWithPassword({ email:email, password:pass });
-      if(r.error) return { ok:false, error:r.error.message };
+      var creds = { email:email, password:pass };
+      // supabase-js v2: captchaToken lives in credentials.options (NOT top level)
+      if(o.captchaToken) creds.options = { captchaToken:o.captchaToken };
+      var r = await RA_SUPA.client.auth.signInWithPassword(creds);
+      if(r.error){
+        var m = r.error.message || "";
+        if(/not confirmed/i.test(m)) return { ok:false, needsConfirm:true, error:"Email not confirmed" };
+        if(/invalid login credentials/i.test(m)) return { ok:false, error:"Wrong email or password." };
+        if(/rate limit|too many requests/i.test(m)) return { ok:false, error:"Too many attempts — wait a moment and try again." };
+        return { ok:false, error:m };
+      }
       if(r.data && r.data.user) this.mirrorSession(r.data.user);
       return { ok:true };
     }catch(_){ return { ok:false, error:"Login failed. Try again." }; }
+  };
+  /* Re-send the confirmation email (signup verification). */
+  Auth.resendConfirmation = async function(email, o){
+    o = o || {};
+    if(!this.supabaseReady()) return "Backend not connected — confirmation emails are not sent in demo mode.";
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return "⚠ Enter the email address you signed up with.";
+    try{
+      var opts = { emailRedirectTo: this.signupRedirect() };
+      if(o.captchaToken) opts.captchaToken = o.captchaToken;
+      var r = await RA_SUPA.client.auth.resend({ type:"signup", email:email, options:opts });
+      if(r.error) return "⚠ " + (r.error.message || "Could not resend — try again shortly.");
+      return "✅ Confirmation email resent — open the link in your inbox (check spam too).";
+    }catch(_){ return "⚠ Could not resend — try again shortly."; }
+  };
+  /* Password reset: request a recovery link … */
+  Auth.recoverLive = async function(email, o){
+    o = o || {};
+    if(!this.supabaseReady()) return this.requestRecovery(email);
+    try{
+      var opts = { redirectTo: this.recoveryRedirect() };
+      if(o.captchaToken) opts.captchaToken = o.captchaToken;
+      var r = await RA_SUPA.client.auth.resetPasswordForEmail(email, opts);
+      return r.error ? ("⚠ " + r.error.message)
+        : "✅ Reset link sent — check your inbox (and spam). Open it to choose a new password.";
+    }catch(_){ return this.requestRecovery(email); }
+  };
+  /* … and apply the new password once the recovery link has opened a session. */
+  Auth.completeRecovery = async function(newPass){
+    if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };
+    if(!newPass || newPass.length < 8) return { ok:false, error:"Password must be at least 8 characters." };
+    try{
+      var r = await RA_SUPA.client.auth.updateUser({ password:newPass });
+      if(r.error) return { ok:false, error:r.error.message || "Could not update the password." };
+      return { ok:true };
+    }catch(_){ return { ok:false, error:"Could not update the password — try again." }; }
   };
   Auth.logoutLive = async function(){
     try{ if(this.supabaseReady()){ await RA_SUPA.client.auth.signOut(); } }catch(_){}
     this.logout();
     try{ Auth.mode = "demo"; }catch(_){}
   };
-  Auth.recoverLive = async function(email){
-    if(!this.supabaseReady()) return this.requestRecovery(email);
+
+  /* ---- Pending professional / organisation applications ----
+     While the confirmation email is still unopened there is NO Supabase session,
+     so the direct application insert is rejected by row-level security. The
+     payload (never a password) is kept on this device and attached to the
+     account automatically after the user confirms the email and signs in. */
+  Auth.savePendingApplication = function(p){
+    try{ localStorage.setItem("ra_pending_app", JSON.stringify(p)); }catch(_){}
+  };
+  Auth.pendingApplication = function(){
+    try{ return JSON.parse(localStorage.getItem("ra_pending_app") || "null"); }catch(_){ return null; }
+  };
+  Auth.flushPendingApplication = async function(){
+    if(!this.supabaseReady()) return null;
+    var p = this.pendingApplication();
+    if(!p || !p.table || !p.row) return null;
+    var me = this.current() || {};
+    if(!me.supabaseId || !me.email) return null;
     try{
-      var r = await RA_SUPA.client.auth.resetPasswordForEmail(email);
-      return r.error ? r.error.message : "Recovery email sent — check inbox (and spam).";
-    }catch(_){ return this.requestRecovery(email); }
+      var row = p.row;
+      if(p.table === "professionals") row.user_id = me.supabaseId;
+      var r = await RA_SUPA.client.from(p.table).insert(row);
+      if(r.error) return null;               // still not allowed — try again next sign-in
+      if(p.extraTable && p.extraRows && p.extraRows.length){
+        try{ await RA_SUPA.client.from(p.extraTable).insert(p.extraRows); }catch(_){}
+      }
+      try{ localStorage.removeItem("ra_pending_app"); }catch(_){}
+      return { table:p.table, ref:p.ref || null };
+    }catch(_){ return null; }
   };
   try{
     document.addEventListener("ra:backend-ready", function(){
@@ -118,6 +230,10 @@
         RA_SUPA.client.auth.onAuthStateChange(function(ev, session){
           if(session && session.user) Auth.mirrorSession(session.user);
           if(ev === "SIGNED_OUT") Auth.logout();
+          if(ev === "SIGNED_IN" || ev === "INITIAL_SESSION"){
+            // Attach an application submitted before the confirmation email was opened.
+            setTimeout(function(){ Auth.flushPendingApplication(); }, 800);
+          }
         });
       }catch(_){}
     });

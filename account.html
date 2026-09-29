@@ -9,7 +9,7 @@
 </head>
 <body>
 <header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-mark">RA</span><span class="logo-text">RightAware<span class="logo-dot">.</span></span></a>
+  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
   <div class="header-actions"><span id="whoChip" class="tag"></span><button class="btn btn-outline btn-sm" id="logoutBtn">Log Out</button>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
@@ -123,21 +123,52 @@
       RA_AUTH.myApplication().then(function(app){
         if(!app) return;
         var st = app.row.verification_status;
-        var label = st==="verified" ? "APPROVED — publicly listed" : st==="pending" ? "AWAITING ADMIN REVIEW" : "UNVERIFIED";
+        var isPro = app.path === "professional";
+        var label, pill, hint;
+        if(st === "verified"){
+          label = isPro ? "✓ VERIFIED LEGAL PROFESSIONAL" : "✓ VERIFIED ORGANIZATION";
+          pill = "pill-green";
+          hint = "Approved by an administrator — shown publicly as verified.";
+        } else if(st === "pending"){
+          label = "PENDING VERIFICATION";
+          pill = "pill-gold";
+          hint = "Submitted and awaiting an administrator's review. Your details stay private — only administrators can see them until approval.";
+        } else if(st === "rejected"){
+          label = "APPLICATION REJECTED";
+          pill = "pill-red";
+          hint = "An administrator reviewed this application and did not approve the listing. Contact us if you need clarification.";
+        } else {
+          label = "NOT VERIFIED";
+          pill = "pill-gold";
+          hint = "Not verified — this record is never shown publicly as verified.";
+        }
         var extra = document.createElement("article");
         extra.className = "card";
         extra.innerHTML = '<span class="tag">Application (live)</span><h3>'
-          + (app.path==="professional" ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
-          + '<p>'+esc(app.row.name)+' — <strong>'+label+'</strong></p>'
-          + '<p><small>'+(st==="verified"
-              ? "Approved by an administrator."
-              : "Your details stay private — only administrators can see them until approval.")+'</small></p>';
+          + (isPro ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
+          + '<p>'+esc(app.row.name)+' — <span class="'+pill+'">'+label+'</span></p>'
+          + '<p><small>'+hint+'</small></p>';
         box.appendChild(extra);
       }).catch(function(){});
     }
   }
   document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); });
   paintSync(); renderStatus();
+
+  /* If an application was submitted before the confirmation email was opened,
+     attach it to this signed-in account now (localStorage payload, never a password). */
+  if(RA_AUTH.supabaseReady()){
+    RA_AUTH.flushPendingApplication().then(function(r){
+      if(!r) return;
+      renderStatus();
+      var box = document.getElementById("statusBox");
+      var note = document.createElement("article");
+      note.className = "card";
+      note.innerHTML = '<span class="tag">Application</span><h3>📎 Application attached</h3>'
+        + '<p>Your earlier application was attached to this account — status: <span class="pill-gold">PENDING VERIFICATION</span>.</p>';
+      box.prepend(note);
+    });
+  }
 
   renderSaved(); renderConsult(); renderNotif();
 })();
