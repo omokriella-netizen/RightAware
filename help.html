@@ -28,7 +28,7 @@
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
   <span class="eyebrow">Get Help</span><h1>Find legal help, fast</h1>
-  <p class="lead-dark">If anyone is in immediate danger, prioritise safety and official emergency channels first. Then use the paths below. Saved reports stay on this device in v1 — nothing is sent anywhere yet.</p>
+  <p class="lead-dark">If anyone is in immediate danger, prioritise safety and official emergency channels first. Then use the paths below. Reports you send through the form arrive in the RightAware review queue, where staff check them — nothing you submit is shown publicly.</p>
   <div class="chip-row"><a href="#paths">Paths</a><a href="#professionals">Professionals</a><a href="#organisations">Organisations</a><a href="#emergency">Emergency</a><a href="#report">Report</a></div>
   </div>
   <figure class="page-hero-media"><img src="assets/images/help-thinking-man.jpg" alt="A young man resting his chin on his hand, thinking" loading="lazy"/></figure>
@@ -65,17 +65,17 @@
 
 <section class="section section-dark" id="report"><div class="container help-grid">
   <div class="rv"><span class="eyebrow eyebrow-light">Report a rights concern</span><h2>Structure your complaint</h2>
-    <p>Filling this in creates a tidy summary you can copy into an official complaint. In v1 it is stored only in this browser (demo) — it is not transmitted to anyone.</p>
+    <p>Filling this in sends the RightAware review team a tidy summary you can also copy into an official complaint. Reports are handled through the same private inbox as contact messages — nothing you submit is shown publicly.</p>
     <ul class="help-list"><li><strong>Do:</strong> stick to facts, dates and evidence.</li><li><strong>Do:</strong> keep copies of everything you submit elsewhere.</li><li><strong>Don't:</strong> include passwords, OTPs or bank details.</li></ul>
     <figure class="figure" style="max-width:360px;margin-top:1rem"><img src="assets/images/help-girl-pointing.jpg" alt="A girl standing with her arms crossed while hands point at her" loading="lazy"/><figcaption>Being singled out or accused is not proof — document facts and get advice.</figcaption></figure>
   </div>
   <form class="help-form rv" id="reportForm">
-    <h3>Report form (demo — local only)</h3>
+    <h3>Report a concern</h3>
     <label>Category<select id="repCat"><option>Police / arrest</option><option>Rent / tenancy</option><option>Employment</option><option>Women / children safety</option><option>Consumer</option><option>Digital / scam</option><option>Other</option></select></label>
     <div class="form-row"><label>State<input id="repState" placeholder="e.g. Lagos"/></label><label>Date of incident<input id="repDate" type="date"/></label></div>
     <label>What happened?<textarea id="repText" rows="4" placeholder="Facts: who, what, where, when…" required></textarea></label>
     <label>Evidence you have (describe)<input id="repEv" placeholder="e.g. photos, receipts, messages, witnesses"/></label>
-    <button class="btn btn-primary" type="submit">Generate summary</button>
+    <button class="btn btn-primary" type="submit">Send report</button>
     <button class="btn btn-secondary" type="button" id="repCopy">Copy summary</button>
     <p class="form-note" id="repOut">General information only — not legal advice.</p>
   </form>
@@ -85,7 +85,7 @@
   <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-  <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+  <div><h4>Contact Us</h4><p>📧 <a href="mailto:rightawareofficial@gmail.com">rightawareofficial@gmail.com</a></p><p>📞 +234 907 362 7577</p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
@@ -100,12 +100,46 @@
   }).join("");
   var F=document.getElementById("reportForm");
   function summary(){
-    return "RIGHTAWARE CONCERN SUMMARY (demo, "+new Date().toLocaleString()+")\nCategory: "+document.getElementById("repCat").value+"\nState: "+document.getElementById("repState").value+"\nDate: "+document.getElementById("repDate").value+"\nWhat happened:\n"+document.getElementById("repText").value+"\nEvidence: "+document.getElementById("repEv").value+"\n---\nGeneral information only, not legal advice.";
+    return "RIGHTAWARE CONCERN SUMMARY ("+new Date().toLocaleString()+")\nCategory: "+document.getElementById("repCat").value+"\nState: "+document.getElementById("repState").value+"\nDate: "+document.getElementById("repDate").value+"\nWhat happened:\n"+document.getElementById("repText").value+"\nEvidence: "+document.getElementById("repEv").value+"\n---\nGeneral information only, not legal advice.";
+  }
+  /* Reports go to contact_messages (topic "Report a concern") — the same private
+     admin inbox as contact messages. The visitor keeps a local copy and can paste
+     the summary into an official complaint channel as well. */
+  function deliver(payload, cb){
+    function attempt(){
+      if(!(window.RA_SUPA && RA_SUPA.client)){ cb("the RightAware service is not responding"); return; }
+      RA_SUPA.client.from("contact_messages").insert(payload).then(function(r){
+        cb((r && !r.error) ? null : ((r && r.error && r.error.message) || "delivery failed"));
+      }).catch(function(){ cb("network problem"); });
+    }
+    if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client){ attempt(); return; }
+    var done = false;
+    function once(){ if(done) return; done = true; attempt(); }
+    document.addEventListener("ra:backend-ready", once, { once:true });
+    setTimeout(once, 6000);
   }
   F.addEventListener("submit",function(e){
     e.preventDefault();
-    try{var a=JSON.parse(localStorage.getItem("ra_reports")||"[]");a.push({at:new Date().toISOString(),s:summary()});localStorage.setItem("ra_reports",JSON.stringify(a));}catch(_){}
-    document.getElementById("repOut").textContent="Summary generated and saved on this device ("+(JSON.parse(localStorage.getItem("ra_reports")||"[]")).length+" stored). Copy it into an official complaint channel.";
+    var out = document.getElementById("repOut");
+    var text = document.getElementById("repText").value.trim();
+    if(text.length < 10){
+      out.textContent = "⚠ Please describe what happened (at least 10 characters) so the report is useful.";
+      out.style.color = "#fca5a5";
+      document.getElementById("repText").focus();
+      return;
+    }
+    var s = summary();
+    try{ var a=JSON.parse(localStorage.getItem("ra_reports")||"[]");a.push({at:new Date().toISOString(),s:s});localStorage.setItem("ra_reports",JSON.stringify(a.slice(0,20)));}catch(_){}
+    out.style.color = ""; out.textContent = "Sending…";
+    deliver({ name:"Get Help report", topic:"Report a concern", message:s }, function(err){
+      if(!err){
+        out.textContent = "✅ Report sent to the RightAware review team. Keep your own copy with “Copy summary”.";
+        out.style.color = "";
+      } else {
+        out.textContent = "⚠ Not sent (" + err + "). Copy the summary and email rightawareofficial@gmail.com, or try again shortly.";
+        out.style.color = "#fca5a5";
+      }
+    });
   });
   document.getElementById("repCopy").addEventListener("click",function(){ navigator.clipboard&&navigator.clipboard.writeText(summary()); });
 })();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Contact Us — RightAware</title>
-<meta name="description" content="Contact RightAware: placeholder contact details and a working demo contact form."/>
+<meta name="description" content="Contact RightAware: general enquiries and partnerships by email, phone and our Abuja office, plus a message form delivered straight to the team."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -28,26 +28,27 @@
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
   <span class="eyebrow">Contact Us</span><h1>Talk to the RightAware team</h1>
-  <p class="lead-dark">Contact details below are <strong>placeholders</strong> until real ones are provided. The form validates your input, blocks obvious spam, and delivers messages to RightAware when the backend is connected (otherwise it stays on this device).</p>
+  <p class="lead-dark">Email us, call us, or send a message below — the form validates your input, blocks obvious spam and delivers your message straight to the RightAware team. For urgent rights issues, use <a class="link" href="help.html">Get Help</a> first.</p>
   </div>
   <figure class="page-hero-media"><img src="assets/images/contact-hands-together.jpg" alt="Many hands joined together in the centre of a circle" loading="lazy"/></figure>
 </div></section>
 <section class="section"><div class="container contact-grid">
   <div class="rv">
-    <article class="card"><h3>📧 Email</h3><p>hello@rightaware.ng <span class="pill">PLACEHOLDER</span></p><p><small>Replace with the real support inbox before launch.</small></p></article><br/>
-    <article class="card"><h3>📍 Office</h3><p>Lagos, Nigeria <span class="pill">PLACEHOLDER</span></p><p><small>Full address to be confirmed.</small></p></article><br/>
-    <article class="card"><h3>🕘 Hours</h3><p>Mon–Fri, 9am–5pm (WAT) <span class="pill">PLACEHOLDER</span></p><p><small>Support hours to be confirmed.</small></p></article><br/>
+    <article class="card"><h3>📧 General enquiries</h3><p><a class="link" href="mailto:rightawareofficial@gmail.com">rightawareofficial@gmail.com</a></p></article><br/>
+    <article class="card"><h3>🤝 Partnerships</h3><p><a class="link" href="mailto:rightawarepartnerships@gmail.com">rightawarepartnerships@gmail.com</a></p></article><br/>
+    <article class="card"><h3>📞 Phone</h3><p><a class="link" href="tel:+2349073627577">+234 907 362 7577</a></p></article><br/>
+    <article class="card"><h3>📍 Office &amp; availability</h3><p>Abuja, Nigeria — <strong>Open 24/7</strong></p></article><br/>
     <article class="card"><h3>🚨 Urgent rights issue?</h3><p>Don't wait for email — use <a class="link" href="help.html">Get Help</a> and official emergency channels.</p></article>
   </div>
   <form class="form-card rv" id="contactForm" novalidate>
     <h2>Send a message</h2>
     <div class="form-row"><label>Full name<input id="cName" required placeholder="Your name" autocomplete="name"/></label><label>Email<input id="cEmail" type="email" required placeholder="you@example.com" autocomplete="email"/></label></div>
-    <label>Topic<select id="cTopic"><option>General question</option><option>Correction to a guide</option><option>Professional onboarding (lawyer/clinic/NGO)</option><option>Partnership</option><option>Press</option></select></label>
+    <label>Topic<select id="cTopic"><option>General enquiry</option><option>Partnership</option><option>Technical support</option><option>Legal information / help</option><option>Directory (professionals &amp; organisations)</option><option>Correction to a guide</option><option>Report a concern</option><option>Professional onboarding (lawyer/clinic/NGO)</option><option>Press</option><option>Other</option></select></label>
     <label>Message<textarea id="cMsg" rows="5" required placeholder="How can we help?"></textarea></label>
     <!-- spam trap: hidden from people, tempting to bots -->
     <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>Leave this empty<input id="cWebsite" tabindex="-1" autocomplete="off"/></label></div>
     <button class="btn btn-primary" type="submit">Send Message</button>
-    <p class="form-note" id="cOut" aria-live="polite">Validated client-side; a copy is always kept on this device. Delivery goes to RightAware when the backend is connected.</p>
+    <p class="form-note" id="cOut" aria-live="polite">Your message goes to the RightAware team. We only use your email address to reply — nothing else.</p>
   </form>
 </div></section>
 </main>
@@ -55,14 +56,16 @@
   <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p></div>
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-  <div><h4>Contact</h4><p>📧 hello@rightaware.ng (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form></div>
+  <div><h4>Contact</h4><p>📧 <a href="mailto:rightawareofficial@gmail.com">rightawareofficial@gmail.com</a></p><p>📞 +234 907 362 7577</p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="app.js"></script>
+<script src="js/db.js"></script>
 <script>
 (function(){
   "use strict";
   var form = document.getElementById("contactForm"),
       out  = document.getElementById("cOut");
+  var FALLBACK = "rightawareofficial@gmail.com";
   var loadedAt = Date.now();
 
   function fail(msg){ out.textContent = "⚠ " + msg; out.style.color = "#b91c1c"; }
@@ -79,6 +82,24 @@
     }catch(_){ return true; }
   }
 
+  /* Queue the message for delivery instead of losing it. js/db.js pushes items
+     marked "stored-local" to Supabase as soon as the backend is available, so an
+     interrupted send still reaches contact_messages on the next visit. */
+  function queue(payload){
+    try{
+      var all = JSON.parse(localStorage.getItem("ra_messages") || "[]");
+      all.unshift({ at:new Date().toISOString(), name:payload.name, email:payload.email,
+                    topic:payload.topic, msg:payload.message, status:"stored-local" });
+      localStorage.setItem("ra_messages", JSON.stringify(all.slice(0,20)));
+      return true;
+    }catch(_){ return false; }
+  }
+  function couldNotSend(payload, why){
+    var queued = queue(payload);
+    fail("Not sent (" + why + "). " + (queued ? "Your message is queued on this device and goes out on your next visit. " : "")
+      + "Or email us now at " + FALLBACK + ".");
+  }
+
   function deliver(payload){
     function withClient(cb){
       if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client){ cb(RA_SUPA.client); return; }
@@ -86,15 +107,15 @@
       function once(){ if(done) return; done = true;
         if(window.RA_SUPA && RA_SUPA.client) cb(RA_SUPA.client); else cb(null); }
       document.addEventListener("ra:backend-ready", once, { once:true });
-      setTimeout(once, 6000); // connector still unavailable → local-only
+      setTimeout(once, 6000); // connector still unavailable → queue for later
     }
     withClient(function(client){
-      if(!client){ ok("Saved on this device only — the backend is not connected, so this message was NOT delivered to RightAware."); return; }
+      if(!client){ couldNotSend(payload, "the RightAware service is not responding"); return; }
       client.from("contact_messages").insert(payload).then(function(r){
         if(r && !r.error){ ok("Message sent to RightAware. We'll only use your email to reply."); }
-        else { ok("Saved on this device only — delivery failed (" + ((r && r.error && r.error.message) || "unknown") + "). You can retry."); }
+        else { couldNotSend(payload, (r && r.error && r.error.message) || "delivery failed"); }
       }).catch(function(){
-        ok("Saved on this device only — delivery failed (network). You can retry.");
+        couldNotSend(payload, "network problem");
       });
     });
   }
@@ -119,13 +140,6 @@
     if(!throttleOK()){ fail("You've sent several messages in the last few minutes. Please wait a little before sending another."); return; }
 
     var payload = { name:name, email:email, topic:topic, message:msg };
-
-    /* always keep the visitor's own copy on this device */
-    try{
-      var all = JSON.parse(localStorage.getItem("ra_messages") || "[]");
-      all.push({ at:new Date().toISOString(), name:name, email:email, topic:topic, msg:msg });
-      localStorage.setItem("ra_messages", JSON.stringify(all));
-    }catch(_){}
 
     var btn = form.querySelector("button[type=submit]");
     btn.disabled = true; out.style.color = "";
