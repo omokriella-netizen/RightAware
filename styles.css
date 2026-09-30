@@ -368,3 +368,16 @@ img{max-width:100%;height:auto}
 .empty-state{background:#fff;border:1px dashed var(--border);border-radius:var(--radius);padding:1.4rem;text-align:center}
 .empty-state p:last-child{margin-bottom:0}
 #resSearchStatus:empty,#vidSearchStatus:empty,#faqSearchStatus:empty{display:none}
+
+/* ===== mailto: launch guard (only appears when no mail app opened) ===== */
+.mail-fallback{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:1000;
+  display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;max-width:min(92vw,36rem);
+  background:#0f1b3d;color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:.7rem;
+  padding:.7rem .85rem;box-shadow:0 12px 32px rgba(0,0,0,.38);font-size:.9rem;line-height:1.45}
+.mail-fallback-msg{flex:1 1 13rem}
+.mail-fallback .mail-addr{font-weight:700;word-break:break-all}
+.mail-fallback button{font:inherit;font-weight:700;border:0;border-radius:.5rem;cursor:pointer;padding:.42rem .8rem}
+.mail-fallback .mail-copy{background:#ffd400;color:#0f1b3d}
+.mail-fallback .mail-copy:hover,.mail-fallback .mail-copy:focus-visible{background:#ffe14d}
+.mail-fallback .mail-close{background:transparent;color:#fff;font-size:1.25rem;line-height:1;padding:.1rem .45rem}
+@media (max-width:600px){ .mail-fallback{bottom:.6rem;font-size:.86rem} }

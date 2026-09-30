@@ -103,5 +103,64 @@
       dictS.onerror = function(){ /* English-only; site keeps working */ };
       document.head.appendChild(dictS);
     }catch(_){}
+    // mailto: launch guard. The real <a href="mailto:..."> always runs first and
+    // is never preventDefault-ed. If the browser/OS drops the launch (no mail
+    // app registered, protocol blocked), the page never loses focus — so after
+    // a short wait we surface the address with a one-tap copy instead of
+    // silently doing nothing. tel: links are unaffected.
+    try{
+      Array.prototype.forEach.call(document.querySelectorAll('a[href^="mailto:"]'), function(a){
+        a.addEventListener("click", function(){
+          var launched = false;
+          function mark(){ launched = true; }
+          window.addEventListener("blur", mark);
+          document.addEventListener("visibilitychange", mark);
+          setTimeout(function(){
+            window.removeEventListener("blur", mark);
+            document.removeEventListener("visibilitychange", mark);
+            if(!launched) showMailFallback(a.getAttribute("href").replace(/^mailto:/i, ""));
+          }, 900);
+        });
+      });
+      function showMailFallback(addr){
+        if(!addr || document.getElementById("raMailFallback")) return;
+        function remove(){ if(box && box.parentNode) box.parentNode.removeChild(box); }
+        var box = document.createElement("div");
+        box.className = "mail-fallback";
+        box.id = "raMailFallback";
+        box.setAttribute("role", "status");
+        var msg = document.createElement("span");
+        msg.className = "mail-fallback-msg";
+        msg.textContent = "Your mail app didn\u2019t open? Email us directly:";
+        var at = document.createElement("span");
+        at.className = "mail-addr";
+        at.textContent = addr;
+        var copy = document.createElement("button");
+        copy.type = "button";
+        copy.className = "mail-copy";
+        copy.textContent = "Copy address";
+        copy.addEventListener("click", function(){
+          function ok(){ copy.textContent = "Copied \u2713"; setTimeout(remove, 1400); }
+          function manual(){
+            try{
+              var r = document.createRange(); r.selectNodeContents(at);
+              var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+            }catch(_){}
+            copy.textContent = "Press Ctrl+C";
+          }
+          if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(addr).then(ok, manual); }
+          else { manual(); }
+        });
+        var close = document.createElement("button");
+        close.type = "button";
+        close.className = "mail-close";
+        close.setAttribute("aria-label", "Dismiss email help");
+        close.textContent = "\u00d7";
+        close.addEventListener("click", remove);
+        box.appendChild(msg); box.appendChild(at); box.appendChild(copy); box.appendChild(close);
+        document.body.appendChild(box);
+        setTimeout(remove, 15000);
+      }
+    }catch(_){}
   });
 })();
