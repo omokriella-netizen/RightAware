@@ -23,7 +23,8 @@
     { "source": "/signup", "destination": "/signup.html", "permanent": true },
     { "source": "/videos", "destination": "/videos.html", "permanent": true },
     { "source": "/rights/topic", "destination": "/rights/topic.html", "permanent": true },
-    { "source": "/rights/arrest-rights", "destination": "/rights/arrest-rights.html", "permanent": true }
+    { "source": "/rights/arrest-rights", "destination": "/rights/arrest-rights.html", "permanent": true },
+    { "source": "/printables", "destination": "/printables.html", "permanent": true }
   ],
   "headers": [
     {

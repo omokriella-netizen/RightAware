@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Resources — RightAware</title>
-<meta name="description" content="Constitution guide, rights guides, videos, FAQs, organisations, helpful links and printable checklists."/>
+<meta name="description" content="Search resources: educational videos, articles, organisations, helpful links, who-does-what, rights guides, Constitution explainer, FAQs and printable checklists."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -27,14 +27,75 @@
 <main>
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
-  <span class="eyebrow">Resources</span><h1>Guides, videos, FAQs & downloads</h1>
-  <p class="lead-dark">Everything in one place. Items marked “verify” still need confirmation against official sources before final publication.</p>
-  <div class="chip-row"><a href="#constitution">Constitution</a><a href="#guides">Guides</a><a href="#videos">Videos</a><a href="#faqs">FAQs</a><a href="#organisations">Organisations</a><a href="#links">Links</a><a href="#downloads">Print</a></div>
+  <span class="eyebrow">Resources</span><h1>Videos, articles, guides, FAQs & downloads</h1>
+  <p class="lead-dark">Everything in one place, in the order you need it: search first, then videos, writing, organisations, guides, FAQs and finally print. Items marked “verify” still need confirmation against official sources before final publication.</p>
+  <div class="chip-row"><a href="#search">Search</a><a href="#videos">Videos</a><a href="#articles">Articles</a><a href="#organisations">Organizations</a><a href="#whodoeswhat">Who Does What</a><a href="#guides">Guides</a><a href="#faqs">FAQs</a><a href="#downloads">Print</a></div>
   </div>
   <figure class="page-hero-media"><img src="assets/images/resources-reading-boy.jpg" alt="A young boy reading a law book while sitting on a stack of books" loading="lazy"/></figure>
 </div></section>
 
-<section class="section" id="constitution"><div class="container">
+<section class="section" id="search"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Search resources</span><h2>Find anything on this page</h2><p>One search across videos, articles, organisations, guides, FAQs and printables below. For laws and documents, use the laws library.</p></div>
+  <form class="search-form" id="resSearchForm" role="search">
+    <input type="search" id="resSearch" placeholder="Try “arrest”, “rent”, “salary”, “evidence”…" aria-label="Search all resources on this page"/>
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+  <p class="form-note" id="resSearchStatus" aria-live="polite" style="text-align:center"></p>
+</div></section>
+
+<section class="section section-alt" id="videos"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Educational videos</span><h2>Learn it in minutes</h2><p>Short explainers by topic. Thumbnails below are marked honestly — production videos publish here as they are recorded.</p></div>
+  <form class="search-mini" id="vidSearchForm" role="search" style="max-width:520px;margin-bottom:1.2rem">
+    <input type="search" id="vidSearch" placeholder="Search videos…" aria-label="Search videos"/>
+    <button class="btn btn-primary btn-sm" type="submit">Search</button>
+  </form>
+  <p class="form-note" id="vidSearchStatus" aria-live="polite"></p>
+  <div class="cards-grid" id="resVideos"></div>
+  <div class="section-cta"><a class="btn btn-primary" href="videos.html">Learn More</a></div>
+</div></section>
+
+<section class="section" id="articles"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Articles & write-ups</span><h2>Legal explainers and civic education</h2><p>Plain-language writing with category, date, author and source — each piece links back to the material it comes from.</p></div>
+  <div class="cards-grid" id="resArticles"></div>
+  <div class="notice rv">Legal news and law-related updates will publish here through the admin dashboard. Until that is connected, only reviewed editorial pieces are listed — nothing is invented to fill the space.</div>
+</div></section>
+
+<section class="section section-alt" id="organisations"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Organizations & helpful links</span><h2>Where to go for real help</h2><p>Categories of bodies that can take your case or complaint. Contacts are published only after official confirmation.</p></div>
+  <div class="cards-grid" id="resOrgs"></div>
+  <div class="section-cta"><a class="btn btn-primary" href="organizations.html">Learn More</a></div>
+</div></section>
+
+<section class="section" id="links"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Helpful links</span><h2>Official sources to verify <span class="pill">VERIFY URLs</span></h2><p>Names of the institutions to check first. URLs are listed only once confirmed from official publications.</p></div>
+  <div class="cards-grid">
+    <article class="card rv"><h3>🏛 Constitution & legislation</h3><p>National Assembly / official gazette. Search the official portal and confirm the amended text.</p><span class="tag tag-soon">Link to be verified</span></article>
+    <article class="card rv"><h3>🚔 Police & complaints</h3><p>Nigeria Police Force and Police Service Commission complaint channels. Confirm current portals.</p><span class="tag tag-soon">Link to be verified</span></article>
+    <article class="card rv"><h3>🗳 Elections</h3><p>INEC voter information and results portals. Confirm current official domains.</p><span class="tag tag-soon">Link to be verified</span></article>
+    <article class="card rv"><h3>⚖️ Legal aid & human rights</h3><p>Legal Aid Council and human-rights complaint bodies. Confirm offices and intake process.</p><span class="tag tag-soon">Link to be verified</span></article>
+    <article class="card rv"><h3>🛒 Consumer protection</h3><p>FCCPC and sector regulators (telecoms, banking, health products). Confirm complaint portals.</p><span class="tag tag-soon">Link to be verified</span></article>
+    <article class="card rv"><h3>📱 Data protection & cybercrime</h3><p>Data-protection authority and cybercrime reporting units. Confirm current channels.</p><span class="tag tag-soon">Link to be verified</span></article>
+  </div>
+  <div class="section-cta"><a class="btn btn-outline" href="laws.html">Open the laws library</a></div>
+</div></section>
+
+<section class="section section-alt" id="whodoeswhat"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Who does what</span><h2>Which body handles your issue</h2><p>A plain-language map of the institutions people meet most often — and where each one fits.</p></div>
+  <div class="cards-grid">
+    <article class="card rv"><div class="icon">🚔</div><h3>Police & security agencies</h3><p>They prevent crime, arrest and investigate — with powers and with limits. Know what you can insist on during a stop or an arrest.</p><a class="link card-link" href="rights/topic.html?id=police">Open the guide →</a></article>
+    <article class="card rv"><div class="icon">⚖️</div><h3>Courts & the judiciary</h3><p>They interpret the law and settle disputes between people, businesses and government. Fair hearing is a constitutional right.</p><a class="link card-link" href="rights/topic.html?id=constitutional">How government works →</a></article>
+    <article class="card rv"><div class="icon">🏛</div><h3>Legal aid & human-rights bodies</h3><p>Free or low-cost help for people who cannot afford a lawyer, and bodies that receive complaints of rights violations.</p><a class="link card-link" href="organizations.html">Find organisations →</a></article>
+  </div>
+  <div class="section-cta"><a class="btn btn-outline" href="organizations.html">Learn More</a></div>
+</div></section>
+
+<section class="section" id="guides"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Guides & explainers</span><h2>Plain-language rights guides</h2><p>A preview of the <span data-rights-count>12</span> topic library. Every topic explains what the law says, what you can do and where to get help.</p></div>
+  <div class="cards-grid" id="resGuides"></div>
+  <div class="section-cta"><a class="btn btn-primary" href="rights.html">Explore Rights</a></div>
+</div></section>
+
+<section class="section section-alt" id="constitution"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Constitution</span><h2>The 1999 Constitution, simply</h2><p>Nigeria's supreme law. Any law inconsistent with it is void to the extent of the inconsistency (verify exact wording in the official text).</p></div>
   <div class="cards-grid">
     <article class="card rv"><h3>📜 Chapter IV — Fundamental Rights</h3><p>Life, dignity, liberty, fair hearing, privacy, expression, assembly, movement, non-discrimination and property. Start with the <a class="link" href="rights/topic.html?id=fundamental">overview →</a></p></article>
@@ -45,80 +106,167 @@
   <figure class="figure rv" style="max-width:420px;margin:1.2rem auto 0"><img src="assets/images/resources-lightbulb.jpg" alt="A glowing lightbulb resting in an open hand" loading="lazy"/><figcaption>Small explanations, real understanding.</figcaption></figure>
 </div></section>
 
-<section class="section section-alt" id="guides"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Rights guides</span><h2>All <span data-rights-count>12</span> topics</h2></div>
-  <div class="cards-grid" id="resGuides"></div>
-</div></section>
-
-<section class="section" id="videos"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Videos</span><h2>Educational videos <span class="pill">PLACEHOLDERS</span></h2><p>Production scripts in progress. Thumbnails below are placeholders, not published videos.</p></div>
-  <div class="cards-grid" id="resVideos"></div>
-</div></section>
-
-<section class="section section-alt" id="faqs"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">FAQs</span><h2>Frequently asked questions</h2></div>
+<section class="section" id="faqs"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">FAQs</span><h2>Questions people ask most</h2></div>
+  <form class="search-mini" id="faqSearchForm" role="search" style="max-width:520px;margin-bottom:1.2rem">
+    <input type="search" id="faqSearch" placeholder="Search FAQs…" aria-label="Search frequently asked questions"/>
+    <button class="btn btn-primary btn-sm" type="submit">Search</button>
+  </form>
+  <p class="form-note" id="faqSearchStatus" aria-live="polite"></p>
   <div id="resFaqs" style="max-width:760px"></div>
+  <div class="section-cta"><button class="btn btn-outline" id="faqMore" type="button">Show all FAQs</button></div>
 </div></section>
 
-<section class="section" id="organisations"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Organisations</span><h2>Rights-protection organisations</h2><p>Categories of help. Contacts intentionally omitted in v1 — verify via official directories.</p></div>
-  <div class="cards-grid" id="resOrgs"></div>
-</div></section>
-
-<section class="section section-alt" id="links"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Helpful links</span><h2>Official sources to verify <span class="pill">VERIFY URLs</span></h2><p>v1 lists institution names only — no links are hard-coded until URLs are confirmed from official publications.</p></div>
-  <div class="cards-grid">
-    <article class="card rv"><h3>🏛 Constitution & legislation</h3><p>National Assembly / official gazette. Search official portal; confirm the amended text.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>🚔 Police & complaints</h3><p>Nigeria Police Force + Police Service Commission complaint channels. Confirm current portals.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>🗳 Elections</h3><p>INEC voter information and results portals. Confirm current official domains.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>⚖️ Legal aid & human rights</h3><p>Legal Aid Council + human-rights complaint bodies. Confirm offices and intake process.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>🛒 Consumer protection</h3><p>FCCPC and sector regulators (telecoms, banking, health products). Confirm complaint portals.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>📱 Data protection & cybercrime</h3><p>Data-protection authority and cybercrime reporting units. Confirm current channels.</p><span class="tag tag-soon">Link to be verified</span></article>
-  </div>
-</div></section>
-
-<section class="section" id="downloads"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Download / print</span><h2>Printable checklists</h2><p>Use your browser's Print → Save as PDF. Share on WhatsApp as PDF or screenshot.</p></div>
+<section class="section section-alt" id="downloads"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Download / print</span><h2>Printable checklists</h2><p>Use your browser's Print → Save as PDF. Share on WhatsApp as a PDF or a screenshot.</p></div>
   <div class="cards-grid">
     <article class="card rv"><h3>✅ Police encounter checklist</h3><p>6 steps + exact scripts.</p><button class="btn btn-outline btn-sm" onclick="location.href='rights/arrest-rights.html'">Open & print →</button></article>
     <article class="card rv"><h3>🏠 Tenancy evidence checklist</h3><p>Agreement, receipts, photos, messages, notice dates.</p><button class="btn btn-outline btn-sm" onclick="window.print()">Print this page →</button></article>
     <article class="card rv"><h3>💼 Salary-claim file checklist</h3><p>Offer letter, payslips, demands in writing, deadlines.</p><button class="btn btn-outline btn-sm" onclick="window.print()">Print this page →</button></article>
   </div>
+  <div class="section-cta"><a class="btn btn-primary" href="printables.html">Explore More Printable Resources</a></div>
 </div></section>
 </main>
 <footer class="footer"><div class="container footer-grid">
   <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
-  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
+  <div><h4>Support</h4><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
   <div><h4>Contact Us</h4><p>📧 hello@rightaware.ng (placeholder)</p><p>📍 Lagos, Nigeria (placeholder)</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
+<script src="content/articles.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function fmtDate(iso){
+    var p = String(iso||"").split("-");
+    if(p.length !== 3) return iso||"";
+    var m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return parseInt(p[2],10) + " " + (m[parseInt(p[1],10)-1]||"") + " " + p[0];
+  }
   var det = window.RA_RIGHTS_DETAIL||[];
   function guideUrl(title, direct){
     if(direct) return direct;
-    var m = det.find(function(x){ return x.title===title && !x.fullGuide; });
+    var m = det.filter(function(x){ return x.title===title && !x.fullGuide; })[0];
     return m ? ("rights/topic.html?id="+m.id) : "rights.html";
   }
-  document.getElementById("resGuides").innerHTML=(window.RA_RIGHTS||[]).map(function(r){
-    var url=guideUrl(r.title, r.fullGuide || r.slug);
-    return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p><a class="link" href="'+url+'">Open →</a></article>';
-  }).join("") + det.filter(function(x){ return !(window.RA_RIGHTS||[]).some(function(r){return r.title===x.title;}) && !x.fullGuide; }).map(function(x){
-    return '<article class="card rv"><div class="icon">'+x.icon+'</div><h3>'+x.title+'</h3><p>'+x.summary+'</p><a class="link" href="rights/topic.html?id='+x.id+'">Open →</a></article>';
+
+  /* ---- Guides: concise preview of the library (full list lives on rights.html) ---- */
+  var G = (window.RA_RIGHTS||[]);
+  if(!G.length) G = det.slice(0,6).map(function(x){ return { icon:x.icon, title:x.title, summary:x.summary }; });
+  document.getElementById("resGuides").innerHTML = G.slice(0,6).map(function(r){
+    var url = guideUrl(r.title, r.fullGuide || r.slug);
+    return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+esc(r.title)+'</h3><p>'+esc(r.summary)+'</p><a class="link card-link" href="'+esc(url)+'">Open →</a></article>';
   }).join("");
-  document.getElementById("resVideos").innerHTML=(window.RA_VIDEOS||[]).map(function(v){
-    return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+v.meta+'</small></div><h3>'+v.title+'</h3><p>'+v.desc+'</p><span class="tag">'+v.tag+'</span></article>';
+
+  /* ---- Articles (content/articles.js) ---- */
+  document.getElementById("resArticles").innerHTML = (window.RA_ARTICLES||[]).map(function(a){
+    return '<article class="card rv"><div class="card-meta"><span class="tag">'+esc(a.category)+'</span><span>'+esc(fmtDate(a.date))+'</span></div>'
+      + '<h3>'+esc(a.title)+'</h3><p>'+esc(a.summary)+'</p>'
+      + '<p class="form-note">Source: '+esc(a.source)+' · '+esc(a.author)+'</p>'
+      + '<a class="link card-link" href="'+esc(a.url)+'">Read →</a></article>';
   }).join("");
-  document.getElementById("resFaqs").innerHTML=(window.RA_FAQS||[]).map(function(f){
-    return '<div class="faq"><button type="button">'+f.q+'</button><div class="ans">'+f.a+'</div></div>';
-  }).join("");
-  document.querySelectorAll(".faq button").forEach(function(b){b.addEventListener("click",function(){b.parentElement.classList.toggle("open");});});
+
+  /* ---- Organisations ---- */
   document.getElementById("resOrgs").innerHTML=(window.RA_ORGS||[]).map(function(o){
-    return '<article class="card rv"><h3>🏛 '+o.name+'</h3><p>'+o.help+'</p><p><small>'+o.contact+'</small></p><a class="link" href="help.html#organisations">Reporting path →</a></article>';
+    return '<article class="card rv"><h3>🏛 '+esc(o.name)+'</h3><p>'+esc(o.help)+'</p><p><small>'+esc(o.contact)+'</small></p><a class="link card-link" href="help.html#organisations">Reporting path →</a></article>';
   }).join("");
+
+  /* ---- Videos: 3 featured by default, filter the whole set when searching (spec §20) ---- */
+  var vidQ = "", resQ = "";
+  var VID_ALL = window.RA_VIDEOS||[];
+  function renderVideos(){
+    var q = vidQ.trim().toLowerCase();
+    var list = q
+      ? VID_ALL.filter(function(v){ return (v.title+" "+v.desc+" "+v.tag+" "+v.meta).toLowerCase().indexOf(q)>-1; })
+      : VID_ALL.slice(0,3);
+    document.getElementById("resVideos").innerHTML = list.length
+      ? list.map(function(v){
+          return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+esc(v.meta)+'</small></div><h3>'+esc(v.title)+'</h3><p>'+esc(v.desc)+'</p><span class="tag">'+esc(v.tag)+'</span><a class="link card-link" href="videos.html">Watch →</a></article>';
+        }).join("")
+      : '<div class="empty-state" style="grid-column:1/-1"><p>No video matches “'+esc(vidQ)+'”.</p><p><a class="link" href="videos.html">Open the full video library →</a> · <a class="link" href="search.html?q='+encodeURIComponent(vidQ)+'">search everything →</a></p></div>';
+    document.getElementById("vidSearchStatus").textContent = q
+      ? (list.length + " of " + VID_ALL.length + " videos match “" + vidQ.trim() + "”")
+      : ("Showing " + list.length + " of " + VID_ALL.length + " videos — search to filter");
+    resFilter(resQ);
+  }
+
+  /* ---- FAQs: concise set first, searchable, expandable (spec §24, §51) ---- */
+  var FAQ_ALL = window.RA_FAQS||[], FAQ_LIMIT = 5, faqQ = "", faqAll = false;
+  function renderFaqs(){
+    var q = faqQ.trim().toLowerCase(), html = "", matched = 0, shown = 0;
+    FAQ_ALL.forEach(function(f,i){
+      if(q && (f.q+" "+f.a).toLowerCase().indexOf(q)<0) return;
+      matched++;
+      var vis = !!q || faqAll || i < FAQ_LIMIT;
+      if(vis) shown++;
+      html += '<div class="faq'+(vis?"":" faq-hidden")+'"><button type="button">'+esc(f.q)+'</button><div class="ans">'+f.a+'</div></div>';
+    });
+    if(!matched){
+      html = '<div class="empty-state"><p>No question matches “'+esc(faqQ.trim())+'”.</p><p><a class="link" href="search.html?q='+encodeURIComponent(faqQ.trim())+'">Search everything →</a> · <a class="link" href="help.html">Get help →</a></p></div>';
+    }
+    var box = document.getElementById("resFaqs");
+    box.innerHTML = html;
+    Array.prototype.forEach.call(box.querySelectorAll(".faq button"), function(b){
+      b.addEventListener("click", function(){ b.parentElement.classList.toggle("open"); });
+    });
+    document.getElementById("faqSearchStatus").textContent = q
+      ? (matched + " question" + (matched===1?"":"s") + " match “" + faqQ.trim() + "”")
+      : (matched > FAQ_LIMIT ? ("Showing " + shown + " of " + matched + " questions") : "");
+    var more = document.getElementById("faqMore");
+    more.style.display = (q || matched <= FAQ_LIMIT) ? "none" : "";
+    more.textContent = faqAll ? "Show fewer FAQs" : "Show all FAQs";
+    resFilter(resQ);
+  }
+  document.getElementById("faqMore").addEventListener("click", function(){ faqAll = !faqAll; renderFaqs(); });
+
+  /* ---- Page-wide resource search: filters cards/FAQs, hides empty sections,
+          and always offers a next step instead of a dead end (spec §32, §53) ---- */
+  function resFilter(raw){
+    resQ = raw||"";
+    var q = resQ.trim().toLowerCase();
+    var secs = document.querySelectorAll("main .section");
+    var items = 0, hits = 0;
+    Array.prototype.forEach.call(secs, function(sec){
+      if(sec.id === "search") return;
+      var nodes = sec.querySelectorAll(".card, .faq, .notice, .figure");
+      if(!nodes.length) return;
+      var local = 0;
+      Array.prototype.forEach.call(nodes, function(n){
+        var hit = !q || (n.textContent||"").toLowerCase().indexOf(q) > -1;
+        n.style.display = hit ? "" : "none";
+        if(hit){ local++; }
+      });
+      items += local;
+      if(q){ sec.style.display = local ? "" : "none"; }
+      else { sec.style.display = ""; }
+      if(local) hits++;
+    });
+    var status = document.getElementById("resSearchStatus");
+    if(!q){ status.innerHTML = ""; return; }
+    status.innerHTML = hits
+      ? (hits + " section" + (hits===1?"":"s") + " · " + items + " item" + (items===1?"":"s") + " match “" + esc(resQ.trim()) + "”")
+      : '<div class="empty-state" style="text-align:center"><p>Nothing on this page matches “'+esc(resQ.trim())+'”.</p><p><a class="link" href="search.html?q='+encodeURIComponent(resQ.trim())+'">Search the whole site →</a> · <a class="link" href="rights.html">explore rights →</a> · <a class="link" href="help.html">get help →</a></p></div>';
+  }
+
+  /* ---- wiring ---- */
+  function bindSubmit(formId, handler){
+    var f = document.getElementById(formId);
+    if(!f) return;
+    f.addEventListener("submit", function(e){ e.preventDefault(); handler(); });
+  }
+  bindSubmit("resSearchForm", function(){ resFilter(document.getElementById("resSearch").value); });
+  document.getElementById("resSearch").addEventListener("input", function(e){ resFilter(e.target.value); });
+  bindSubmit("vidSearchForm", function(){ vidQ = document.getElementById("vidSearch").value; renderVideos(); });
+  document.getElementById("vidSearch").addEventListener("input", function(e){ vidQ = e.target.value; renderVideos(); });
+  bindSubmit("faqSearchForm", function(){ faqQ = document.getElementById("faqSearch").value; renderFaqs(); });
+  document.getElementById("faqSearch").addEventListener("input", function(e){ faqQ = e.target.value; renderFaqs(); });
+
+  renderVideos();
+  renderFaqs();
+  resFilter("");
 })();
 </script>
 </body>
