@@ -1,4 +1,4 @@
-/* RightAware service worker (v5): offline-first public content + privacy rules.
+/* RightAware service worker (v6): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,11 +7,17 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v5: auth/trust update — new js/turnstile.js, updated index/login/signup,
+/* v6: Stage 6 (real contact system). v5 served public HTML cache-first, so a
+    deploy stayed invisible behind the cached copy — production already had the
+    new Get Help report flow while browsers kept showing the old
+    "Report form (demo — local only)" heading. Navigations are now network-first
+    (cache fallback for offline) and static assets are stale-while-revalidate,
+    so a deploy lands without needing a cache-version bump.
+   v5: auth/trust update — new js/turnstile.js, updated index/login/signup,
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v5";
+const CACHE = "rightaware-v6";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
@@ -52,14 +58,36 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // Public content: cache-first, write-through; offline falls back to offline page.
+  // Public content:
+  //  - Navigations (HTML) are network-first, so a deploy is visible on the very
+  //    next reload; offline falls back to the cached copy, then offline.html.
+  //  - Assets (CSS/JS/images) are stale-while-revalidate: the cached copy is
+  //    served instantly and the cache refreshes in the background.
+  const store = (res) => {
+    if (res && res.ok && res.type === "basic" && !res.redirected) { // never cache a redirect-followed body
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(req, copy));
+    }
+    return res;
+  };
+  const fromNetwork = (offlineFallback) => fetch(req).then(store).catch(() => offlineFallback);
+
+  if (req.mode === "navigate") {
+    // Network-first so a deploy shows on the next reload — but a slow network
+    // must not block a page we already hold: race the network against 2.5s,
+    // then use the cached copy, then offline.html. If the network answers late,
+    // `store` has already refreshed the cache for the next reload.
+    const slowNetwork = new Promise((r) => setTimeout(() => r(undefined), 2500));
+    const winner = Promise.race([fetch(req).then(store).catch(() => undefined), slowNetwork]);
+    e.respondWith(
+      winner.then((res) => res || caches.match(req).then((hit) => hit || caches.match("./offline.html")))
+    );
+    return;
+  }
   e.respondWith(
-    caches.match(req).then((hit) => hit || fetch(req).then((res) => {
-      if (res && res.ok && res.type === "basic" && !res.redirected) { // never cache a redirect-followed body
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy));
-      }
-      return res;
-    }).catch(() => caches.match("./offline.html")))
+    caches.match(req).then((hit) => {
+      if (hit) { fromNetwork(null); return hit; }   // background refresh, no reload needed
+      return fromNetwork(caches.match("./offline.html"));
+    })
   );
 });
