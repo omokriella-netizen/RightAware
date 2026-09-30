@@ -1,9 +1,11 @@
-/* RightAware storage layer (v2): local-first, Supabase-ready.
-   Today every collection persists in this browser's localStorage (works offline,
-   survives reloads, never leaves the device). Each method mirrors the future
-   Supabase table/API so swap-in is mechanical — see DATABASE.md for the schema.
-   Collections: ra_saved, ra_reviews(+queue), ra_consultations, ra_messages,
-   ra_notifications, ra_reports, ra_requests, ra_profile, ra_settings. */
+/* RightAware storage layer (v3): localStorage-first — everything works offline
+   and survives reloads. When you are signed in, saved items, your profile and
+   the contact-message queue sync with your account (remote.syncNow, per-account
+   via ra_sync_owner). Consultations, settings and reviews stay device-local for
+   now. Each local method mirrors its Supabase table — see DATABASE.md.
+   Collections: ra_saved(+ra_removed tombstones), ra_reviews(+queue),
+   ra_consultations, ra_messages, ra_notifications, ra_reports, ra_requests,
+   ra_profile, ra_settings. */
 (function(){
   const LS = {
     get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(_){ return d; } },
@@ -18,8 +20,30 @@
     toggleSaved(type, ref, title){
       let list = this.savedList();
       const i = list.findIndex(s => s.type===type && s.ref===ref);
-      if(i>=0) list.splice(i,1); else list.push({ type, ref, title, at:new Date().toISOString() });
-      LS.set("ra_saved", list); return i<0;
+      if(i>=0){
+        list.splice(i,1);
+        // Offline-safe removal: once this device's saved list has been synced to
+        // an account (ra_sync_owner set), queue a tombstone so the next pull
+        // cannot restore a row removed here while offline.
+        try{
+          if(localStorage.getItem("ra_sync_owner")){
+            const t = LS.get("ra_removed", []);
+            t.push({ type, ref, at:new Date().toISOString() });
+            LS.set("ra_removed", t.slice(-200));
+          }
+        }catch(_){}
+      } else {
+        list.push({ type, ref, title, at:new Date().toISOString() });
+      }
+      LS.set("ra_saved", list);
+      // Sync the change at once when signed in; failures retry on the next syncNow().
+      try{
+        if(this.remote && this.remote.ready() && this.remote.uid()){
+          let p = i<0 ? this.remote.pushSaved() : this.remote.deleteSaved(type, ref);
+          if(p && p.catch) p.catch(function(){});
+        }
+      }catch(_){}
+      return i<0;
     },
     // ---- Consultations ----
     consultations(){ return LS.get("ra_consultations", []); },
@@ -29,7 +53,7 @@
     addMessage(m){ const all=this.messages(); m.id=uid(); m.at=new Date().toISOString(); m.status="stored-local"; all.unshift(m); LS.set("ra_messages", all); return m; },
     // ---- Notifications (local demo) ----
     notifications(){ return LS.get("ra_notifications", [
-      { id:"welcome", title:"Welcome to RightAware", body:"Core guides work offline. Backend features (sync, Hou professional messaging) arrive after Supabase setup.", at:new Date().toISOString(), read:false }
+      { id:"welcome", title:"Welcome to RightAware", body:"Rights guides work offline. Signed in? Your saved items, profile and application status sync with your account.", at:new Date().toISOString(), read:false }
     ]); },
     markRead(id){ const n=this.notifications().map(x=>x.id===id?Object.assign(x,{read:true}):x); LS.set("ra_notifications", n); },
     pushNotification(t, b){ const n=this.notifications(); n.unshift({id:uid(),title:t,body:b,at:new Date().toISOString(),read:false}); LS.set("ra_notifications", n); },
@@ -63,6 +87,28 @@
       var list = ((r.data) || []).map(function(x){ return { type:x.item_type, ref:x.ref, title:x.title, at:new Date().toISOString() }; });
       try{ localStorage.setItem("ra_saved", JSON.stringify(list)); }catch(_){}
       return { ok:true, pulled:list.length };
+    },
+    async deleteSaved(type, ref){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("saved_items").delete()
+          .eq("user_id", this.uid()).eq("item_type", type).eq("ref", ref);
+        return r.error ? { ok:false, error:r.error.message } : { ok:true };
+      }catch(_){ return { ok:false, error:"delete failed" }; }
+    },
+    async pullProfile(){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("profiles")
+          .select("name,email,phone,state,language").eq("id", this.uid()).limit(1);
+        if(r.error) return { ok:false, error:r.error.message };
+        var row = (r.data || [])[0];
+        if(!row) return { ok:true, pulled:false };
+        var p = { name:row.name || "", email:row.email || "", phone:row.phone || "",
+                  state:row.state || "Lagos", language:row.language || "English" };
+        try{ localStorage.setItem("ra_profile", JSON.stringify(p)); }catch(_){}
+        return { ok:true, pulled:true, profile:p };
+      }catch(_){ return { ok:false, error:"pull failed" }; }
     },
     async pushConsultation(c){
       if(!this.ready()) return { ok:false, error:"backend not connected" };
@@ -114,12 +160,33 @@
         }
         try{ localStorage.setItem("ra_messages", JSON.stringify(m)); }catch(_){}
         if(this.uid()){
-          out.saved = await this.pushSaved();
-          // Only restore the server copy after a successful push, so a failed
-          // push can never wipe items that exist only on this device.
-          if(out.saved && out.saved.ok) out.savedPull = await this.pullSaved();
-          out.profile = await this.pushProfile(DB.profile());
-          out.notif = await this.pullNotifications();
+          var uidNow = this.uid(), owner = null;
+          try{ owner = localStorage.getItem("ra_sync_owner"); }catch(_){}
+          if(owner && owner !== uidNow){
+            // A different account signed in on this device: never push the previous
+            // account's local copies into this account — start from the server copy.
+            try{ ["ra_saved","ra_profile","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
+            out.savedPull = await this.pullSaved();
+            out.profile = await this.pullProfile();
+          } else {
+            // 1) flush queued removals first, so the pull below cannot restore them
+            var tombs = LS.get("ra_removed", []), keep = [];
+            for(var ti = 0; ti < tombs.length; ti++){
+              var del = await this.deleteSaved(tombs[ti].type, tombs[ti].ref);
+              if(!del.ok) keep.push(tombs[ti]);          // retried on the next sync
+            }
+            try{ localStorage.setItem("ra_removed", JSON.stringify(keep)); }catch(_){}
+            // 2) push local saved + profile, then pull (a failed push never wipes
+            //    device-only items; a pull only returns what we just sent)
+            out.saved = await this.pushSaved();
+            if(out.saved && out.saved.ok) out.savedPull = await this.pullSaved();
+            var lp = DB.profile();
+            out.profile = (lp.name || lp.email || lp.phone)
+              ? await this.pushProfile(lp)                // local edits win (last write)
+              : await this.pullProfile();                 // never overwrite the server copy with blanks
+            out.notif = await this.pullNotifications();
+          }
+          try{ localStorage.setItem("ra_sync_owner", uidNow); }catch(_){}
         }
       }catch(_){ out.ok = false; out.error = "sync interrupted"; }
       return out;

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My Account (Demo) — RightAware</title>
-<meta name="description" content="Profile, saved items, consultations, notifications and settings. Demo — Supabase sync arrives later."/>
+<title>My Account — RightAware</title>
+<meta name="description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -15,7 +15,7 @@
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="account.html">My Account</a><a href="contact.html">Contact Us</a></div></header>
 <main>
-<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Saved items live on this device; account, role and application status sync when the backend is connected.</p>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Your profile, saved items, account role and application status sync with your account when you are signed in — and everything stays available on this device.</p>
 <div class="chip-row"><a href="#mystatus">My status</a><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
 <section class="section section-alt" id="mystatus"><div class="container">
   <div class="section-head"><span class="eyebrow">Access & applications</span><h2>My status</h2></div>
@@ -27,7 +27,7 @@
 <section class="section section-alt"><div class="container contact-grid">
   <form class="form-card rv" id="profileForm"><h2 id="profile">Profile</h2>
     <label>Full name<input id="pName"/></label>
-    <div class="form-row"><label>Email<input id="pEmail" type="email"/></label><label>Phone (optional)<input id="pPhone" placeholder="To be used only after backend launch"/></label></div>
+    <div class="form-row"><label>Email<input id="pEmail" type="email"/></label><label>Phone (optional)<input id="pPhone" placeholder="For follow-ups from RightAware"/></label></div>
     <div class="form-row"><label>State<select id="pState"><option>Lagos</option><option>Abuja FCT</option><option>Kano</option><option>Rivers</option><option>Oyo</option><option>Enugu</option><option>Other</option></select></label><label>Language<select id="pLang"><option>English</option><option>Pidgin</option><option>Yoruba</option><option>Hausa</option><option>Igbo</option></select></label></div>
     <button class="btn btn-primary" type="submit">Save Profile</button><p class="form-note" id="pOut"></p></form>
   <form class="form-card rv" id="setForm"><h2 id="settings">Settings</h2>
@@ -111,7 +111,7 @@
         + (a.path==="professional" ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
         + '<p>Reference <strong>'+esc(a.ref)+'</strong> — '+esc(a.status)+' — '+esc(String(a.at).slice(0,10))+'</p>'
         + '<p><small>' + (window.RA_SUPA && RA_SUPA.ready
-            ? "Live delivery also requires supabase/applications-access.sql."
+            ? "Reference receipt saved locally — status is shown in the “Application (live)” card above when available."
             : "Backend not connected — this copy has NOT been submitted to RightAware. Re-submit when connected.")
         + '</small></p></article>';
     } else {
