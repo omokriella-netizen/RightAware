@@ -20,10 +20,12 @@
   .snippet .pg{display:inline-block;background:#1d4ed8;color:#fff;font-size:.72rem;padding:.05rem .4rem;border-radius:.3rem;margin-right:.4rem}
   .search-inside-bar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:.7rem 0}
   .viewer-dialog{border:none;padding:0;border-radius:.8rem;width:min(1000px,94vw);height:min(86vh,900px);background:#0b1220;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+  .viewer-dialog[open]{display:flex;flex-direction:column}
   .viewer-dialog::backdrop{background:rgba(2,6,23,.75)}
   .viewer-head{display:flex;gap:.5rem;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:#111a2e;color:#e2e8f0;flex-wrap:wrap}
   .viewer-head strong{font-size:.92rem}
-  .viewer-frame{width:100%;height:calc(100% - 54px);border:0;background:#111}
+  .viewer-note{margin:0;padding:.5rem .8rem;background:#111a2e;color:#cbd5e1;border-top:1px solid #1e293b;font-size:.9rem}
+  .viewer-frame{width:100%;flex:1 1 auto;min-height:0;border:0;background:#111}
   .no-text-note{background:#422006;color:#fde68a;padding:.5rem .7rem;border-radius:.4rem;font-size:.85rem;margin:.5rem 0}
   .filter-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
   .filter-bar input[type=search]{flex:1 1 240px}
@@ -89,6 +91,7 @@
       <button class="btn btn-ghost btn-sm" id="viewerClose" type="button">✕ Close</button>
     </span>
   </div>
+  <p class="viewer-note" id="viewerNote">The document opens in the panel below. If it does not appear on your browser, use <strong>Download original</strong> or <strong>Open in new tab</strong> above.</p>
   <iframe class="viewer-frame" id="viewerFrame" title="PDF viewer"></iframe>
 </dialog>
 
