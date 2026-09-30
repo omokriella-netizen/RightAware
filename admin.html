@@ -100,6 +100,15 @@
     });
   }
 
+  /* ==================== SIGNED OUT: backend on, no session ==================== */
+  function renderSignedOut(){
+    title.textContent = "Sign in required";
+    line.innerHTML = 'You are not signed in. The administrator dashboard opens only for accounts that carry the <strong>admin</strong> role in the database.';
+    body.innerHTML = '<div class="notice rv">🔐 Sign in with an administrator account to review registration applications, contact messages and content. '
+      + 'Roles live in the database (see <code>docs/DATABASE.md</code>) — row-level security enforces access server-side; hiding buttons is never how access is decided.</div>'
+      + '<p><a class="btn btn-primary" href="login.html?next=admin.html">Sign in</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
+  }
+
   /* ==================== DENIED: backend on, role not admin ==================== */
   function renderDenied(role){
     title.textContent = "Access denied";
@@ -354,7 +363,7 @@
     line.textContent = "Signed in — checking your role…";
     RA_AUTH.fetchRole().then(function(role){
       var u = RA_AUTH.current() || {};
-      if(!u.email){ renderDenied("not signed in"); return; }
+      if(!u.email){ renderSignedOut(); return; }
       if(role !== "admin"){ renderDenied(role); return; }
       renderAdmin(u);
     }).catch(function(){ renderDenied("role check failed"); });

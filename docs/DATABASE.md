@@ -25,6 +25,33 @@ Create: `legal-docs` (**private**), `videos`, `thumbs`, `org-logos`,
 (or SQL). Frontend role displays are cosmetic — every privileged action is
 re-checked in RLS / API routes.
 
+### Granting the first administrator
+There is no bootstrap admin account — the role must be granted once from the
+SQL editor (after the account's confirmation email has been opened, so
+`email_confirmed_at` is set):
+
+```sql
+-- Grant admin to a CONFIRMED account — run ONCE (replace the address):
+insert into public.user_roles (user_id, role)
+select u.id, 'admin'
+from auth.users u
+where lower(u.email) = lower('you@example.com')
+  and u.email_confirmed_at is not null
+on conflict do nothing;
+
+-- Verify — must return exactly one row:
+select u.email, r.role, r.granted_at
+from public.user_roles r
+join auth.users u on u.id = r.user_id
+where r.role = 'admin';
+```
+
+Then sign in on the site: `login.html` sends admins straight to
+`admin.html`, and `account.html` shows an **Open admin dashboard** button.
+Grant further roles the same way (one row per role). A user with no rows in
+`user_roles` is a plain `user` — never insert `user` rows. The statement is
+idempotent (`on conflict do nothing`), so re-running it changes nothing.
+
 ## Swapping local → Supabase (per module)
 1. Create `js/supabase-client.js`: loads the Supabase JS SDK (CDN), inits with
    `RA_CONFIG.SUPABASE_URL/KEY`, exports `RA_SUPA`.
