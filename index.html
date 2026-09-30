@@ -66,7 +66,7 @@
 <section class="section" id="popular"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Popular rights & topics</span><h2>Start with what Nigerians ask about most</h2><p><span data-rights-count>12</span> categories in the library. Full guides are researched and verified one at a time (currently <span data-guide-count>1</span>); everything else opens as a structured overview with source hints.</p></div>
   <div class="cards-grid" id="homeRights"></div>
-  <p style="margin-top:1rem"><a class="link" href="rights.html">Open the full rights library →</a></p>
+  <div class="section-cta"><a class="btn btn-primary btn-lg" href="rights.html">Explore Rights</a></div>
 </div></section>
 
 <section class="section section-alt" id="libraries"><div class="container">
@@ -81,7 +81,7 @@
 <section class="section" id="videos"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Learn visually</span><h2>Educational videos</h2><p>Short explainers (placeholders in v1 — full production list on the Resources page).</p></div>
   <div class="cards-grid" id="homeVideos"></div>
-  <p style="margin-top:1rem"><a class="link" href="resources.html#videos">All videos & resources →</a></p>
+  <div class="section-cta"><a class="btn btn-outline" href="videos.html">Learn More</a></div>
 </div></section>
 
 <section class="section section-alt" id="featured-resources"><div class="container">
@@ -144,9 +144,17 @@
     var badge = r.fullGuide ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
     return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+url+'">Open →</a></article>';
   }
-  document.getElementById("homeRights").innerHTML = R.slice(0,6).map(card).join("");
+  /* ONE clean row of three featured directions (spec §12): police, tenancy and
+     employment are the questions Nigerians ask most. Falls back to the primary
+     ordering in content/rights.js if an id is ever renamed or removed. */
+  var FEATURED_IDS = ["police", "tenancy", "employment"];
+  var feat = FEATURED_IDS.map(function(id){
+    return R.filter(function(r){ return r.id === id; })[0];
+  }).filter(Boolean);
+  R.forEach(function(r){ if(feat.length < 3 && feat.indexOf(r) < 0) feat.push(r); });
+  document.getElementById("homeRights").innerHTML = feat.slice(0,3).map(card).join("");
   document.getElementById("homeVideos").innerHTML = (window.RA_VIDEOS||[]).slice(0,3).map(function(v){
-    return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+v.meta+'</small></div><h3>'+v.title+'</h3><p>'+v.desc+'</p><span class="tag">'+v.tag+'</span></article>';
+    return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+v.meta+'</small></div><h3>'+v.title+'</h3><p>'+v.desc+'</p><span class="tag">'+v.tag+'</span><a class="link card-link" href="videos.html">Watch →</a></article>';
   }).join("");
   // Home live search -> top matches inline + link to search page
   var input = document.getElementById("homeSearchInput"), out = document.getElementById("homeSearchResults");

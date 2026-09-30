@@ -354,3 +354,17 @@ img{max-width:100%;height:auto}
   .grid-3{grid-template-columns:1fr}
   .hero-stats{flex-wrap:wrap;gap:1.1rem 1.6rem}
 }
+
+/* ===== STAGE 4/5 — homepage & resources structure (spec §12, §13, §19–§25, §53) ===== */
+/* Centred, evenly sized section CTA (Explore Rights / Learn More / Explore More). */
+.section-cta{text-align:center;margin-top:1.6rem}
+.section-cta .btn{min-width:200px}
+/* Articles carry category / date / source metadata above the summary. */
+.card-meta{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--muted);margin:.5rem 0 .7rem}
+.card-meta .tag{margin-top:0}
+.card .card-link{display:inline-block;margin-top:.6rem}
+/* FAQ "show all" state + honest empty state for search. */
+.faq-hidden{display:none}
+.empty-state{background:#fff;border:1px dashed var(--border);border-radius:var(--radius);padding:1.4rem;text-align:center}
+.empty-state p:last-child{margin-bottom:0}
+#resSearchStatus:empty,#vidSearchStatus:empty,#faqSearchStatus:empty{display:none}
