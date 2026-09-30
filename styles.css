@@ -291,3 +291,66 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:600px){.guide-content .cards-grid{grid-template-columns:1fr}}
 .stat-num{font-size:1.8rem;font-weight:800;color:var(--green-dark)}
 .demo-strip{background:#fffbeb;border:1px dashed #f59e0b;border-radius:10px;padding:.6rem .9rem;font-size:.85rem;margin:.8rem 0}
+
+/* ===== STAGE 2 — Accessibility, readability & responsive header =====
+   Master spec §14 (one-line nav), §15/§43/§55 (readable text, contrast,
+   touch targets, focus) and §42 (responsive). Purely additive overrides:
+   no existing rule is deleted, so nothing that worked before is removed. */
+
+/* Root size: 17px so every rem-based value scales up together
+   (body ≈17px, card copy ≈16px, buttons ≈16px). */
+html{font-size:17px}
+:root{--muted:#4c5c73}
+body{line-height:1.65;-webkit-text-size-adjust:100%}
+
+/* Header: nav labels never wrap. Below 1100px the menu takes over BEFORE the
+   row can get squeezed; below 1240px the header search collapses to its
+   search button (still one tap to the full search page). */
+.header-inner{gap:1.15rem}
+.header-actions{gap:.55rem}
+.nav{display:flex;gap:.95rem;flex-wrap:nowrap;align-items:center}
+.nav a{white-space:nowrap;font-size:.95rem;padding:.35rem 0}
+.hsearch{flex:none}
+.hsearch input{width:130px;font-size:.9rem}
+@media (max-width:1240px){ .hsearch input{display:none} }
+@media (max-width:1100px){ .nav{display:none} .hamburger{display:flex} }
+
+/* Touch targets: every button/link control reaches ~44px on touch screens. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;min-height:44px}
+.btn-sm{padding:.6rem .95rem}
+.quick-tags button{padding:.5rem 1rem;min-height:44px}
+.hsearch button{min-height:40px;padding:.5rem .8rem}
+.toc a{padding:.55rem 0;min-height:44px;display:flex;align-items:center;font-size:.95rem}
+.rot-d-close{width:36px;height:36px}
+
+/* Readable type: raise the small/faint sizes called out in the spec. */
+.lead{font-size:1.12rem}
+.eyebrow{font-size:.82rem}
+.badge{font-size:.85rem}
+.card h3{font-size:1.15rem}
+.card p{font-size:1rem}
+.section-head p{font-size:1.02rem}
+.hero-stats span{font-size:.92rem;color:#cbd5e1}
+.video-thumb small{font-size:.85rem}
+.form-note,.captcha-note,.demo-strip,.figure figcaption{font-size:.9rem}
+.form-card label,.help-form label,.modal-box label{font-size:1rem}
+.breadcrumb,.rev-item,.guide-meta span,.toc strong{font-size:.9rem}
+.msg,.notice{font-size:1rem}
+.pill,.pill-green,.pill-red,.pill-gold{font-size:.75rem}
+.rot-d-eyebrow{font-size:.78rem}
+.rot-d p{font-size:.95rem}
+
+/* Contrast: footer + disclaimers on the dark navy must stay legible. */
+.disclaimer{font-size:.9rem;color:#cbd5e1}
+.footer a{font-size:1rem;color:#c2cdda}
+.footer-bottom small{font-size:.9rem;color:#cbd5e1}
+
+/* Layout guards: equal card heights, safe wrapping, no stray overflow. */
+.cards-grid,.grid-3{grid-auto-rows:1fr}
+.card p,.result,.msg,.faq .ans{overflow-wrap:anywhere}
+img{max-width:100%;height:auto}
+@media (max-width:900px){ .grid-3{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){
+  .grid-3{grid-template-columns:1fr}
+  .hero-stats{flex-wrap:wrap;gap:1.1rem 1.6rem}
+}
