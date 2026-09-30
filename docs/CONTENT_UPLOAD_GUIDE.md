@@ -37,7 +37,12 @@ relatedRights[],lang,status:"draft"}`. Ship as `draft` until reviewed, then
 
 ## FAQs / resources / home sections
 - FAQs: `RA_FAQS` in `data.js`. Videos teaser on Home: `RA_VIDEOS` in `data.js`.
-- Featured rights on Home: first 6 of `RA_RIGHTS` — reorder there to change.
+- Rights categories live in **one file**: `content/rights.js` (`RA_RIGHTS_DETAIL`).
+  `RA_RIGHTS` is derived from it at load — do not define it anywhere else.
+  Add one entry there and it automatically appears in the Rights Library grid, the
+  Resources guides list, site search and the homepage/hero counts (`data-rights-count`).
+- Featured rights on Home: first 6 of `RA_RIGHTS`. Headline categories are listed first
+  in `RA_RIGHTS_PRIMARY` (same file) — edit that array to reorder.
 
 ## Images & files
 - Thumbnails/logos/photos: place under `assets/` (create it) and reference by

@@ -1,9 +1,14 @@
-/* RightAware detailed rights content (v2).
+/* RightAware detailed rights content (v3) — SINGLE SOURCE OF TRUTH for the Rights Library.
    Rendered by rights/topic.html. Editable: add/edit entries following this schema.
    status: "full-guide" (complete, reviewed) | "partial" (good draft, needs legal review)
            | "overview" (general information, full guide awaiting research + verification).
    Rule: never invent section numbers, cases, contacts or statistics. Anything not yet
-   verified uses status "overview" and a VERIFY source hint. Works from file:// (plain JS). */
+   verified uses status "overview" and a VERIFY source hint. Works from file:// (plain JS).
+
+   TO ADD A RIGHTS CATEGORY: add ONE entry below (id must be unique and lowercase).
+   It automatically appears in the Rights Library grid, the homepage counts, the
+   Resources guides list and site search — no other file needs editing.
+   data.js derives window.RA_RIGHTS from this list; do not define RA_RIGHTS elsewhere. */
 window.RA_RIGHTS_DETAIL = [
 { id:"fundamental", icon:"🛡", title:"Fundamental Human Rights", status:"partial",
   summary:"The basic rights every person in Nigeria is entitled to — life, dignity, liberty, fair hearing, privacy, expression, movement and more.",
@@ -242,5 +247,95 @@ window.RA_RIGHTS_DETAIL = [
   examples:[{t:"Factory smoke",d:"A dated log of emissions plus clinic records of respiratory complaints builds a reportable pattern."},{t:"Oil spill",d:"Photograph spread, affected farms/water, and response (or lack of it) before cleanup alters the scene."}],
   faqs:[{q:"Which agency handles pollution complaints?",a:"It depends on the pollutant and location (federal/state regulators) — verify the current channel for your case."},{q:"Can communities get compensation?",a:"Remediation and compensation claims are possible through proper process — document harm and get advice early."}],
   related:["life","property","fundamental","civic"], orgs:["Human-rights protection body"], sources:["VERIFY: applicable environmental statutes/regulations; EIA requirements."],
-  keywords:"environment pollution spill flaring dumping clean water air oil" }
+  keywords:"environment pollution spill flaring dumping clean water air oil" },
+{ id:"marriage", icon:"💍", title:"Marriage & Family Rights", status:"overview",
+  summary:"Consent, registration, bride price and family duties — the rights of spouses and children before and after the ceremony.",
+  explanation:["Marriages in Nigeria are celebrated under different systems — civil (statutory), customary and Islamic — and the rules that apply depend on which one you used.","Family disputes over maintenance, custody, property and in-law interference are far easier to handle when you have the certificate, receipts and messages."],
+  legalBasis:{ text:"General information: the Marriage Act governs civil marriage; customary and Islamic law govern other marriages, with state rules differing — verify the rules that apply to your marriage type.", status:"verify" },
+  meaning:["Both spouses must freely consent — a ceremony forced by pressure, threats or deception is not valid consent.","Keep the marriage certificate, dowry/bride-price records and proof of contributions to the household.","Spouses and children are entitled to maintenance and protection from violence — see also Women's and Children's Rights."],
+  canDo:["Register the marriage properly and keep the original certificate somewhere safe.","Agree bride price/dowry terms openly and keep receipts; involve families in writing where disputes start.","If you feel pressured or unsafe, seek advice early — family-law problems move faster with documents."],
+  avoid:["Do not enter a second marriage without understanding the legal consequences for the first (verify the position for your marriage type).","Do not destroy certificates or messages during a dispute — they are evidence.","Do not draw children into adult family conflicts."],
+  examples:[{t:"Lost certificate",d:"A lost marriage certificate can usually be re-issued — start with the registry that issued it."},{t:"In-law seizure",d:"Family members taking your property or threatening you should be documented and reported — being related does not suspend the law."}],
+  faqs:[{q:"Is a traditional wedding a valid marriage?",a:"It can be valid under customary law, with different legal effects from a civil ceremony — get advice for your situation."},{q:"Can my husband's family chase me out?",a:"It depends on your marriage type, your contributions and the facts — document everything and get advice quickly."}],
+  related:["divorce","women","children","property","fundamental"], orgs:["Legal Aid (free legal assistance)","Domestic & sexual-violence support services"], sources:["VERIFY: Marriage Act (as amended); state marriage/registration rules; Child Rights Act 2003 minimum marriage age (state domestication varies)."],
+  keywords:"marriage marry family wife husband wedding ceremony registration certificate bride price dowry in-law maintenance spouse" },
+{ id:"divorce", icon:"🧾", title:"Divorce & Separation", status:"overview",
+  summary:"How separation and dissolution actually work: grounds, custody, maintenance, property and the court path.",
+  explanation:["Divorce (dissolution) is a court process — leaving the house, separating, or announcing it on social media does not by itself end a marriage.","Courts consider the breakdown of the marriage, and settle custody, maintenance and property alongside or shortly after the decree (procedures vary by marriage type)."],
+  legalBasis:{ text:"General information: matrimonial-cases legislation applies to statutory marriages; customary and Islamic processes differ; the High Court of your state has jurisdiction — verify the procedure for your marriage type.", status:"verify" },
+  meaning:["Separation and divorce are different legal states — separation does not end the marriage.","The welfare of children is the priority in custody and access decisions.","Maintenance and property claims are stronger where contributions and income can be evidenced."],
+  canDo:["Leave safely first if you are at risk, then take advice on the formal steps.","Gather documents: certificate, children's school and health records, bank statements, property papers.","Respond to every court process — ignoring a summons damages your case."],
+  avoid:["Do not withhold contact with the children as leverage — it can count against you in custody.","Do not sign away property or maintenance rights under pressure without independent advice.","Do not contract a new marriage before the earlier one is lawfully dissolved."],
+  examples:[{t:"Moved out in anger",d:"Moving out begins separation, not divorce — get advice immediately on status, children and finances."},{t:"House in one name",d:"Contributions you can evidence (receipts, transfers, building materials) matter in property claims — start collecting them now."}],
+  faqs:[{q:"How long does a divorce take?",a:"It depends on the court, the case and whether terms are agreed — ask a lawyer for a realistic timeline in your state."},{q:"Who gets the children?",a:"The child's welfare is central; care, schooling and access are decided on the facts — seek advice early."}],
+  related:["marriage","women","children","property","fundamental"], orgs:["Legal Aid (free legal assistance)","Child-protection services"], sources:["VERIFY: applicable matrimonial-cases legislation; your state High Court family procedure; customary/Islamic law alternatives."],
+  keywords:"divorce separation dissolution marriage ends custody maintenance alimony property decree court split leaving husband wife" },
+{ id:"health", icon:"🏥", title:"Health & Medical Rights", status:"overview",
+  summary:"Consent to treatment, your records and bills, confidentiality, and what to do about negligence or refused care.",
+  explanation:["Patients are entitled to be told what is wrong, what is proposed, the risks and the cost — and to accept or refuse it.","Medical records and itemised bills should be obtainable, and complaints about care should be documented while the facts are fresh."],
+  legalBasis:{ text:"General information: health-sector regulations, professional codes and consumer-protection rules apply — verify the current complaint channel for your case.", status:"verify" },
+  meaning:["You may refuse a treatment you do not understand or do not want, except where lawful emergency rules apply (verify).","Your health information should be kept confidential by providers.","Facilities able to treat you may be limited in refusing emergency care — verify current emergency-treatment rules."],
+  canDo:["Ask for a written diagnosis, proposed procedure and itemised bill; keep every receipt and report.","Request a copy of your medical records from the hospital or clinic.","If something went wrong, preserve the file, receipts and staff names, then complain to the facility and the regulator."],
+  avoid:["Do not stop prescribed treatment without speaking to a qualified professional first.","Do not sign consent forms you have not had explained — ask questions until you understand.","Do not delay a complaint — records and memories fade quickly."],
+  examples:[{t:"Unexplained charges",d:"An itemised bill checked against receipts often resolves hospital over-charges without litigation."},{t:"Refused admission",d:"Note the time, facility, reason and names — emergency-refusal complaints are decided on that record."}],
+  faqs:[{q:"Can I see my medical records?",a:"You can request them from your provider; charges and procedures vary — put the request in writing."},{q:"A hospital demands cash before treatment — is that allowed?",a:"Facilities have payment policies, but emergency-treatment rules may limit outright refusal — document the situation and seek advice."}],
+  related:["consumer","children","women","disability","fundamental"], orgs:["Legal Aid (free legal assistance)","Disability support organisations"], sources:["VERIFY: current health-sector regulations and professional codes; national health-insurance arrangements (verify eligibility); regulator complaint channels."],
+  keywords:"health medical hospital treatment nurse doctor bill records consent negligence emergency care patient prescription" },
+{ id:"food-safety", icon:"🍽", title:"Food & Food-Safety Rights", status:"overview",
+  summary:"Expired, fake or contaminated food and medicine — how to spot it, report it and protect your family.",
+  explanation:["Food and medicines sold to you must be fit to consume; expired, contaminated or counterfeited products are a public-health matter, not just a seller's problem.","Reporting a bad product protects other buyers too — keep the packaging, batch details, expiry date and where you bought it."],
+  legalBasis:{ text:"General information: food and drug safety regulators (including NAFDAC) and consumer-protection law apply — verify the current reporting channel before filing.", status:"verify" },
+  meaning:["You are entitled to expect that food and medicines sold to you are safe and properly labelled.","Selling expired or unlabelled food and drugs can be reported.","Suspect products should be preserved (pack, batch, expiry, photos) before disposal."],
+  canDo:["Check expiry dates, seals and packaging before buying anything consumable.","Report unsafe products with pack, batch number, purchase location and date.","Seek medical care promptly if you or a child falls ill after suspect food; keep the clinic report."],
+  avoid:["Do not consume food or medicine you suspect is expired or spoiled.","Do not buy medicines from unverified street or unknown online sellers.","Do not throw away packaging before reporting — it is your evidence."],
+  examples:[{t:"Expired drink",d:"Photograph the pack and expiry date, keep it, and report to the seller and the regulator with the batch details."},{t:"Illness after street food",d:"A clinic record plus where and when you bought it makes a reportable pattern — report to the local health/environmental authority (verify your state's channel)."}],
+  faqs:[{q:"Where do I report fake food or drugs?",a:"Through the appropriate national food-and-drug safety channel — verify the current portal or hotline in official guidance."},{q:"A seller refuses to take back expired goods?",a:"Escalate with receipt and photos through the consumer-protection channel (verify the current route)."}],
+  related:["consumer","children","health","fundamental"], orgs:["Legal Aid (free legal assistance)","Child-protection services"], sources:["VERIFY: food and drug safety regulations; NAFDAC reporting route; consumer-protection complaint procedure."],
+  keywords:"food safety expiry expired spoiled rotten fake drugs nafdac contaminated water street food poisoning batch label drink" },
+{ id:"banking", icon:"🏦", title:"Financial & Banking Rights", status:"overview",
+  summary:"Failed transfers, unauthorised debits, hidden charges, loan-app harassment — and how to escalate a bank complaint.",
+  explanation:["Banks and payment providers owe you accurate records, advance disclosure of charges, and a working dispute process for failed or unauthorised transactions.","Speed matters: report failed transfers and card fraud the same day and keep the reference number."],
+  legalBasis:{ text:"General information: central-bank consumer-protection requirements and deposit-insurance arrangements apply — verify current rules, limits and complaint routes.", status:"verify" },
+  meaning:["You can demand an explanation for any debit you did not authorise.","Charges should be disclosed in advance — undisclosed fees are queryable.","Eligible deposits are insured up to a current limit — verify that limit with the deposit-insurance body."],
+  canDo:["Keep alerts, reference numbers, statements and the recipient's details for every dispute.","Complain to your bank in writing first with dates and references; escalate if unresolved.","Use official channels only: your bank's published lines and the central bank's consumer complaint route (verify the current portal)."],
+  avoid:["Do not share OTP, PIN or card details with anyone — including people claiming to be bank staff.","Do not let strangers 'help you transfer' using your card or phone.","Do not miss dispute deadlines — most schemes are time-sensitive."],
+  examples:[{t:"Debited, not delivered",d:"A written dispute with reference number and statement, filed within days, normally triggers reversal checks."},{t:"Loan-app harassment",d:"Screenshots sent to your bank plus the data-protection complaint channel are the documented path (see Digital Rights)."}],
+  faqs:[{q:"My transfer failed but money left my account — what now?",a:"Report immediately with the reference number; timelines depend on the bank and the scheme — escalate in writing if delayed."},{q:"Is my money safe if my bank fails?",a:"Eligible deposits are insured up to a current limit — verify the limit with the deposit-insurance body."}],
+  related:["consumer","digital","employment","property"], orgs:["Legal Aid (free legal assistance)"], sources:["VERIFY: central-bank consumer-protection requirements; deposit-insurance coverage limits; your bank's published complaint procedure."],
+  keywords:"bank banking transfer failed debit charge otp pos loan app interest deposit insurance ndic cbn dispute reversal atm" },
+{ id:"international", icon:"🌍", title:"International Human Rights", status:"overview",
+  summary:"Where Nigerian rights connect to African and global standards — treaties, petitions and regional courts.",
+  explanation:["Nigeria's Constitution sits alongside international and regional commitments, including the African Charter on Human and Peoples' Rights.","Regional bodies — the African Commission and the ECOWAS Community Court — can hear human-rights matters involving states, subject to their own rules (verify standing, deadlines and procedure)."],
+  legalBasis:{ text:"General information: African Charter on Human and Peoples' Rights (ratified by Nigeria), ECOWAS treaty framework and UN human-rights instruments — verify current procedure and any domestication before relying on a provision.", status:"verify" },
+  meaning:["Regional standards influence how Nigerian courts read fundamental-rights provisions.","Regional petitions usually require you to first exhaust remedies in Nigeria (verify the rule for each body).","These routes address state conduct — they are not a substitute for a lawyer in an ordinary private dispute."],
+  canDo:["Read the official texts of any instrument before quoting it.","Exhaust domestic remedies first and keep proof of every step.","Seek advice from a human-rights organisation before filing outside Nigeria (verify current contacts)."],
+  avoid:["Do not assume a treaty quoted online applies directly in Nigeria — check domestication.","Do not miss regional deadlines — procedure and time limits are strict.","Do not use a regional complaint to replace urgent local steps such as bail, safety or medical care."],
+  examples:[{t:"Exhaustion rule",d:"A regional petition can fail because domestic remedies were skipped — take advice before filing."},{t:"Citing the Charter",d:"Legal arguments often rest on the African Charter — quote the official text, not a blog summary."}],
+  faqs:[{q:"Can I take Nigeria to an international court?",a:"Routes exist through regional and UN bodies, subject to their rules and remedies requirements — get specialist advice first."},{q:"Does the African Charter apply in Nigeria?",a:"Nigeria is a party to it; how it is used in domestic courts depends on the case — verify with a practitioner."}],
+  related:["fundamental","civic","constitutional","dignity"], orgs:["Human-rights protection body","Legal Aid (free legal assistance)"], sources:["VERIFY: African Charter on Human and Peoples' Rights; ECOWAS Community Court rules; UN instruments and Nigeria's ratifications."],
+  keywords:"international african charter ecowas court commission un treaty petition regional human rights banjul" }
 ];
+
+/* Derived category cards — ONE source of truth for every category grid on the site.
+   Primary (headline) categories are listed first so homepage/library ordering stays stable;
+   every other entry above follows in file order. Presentation order only — no content here. */
+window.RA_RIGHTS_PRIMARY = ["fundamental","police","employment","tenancy","consumer","women",
+  "children","disability","education","digital","constitutional","civic"];
+window.RA_RIGHTS = (function(){
+  var D = window.RA_RIGHTS_DETAIL || [];
+  var primary = window.RA_RIGHTS_PRIMARY;
+  var card = function(r){
+    var c = { id:r.id, icon:r.icon, title:r.title, summary:r.summary, status:r.status,
+      keywords:r.keywords||"", fullGuide:r.fullGuide };
+    if(r.legalBasis && r.legalBasis.text) c.source = r.legalBasis.text;
+    if(r.meaning && r.meaning.length) c.points = r.meaning.slice(0,4);
+    return c;
+  };
+  var head = [], tail = [], seen = {};
+  D.forEach(function(r){
+    var i = primary.indexOf(r.id);
+    if(i > -1 && !seen[r.id]){ seen[r.id] = 1; head[i] = card(r); }
+    else { seen[r.id] = 1; tail.push(card(r)); }
+  });
+  return head.filter(function(x){ return !!x; }).concat(tail);
+})();

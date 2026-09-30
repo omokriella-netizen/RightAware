@@ -41,6 +41,18 @@
     });
     // Footer year
     document.querySelectorAll("[data-year]").forEach(function(el){ el.textContent = new Date().getFullYear(); });
+    // Dynamic library counts — source: content/rights.js (RA_RIGHTS) + content/laws.js (RA_LAWS).
+    // Markup uses <span data-rights-count>/<span data-guide-count>/<span data-laws-count>.
+    try{
+      var rightsNow = window.RA_RIGHTS || [];
+      if(rightsNow.length){
+        document.querySelectorAll("[data-rights-count]").forEach(function(el){ el.textContent = rightsNow.length; });
+        var guideCount = rightsNow.filter(function(r){ return r.fullGuide; }).length;
+        document.querySelectorAll("[data-guide-count]").forEach(function(el){ el.textContent = guideCount; });
+      }
+      var lawsNow = (window.RA_LAWS || []).filter(function(l){ return l.textAvailable; });
+      if(lawsNow.length) document.querySelectorAll("[data-laws-count]").forEach(function(el){ el.textContent = lawsNow.length; });
+    }catch(_){}
     // Reveal on scroll (light, fast)
     if("IntersectionObserver" in window){
       var io = new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } }); }, {threshold:.08});
