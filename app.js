@@ -162,5 +162,30 @@
         setTimeout(remove, 15000);
       }
     }catch(_){}
+    // Site-wide RightAware AI entry point (Stage 7): a floating "Ask AI" link
+    // injected here so every page gets it without per-page markup edits. Skipped
+    // on ai.html itself. Hidden by CSS in print and while the mobile "Right of
+    // the Day" card (full-width on small screens) is open; z-index 90 sits above
+    // that card (60) and below the email fallback panel (1000).
+    try{
+      var here = location.pathname || "";
+      if(!/\/ai(\.html|\/)?$/.test(here) && !document.getElementById("raAiFab")){
+        var home = (typeof rootBase === "string" && rootBase) ? rootBase : "";
+        var fab = document.createElement("a");
+        fab.id = "raAiFab";
+        fab.className = "ra-ai-fab";
+        fab.href = home ? home + "ai.html" : "/ai.html";
+        fab.setAttribute("aria-label", "Ask RightAware AI \u2014 general legal information");
+        var ico = document.createElement("span");
+        ico.className = "ra-ai-fab-ico";
+        ico.setAttribute("aria-hidden", "true");
+        ico.textContent = "\u2728";
+        var txt = document.createElement("span");
+        txt.textContent = "Ask AI";
+        fab.appendChild(ico);
+        fab.appendChild(txt);
+        document.body.appendChild(fab);
+      }
+    }catch(_){}
   });
 })();

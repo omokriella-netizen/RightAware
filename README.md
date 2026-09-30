@@ -81,7 +81,7 @@ SUPABASE_URL= SUPABASE_PUBLISHABLE_KEY=        # public — browser OK
 SUPABASE_SERVICE_ROLE_KEY=                     # SERVER ONLY
 PAYSTACK_PUBLIC_KEY=                           # public — browser OK
 PAYSTACK_SECRET_KEY=                           # SERVER ONLY (/api/paystack/*)
-AI_API_KEY= AI_MODEL=                          # SERVER ONLY (/api/ai/chat)
+AI_API_KEY= AI_MODEL= AI_BASE_URL=       # SERVER ONLY (/api/ai/chat)
 ```
 
 ## Adding content later

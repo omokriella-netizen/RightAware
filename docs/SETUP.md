@@ -30,7 +30,7 @@
    used.
 3. **Content:** verify + upload real documents/videos/orgs/professionals
    (CONTENT_UPLOAD_GUIDE.md). Nothing invented may be published.
-4. **AI:** set `AI_API_KEY` server-side, finish `api/ai/chat.js`, set `AI_ENDPOINT=/api/ai/chat`.
+4. **AI:** `api/ai/chat.js` is implemented and `AI_ENDPOINT=/api/ai/chat` is set client-side. Remaining: add `AI_API_KEY` (+ optional `AI_MODEL`, `AI_BASE_URL`) as Vercel env vars and redeploy — until then the route answers 501 and the site shows labelled library matches.
 5. **Paystack:** set keys, keep secret server-side, test initialize→verify in test mode.
 6. **Deploy:** Vercel (DEPLOYMENT.md), set env vars, smoke-test, submit sitemap.
 

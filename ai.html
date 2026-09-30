@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RightAware AI (Demo) — RightAware</title>
-<meta name="description" content="RightAware AI demo placeholder: points you to library pages. Not a lawyer, not a live legal service."/>
+<title>RightAware AI — RightAware</title>
+<meta name="description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -27,14 +27,14 @@
 <main>
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
-  <span class="eyebrow">RightAware AI</span><h1>AI assistant <span class="pill">DEMO PLACEHOLDER</span></h1>
-  <p class="lead-dark">This v1 demo is <strong>not</strong> connected to a real AI or legal service. It matches keywords and points you to library pages. Never enter passwords, OTPs or bank details. For real cases, use Get Help or a qualified lawyer.</p>
+  <span class="eyebrow">RightAware AI</span><h1>AI assistant <span class="pill" id="aiModePill">AI ASSISTANT</span></h1>
+  <p class="lead-dark">RightAware AI gives general legal information grounded in our verified guides — it is <strong>not</strong> a lawyer, cannot give legal advice and cannot represent you. If the AI service is unavailable, it says so and matches your words to the library instead. Never enter passwords, OTPs or bank details. For real cases, use Get Help or a qualified lawyer.</p>
   </div>
   <figure class="page-hero-media"><img src="assets/images/justice-lady.jpg" alt="Golden statue of Lady Justice holding scales and a sword" loading="lazy"/></figure>
 </div></section>
 <section class="section"><div class="container chat-wrap rv">
   <div class="chat-box" id="chatBox" aria-live="polite">
-    <div class="msg ai"><strong>RightAware AI (demo):</strong> Hello! Tell me what happened in plain words — e.g. “police arrested my brother”, “landlord locked my shop”, “my boss has not paid me”. I'll point you to the right page.</div>
+    <div class="msg ai"><strong>RightAware AI:</strong> Hello! Tell me what happened in plain words — e.g. “police arrested my brother”, “landlord locked my shop”, “my boss has not paid me”. I'll point you to the right page.</div>
   </div>
   <div class="chip-row" style="margin:.8rem 0">
     <button type="button" data-p="Police arrested someone I know. What are our rights?">Arrest help</button>
@@ -42,26 +42,43 @@
     <button type="button" data-p="My employer has not paid my salary.">Unpaid salary</button>
     <button type="button" data-p="I was scammed online.">Online scam</button>
   </div>
-  <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Describe your issue…" autocomplete="off" aria-label="Ask the demo AI"/><button class="btn btn-primary" type="submit">Send</button></form>
-  <p class="form-note">Demo responses only — general information, not legal advice. Connection to a real AI service still needs to be built.</p>
+  <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Describe your issue…" autocomplete="off" aria-label="Ask RightAware AI"/><button class="btn btn-primary" type="submit">Send</button></form>
+  <p class="form-note">General legal information only — not legal advice. Answers are grounded in our verified guides; if the AI service is offline you get clearly labelled library matches instead. Never share passwords, OTPs or bank details.</p>
 </div></section>
 </main>
 <footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">AI demo only — not a lawyer or live service.</p></div>
+  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">AI assistant for general legal information — not a lawyer or legal service.</p></div>
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
   <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
+<script src="js/config.js"></script>
+<script src="js/ai.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
-  var box=document.getElementById("chatBox"), form=document.getElementById("chatForm"), input=document.getElementById("chatInput");
-  function add(who,text,html){
+  var box=document.getElementById("chatBox"), form=document.getElementById("chatForm"), input=document.getElementById("chatInput"), pill=document.getElementById("aiModePill");
+  var mode="pending"; /* pending | live | demo (labelled library match) */
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function setPill(){
+    if(!pill) return;
+    pill.textContent = mode==="live" ? "AI: LIVE" : (mode==="demo" ? "AI: LIBRARY MATCHES (DEMO)" : "AI ASSISTANT");
+  }
+  function add(who, text, html, label){
     var d=document.createElement("div"); d.className="msg "+who;
-    d.innerHTML="<strong>"+(who==="ai"?"RightAware AI (demo):":"You:")+"</strong> "+(html||text.replace(/</g,"&lt;"));
+    var strong = who==="ai" ? (label||"RightAware AI:") : "You:";
+    d.innerHTML="<strong>"+strong+"</strong> "+(html||esc(text).replace(/\n+/g,"<br/>"));
     box.appendChild(d); box.scrollTop=box.scrollHeight;
+  }
+  function linksHtml(links){
+    var out="";
+    (links||[]).forEach(function(l){
+      if(!l || !l.u) return;
+      out += '<br/>👉 <a class="link" href="'+esc(String(l.u).replace(/[<>"']/g,""))+'">'+esc(l.t||"Open")+'</a>';
+    });
+    return out;
   }
   function answer(q){
     var s=q.toLowerCase();
@@ -75,14 +92,24 @@
     if(/child|school|student/.test(s)) return "For children/school issues:"+link("Open Children's Rights overview","rights/topic.html?id=children");
     if(/lawyer|advocate|barrister|court/.test(s)) return "You can browse the demo directory interface (fictional profiles in v1):"+link("Open directory (demo)","lawyers.html");
     if(/hello|hi|hey/.test(s)) return "Hello! Describe your issue in a few words and I'll point you to the right page. Try the quick buttons above.";
-    return "Thanks — based on those words, start here:"+link("Search all content","search.html?q="+encodeURIComponent(q))+link("Browse the rights library","rights.html")+link("Get help","help.html")+"<br/><small>(Demo matcher — a real AI connection still needs to be built.)</small>";
+    return "Thanks — based on those words, start here:"+link("Search all content","search.html?q="+encodeURIComponent(q))+link("Browse the rights library","rights.html")+link("Get help","help.html")+"<br/><small>(Library match from our verified guides — general information, not legal advice.)</small>";
   }
+  function showDemo(q){ mode="demo"; setPill(); add("ai","",answer(q),"RightAware AI (library match):"); }
   form.addEventListener("submit",function(e){
     e.preventDefault(); var q=input.value.trim(); if(!q) return;
     add("you",q); input.value="";
-    setTimeout(function(){ add("ai","",answer(q)); },350);
+    setTimeout(function(){
+      if(!window.RA_AI){ showDemo(q); return; }
+      window.RA_AI.ask(q).then(function(r){
+        if(r && !r.demo && r.text){
+          mode="live"; setPill();
+          add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");
+        }else{ showDemo(q); }
+      }, function(){ showDemo(q); });
+    },350);
   });
   document.querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(){input.value=b.dataset.p;form.dispatchEvent(new Event("submit"))});});
+  setPill();
 })();
 </script>
 </body>

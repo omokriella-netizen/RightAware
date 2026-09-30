@@ -25,7 +25,7 @@
 | PAYSTACK_SECRET_KEY | server only | initialize + verify transactions |
 | TURNSTILE_SITE_KEY | browser | Cloudflare Turnstile **public** site key (CAPTCHA widget) |
 | TURNSTILE_SECRET_KEY | Supabase dashboard only | Cloudflare Turnstile **secret** — verified inside Supabase Auth; never in this repo or the browser |
-| AI_API_KEY / AI_MODEL | server only | provider calls in `/api/ai/chat` |
+| AI_API_KEY / AI_MODEL / AI_BASE_URL | server only | provider calls in `/api/ai/chat` |
 | APP_ENV / SUPPORT_EMAIL | anywhere | labels, support display |
 
 ## CAPTCHA (Cloudflare Turnstile) — where each key goes
