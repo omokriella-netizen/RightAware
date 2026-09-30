@@ -64,9 +64,16 @@
     document.getElementById("notifList").innerHTML = n.map(x=>'<div class="result"><strong>'+x.title+'</strong> '+(x.read?"":"<span class='tag'>new</span>")+'<br/>'+x.body+'<br/><small>'+x.at+'</small> <button class="btn btn-outline btn-sm" data-read="'+x.id+'">Mark read</button></div>').join("");
     document.querySelectorAll("[data-read]").forEach(b=>b.addEventListener("click",()=>{RA_DB.markRead(b.dataset.read);renderNotif();}));
   }
-  const p = RA_DB.profile();
-  document.getElementById("pName").value=p.name||u.name||""; document.getElementById("pEmail").value=p.email||u.email||"";
-  document.getElementById("pPhone").value=p.phone||""; document.getElementById("pState").value=p.state||"Lagos"; document.getElementById("pLang").value=p.language||"English";
+  var profileTouched = false;
+  function fillProfile(){
+    const p = RA_DB.profile();
+    document.getElementById("pName").value=p.name||u.name||""; document.getElementById("pEmail").value=p.email||u.email||"";
+    document.getElementById("pPhone").value=p.phone||""; document.getElementById("pState").value=p.state||"Lagos"; document.getElementById("pLang").value=p.language||"English";
+  }
+  fillProfile();                       // re-run after a sync lands (never over an edit in progress)
+  ["input","change"].forEach(function(ev){
+    document.getElementById("profileForm").addEventListener(ev, function(){ profileTouched = true; });
+  });
   document.getElementById("profileForm").addEventListener("submit",e=>{e.preventDefault();
     var prof={name:document.getElementById("pName").value,email:document.getElementById("pEmail").value,phone:document.getElementById("pPhone").value,state:document.getElementById("pState").value,language:document.getElementById("pLang").value};
     RA_DB.saveProfile(prof);
@@ -153,6 +160,13 @@
     }
   }
   document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); });
+  /* The account sync finishes AFTER this page first painted, so whatever arrived
+     from the other device is in localStorage by now — repaint from it. An edit
+     already in progress is never overwritten. */
+  document.addEventListener("ra:synced", function(){
+    renderSaved(); renderNotif();
+    if(!profileTouched) fillProfile();
+  });
   paintSync(); renderStatus();
 
   /* If an application was submitted before the confirmation email was opened,

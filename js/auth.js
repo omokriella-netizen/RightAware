@@ -38,6 +38,8 @@
       demo: false, at: new Date().toISOString() };
     try{ localStorage.setItem(KEY, JSON.stringify(u)); }catch(_){}
     try{ Auth.mode = "supabase"; Auth.fetchRole(); }catch(_){}
+    // A session is now known on this page — js/db.js uses it to run/finish its sync.
+    try{ document.dispatchEvent(new CustomEvent("ra:session-ready")); }catch(_){}
     return u;
   };
   Auth.fetchRole = async function(){

@@ -59,7 +59,13 @@
     pushNotification(t, b){ const n=this.notifications(); n.unshift({id:uid(),title:t,body:b,at:new Date().toISOString(),read:false}); LS.set("ra_notifications", n); },
     // ---- Profile & settings ----
     profile(){ return LS.get("ra_profile", { name:"", email:"", phone:"", state:"", language:"English" }); },
-    saveProfile(p){ LS.set("ra_profile", p); },
+    saveProfile(p){ LS.set("ra_profile", p); try{ localStorage.setItem("ra_profile_dirty","1"); }catch(_){} },
+    // Cross-device rule: the profile is PUSHED only when it was actually edited on
+    // this device (saveProfile). Merely holding a local copy — which every synced
+    // device does after its first pull — must never push, otherwise each device
+    // keeps re-sending its own stale copy and overwrites newer edits made elsewhere.
+    profileEdited(){ try{ return localStorage.getItem("ra_profile_dirty") === "1"; }catch(_){ return false; } },
+    markProfileClean(){ try{ localStorage.removeItem("ra_profile_dirty"); }catch(_){} },
     settings(){ return LS.get("ra_settings", { reminders:true, offlineMode:true, language:"English" }); },
     saveSettings(s){ LS.set("ra_settings", s); }
   };
@@ -75,18 +81,22 @@
     async pushSaved(){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
       var self = this;
-      var rows = DB.savedList().map(function(s){ return { user_id:self.uid(), item_type:s.type, ref:s.ref, title:s.title }; });
-      if(!rows.length) return { ok:true, pushed:0 };
-      var r = await RA_SUPA.client.from("saved_items").upsert(rows, { onConflict:"user_id,item_type,ref" });
-      return r.error ? { ok:false, error:r.error.message } : { ok:true, pushed:rows.length };
+      try{
+        var rows = DB.savedList().map(function(s){ return { user_id:self.uid(), item_type:s.type, ref:s.ref, title:s.title }; });
+        if(!rows.length) return { ok:true, pushed:0 };
+        var r = await RA_SUPA.client.from("saved_items").upsert(rows, { onConflict:"user_id,item_type,ref" });
+        return r.error ? { ok:false, error:r.error.message } : { ok:true, pushed:rows.length };
+      }catch(_){ return { ok:false, error:"save failed" }; }
     },
     async pullSaved(){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
-      var r = await RA_SUPA.client.from("saved_items").select("item_type,ref,title").eq("user_id", this.uid());
-      if(r.error) return { ok:false, error:r.error.message };
-      var list = ((r.data) || []).map(function(x){ return { type:x.item_type, ref:x.ref, title:x.title, at:new Date().toISOString() }; });
-      try{ localStorage.setItem("ra_saved", JSON.stringify(list)); }catch(_){}
-      return { ok:true, pulled:list.length };
+      try{
+        var r = await RA_SUPA.client.from("saved_items").select("item_type,ref,title").eq("user_id", this.uid());
+        if(r.error) return { ok:false, error:r.error.message };
+        var list = ((r.data) || []).map(function(x){ return { type:x.item_type, ref:x.ref, title:x.title, at:new Date().toISOString() }; });
+        try{ localStorage.setItem("ra_saved", JSON.stringify(list)); }catch(_){}
+        return { ok:true, pulled:list.length };
+      }catch(_){ return { ok:false, error:"load failed" }; }
     },
     async deleteSaved(type, ref){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
@@ -107,6 +117,7 @@
         var p = { name:row.name || "", email:row.email || "", phone:row.phone || "",
                   state:row.state || "Lagos", language:row.language || "English" };
         try{ localStorage.setItem("ra_profile", JSON.stringify(p)); }catch(_){}
+        DB.markProfileClean();                 // the account copy is now the local copy
         return { ok:true, pulled:true, profile:p };
       }catch(_){ return { ok:false, error:"pull failed" }; }
     },
@@ -132,7 +143,9 @@
       try{
         var r = await RA_SUPA.client.from("profiles").upsert({
           id:this.uid(), name:p.name, email:p.email, phone:p.phone, state:p.state, language:p.language });
-        return r.error ? { ok:false, error:r.error.message } : { ok:true };
+        if(r.error) return { ok:false, error:r.error.message };
+        DB.markProfileClean();                 // stored on the account: no longer pending
+        return { ok:true };
       }catch(_){ return { ok:false, error:"save failed" }; }
     },
     async pullNotifications(){
@@ -165,7 +178,7 @@
           if(owner && owner !== uidNow){
             // A different account signed in on this device: never push the previous
             // account's local copies into this account — start from the server copy.
-            try{ ["ra_saved","ra_profile","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
+            try{ ["ra_saved","ra_profile","ra_profile_dirty","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
             out.savedPull = await this.pullSaved();
             out.profile = await this.pullProfile();
           } else {
@@ -181,18 +194,37 @@
             out.saved = await this.pushSaved();
             if(out.saved && out.saved.ok) out.savedPull = await this.pullSaved();
             var lp = DB.profile();
-            out.profile = (lp.name || lp.email || lp.phone)
-              ? await this.pushProfile(lp)                // local edits win (last write)
-              : await this.pullProfile();                 // never overwrite the server copy with blanks
+            out.profile = (DB.profileEdited() && (lp.name || lp.email || lp.phone))
+              ? await this.pushProfile(lp)   // edited on THIS device → local wins
+              : await this.pullProfile();    // otherwise the account copy is the truth
             out.notif = await this.pullNotifications();
           }
           try{ localStorage.setItem("ra_sync_owner", uidNow); }catch(_){}
         }
       }catch(_){ out.ok = false; out.error = "sync interrupted"; }
+      // Let the page repaint from the just-synced local copy (account.html listens).
+      try{ document.dispatchEvent(new CustomEvent("ra:synced", { detail: out })); }catch(_){}
       return out;
     }
   };
+  /* Sync once per account per page load: at backend-ready, and again if the
+     session only becomes known afterwards (js/auth.js fires "ra:session-ready"
+     after it mirrors a session) — otherwise a page loaded just before the
+     session was restored would never sync at all. */
   try{
-    document.addEventListener("ra:backend-ready", function(){ try{ DB.remote.syncNow(); }catch(_){} });
+    var syncedUid = null, syncRunning = false;
+    var runSync = function(){
+      try{
+        if(!DB.remote.ready()) return;
+        var u = DB.remote.uid();
+        if(!u || u === syncedUid || syncRunning) return;
+        syncRunning = true;
+        Promise.resolve(DB.remote.syncNow())
+          .then(function(){ syncedUid = u; }).catch(function(){})
+          .then(function(){ syncRunning = false; });
+      }catch(_){}
+    };
+    document.addEventListener("ra:backend-ready", runSync);
+    document.addEventListener("ra:session-ready", runSync);
   }catch(_){}
 })();
