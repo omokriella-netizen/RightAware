@@ -369,6 +369,38 @@ img{max-width:100%;height:auto}
 .empty-state p:last-child{margin-bottom:0}
 #resSearchStatus:empty,#vidSearchStatus:empty,#faqSearchStatus:empty{display:none}
 
+/* ===== Header: CTA labels stay on one line (spec A14: one-line nav) =====
+   Root cause: js/i18n.js mounts the language selector (.ra-lang, ~141px) into
+   .header-actions, so the row no longer fit inside .header-inner; flexbox then
+   shrank the .btn CTAs until "Log In" and "Get Started" each wrapped onto two
+   lines (button height 46px -> 70px). Additive rules only, nothing above is
+   removed:
+   1. CTAs can never shrink or wrap — both labels always on a single line.
+   2. The header search field and the language pill absorb any shortage first
+      (they shrink gracefully instead of squeezing the buttons).
+   3. Gaps tighten slightly and the inline nav hands over to the hamburger at
+      1160px (was 1100px), so the row fits on one line with the selector here.
+   4. Phones/tablets: the logo sprite scales down and the language pill shows a
+      compact globe, keeping logo + CTA + language + menu on one line. */
+.header-inner{flex-wrap:nowrap;gap:.85rem}
+.nav{display:flex;flex-wrap:nowrap;gap:.7rem}
+.header-actions{display:flex;flex-wrap:nowrap;min-width:0;gap:.45rem}
+.header-actions .btn{flex:0 0 auto;white-space:nowrap}
+.hsearch{flex:0 1 auto;min-width:0}
+.hsearch input{width:130px;min-width:0;flex:0 1 auto}
+.ra-lang{min-width:0;overflow:hidden}
+.ra-lang-select{max-width:100px}
+@media (max-width:1160px){ .nav{display:none} .hamburger{display:flex} }
+@media (max-width:600px){
+  .header-inner{gap:.6rem}
+  .header-actions{gap:.4rem}
+  /* Same official logo sprite, uniformly scaled (130x30 -> 98x23). */
+  .site-header .logo-brand{width:98px;height:23px}
+  .site-header .logo-brand img{width:158px;height:158px;left:-33px;top:-69px}
+  .ra-lang-select{max-width:64px}
+  .header-actions .btn-sm{padding:.5rem .7rem}
+}
+
 /* ===== mailto: launch guard (only appears when no mail app opened) ===== */
 .mail-fallback{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:1000;
   display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;max-width:min(92vw,36rem);
