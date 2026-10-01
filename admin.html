@@ -131,9 +131,10 @@
       + '</div>'
       + '<div id="panelApps" role="tabpanel" aria-labelledby="tabApps">'
         + '<div class="section-head"><span class="eyebrow">Registration applications</span><h2>Awaiting your decision</h2>'
-        + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p></div>'
+        + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p>'
+        + '<p class="app-meta" id="raBuild">build: admin-20261001-2 · every card, status and control below renders live from the database.</p></div>'
         + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
-        + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
+        + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. A message copy is never the application record: each copy states whether its record exists, and when the record is missing (the applicant has not signed in yet) the copy offers <strong>Create application record</strong> from the applicant\'s own submitted data. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
       + '</div>'
       + '<div id="panelContent" role="tabpanel" aria-labelledby="tabContent" hidden>'
         + '<div class="section-head"><span class="eyebrow">Content</span><h2>Catalogues</h2></div>'
@@ -166,7 +167,7 @@
      e-mails matched from the application MESSAGE COPIES (the professionals
      table stores no e-mail column and profiles are not admin-readable via
      RLS) and specialisations read from professional_specializations. */
-  var appCtx = { emailFor: function(){ return ""; }, specByPro: {} };
+  var appCtx = { emailFor: function(){ return ""; }, specByPro: {}, copyInfo: {} };
   /* Status pill shows the value the DATABASE actually holds — never a
      hardcoded label — so an unexpected/NULL status is flagged, not hidden. */
   function statusPill(st){
@@ -209,6 +210,8 @@
       + (p.fee_note ? '<dt>Fee note</dt><dd>' + esc(p.fee_note) + '</dd>' : '')
       + (p.bio ? '<dt>Bio</dt><dd>' + esc(p.bio) + '</dd>' : '')
       + (p.photo_path ? '<dt>Photo file</dt><dd>' + esc(p.photo_path) + ' (filename recorded; original to be checked)</dd>' : '')
+      + (p.verification_source ? '<dt>Record source</dt><dd>' + esc(p.verification_source) + '</dd>' : '')
+      + (p.user_id ? '' : '<dt>Account link</dt><dd>not attached to a signed-in applicant — approval still publishes this listing, but no account role can be granted for it until an applicant account is linked.</dd>')
       + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-pro" data-id="' + esc(p.id) + '">Approve (publish listing)</button>'
       + '<button class="btn btn-outline btn-sm" data-act="reject-pro" data-id="' + esc(p.id) + '">Reject (keep private)</button></div>'
@@ -223,6 +226,7 @@
       + (o.website ? '<dt>Website</dt><dd>' + esc(o.website) + '</dd>' : '')
       + '<dt>Services</dt><dd>' + esc(svc || "—") + '</dd>'
       + (o.verification_source ? '<dt>Verification hints</dt><dd>' + esc(o.verification_source) + '</dd>' : '')
+      + (o.source_note ? '<dt>Record source</dt><dd>' + esc(o.source_note) + '</dd>' : '')
       + (o.description ? '<dt>About</dt><dd>' + esc(o.description) + '</dd>' : '') + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-org" data-id="' + esc(o.id) + '">Approve (verify listing)</button>'
       + '<button class="btn btn-outline btn-sm" data-act="reject-org" data-id="' + esc(o.id) + '">Reject (keep private)</button></div>'
@@ -230,10 +234,27 @@
   }
   function queueItem(m){
     var isApp = /^Application/.test(String(m.topic || ""));
+    var ci = (appCtx.copyInfo && appCtx.copyInfo[m.id]) || null;
+    /* The copy must never pose as the application record: say explicitly which
+       of the two this is, and — only when NO record matches — offer to create
+       the record from the applicant's own submitted copy (never an approval). */
+    var recLine = "";
+    if(isApp && ci){
+      if(ci.matched){
+        recLine = '<div class="app-meta">🗂 Application record: <strong>exists</strong> — Approve / Reject act on the card above; this copy stays read-only.</div>';
+      } else if(ci.kind === "pro" || ci.kind === "org"){
+        recLine = '<div class="app-meta">⚠ Application record: <strong>missing</strong> — no ' + (ci.kind === "pro" ? "professional" : "organization")
+          + ' row matches this copy. The record is created automatically when the applicant first signs in after email confirmation; until that happens, create it here from the applicant\'s own submitted data (it will be stored as PENDING — never auto-approved): '
+          + '<button class="btn btn-secondary btn-sm" data-act="create-record" data-id="' + esc(m.id) + '">Create application record from this copy</button></div>';
+      } else {
+        recLine = '<div class="app-meta">⚠ This copy could not be matched to an application kind — no record action is offered.</div>';
+      }
+    }
     return '<div class="app-item"><details><summary>📨 ' + esc(m.topic || "Application") + ' — ' + esc(m.name || "") + '</summary>'
       + '<div class="app-meta">from ' + esc(m.email || "?") + ' · ' + esc(String(m.created_at || m.at || "").slice(0,19).replace("T"," "))
       + ' · status ' + esc(m.status || "new") + '</div>'
       + (isApp ? '<div class="app-meta">✉ Message copy of a signup application — <strong>approval happens on the application records above, not on this message.</strong></div>' : '')
+      + recLine
       + '<dl class="app-dl"><dt>Message</dt><dd>' + esc(m.message || "") + '</dd></dl>'
       + '<div class="app-actions"><a class="btn btn-outline btn-sm" href="mailto:' + esc(m.email || "") + '">Reply by email</a>'
       + '<button class="btn btn-secondary btn-sm" data-act="mark-read" data-id="' + esc(m.id) + '">Mark reviewed</button></div>'
@@ -308,6 +329,92 @@
     var r = await RA_SUPA.client.from(table).update(values).eq("id", id).select("id");
     if(r.error) throw r.error;
     if(!r.data || !r.data.length) throw { message:"0 rows changed — row-level security blocked the update (apply supabase/applications-access.sql once, then reload)" };
+  }
+
+  /* ---- Application-record REPAIR from a message copy ----------------------
+     Why this exists: signup can create the real professionals/organizations
+     row only while a signed-in session exists. With email confirmation still
+     pending, the direct insert is refused by RLS (by design), the flow stores
+     the application as a contact-message copy, and the real record is attached
+     later by js/auth.js flushPendingApplication when the applicant first
+     signs in. If that has not happened, the record does not exist yet — and
+     this dashboard must never pretend the copy IS the record. The
+     administrator can materialise it here from the applicant's own submitted
+     copy:
+       · inserted through the EXISTING admin policies (edit_profs / edit_orgs)
+         — no RLS change, no public write, no service-role key;
+       · always stored as PENDING — never auto-approved; decisions still run
+         only through the admin-only RPCs (ra_approve_* / ra_revoke_*);
+       · never a duplicate: the applicant name is matched against every row
+         this admin session can see before anything is inserted;
+       · no account link is invented (this session cannot read auth.users or
+         profiles) — the card states that honestly on the created record. */
+  function splitList(s){ return String(s || "").split(";").map(function(x){ return x.trim(); }).filter(Boolean); }
+  function blankish(v){
+    v = String(v == null ? "" : v).trim();
+    return (!v || /^(—|-|not stated|n\/a)$/i.test(v)) ? null : v;
+  }
+  async function createRecordFromCopy(m, ci){
+    if(!m || !ci || ci.matched || (ci.kind !== "pro" && ci.kind !== "org")){
+      return { ok:false, why:"This copy is already matched to an application record (or its kind could not be determined), so nothing was created." };
+    }
+    var txt = String(m.message || "");
+    function get(re){ var r = re.exec(txt); return r ? String(r[2]).trim() : ""; }
+    try{
+      if(ci.kind === "pro"){
+        var bio = (/(^|\n)Bio:\s*([\s\S]*?)(?=\n(?:Credential file recorded:|Photo recorded:|Registration file recorded:|Logo recorded:)|\nStatus:|$)/.exec(txt) || [])[2] || "";
+        var row = {
+          id: "prof-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6),
+          name: ci.name || get(/(^|\n)Name:\s*(.+)/),
+          qualification: blankish(get(/(^|\n)Qualification:\s*(.+)/)),
+          experience_yrs: blankish(get(/(^|\n)Years:\s*(.+)/)),
+          location: blankish(get(/(^|\n)Location:\s*(.+)/)),
+          languages: splitList(get(/(^|\n)Languages:\s*(.+)/)),
+          bio: blankish(bio),
+          consultation_options: splitList(get(/(^|\n)Areas:\s*(.+)/)),
+          fee_note: blankish(get(/(^|\n)Fee note:\s*(.+)/)),
+          availability: blankish(get(/(^|\n)Availability:\s*(.+)/)),
+          verification_status: "pending",
+          is_demo: false,
+          verification_source: "Created by an administrator from this application's signup message copy (no application record existed)."
+          /* user_id intentionally NOT set — no account link is guessed. */
+        };
+        if(!row.name) return { ok:false, why:"No Name line could be parsed from this copy — nothing was created." };
+        var r = await RA_SUPA.client.from("professionals").insert(row);
+        if(r.error && r.error.code === "23505"){
+          row.id = "prof-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
+          r = await RA_SUPA.client.from("professionals").insert(row);
+        }
+        if(r.error) return { ok:false, why: r.error.message || "permission refused" };
+        return { ok:true, kind:"pro", name: row.name };
+      }
+      var about = (/(^|\n)About:\s*([\s\S]*?)(?=\n(?:Registration file recorded:|Logo recorded:)|\nStatus:|$)/.exec(txt) || [])[2] || "";
+      var contact = get(/(^|\n)Contact:\s*(.+)/);
+      var type = /\((.+)\)/.exec(contact);
+      var orow = {
+        id: "org-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6),
+        name: ci.name || get(/(^|\n)Organisation:\s*(.+)/),
+        description: blankish(about),
+        services: splitList(get(/(^|\n)Services:\s*(.+)/)),
+        specialization: type ? String(type[1]).trim() : null,
+        location: blankish(get(/(^|\n)State:\s*(.+)/)),
+        address: blankish(get(/(^|\n)Address:\s*(.+)/)),
+        phone: blankish(get(/(^|\n)Phone:\s*(.+)/)),
+        email: blankish(get(/(^|\n)Email:\s*(\S+@\S+)/)),
+        website: blankish(get(/(^|\n)Website:\s*(.+)/)),
+        verification_source: blankish(get(/(^|\n)Verification hints:\s*(.+)/)),
+        source_note: "Created by an administrator from this application's signup message copy (no application record existed).",
+        verification_status: "pending"
+      };
+      if(!orow.name) return { ok:false, why:"No Organisation line could be parsed from this copy — nothing was created." };
+      var r2 = await RA_SUPA.client.from("organizations").insert(orow);
+      if(r2.error && r2.error.code === "23505"){
+        orow.id = "org-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
+        r2 = await RA_SUPA.client.from("organizations").insert(orow);
+      }
+      if(r2.error) return { ok:false, why: r2.error.message || "permission refused" };
+      return { ok:true, kind:"org", name: orow.name };
+    }catch(err){ return { ok:false, why: String(err && err.message ? err.message : err) }; }
   }
 
   async function loadApplications(){
@@ -409,6 +516,26 @@
       (x.verification_status === "verified" || x.verification_status === "rejected" ? orgDecided : orgPending).push(x);
     });
 
+    /* ---- copy ↔ record matching: each application message copy is checked
+       against EVERY application row this admin session can see (name match,
+       case-insensitive; the professionals table stores no e-mail column), so
+       the dashboard states per copy whether its record exists — and never
+       silently lets a copy stand in for a missing record. ---- */
+    var proNames = {}, orgNames = {};
+    pros.forEach(function(x){ if(x && x.name) proNames[String(x.name).trim().toLowerCase()] = true; });
+    orgs.forEach(function(x){ if(x && x.name) orgNames[String(x.name).trim().toLowerCase()] = true; });
+    appCtx.copyInfo = {};
+    queue.forEach(function(m){
+      var txt = String(m.message || "");
+      var isOrg = /ORGANISATION APPLICATION/i.test(txt);
+      var isPro = /PROFESSIONAL APPLICATION/i.test(txt);
+      if(!isOrg && !isPro){ appCtx.copyInfo[m.id] = { kind:"unknown", matched:false }; return; }
+      var nm = (isOrg ? /(^|\n)Organisation:\s*(.+)/.exec(txt) : /(^|\n)Name:\s*(.+)/.exec(txt));
+      var name = nm ? String(nm[2]).trim() : "";
+      var set = isOrg ? orgNames : proNames;
+      appCtx.copyInfo[m.id] = { kind: isOrg ? "org" : "pro", name: name, matched: !!(name && set[name.toLowerCase()]) };
+    });
+
     /* ---- render: DECISION RECORDS FIRST, message copies LAST ---- */
     if(proPending.length){
       any = true;
@@ -417,7 +544,7 @@
     }
     if(orgPending.length){
       any = true;
-      out += '<div class="section-head"><h3>🏛 Organisation applications — Approve / Reject</h3></div>'
+      out += '<div class="section-head"><h3>🏛 Organization applications — Approve / Reject</h3></div>'
         + orgPending.map(function(x){ return safe(orgItem, x, "organisation"); }).join("");
     }
     var decided = proDecided.map(function(x){ return { row:x, kind:"pro" }; })
@@ -478,6 +605,15 @@
             if(note3) alert("Decision saved.\n\nNote: " + note3);
           } else if(act === "reopen-org"){
             await upd("organizations", { verification_status:"pending", verified_at:null }, id);
+          } else if(act === "create-record"){
+            var mc = null; queue.forEach(function(x){ if(x.id === id) mc = x; });
+            var made = await createRecordFromCopy(mc, appCtx.copyInfo[id]);
+            if(!made.ok){
+              alert("Could not create the application record:\n\n" + made.why
+                + "\n\nNothing was written — no partial or duplicate record exists.");
+              b.disabled = false;
+              return;
+            }
           } else if(act === "mark-read"){
             await upd("contact_messages", { status:"read" }, id);
           }
