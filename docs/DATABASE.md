@@ -66,6 +66,32 @@ idempotent (`on conflict do nothing`), so re-running it changes nothing.
 5. Reviews: `professional_reviews` insert as `pending`; moderation UI in
    `admin.html` calls an admin-only API (service role), never direct table writes.
 
+## Cross-device sync (profile & saved items — `RA_DB.v = "db4"`)
+When signed in, Supabase is the source of truth; localStorage is the offline
+cache. `js/db.js` `remote.syncNow()` runs once per account per page load
+(`ra:backend-ready` / `ra:session-ready`) and after explicit saves:
+
+- **Push gate** — the profile is pushed only when *this device* edited it
+  (`ra_profile_dirty`, set by `saveProfile()`, cleared by a successful
+  push/pull, dropped on account switch). Merely holding a local copy — which
+  every synced device does after its first pull — never pushes.
+- **Version guard (compare-and-set)** — every pull stores the row's
+  `updated_at` in `ra_profile_base`; every push is
+  `update … where id = auth.uid() and updated_at = <base>` (existing column +
+  `ra_touch_updated` trigger, no schema change). Zero rows back means the
+  account copy changed since this device last saw it: the **account copy wins**
+  — local is replaced, the edit flag is cleared, and the page reports the
+  conflict honestly. A stale device can therefore never overwrite a newer
+  value. First save with no row inserts it; a row already exists with no base
+  follows the same conflict rule.
+- **Saved items** sync by identity (`user_id,item_type,ref` upsert + delete),
+  push-before-pull, `ra_removed` tombstones for offline removals — neither
+  device can lose the other's items.
+- **Race guard** — a pull that lands after a local save started is discarded,
+  so it never wipes the edit or its retry flag.
+- The service worker cache (`rightaware-v7`) purges pre-CAS sync code from
+  devices; `RA_DB.v` reports the running sync version.
+
 ## Seed data
 Seed **categories + FAQs only** at first. Do NOT seed laws text, organizations,
 or professionals until each record is verified. Demo professionals stay

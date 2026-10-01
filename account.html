@@ -82,6 +82,7 @@
       pOut.textContent="Profile saved on this device — syncing…";
       RA_DB.remote.pushProfile(prof).then(function(r){
         pOut.textContent = r.ok ? "Profile saved on this device and synced to your account."
+          : r.conflict ? "Another device updated this profile first — the account copy was kept. Save again to apply your change."
           : "Profile saved on this device (sync failed: " + (r.error||"error") + "). It will retry on your next visit.";
       });
     } else {

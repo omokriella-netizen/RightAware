@@ -1,4 +1,4 @@
-/* RightAware service worker (v6): offline-first public content + privacy rules.
+/* RightAware service worker (v7): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,7 +7,12 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v6: Stage 6 (real contact system). v5 served public HTML cache-first, so a
+/* v7: purge the pre-P9-sync js/db.js from device caches. v6 kept serving the
+    old presence-based profile push from cache (stale-while-revalidate) on the
+    first load after a deploy, so a device could push a stale local profile
+    over a newer account copy (cross-device B→A revert). v7 forces a fresh
+    precache of the CAS-based sync code (RA_DB.v === "db4").
+   v6: Stage 6 (real contact system). v5 served public HTML cache-first, so a
     deploy stayed invisible behind the cached copy — production already had the
     new Get Help report flow while browsers kept showing the old
     "Report form (demo — local only)" heading. Navigations are now network-first
@@ -17,7 +22,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v6";
+const CACHE = "rightaware-v7";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",

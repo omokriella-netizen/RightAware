@@ -70,6 +70,7 @@
     saveSettings(s){ LS.set("ra_settings", s); }
   };
   window.RA_DB = DB;
+  DB.v = "db4";   // code-version marker: production sync must run db4 (CAS profile sync)
 
   /* ---- Supabase remote (used when RA_SUPA is ready; local-first otherwise) ----
      Local collections stay the offline cache; syncNow() mirrors them to Supabase
@@ -108,15 +109,25 @@
     },
     async pullProfile(){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      // Remember the dirty flag from before the request: a save that lands while
+      // this pull is in flight must NOT be overwritten or have its retry flag
+      // cleared by the older server read.
+      var dirtyBefore = null;
+      try{ dirtyBefore = localStorage.getItem("ra_profile_dirty"); }catch(_){}
       try{
         var r = await RA_SUPA.client.from("profiles")
-          .select("name,email,phone,state,language").eq("id", this.uid()).limit(1);
+          .select("name,email,phone,state,language,updated_at").eq("id", this.uid()).limit(1);
         if(r.error) return { ok:false, error:r.error.message };
         var row = (r.data || [])[0];
         if(!row) return { ok:true, pulled:false };
+        var dirtyNow = null;
+        try{ dirtyNow = localStorage.getItem("ra_profile_dirty"); }catch(_){}
+        if(dirtyNow !== dirtyBefore) return { ok:true, skipped:"edit-in-progress" };
         var p = { name:row.name || "", email:row.email || "", phone:row.phone || "",
                   state:row.state || "Lagos", language:row.language || "English" };
         try{ localStorage.setItem("ra_profile", JSON.stringify(p)); }catch(_){}
+        // Server version this copy is based on — every push must match it (CAS).
+        try{ localStorage.setItem("ra_profile_base", row.updated_at || ""); }catch(_){}
         DB.markProfileClean();                 // the account copy is now the local copy
         return { ok:true, pulled:true, profile:p };
       }catch(_){ return { ok:false, error:"pull failed" }; }
@@ -140,13 +151,46 @@
     },
     async pushProfile(p){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      var uid = this.uid();
+      var fields = { name:p.name, email:p.email, phone:p.phone, state:p.state, language:p.language };
+      var base = null;
+      try{ base = localStorage.getItem("ra_profile_base"); }catch(_){}
       try{
-        var r = await RA_SUPA.client.from("profiles").upsert({
-          id:this.uid(), name:p.name, email:p.email, phone:p.phone, state:p.state, language:p.language });
-        if(r.error) return { ok:false, error:r.error.message };
-        DB.markProfileClean();                 // stored on the account: no longer pending
-        return { ok:true };
+        if(base){
+          // Compare-and-set: only overwrite the row this device last pulled.
+          // 0 rows back means the account copy changed since (another device
+          // saved a NEWER value) — a stale local copy must never win.
+          var r = await RA_SUPA.client.from("profiles")
+            .update(fields).eq("id", uid).eq("updated_at", base).select("updated_at");
+          if(r.error) return { ok:false, error:r.error.message };
+          if(r.data && r.data.length){
+            try{ localStorage.setItem("ra_profile_base", r.data[0].updated_at || ""); }catch(_){}
+            DB.markProfileClean();
+            return { ok:true };
+          }
+          return await this.resolveProfileConflict();
+        }
+        // No base (never pulled): this is either the account's first profile row
+        // or a copy we know nothing about. Insert if absent; if the row already
+        // exists we cannot prove our copy is current — the account copy wins.
+        var ins = await RA_SUPA.client.from("profiles")
+          .insert(Object.assign({ id:uid }, fields)).select("updated_at");
+        if(!ins.error && ins.data && ins.data.length){
+          try{ localStorage.setItem("ra_profile_base", ins.data[0].updated_at || ""); }catch(_){}
+          DB.markProfileClean();
+          return { ok:true };
+        }
+        if(ins.error && /duplicate|23505|already exists/i.test(ins.error.message || ""))
+          return await this.resolveProfileConflict();
+        return { ok:false, error:(ins.error && ins.error.message) || "save failed" };
       }catch(_){ return { ok:false, error:"save failed" }; }
+    },
+    // Deterministic conflict rule: the server value that is NEWER than this
+    // device's base wins. Pull it over the local copy, clear the edit flag and
+    // tell the caller — never re-push the stale copy, never lose silently.
+    async resolveProfileConflict(){
+      try{ await this.pullProfile(); }catch(_){}
+      return { ok:false, conflict:true, profile:DB.profile() };
     },
     async pullNotifications(){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
@@ -178,7 +222,7 @@
           if(owner && owner !== uidNow){
             // A different account signed in on this device: never push the previous
             // account's local copies into this account — start from the server copy.
-            try{ ["ra_saved","ra_profile","ra_profile_dirty","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
+            try{ ["ra_saved","ra_profile","ra_profile_dirty","ra_profile_base","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
             out.savedPull = await this.pullSaved();
             out.profile = await this.pullProfile();
           } else {
@@ -195,7 +239,7 @@
             if(out.saved && out.saved.ok) out.savedPull = await this.pullSaved();
             var lp = DB.profile();
             out.profile = (DB.profileEdited() && (lp.name || lp.email || lp.phone))
-              ? await this.pushProfile(lp)   // edited on THIS device → local wins
+              ? await this.pushProfile(lp)   // edited here → CAS push (a stale base never wins)
               : await this.pullProfile();    // otherwise the account copy is the truth
             out.notif = await this.pullNotifications();
           }
