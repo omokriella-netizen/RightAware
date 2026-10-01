@@ -1,12 +1,13 @@
 # Professional & Organization dashboards — confirmed architecture and exact implementation
 
-Status: **specified, not yet built.** The approved RightAware scope requires
+Status: **built (2026-10-01)** — `professional.html` and `organization.html`
+are live with the additive `supabase/dashboard-access.sql`; see §3 for the
+implementation record. The approved RightAware scope requires
 dedicated dashboards/workspaces for **verified Legal Professionals** and
 **verified Organizations**. This document confirms what exists in the code
 today (verified file/line references), states the gap precisely, and specifies
-the exact implementation needed — without expanding product scope. Building
-these two pages is the next implementation step after the auth/verification
-phase.
+the exact implementation needed — without expanding product scope. this page records the gap as specified and, in §3, what was delivered against
+it after the auth/verification phase.
 
 ---
 
@@ -122,11 +123,23 @@ with explicit column whitelists** — the direct tables stay editor/admin-only:
 3. **`pro_read_consultations`** — a SELECT policy so a professional can read
    only the consultation rows addressed to their own row:
    `professional_id in (select id from professionals where user_id = auth.uid())`.
-   Read-only; adds no new public exposure. (The professional-side consultation
-   workflow itself is roadmap item 3 — this policy only prepares the row
-   read.)
+   **As built**, the predicate additionally requires
+   `verification_status = 'verified'` on that own row — consultations are a
+   verified-professional privilege, so an unverified/rejected professional
+   record gains no read from this policy. Read-only; adds no new public
+   exposure. (The professional-side consultation workflow itself is roadmap
+   item 3 — this policy only prepares the row read.)
 4. No changes to any existing policy, table, CHECK, or the approval/revoke
    functions. Nothing is granted to `anon`.
+5. **As built: photo/logo uploads** (the phase brief asks for a real profile
+   photo and organization logo) — `dashboard-access.sql` also creates the
+   `pro-photos` / `org-logos` buckets if missing and adds three storage
+   policies that confine INSERT/UPDATE/DELETE to the caller's own UUID folder
+   with an image-extension check. Bucket READ was already public (docs/SETUP.md);
+   file size (2 MB) is enforced client-side before upload. The
+   `ra_update_own_*` functions validate that a changed `photo_path` /
+   `logo_path` points into the caller's own folder, so a crafted call can
+   never plant another account's file.
 
 ### 2.4 Login routing (small edits to existing files)
 - `login.html` (line 97): `role === "admin" ? "admin.html" :
@@ -151,9 +164,15 @@ with explicit column whitelists** — the direct tables stay editor/admin-only:
   forms for the whitelist fields via `ra_update_own_organization`.
 - Both pages link back to `account.html` (session, language, saved items).
   Neither replaces account, admin, or any public page.
-- **Not part of this step** (they land with their own roadmap items and plug
-  into these pages): consultation inbox/answers (item 3), reviews & ratings
-  (item 4), notifications (item 2), payments (item 7).
+- **Not part of this step — workflows** (they land with their own roadmap
+  items and plug into the panels below): consultation answers / accept-decline
+  actions (item 3), review submission & moderation tooling (item 4),
+  notification *production* (item 2), payments (item 7). **As built**, both
+  pages nevertheless include the **read-only** structures the phase brief asks
+  for: the consultations panel (real rows + status labels), the reviews panel
+  (published rows + computed rating summary, never editable) and the
+  notifications panel (own rows + real mark-read writes) — each with an honest
+  empty state, each reading Supabase directly, none generating sample data.
 
 ### 2.6 Files touched by the dashboard step (exact list)
 | File | Change |
@@ -179,3 +198,53 @@ required for this step** (re-evaluate if `js/auth.js` or `js/db.js` change).
 - Approval, rejection, revocation and status changes stay administrator-only.
 - No fabricated content, no duplicate tables, no secrets in URLs or client
   state; profile and Saved Items sync untouched.
+
+---
+
+## 3. What was built (implementation record — 2026-10-01)
+
+Built exactly to §2, with the phase brief's expanded read-only sections (see
+§2.5 "As built") and the storage addition (§2.3 item 5).
+
+### Pages
+- **`professional.html`** — boot mirrors `admin.html` (backend gate →
+  `fetchRole` → own-row read). Workspace renders **only** when `ra_my_roles()`
+  contains `professional` **and** the own row (`own_profs`) says
+  `verification_status='verified'`; every other state renders the status view
+  with the record's real values (pending / rejected / unverified / role
+  without record / role missing / read error — each self-diagnosing, naming
+  the policy or file involved). Tabs: Overview (verification, profile
+  completeness computed from real fields, availability, specialization,
+  location, activity counts), Profile (whitelist edit form + photo upload →
+  `ra_update_own_professional`, then a **re-read** before any success message),
+  Public preview (exact `lawyers.html` card markup + explicit shown/never-shown
+  lists), Consultations (real rows, exact raw status shown beside a friendly
+  label; read-only), Reviews (published rows, live-computed rating summary,
+  report/moderation flags, no edit path), Notifications (own rows, mark-read →
+  `notifications` update + re-read), Account (password via
+  `auth.updateUser`, logout, links).
+- **`organization.html`** — same contract with the email-binding ownership:
+  owned row (`own_orgs` pre-verification / public read when verified) **and**
+  `verification_status='verified'`. Tabs: Overview, Profile (→
+  `ra_update_own_organization` + logo upload), Public preview (exact
+  `organizations.html` card), Contacts & inquiries (published
+  `organization_contacts` + real help/contact links + an honest note that no
+  organization-linked inquiry table exists yet), Notifications, Account.
+
+### Existing-file edits
+- `login.html` — professional → `professional.html`; then one `own_orgs`-style
+  e-mail read routes an organization owner to `organization.html`, else `?next=`
+  (any failure falls back to `?next=`, never a dead end).
+- `account.html` — "Open professional workspace" button on the account card and
+  an "Open workspace" button on a **verified** live application card (both
+  paths only; session/sync/saved-items/status logic untouched).
+- `docs/SETUP.md`, `docs/DATABASE.md` — document `dashboard-access.sql`.
+
+### Not changed (deliberately)
+`js/auth.js`, `js/db.js`, `sw.js` (no cache bump needed), all existing
+policies/tables/CHECKs, the approval/revoke functions, `admin.html`, public
+directory pages, and the contact-message flows. **Roadmap note for item 3:**
+tightening `own_cons` `WITH CHECK` (so a client cannot point a new request at
+another professional's record) belongs with the consultation workflow and was
+left untouched here — `pro_read_consultations` already confines professional
+reads to their own verified row.

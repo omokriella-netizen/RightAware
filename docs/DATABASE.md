@@ -203,3 +203,37 @@ transaction (state and role can never disagree).
 - **with** — rejection/reopen is atomic server-side, the fallback never runs.
   Organizations have no role to revoke (their status *is* their access
   visibility), so they are unaffected.
+
+## Dashboard access add-on (`supabase/dashboard-access.sql`)
+The verified Professional / Organization dashboards (`professional.html`,
+`organization.html` — see `docs/DASHBOARDS.md`) read through the existing RLS
+but need an owner-locked **edit** path (direct-table UPDATE stays
+editor/admin-only, and a row policy cannot restrict columns), a
+professional-side consultation read, and own-folder photo/logo uploads. This
+additive file (safe to re-run, run **after** the three files above) adds:
+
+- `ra_update_own_professional(...)` — security definer, `auth.uid() = user_id`
+  check with `'not your row'` failure, an explicit column whitelist (name,
+  photo_path, qualification, experience_yrs, location, languages, bio,
+  consultation_options, fee_note, availability — **never**
+  verification/rating/reference/user_id columns), and it replaces the owner's
+  `professional_specializations` child rows in the same transaction. EXECUTE
+  is revoked from PUBLIC/anon and granted to `authenticated` only.
+- `ra_update_own_organization(...)` — same design, bound to the JWT e-mail
+  (the exact `own_orgs` binding); the application e-mail itself is not
+  editable through it.
+- `pro_read_consultations` — SELECT policy: consultation rows whose
+  `professional_id` is the caller's own **verified** professionals row (the
+  existing `own_cons` policy for the client side is untouched).
+- Storage policies confining `pro-photos` / `org-logos` INSERT/UPDATE/DELETE
+  to the caller's own UUID folder (image extensions only; the buckets are
+  created if missing and kept public-read).
+
+- **without** — the dashboards still gate and render truthfully: overview,
+  public preview, reviews, notifications and account panels work on the base
+  schema, while profile save, photo/logo upload and the consultations panel
+  show the exact server error plus this file's name. Nothing else breaks.
+- **with** — profile saves re-read from the database before any success
+  message, verified professionals see their consultation requests, and uploads
+  stay folder-scoped. Public exposure is unchanged: anonymous readers still
+  see only `verification_status='verified'` rows.

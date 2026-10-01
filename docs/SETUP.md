@@ -23,9 +23,11 @@
 2. **Auth & verification workflow:** keep Authentication → Settings → **Confirm
    email** ON (an address is never treated as verified until Supabase confirms
    it); run `supabase/applications-access.sql`, for the distinct **Rejected**
-   state `supabase/verification-states.sql`, and for atomic
-   approve↔revoke `supabase/verification-revoke.sql` — each once in the SQL
-   editor;
+   state `supabase/verification-states.sql`, for atomic
+   approve↔revoke `supabase/verification-revoke.sql`, and for the verified
+   Professional/Organization dashboards (owner-locked profile edits, own-folder
+   photo/logo uploads, consultation reads) `supabase/dashboard-access.sql` —
+   each once in the SQL editor;
    enable **CAPTCHA** (Cloudflare Turnstile) under Authentication → Settings →
    CAPTCHA: public site key in `.env.local` as `TURNSTILE_SITE_KEY`, the secret
    only in Supabase (ENVIRONMENT.md → “CAPTCHA”). No Microsoft/social login is

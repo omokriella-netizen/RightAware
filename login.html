@@ -90,15 +90,48 @@
     try{ return new URLSearchParams((location.hash || "").replace(/^#/, "")); }
     catch(_){ return new URLSearchParams(""); }
   }
+  // Started the moment the login form is submitted, so the own-organisation
+  // read overlaps the captcha + sign-in + redirect delay instead of adding a
+  // network round-trip AFTER them. orgOwned stays null until the read answers;
+  // the redirect NEVER waits on it (see goWorkspaceOrNext).
+  var orgOwned = null;
+  function orgLookup(email){
+    orgOwned = null;
+    function done(v){ orgOwned = !!v; }
+    try{
+      if(!email || !(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client)){ done(false); return; }
+      var pat = String(email).replace(/([\\%_])/g, "\\$1");
+      RA_SUPA.client.from("organizations").select("id").ilike("email", pat).limit(1).then(function(r){
+        done(!!(r && !r.error && r.data && r.data.length));
+      }, function(){ done(false); });
+    }catch(_){ done(false); }
+  }
   function afterSignIn(){
-    // Role-aware destination: admins go to the dashboard, everyone else to their account.
+    // Role-aware destination: admins → admin dashboard, professionals → their
+    // workspace; everyone else is checked for an owned organization record
+    // (organisations have no distinct role — ownership is the account e-mail,
+    // read the same way My Account loads it) before falling back to ?next=.
     if(RA_AUTH.supabaseReady()){
       RA_AUTH.fetchRole().then(function(role){
-        location.href = role === "admin" ? "admin.html" : next;
+        if(role === "admin"){ location.href = "admin.html"; return; }
+        if(role === "professional"){ location.href = "professional.html"; return; }
+        goWorkspaceOrNext();
       }).catch(function(){ location.href = next; });
     } else {
       location.href = next;
     }
+  }
+  function goWorkspaceOrNext(){
+    // Destination decided from the own-organisation read (by e-mail, escaped so
+    // %/_ cannot over-match) that was started at submit — NEVER waited on: if
+    // it has already answered "owned", go to the workspace; otherwise (still in
+    // flight, no record, read failed, backend off) fall through to ?next= in
+    // the same instant as before this routing existed. Account.html carries the
+    // workspace link, so a slow read costs one click, never access.
+    try{
+      if(orgOwned === true){ location.href = "organization.html"; return; }
+      location.href = next;
+    }catch(_){ location.href = next; }
   }
 
   /* ---- CAPTCHA helper (Cloudflare Turnstile; configured via TURNSTILE_SITE_KEY) ---- */
@@ -206,6 +239,7 @@
       if(pw.length < 6){ out.textContent = "Enter your password (at least 6 characters)."; return; }
       unverifiedBox.hidden = true;
       out.textContent = "Signing in securely…";
+      orgLookup(em);   // pre-start: overlaps captcha + sign-in + redirect delay
       gateCaptcha(loginForm).then(function(cap){
         if(cap.error){ out.textContent = "⚠ " + cap.error; return; }
         RA_AUTH.loginLive(em, pw, { captchaToken: cap.token || undefined }).then(function(r){

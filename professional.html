@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Professional workspace — RightAware</title>
+<meta name="description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires the professional role AND a verified professionals record — both checked against the database on every load; row-level security decides what is readable."/>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  .ws-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+  .ws-tabs button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:.5rem 1.05rem;font-weight:700;cursor:pointer;font-size:.92rem;min-height:40px}
+  .ws-tabs button[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+  .ws-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}
+  .ws-stat{border:1px solid var(--border);border-radius:12px;background:#fff;padding:1rem 1.1rem;box-shadow:var(--shadow)}
+  .ws-stat h3{margin:0 0 .35rem;font-size:.95rem;color:var(--muted);font-weight:700}
+  .ws-stat p{margin:0;font-size:1.35rem;font-weight:800;color:var(--navy);line-height:1.3}
+  .ws-stat small{display:block;color:var(--muted);font-size:.82rem;margin-top:.3rem}
+  .ws-list{display:flex;flex-direction:column;gap:.8rem;margin-top:.8rem}
+  .ws-item{border:1px solid var(--border);border-radius:12px;background:#fff;padding:.9rem 1rem;box-shadow:var(--shadow)}
+  .ws-item h4{margin:.35rem 0 .25rem;font-size:1rem}
+  .ws-item p{margin:.2rem 0;color:var(--muted);font-size:.93rem}
+  .ws-meta{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;font-size:.8rem;color:var(--muted);margin:.3rem 0}
+  .ws-preview{max-width:340px}
+  .ws-form{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.4rem;max-width:760px;box-shadow:var(--shadow)}
+  .ws-form label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.9rem}
+  .ws-form input,.ws-form textarea{width:100%;margin-top:.35rem;border:1px solid var(--border);border-radius:8px;padding:.65rem;font-family:inherit;font-size:.95rem}
+  .ws-form textarea{min-height:110px;resize:vertical}
+  .ws-form input[type=file]{padding:.45rem}
+  .ws-actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.4rem}
+  .ws-out{font-size:.92rem;font-weight:700;color:var(--green-dark);min-height:1.2em;margin:.6rem 0}
+  .ws-out.err{color:#991b1b}
+  .ws-photo{width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:#f1f5f9;display:grid;place-items:center;font-weight:800;font-size:1.6rem;color:var(--navy);flex:none}
+  .ws-privacy{margin:.6rem 0 0;padding-left:1.1rem}
+  .ws-privacy li{margin-bottom:.45rem;font-size:.93rem;color:var(--muted)}
+  @media(max-width:600px){.ws-preview{max-width:100%}.ws-tabs button{flex:1 1 auto}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner">
+  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+  <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
+  <div class="header-actions"><a class="btn btn-outline btn-sm" href="account.html">My account</a>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="contact.html">Contact</a></div></header>
+<main>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">Legal professional</span><h1 id="wsTitle">Checking access…</h1>
+<p class="lead-dark" id="wsLine">Verifying your professional record against the database…</p></div></section>
+<section class="section"><div class="container" id="wsBody"></div></section>
+</main>
+<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 • This workspace only shows rows the database already allows you to read — ownership checks and row-level security decide access, never hidden buttons.</small></div></footer>
+<script src="js/config.js"></script>
+<script src="js/auth.js?v=db6"></script>
+<script src="js/db.js?v=db6"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  "use strict";
+  var body = document.getElementById("wsBody"),
+      line = document.getElementById("wsLine"),
+      title = document.getElementById("wsTitle");
+  var BUILD = "dash-20261001-1";
+  var ws = null;          // workspace state: { row, specs, cons, revs, notifs }
+  var uRef = null;        // the signed-in account (set at boot)
+  var ntMsg = "";         // notification action feedback, survives re-renders
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+  function byId(id){ return document.getElementById(id); }
+  function arr(v, sep){ if(Array.isArray(v)) return v.join(sep || ", "); return (v == null || v === "") ? "" : String(v); }
+  function fmtDate(s){ if(!s) return "—"; var d = new Date(s); return isNaN(d.getTime()) ? String(s) : d.toISOString().slice(0,10); }
+  function splitList(v){ return String(v||"").split(/[,;\n]/g).map(function(s){ return s.trim(); }).filter(function(s,i,a){ return s && a.indexOf(s) === i; }); }
+  function stamp(){ return '<p class="form-note">build: ' + BUILD + ' · every state on this page is read from the database on each load — never cached, never simulated.</p>'; }
+  function errBox(what, err){ return '<p class="empty">⚠ ' + esc(what) + ': ' + esc(err) + '</p>'; }
+  function stat(label, big, small){ return '<div class="ws-stat"><h3>' + esc(label) + '</h3><p>' + big + '</p><small>' + esc(small || "") + '</small></div>'; }
+  function pill(v){
+    var s = String(v == null ? "" : v).toLowerCase(), up = esc(String(v == null || v === "" ? "unset" : v).toUpperCase());
+    if(["verified","accepted","completed","published"].indexOf(s) > -1) return '<span class="pill-green">' + up + '</span>';
+    if(["rejected","declined","cancelled","hidden"].indexOf(s) > -1) return '<span class="pill-red">' + up + '</span>';
+    if(["pending","requested","unverified"].indexOf(s) > -1) return '<span class="pill-gold">' + up + '</span>';
+    return '<span class="pill">' + up + '</span>';
+  }
+  /* Friendly label for the statuses the schema can hold; the RAW value is
+     always shown beside it, so an unexpected value is visible, not hidden. */
+  function statusLabel(st){
+    var s = String(st||"").toLowerCase();
+    var map = { requested:"Pending", pending:"Pending", accepted:"Accepted",
+                declined:"Declined", completed:"Completed", cancelled:"Cancelled" };
+    return map[s] || String(st || "unset");
+  }
+  function whenReady(cb){
+    if(window.RA_SUPA && RA_SUPA.ready){ cb(true); return; }
+    var done = false;
+    function once(v){ if(done) return; done = true; cb(v); }
+    document.addEventListener("ra:backend-ready", function(){ once(true); }, { once:true });
+    setTimeout(function(){ once(false); }, 6000);
+  }
+
+  /* ==================== LOCKED: no backend ==================== */
+  function renderLocked(){
+    title.innerHTML = 'Professional workspace <span class="pill">LOCKED — NO BACKEND</span>';
+    line.innerHTML = 'This device has no database connection, so ownership of a professional record cannot be verified — the workspace stays closed rather than guessing.';
+    body.innerHTML = '<div class="notice rv">🔒 <strong>Locked.</strong> Verification status, your profile, consultation requests and reviews all live in Supabase behind row-level security. Nothing on this page is simulated, so there is no local preview with fake data. '
+      + 'Sign in on a connected device to open the workspace.</div>'
+      + '<p><a class="btn btn-primary" href="login.html?next=professional.html">Sign in</a> <a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
+      + stamp();
+  }
+
+  /* ==================== SIGNED OUT ==================== */
+  function renderSignedOut(){
+    title.textContent = "Sign in required";
+    line.innerHTML = 'The professional workspace opens for the account that <strong>owns a verified professional record</strong> — nothing can be checked while signed out.';
+    body.innerHTML = '<div class="notice rv">🔐 Two conditions, both read from the database on every load: your account carries the <strong>professional</strong> role (granted only by an administrator\'s approval, removed only by revocation), and the professionals row linked to your account says <code>verification_status = verified</code>. Hidden buttons are never how access is decided.</div>'
+      + '<p><a class="btn btn-primary" href="login.html?next=professional.html">Sign in</a> <a class="btn btn-secondary" href="signup.html">Apply as a professional</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
+      + stamp();
+  }
+
+  /* ==================== STATUS VIEW: signed in, no workspace ==================== */
+  function renderStatus(o){
+    var row = o.row, st = row && row.verification_status;
+    var roleName = (o.roles && o.roles.length) ? o.roles.join(", ") : (o.role || "user");
+    var hasProRole = roleName.indexOf("professional") > -1;
+
+    if(o.readError){
+      title.innerHTML = 'Professional workspace <span class="pill-gold">STATUS UNAVAILABLE</span>';
+      line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — role: <strong>' + esc(roleName) + '</strong>. Your record could not be read, so no workspace is shown (access is never guessed).';
+      body.innerHTML = '<div class="notice rv">⚠ Could not read your professional record: <strong>' + esc(o.readError) + '</strong>. The own-row read comes from policy <code>own_profs</code> (<code>supabase/applications-access.sql</code>, already applied for the verification workflow) — if this persists, the page will stay closed until the read works again.</div>'
+        + '<p><a class="btn btn-primary" href="account.html">My account</a> <a class="btn btn-secondary" href="contact.html">Contact support</a></p>' + stamp();
+      return;
+    }
+    if(!row && !hasProRole){
+      title.innerHTML = 'Professional workspace <span class="pill-gold">NO RECORD</span>';
+      line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — role: <strong>' + esc(roleName) + '</strong>. No professionals record is linked to this account.';
+      body.innerHTML = '<div class="notice rv">🗂 <strong>No professional application on this account.</strong> Apply through <a class="link" href="signup.html">Sign Up</a> (professional pathway). After an administrator approves the application, this page opens the workspace automatically — the record itself, not a browser flag, decides that.</div>'
+        + '<article class="card rv"><span class="tag">Database record</span><h3>Nothing linked yet</h3><p>The professionals table holds no row with <code>user_id</code> matching your account, so there is nothing to show or edit here.</p></article>'
+        + '<p><a class="btn btn-primary" href="signup.html">Apply as a professional</a> <a class="btn btn-secondary" href="account.html">My account</a></p>' + stamp();
+      return;
+    }
+    if(!row && hasProRole){
+      title.innerHTML = 'Professional workspace <span class="pill-red">ROLE WITHOUT RECORD</span>';
+      line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — role: <strong>' + esc(roleName) + '</strong>, but no professionals record matches this account.';
+      body.innerHTML = '<div class="notice rv">⚠ <strong>Data inconsistency:</strong> your account carries the professional role while the professionals row that should be linked to it is missing (the own-row read returned nothing). The workspace stays closed rather than showing someone else\'s data — an administrator must re-check this application. <a class="link" href="contact.html">Contact support</a>.</div>'
+        + '<p><a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="contact.html">Contact</a></p>' + stamp();
+      return;
+    }
+    /* Row exists — render its real state. Workspace only ever appears for
+       verified+role (handled before this function). */
+    var shared = '<article class="card rv" style="margin-top:1rem"><span class="tag">Database record</span><h3>' + esc(row.name || "Your application") + '</h3>'
+      + '<p>Status: ' + pill(st) + ' · Reference: <strong>' + esc(row.application_ref || "—") + '</strong></p>'
+      + '<p><small>Record ID ' + esc(row.id) + ' · submitted ' + esc(fmtDate(row.created_at))
+      + (row.verified_at ? ' · decided ' + esc(fmtDate(row.verified_at)) : '')
+      + ' · your role: ' + esc(roleName) + '</small></p>'
+      + '<p><small>Your details stay private while <strong>' + esc(String(st || "unset")) + '</strong> — only verified records ever appear in the public directory, and only administrators can change this status.</small></p></article>';
+
+    if(st === "verified"){
+      title.innerHTML = 'Professional workspace <span class="pill-gold">ROLE MISSING</span>';
+      line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — your record is verified, but your account does <strong>not</strong> carry the professional role.';
+      body.innerHTML = '<div class="notice rv">⚠ <strong>Role and status disagree.</strong> Approval grants the role and sets <code>verified</code> together, so something later removed the role from this account (revocation or a manual change). The workspace stays closed until both agree — an administrator must restore the <code>professional</code> role; your record itself is untouched. <a class="link" href="contact.html">Contact support</a>.</div>'
+        + shared + '<p><a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="contact.html">Contact</a></p>' + stamp();
+      return;
+    }
+    if(st === "pending"){
+      title.innerHTML = 'Professional workspace <span class="pill-gold">PENDING VERIFICATION</span>';
+      line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — your application is awaiting an administrator\'s review.';
+      body.innerHTML = '<div class="notice rv">⏳ <strong>Application under review.</strong> Nothing of yours is public yet; the workspace opens on this page once an administrator verifies the record <em>and</em> the professional role is on your account. Decisions are made in the admin dashboard from the application itself — this page never approves anything.'
+        + (hasProRole ? ' <strong>Note:</strong> your account already carries the professional role although this record is not verified — approval always grants both together, so an administrator should re-check this record. The workspace stays closed until the record itself says verified.' : '')
+        + '</div>'
+        + shared + '<p><a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="contact.html">Contact</a></p>' + stamp();
+      return;
+    }
+    if(st === "rejected"){
+      title.innerHTML = 'Professional workspace <span class="pill-red">APPLICATION REJECTED</span>';
+      line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — an administrator reviewed this application and did not approve it.';
+      body.innerHTML = '<div class="notice rv">🚫 <strong>Rejected — and private.</strong> The record stays out of the public directory and no professional privileges are attached to this account. If you need clarification or believe this is wrong, contact RightAware — decisions are made by an administrator from the application record, never from this page.</div>'
+        + shared + '<p><a class="btn btn-primary" href="contact.html">Contact RightAware</a> <a class="btn btn-secondary" href="account.html">My account</a></p>' + stamp();
+      return;
+    }
+    title.innerHTML = 'Professional workspace <span class="pill-gold">NOT VERIFIED</span>';
+    line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — this record has never been verified (status: <strong>' + esc(String(st || "unset")) + '</strong>).';
+    body.innerHTML = '<div class="notice rv">🔒 The record linked to this account is <strong>' + esc(String(st || "unset")) + '</strong>. Unverified records never receive verified-professional privileges: the database refuses every workspace read for them, and this page shows no workspace either. Submit or re-check the application from <a class="link" href="signup.html">Sign Up</a> / <a class="link" href="account.html">My account</a>.</div>'
+      + shared + '<p><a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="signup.html">Sign Up</a></p>' + stamp();
+  }
+
+  /* ==================== data reads (all server-side, all own rows) ==================== */
+  function q(table, cols, build){
+    var b;
+    try{ b = RA_SUPA.client.from(table).select(cols); }catch(e){ return Promise.resolve({ rows: [], error: (e && e.message) || String(e) }); }
+    try{ b = build(b) || b; }catch(e){ return Promise.resolve({ rows: [], error: (e && e.message) || String(e) }); }
+    /* Wrapped in a real Promise: Supabase builders are thenables, and every
+       caller chains further work off THIS helper's result. */
+    return new Promise(function(resolve){
+      b.then(function(r){
+        if(r && !r.error){ resolve({ rows: r.data || [], error: null }); return; }
+        resolve({ rows: [], error: (r && r.error && (r.error.message || String(r.error))) || "no response from the database" });
+      }, function(e){
+        resolve({ rows: [], error: (e && (e.message || String(e))) || "no response from the database" });
+      });
+    });
+  }
+  function rpcCall(name, args){
+    return new Promise(function(resolve, reject){
+      RA_SUPA.client.rpc(name, args).then(function(r){ resolve(r); }, function(e){ reject(e); });
+    });
+  }
+  function loadOwnRow(u){
+    return q("professionals",
+      "id,user_id,name,photo_path,qualification,experience_yrs,location,languages,bio,consultation_options,fee_note,availability,verification_status,verification_source,verified_at,application_ref,is_demo,rating_avg,ratings_count,created_at",
+      function(b){ return b.eq("user_id", u.supabaseId || "").limit(1); })
+      .then(function(res){
+        if(res.error) return { row: null, error: res.error };
+        var rows = res.rows;
+        if(!rows.length) return { row: null, error: null };
+        return { row: rows[0], error: null };
+      });
+  }
+  function qSpecs(id){
+    return q("professional_specializations", "professional_id,specialization",
+      function(b){ return b.eq("professional_id", id); });
+  }
+  function qConsults(id){
+    return q("consultations", "id,user_id,professional_id,message,status,payment_reference,created_at",
+      function(b){ return b.eq("professional_id", id).order("created_at", { ascending:false }).limit(50); });
+  }
+  function qReviews(id){
+    return q("professional_reviews", "id,professional_id,rating,text,verified_interaction,status,reports,created_at",
+      function(b){ return b.eq("professional_id", id).eq("status", "published").order("created_at", { ascending:false }).limit(50); });
+  }
+  function qNotifs(uid){
+    return q("notifications", "id,user_id,title,body,read,created_at",
+      function(b){ return b.eq("user_id", uid || "").order("created_at", { ascending:false }).limit(50); });
+  }
+  function rolesNow(){
+    return new Promise(function(resolve){
+      RA_SUPA.client.rpc("ra_my_roles").then(function(r){
+        resolve((r && !r.error && Array.isArray(r.data)) ? r.data : null);
+      }, function(){ resolve(null); });
+    });
+  }
+
+  /* ==================== WORKSPACE ==================== */
+  function tabsHtml(tabs, label){
+    return '<div class="ws-tabs" role="tablist" aria-label="' + esc(label) + '">'
+      + tabs.map(function(t, i){
+          return '<button role="tab" id="' + t[0] + '" aria-selected="' + (i === 0 ? "true" : "false") + '" aria-controls="' + t[1] + '">' + t[2] + '</button>';
+        }).join("")
+      + '</div>'
+      + tabs.map(function(t, i){
+          return '<div id="' + t[1] + '" role="tabpanel" aria-labelledby="' + t[0] + '"' + (i === 0 ? "" : " hidden") + '></div>';
+        }).join("");
+  }
+  function wireTabs(tabs){
+    tabs.forEach(function(t){
+      byId(t[0]).addEventListener("click", function(){
+        tabs.forEach(function(x){
+          var on = x[0] === t[0];
+          byId(x[0]).setAttribute("aria-selected", on ? "true" : "false");
+          byId(x[1]).hidden = !on;
+        });
+      });
+    });
+  }
+
+  function completeness(row, specs){
+    var items = [row.name, row.qualification, row.experience_yrs, row.location,
+      (row.languages && row.languages.length), row.bio, row.photo_path,
+      row.availability, row.fee_note,
+      (row.consultation_options && row.consultation_options.length),
+      (specs && specs.length)];
+    var done = items.filter(function(x){ return !!x; }).length;
+    return { done: done, total: items.length, pct: Math.round(done / items.length * 100) };
+  }
+
+  function dataErrors(){
+    var e = [];
+    if(ws.cons.error) e.push("consultations: " + ws.cons.error + " (needs policy pro_read_consultations from supabase/dashboard-access.sql)");
+    if(ws.revs.error) e.push("reviews: " + ws.revs.error + " (policy pub_read_reviews from the base schema)");
+    if(ws.notifs.error) e.push("notifications: " + ws.notifs.error + " (policy own_notif from the base schema)");
+    if(ws.specs.error) e.push("specializations: " + ws.specs.error + " (policy pub_read_specs from the base schema)");
+    return e;
+  }
+
+  function renderOverview(){
+    var row = ws.row;
+    var c = completeness(row, ws.specs.rows);
+    var unread = ws.notifs.rows.filter(function(n){ return !n.read; }).length;
+    var revs = ws.revs.rows;
+    var avg = revs.length ? (revs.reduce(function(s, r){ return s + (Number(r.rating) || 0); }, 0) / revs.length) : 0;
+    var specNames = ws.specs.rows.map(function(s){ return s.specialization; }).filter(Boolean);
+    var errs = dataErrors();
+    byId("panelOv").innerHTML =
+      '<div class="section-head"><span class="eyebrow">Overview</span><h2>Your practice at a glance</h2>'
+      + '<p class="form-note">build: ' + BUILD + ' · every value below is read live from the database on this load.</p></div>'
+      + '<div class="ws-grid">'
+      + stat("Verification status", pill(row.verification_status || "unset"),
+            (row.verified_at ? "verified " + fmtDate(row.verified_at) + " · " : "") + "ref " + (row.application_ref || "—"))
+      + stat("Profile completeness", '<strong>' + c.pct + '%</strong>', c.done + " of " + c.total + " profile fields filled (computed from the fields on this page)")
+      + stat("Availability", esc(row.availability || "Not set"), "From your profile — editable in the Profile tab")
+      + stat("Specialization", esc(specNames.length ? specNames.join(", ") : (arr(row.consultation_options) || "Not set")), specNames.length ? "From professional_specializations" : "From your consultation areas")
+      + stat("Location", esc(row.location || "Not set"), "Shown publicly on your directory card")
+      + stat("Activity", esc(String(ws.cons.rows.length)),
+            "consultation requests · " + revs.length + " published review" + (revs.length === 1 ? "" : "s")
+            + (revs.length ? " (avg " + avg.toFixed(1) + "/5)" : "") + " · " + unread + " unread notification" + (unread === 1 ? "" : "s"))
+      + '</div>'
+      + (errs.length ? '<div class="notice" style="margin-top:.9rem">⚠ Some database reads did not succeed: <strong>' + esc(errs.join(" · ")) + '</strong>. The sections above show what could be read; nothing is filled in to hide the gap.</div>' : '');
+  }
+
+  function photoUrl(path){
+    if(!path) return "";
+    if(/^https?:/i.test(path)) return path;
+    try{
+      var r = RA_SUPA.client.storage.from("pro-photos").getPublicUrl(path);
+      return (r && r.data && r.data.publicUrl) ? r.data.publicUrl : "";
+    }catch(_){ return ""; }
+  }
+  function bindPhoto(){
+    var im = byId("pfPhoto");
+    if(!im || im.tagName !== "IMG") return;
+    im.onerror = function(){
+      var d = document.createElement("div");
+      d.className = "ws-photo"; d.id = "pfPhoto";
+      d.textContent = String((ws.row && ws.row.name) || "?").charAt(0);
+      if(im.parentNode) im.parentNode.replaceChild(d, im);
+      var n = byId("pfPhotoNote");
+      if(n) n.textContent = "The uploaded photo could not be loaded from storage — check that the pro-photos bucket is public (docs/SETUP.md). The stored path is still saved on your record.";
+    };
+  }
+  function renderProfile(){
+    var row = ws.row, url = photoUrl(row.photo_path);
+    byId("panelPf").innerHTML =
+      '<div class="section-head"><span class="eyebrow">Profile</span><h2>Professional profile</h2>'
+      + '<p>Edit the fields ordinary visitors are allowed to see (plus contact/fee details for your own reference). Save re-reads the record from the database — the page never reports success it did not verify.</p></div>'
+      + '<div class="ws-form">'
+      + '<div class="ws-actions" style="margin-bottom:1rem;align-items:center">'
+        + (url ? '<img class="ws-photo" id="pfPhoto" src="' + esc(url) + '" alt="Profile photo"/>'
+               : '<div class="ws-photo" id="pfPhoto" aria-hidden="true">' + esc(String(row.name || "?").charAt(0)) + '</div>')
+        + '<div><label style="margin:0">Profile photo<input type="file" id="pfFile" accept="image/jpeg,image/png,image/webp,image/gif"/></label>'
+        + '<div class="ws-actions"><button type="button" class="btn btn-outline btn-sm" id="pfPhotoBtn">Upload photo</button></div>'
+        + '<small id="pfPhotoNote" class="form-note">' + (url ? 'Stored under your own folder in the <code>pro-photos</code> bucket.' : 'JPG, PNG, WebP or GIF up to 2 MB. The public directory card shows an initial, not the photo.') + '</small></div>'
+      + '</div>'
+      + '<input type="hidden" id="pfPhotoPath" value="' + esc(row.photo_path || "") + '"/>'
+      + '<form id="pfForm">'
+      + '<label>Full name *<input id="pfName" value="' + esc(row.name || "") + '" required maxlength="120"/></label>'
+      + '<div class="form-row"><label>Qualification<input id="pfQual" value="' + esc(row.qualification || "") + '" maxlength="160"/></label>'
+      + '<label>Years of experience<input id="pfExp" value="' + esc(row.experience_yrs || "") + '" maxlength="40"/></label></div>'
+      + '<div class="form-row"><label>Location<input id="pfLoc" value="' + esc(row.location || "") + '" maxlength="120"/></label>'
+      + '<label>Availability<input id="pfAvail" value="' + esc(row.availability || "") + '" maxlength="160" placeholder="e.g. Weekdays 9am–4pm"/></label></div>'
+      + '<label>Languages (comma-separated)<input id="pfLangs" value="' + esc(arr(row.languages)) + '" maxlength="300"/></label>'
+      + '<label>Specializations (comma-separated)<input id="pfSpecs" value="' + esc(ws.specs.rows.map(function(s){ return s.specialization; }).filter(Boolean).join(", ")) + '" maxlength="400"/></label>'
+      + '<label>Consultation areas (comma-separated)<input id="pfOpts" value="' + esc(arr(row.consultation_options)) + '" maxlength="400"/></label>'
+      + '<label>Fee note<input id="pfFee" value="' + esc(row.fee_note || "") + '" maxlength="200" placeholder="e.g. ₦25,000 per session"/></label>'
+      + '<label>Professional bio<textarea id="pfBio" maxlength="2000">' + esc(row.bio || "") + '</textarea></label>'
+      + '<div class="ws-actions"><button class="btn btn-primary" type="button" id="pfSave">Save profile</button>'
+      + '<a class="btn btn-secondary btn-sm" href="account.html">My account</a></div>'
+      + '<p class="ws-out" id="pfOut"></p>'
+      + '<p class="form-note">Saved through <code>ra_update_own_professional</code> — a server-side function that re-checks the row belongs to your account and updates only these fields. Verification status, ratings, references and user IDs are not in its whitelist: the database refuses to change them through this path, and the direct tables remain administrator/editor-only.</p>'
+      + '</form></div>';
+    bindPhoto();
+    byId("pfSave").addEventListener("click", saveProfile);
+    byId("pfForm").addEventListener("submit", function(e){ e.preventDefault(); saveProfile(); });
+    byId("pfPhotoBtn").addEventListener("click", uploadPhoto);
+  }
+
+  function outMsg(id, msg, isErr){
+    var el = byId(id); if(!el) return;
+    el.className = "ws-out" + (isErr ? " err" : "");
+    el.textContent = msg;
+  }
+  function saveHint(err){
+    return /does not exist|schema cache/i.test(String(err))
+      ? " — this edit needs supabase/dashboard-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
+      : "";
+  }
+  function saveProfile(){
+    if(!ws || !ws.row) return;
+    var args = {
+      p_id: ws.row.id,
+      p_name: byId("pfName").value.trim(),
+      p_photo_path: byId("pfPhotoPath").value || null,
+      p_qualification: byId("pfQual").value.trim(),
+      p_experience_yrs: byId("pfExp").value.trim(),
+      p_location: byId("pfLoc").value.trim(),
+      p_languages: splitList(byId("pfLangs").value),
+      p_bio: byId("pfBio").value,
+      p_consultation_options: splitList(byId("pfOpts").value),
+      p_fee_note: byId("pfFee").value.trim(),
+      p_availability: byId("pfAvail").value.trim(),
+      p_specs: splitList(byId("pfSpecs").value)
+    };
+    if(!args.p_name){ outMsg("pfOut", "Name is required — the database rejects an empty name too.", true); return; }
+    outMsg("pfOut", "Saving to the database…", false);
+    rpcCall("ra_update_own_professional", args).then(function(r){
+      if(r && r.error){ outMsg("pfOut", "⚠ Save failed: " + (r.error.message || r.error) + saveHint(r.error.message || r.error), true); return; }
+      // Never trust the write alone: re-read the row, then re-render from it.
+      return loadOwnRow(uRef).then(function(back){
+        return qSpecs(args.p_id).then(function(specs){
+          if(back.error || !back.row){
+            outMsg("pfOut", "⚠ Saved, but re-reading your record failed (" + esc((back.error || "no row returned")) + ") — reload the page to confirm.", true);
+            return;
+          }
+          ws.row = back.row;
+          ws.specs = specs;
+          outMsg("pfOut", "✓ Saved — re-read from the database just now: " + (ws.row.name || "") + " · " + completeness(ws.row, ws.specs.rows).pct + "% complete.", false);
+          renderOverview(); renderPreview();
+          var im = byId("pfPhoto"), url = photoUrl(ws.row.photo_path);
+          if(im && url && im.tagName === "IMG"){ im.src = url; }
+        });
+      });
+    }).catch(function(e){
+      outMsg("pfOut", "⚠ Save failed: " + ((e && e.message) || e) + saveHint((e && e.message) || e), true);
+    });
+  }
+  function uploadPhoto(){
+    if(!ws || !ws.row) return;
+    var input = byId("pfFile");
+    var f = input && input.files && input.files[0];
+    if(!f){ outMsg("pfOut", "Choose a photo file first.", true); return; }
+    if(f.size > 2 * 1024 * 1024){ outMsg("pfOut", "Photo must be 2 MB or smaller (this file is " + (Math.round(f.size / 1048576 * 10) / 10) + " MB).", true); return; }
+    if(!/^image\/(jpeg|png|webp|gif)$/i.test(f.type || "")){ outMsg("pfOut", "Use a JPG, PNG, WebP or GIF image.", true); return; }
+    var uid = (RA_AUTH.current() || {}).supabaseId;
+    if(!uid){ outMsg("pfOut", "No sign-in session found on this device — reload the page.", true); return; }
+    var path = uid + "/" + Date.now() + "-" + String(f.name).replace(/[^A-Za-z0-9._-]/g, "_").slice(-60);
+    outMsg("pfOut", "Uploading to the pro-photos bucket…", false);
+    RA_SUPA.client.storage.from("pro-photos").upload(path, f, { upsert:true, cacheControl:"3600" }).then(function(r){
+      if(r && r.error){
+        outMsg("pfOut", "⚠ Upload failed: " + (r.error.message || r.error) + " — the bucket and its own-folder write policy come from supabase/dashboard-access.sql (run once).", true);
+        return;
+      }
+      var url = photoUrl(path);
+      if(!url){ outMsg("pfOut", "⚠ Upload stored, but no public URL was returned — check that the pro-photos bucket is public (docs/SETUP.md).", true); return; }
+      byId("pfPhotoPath").value = path;
+      var im = byId("pfPhoto");
+      if(im){
+        if(im.tagName === "IMG"){ im.src = url; }
+        else{
+          var img = document.createElement("img");
+          img.className = "ws-photo"; img.id = "pfPhoto"; img.alt = "Profile photo"; img.src = url;
+          im.parentNode.replaceChild(img, im);
+          bindPhoto();
+        }
+      }
+      outMsg("pfOut", "Photo uploaded to " + path + " — press Save profile to store this path on your record.", false);
+    }).catch(function(e){
+      outMsg("pfOut", "⚠ Upload failed: " + ((e && e.message) || e), true);
+    });
+  }
+
+  function renderPreview(){
+    var row = ws.row;
+    var areas = arr(row.consultation_options), langs = arr(row.languages);
+    var rating = (row.rating_avg && row.ratings_count) ? (" • ⭐ " + row.rating_avg + " (" + row.ratings_count + ")") : "";
+    var card = '<article class="card lawyer">'
+      + '<span class="pill-green">✓ VERIFIED LEGAL PROFESSIONAL</span>'
+      + '<div class="avatar">' + esc(String(row.name || "?").charAt(0)) + '</div>'
+      + '<h3>' + esc(row.name || "") + '</h3>'
+      + '<small>' + esc(row.location || "") + (row.qualification ? " • " + esc(row.qualification) : "") + (row.experience_yrs ? " • " + esc(row.experience_yrs) + " yrs" : "") + esc(rating) + '</small>'
+      + (areas ? '<p><small>Areas: ' + esc(areas) + '</small></p>' : '')
+      + (langs ? '<p><small>Languages: ' + esc(langs) + '</small></p>' : '')
+      + (row.availability ? '<p><small>Availability: ' + esc(row.availability) + '</small></p>' : '')
+      + (row.bio ? '<p>' + esc(row.bio) + '</p>' : '')
+      + (row.fee_note ? '<p><small>' + esc(row.fee_note) + '</small></p>' : '')
+      + '<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap">'
+      + '<button class="btn btn-primary btn-sm" type="button" disabled title="Preview only — visitors click this on the public directory">Request help</button>'
+      + '<a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
+    byId("panelPv").innerHTML =
+      '<div class="section-head"><span class="eyebrow">Public directory profile</span><h2>Exactly what ordinary visitors see</h2>'
+      + '<p>Rendered from your record with the same markup the public directory (<a class="link" href="lawyers.html">lawyers.html</a>) uses for verified professionals. Buttons are shown disabled because visitors act on the live directory page, not here.</p></div>'
+      + '<div class="ws-preview">' + card + '</div>'
+      + '<ul class="ws-privacy">'
+      + '<li><strong>Shown publicly:</strong> initial avatar, name, qualification, years of experience, location, languages, consultation areas, availability, bio, fee note and the VERIFIED badge — only ever after an administrator approves the record.</li>'
+      + '<li><strong>Never shown publicly:</strong> your user ID, application reference and verification source, timestamps, e-mail, profile photo path, consultation requests, client details, and any review that is not published. There is no phone number or e-mail on the card — contact happens through the on-site request form only.</li>'
+      + '</ul>';
+  }
+
+  function renderConsults(){
+    var res = ws.cons;
+    var errs = res.error
+      ? errBox("Could not read your consultation requests", res.error + " — the professional-side read comes from policy pro_read_consultations (supabase/dashboard-access.sql, run once)")
+      : "";
+    var rows = res.rows;
+    var head = '<div class="section-head"><span class="eyebrow">Consultations</span><h2>Incoming service requests</h2>'
+      + '<p>Requests addressed to your record, read live from the consultations table. Statuses shown are the exact values the database holds.</p></div>';
+    var list = errs ? errs
+      : (rows.length
+        ? '<div class="ws-list">' + rows.map(function(c){
+            return '<div class="ws-item"><div class="ws-meta">' + pill(c.status) + ' <span>' + esc(fmtDate(c.created_at)) + '</span>'
+              + (c.payment_reference ? '<span>payment reference on file</span>' : '') + '</div>'
+              + '<h4>' + esc(statusLabel(c.status)) + '</h4>'
+              + (c.message ? '<p>' + esc(c.message) + '</p>' : '')
+              + '<div class="ws-meta">status in database: <code>' + esc(c.status || "unset") + '</code></div></div>';
+          }).join("") + '</div>'
+          + '<div class="notice" style="margin-top:.9rem">Read-only for now: accepting, declining, completing and replying land with the consultation workflow (roadmap item 3). Statuses accepted by the workflow: pending, accepted, declined, completed, cancelled — plus today\'s <code>requested</code>. Nothing here is ever generated for display.</div>'
+        : '<p class="empty">No consultation requests are directed at your record yet. Real requests appear here with their status; this page never invents sample entries.</p>');
+    byId("panelCo").innerHTML = head + list;
+  }
+
+  function renderReviews(){
+    var res = ws.revs;
+    var errs = res.error
+      ? errBox("Could not read your reviews", res.error + " — published reviews are read through policy pub_read_reviews (base schema)")
+      : "";
+    var rows = res.rows;
+    var avg = rows.length ? (rows.reduce(function(s, r){ return s + (Number(r.rating) || 0); }, 0) / rows.length) : 0;
+    var head = '<div class="section-head"><span class="eyebrow">Reviews</span><h2>What clients said</h2>'
+      + '<p>Published reviews of your record, read live. Reviews are written by clients and published after moderation — you cannot create, edit or delete ratings from this page (the database allows no such path for professionals).</p></div>';
+    var summary = rows.length
+      ? '<div class="ws-grid">' + stat("Rating summary", '⭐ ' + avg.toFixed(1) + ' <small style="font-size:.9rem;color:var(--muted)">/ 5</small>',
+            "computed live from the " + rows.length + " published review" + (rows.length === 1 ? "" : "s") + " below")
+        + stat("Published reviews", '<strong>' + rows.length + '</strong>', "pending or hidden reviews are not shown — moderation stays with RightAware")
+        + '</div>'
+      : '';
+    var list = errs ? errs
+      : (rows.length
+        ? '<div class="ws-list">' + rows.map(function(r){
+            return '<div class="ws-item"><div class="ws-meta">' + pill(r.status) + ' <span>' + esc(fmtDate(r.created_at)) + '</span>'
+              + (r.verified_interaction ? '<span>✓ verified interaction</span>' : '')
+              + (Number(r.reports) > 0 ? '<span>⚑ ' + esc(String(r.reports)) + ' report(s) — under moderation</span>' : '') + '</div>'
+              + '<h4>' + esc(String(r.rating || "?")) + '/5</h4>'
+              + (r.text ? '<p>' + esc(r.text) + '</p>' : '')
+              + '<div class="ws-meta">status in database: <code>' + esc(r.status || "unset") + '</code></div></div>';
+          }).join("") + '</div>'
+        : '<p class="empty">No published reviews yet. Clients write reviews after real interactions and RightAware moderates them before publication — nothing is seeded or simulated here.</p>');
+    byId("panelRv").innerHTML = head + summary + list;
+  }
+
+  function renderNotifs(){
+    var res = ws.notifs;
+    var box = byId("panelNt");
+    if(res.error){
+      box.innerHTML = '<div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div>'
+        + errBox("Could not read your notifications", res.error + " — your own notifications are read through policy own_notif (base schema)") + stamp();
+      return;
+    }
+    var rows = res.rows;
+    var unread = rows.filter(function(n){ return !n.read; }).length;
+    box.innerHTML =
+      '<div class="section-head"><span class="eyebrow">Notifications</span><h2>' + rows.length + ' notification' + (rows.length === 1 ? "" : "s")
+      + (unread ? " · " + unread + " unread" : "") + '</h2>'
+      + '<p>Stored in the notifications table for your account only — row-level security keeps other accounts\' notifications invisible.</p>'
+      + (rows.length ? '<div class="ws-actions"><button class="btn btn-secondary btn-sm" id="ntMarkAll"' + (unread ? "" : " disabled") + '>Mark all read</button></div>' : '')
+      + '<p class="ws-out" id="ntOut">' + esc(ntMsg) + '</p></div>'
+      + (rows.length
+        ? '<div class="ws-list">' + rows.map(function(n){
+            return '<div class="ws-item"><div class="ws-meta">'
+              + (n.read ? '<span class="tag">Read</span>' : '<span class="pill-gold">UNREAD</span>')
+              + ' <span>' + esc(fmtDate(n.created_at)) + '</span></div>'
+              + '<h4>' + esc(n.title || "(no title)") + '</h4>'
+              + (n.body ? '<p>' + esc(n.body) + '</p>' : '')
+              + (n.read ? '' : '<div class="ws-actions"><button class="btn btn-outline btn-sm" type="button" data-notif="' + esc(n.id) + '">Mark read</button></div>')
+              + '</div>';
+          }).join("") + '</div>'
+        : '<p class="empty">No notifications yet — nothing is generated for display. Entries appear here with an unread badge once notification events are wired to your account (roadmap item 2).</p>');
+    var mb = byId("ntMarkAll");
+    if(mb) mb.addEventListener("click", markAllRead);
+    Array.prototype.forEach.call(box.querySelectorAll("[data-notif]"), function(b){
+      b.addEventListener("click", function(){ markRead(b.getAttribute("data-notif")); });
+    });
+  }
+  function reloadNotifs(errMsg){
+    if(errMsg){ ntMsg = "⚠ " + errMsg; renderNotifs(); return Promise.resolve(); }
+    return qNotifs((uRef || {}).supabaseId).then(function(res){
+      ws.notifs = res;
+      ntMsg = res.error
+        ? "⚠ Saved, but re-reading notifications failed: " + res.error
+        : "✓ Marked read — re-read from the database just now.";
+      renderNotifs(); renderOverview();
+    });
+  }
+  function markRead(id){
+    RA_SUPA.client.from("notifications").update({ read: true }).eq("id", id).then(function(r){
+      return reloadNotifs(r && r.error ? "Mark-read failed: " + (r.error.message || r.error) : null);
+    }, function(e){
+      return reloadNotifs("Mark-read failed: " + ((e && e.message) || e));
+    });
+  }
+  function markAllRead(){
+    var uid = (uRef || {}).supabaseId;
+    RA_SUPA.client.from("notifications").update({ read: true }).eq("user_id", uid || "").eq("read", false).then(function(r){
+      return reloadNotifs(r && r.error ? "Mark-all-read failed: " + (r.error.message || r.error) : null);
+    }, function(e){
+      return reloadNotifs("Mark-all-read failed: " + ((e && e.message) || e));
+    });
+  }
+
+  function renderAccount(roles){
+    var row = ws.row;
+    byId("panelAc").innerHTML =
+      '<div class="section-head"><span class="eyebrow">Account & security</span><h2>Account, password, session</h2></div>'
+      + '<div class="cards-grid">'
+      + '<article class="card"><span class="tag">Account</span><h3>🔐 Security</h3>'
+      + '<p>Signed in as <strong>' + esc((uRef || {}).email || "?") + '</strong></p>'
+      + '<p><small>Roles on this account: <strong>' + esc((roles && roles.length) ? roles.join(", ") : "none recorded") + '</strong> · verification: ' + pill(row.verification_status || "unset") + '</small></p>'
+      + '<form id="pwForm"><label>New password<input type="password" id="pw1" autocomplete="new-password" minlength="8"/></label>'
+      + '<label>Confirm new password<input type="password" id="pw2" autocomplete="new-password" minlength="8"/></label>'
+      + '<div class="ws-actions"><button class="btn btn-primary btn-sm" type="button" id="pwBtn">Update password</button></div>'
+      + '<p class="ws-out" id="pwOut"></p></form>'
+      + '<p class="form-note">Password changes go through Supabase Authentication on this signed-in session — the server applies them; this page only reports what the server answered.</p>'
+      + '<p><a class="link" href="account.html">My account — profile, saved items, sync →</a></p></article>'
+      + '<article class="card"><span class="tag">Session</span><h3>🚪 Sign out</h3>'
+      + '<p>Ends this session on this device. Your record, decisions and messages stay in the database — signing out changes nothing about them.</p>'
+      + '<div class="ws-actions"><button class="btn btn-secondary" type="button" id="acLogout">Log out</button>'
+      + '<a class="btn btn-outline btn-sm" href="index.html">Home</a></div></article>'
+      + '</div>';
+    byId("pwBtn").addEventListener("click", changePassword);
+    byId("pwForm").addEventListener("submit", function(e){ e.preventDefault(); changePassword(); });
+    byId("acLogout").addEventListener("click", function(){
+      RA_AUTH.logoutLive().then(function(){ location.href = "index.html"; }, function(){ location.href = "index.html"; });
+    });
+  }
+  function changePassword(){
+    var p1 = byId("pw1").value, p2 = byId("pw2").value;
+    if(!p1 || p1.length < 8){ outMsg("pwOut", "Use at least 8 characters.", true); return; }
+    if(p1 !== p2){ outMsg("pwOut", "Both entries must match.", true); return; }
+    outMsg("pwOut", "Updating your password with the authentication server…", false);
+    try{
+      RA_SUPA.client.auth.updateUser({ password: p1 }).then(function(r){
+        if(r && r.error){ outMsg("pwOut", "⚠ Password update failed: " + (r.error.message || r.error), true); return; }
+        byId("pw1").value = ""; byId("pw2").value = "";
+        outMsg("pwOut", "✓ Password updated for this account.", false);
+      }, function(e){
+        outMsg("pwOut", "⚠ Password update failed: " + ((e && e.message) || e), true);
+      });
+    }catch(e){
+      outMsg("pwOut", "⚠ Password update failed: " + ((e && e.message) || e), true);
+    }
+  }
+
+  function renderWorkspace(u, roles, row){
+    title.innerHTML = 'Professional workspace <span class="pill-green">VERIFIED</span>';
+    line.innerHTML = 'Signed in as <strong>' + esc(u.email || "?") + '</strong> — role: <strong>' + esc((roles && roles.length) ? roles.join(", ") : "professional")
+      + '</strong> · record <strong>' + esc(row.id) + '</strong>' + (row.verified_at ? ' · verified ' + esc(fmtDate(row.verified_at)) : '')
+      + '. Every value below is read live from the database on this load; other professionals\' records stay invisible to you (and yours to them).';
+    var tabs = [
+      ["tabOv", "panelOv", "📊 Overview"],
+      ["tabPf", "panelPf", "✏️ Profile"],
+      ["tabPv", "panelPv", "🪪 Public preview"],
+      ["tabCo", "panelCo", "📨 Consultations"],
+      ["tabRv", "panelRv", "⭐ Reviews"],
+      ["tabNt", "panelNt", "🔔 Notifications"],
+      ["tabAc", "panelAc", "🔐 Account"]
+    ];
+    body.innerHTML = tabsHtml(tabs, "professional workspace sections");
+    wireTabs(tabs);
+    renderOverview(); renderProfile(); renderPreview(); renderConsults(); renderReviews(); renderNotifs(); renderAccount(roles);
+  }
+
+  /* ==================== boot ==================== */
+  whenReady(function(connected){
+    if(!connected){ renderLocked(); return; }
+    line.textContent = "Signed in — checking your professional record…";
+    RA_AUTH.fetchRole().then(function(role){
+      var u = RA_AUTH.current() || {};
+      if(!u.email){ renderSignedOut(); return; }
+      uRef = u;
+      loadOwnRow(u).then(function(res){
+        return rolesNow().then(function(roles){
+          var isPro = roles ? roles.indexOf("professional") > -1 : role === "professional";
+          if(!res.error && res.row && res.row.verification_status === "verified" && isPro){
+            // Workspace: both conditions true. Load every own-row section next.
+            return Promise.all([qSpecs(res.row.id), qConsults(res.row.id), qReviews(res.row.id), qNotifs(u.supabaseId)])
+              .then(function(all){
+                ws = { row: res.row, specs: all[0], cons: all[1], revs: all[2], notifs: all[3] };
+                renderWorkspace(u, roles || (role ? [role] : []), res.row);
+              });
+          }
+          renderStatus({ u: u, role: role, roles: roles, row: res.row, readError: res.error });
+        });
+      }).catch(function(e){
+        renderStatus({ u: u, role: role, roles: null, row: null, readError: (e && e.message) || String(e) });
+      });
+    }).catch(function(){
+      var u = RA_AUTH.current() || {};
+      renderStatus({ u: u, role: "unknown", roles: null, row: null, readError: "the role check (ra_my_roles / fetchRole) failed" });
+    });
+  });
+})();
+</script>
+</body>
+</html>

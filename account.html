@@ -116,6 +116,7 @@
       + '<p>Signed in as <strong>'+esc(me.email||me.name||"member")+'</strong>'
       + (RA_AUTH.mode==="demo" ? ' <span class="pill">DEMO SESSION</span>' : '')+'</p>'
       + (role==="admin" ? '<a class="btn btn-primary btn-sm" href="admin.html">Open admin dashboard</a>' : '')
+      + (role==="professional" ? ' <a class="btn btn-primary btn-sm" href="professional.html">Open professional workspace</a>' : '')
       + '</article>';
     var local = [];
     try{ local = JSON.parse(localStorage.getItem("ra_applications")||"[]"); }catch(_){}
@@ -161,7 +162,8 @@
         extra.innerHTML = '<span class="tag">Application (live)</span><h3>'
           + (isPro ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
           + '<p>'+esc(app.row.name)+' — <span class="'+pill+'">'+label+'</span></p>'
-          + '<p><small>'+hint+'</small></p>';
+          + '<p><small>'+hint+'</small></p>'
+          + (st === "verified" ? '<p><a class="btn btn-primary btn-sm" href="' + (isPro ? "professional.html" : "organization.html") + '">Open workspace</a></p>' : '');
         box.appendChild(extra);
       }).catch(function(){});
     }
