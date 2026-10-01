@@ -38,8 +38,8 @@
 </main>
 <footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="js/config.js"></script>
-<script src="js/auth.js?v=db4"></script>
-<script src="js/db.js?v=db4"></script>
+<script src="js/auth.js?v=db5"></script>
+<script src="js/db.js?v=db5"></script>
 <script src="app.js"></script>
 <script>
 (function(){
@@ -101,9 +101,9 @@
     // Version proof on the page itself: this HTML is network-first (always
     // fresh) and knows the expected build; RA_DB.v comes from the script that
     // actually loaded. A mismatch means a stale copy is running — say so
-    // instead of trusting it. (Keep "?v=" on the script tags = "db4".)
+    // instead of trusting it. (Keep "?v=" on the script tags = "db5".)
     var ver = (window.RA_DB && RA_DB.v) || "unknown";
-    var tag = (ver === "db4") ? "SYNC db4" : "RELOAD — OLD APP COPY";
+    var tag = (ver === "db5") ? "SYNC db5" : "RELOAD — OLD APP COPY";
     if(window.RA_SUPA && RA_SUPA.ready){ pill.textContent = "BACKEND CONNECTED · " + tag; }
     else { pill.textContent = "LOCAL / DEMO — NOT CONNECTED · " + tag; }
   }

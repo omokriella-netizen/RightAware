@@ -109,6 +109,26 @@
     if(burger) mount.insertBefore(wrap, burger); else mount.appendChild(wrap);
   }
 
+  /* ---------- account language preference ---------- */
+  /* profiles.language (synced to this device by js/db.js) is adopted when the
+     visitor has NEVER picked a language with the header selector here —
+     ra_lang absent means "no device choice yet", so the account copy is the
+     truth. Choosing in the selector writes ra_lang and this device keeps its
+     own choice from then on. */
+  function adoptProfileLanguage(){
+    try{
+      if(localStorage.getItem(STORE_KEY)) return;
+      var pl = null;
+      try{ var p = JSON.parse(localStorage.getItem("ra_profile") || "null"); if(p) pl = p.language; }catch(_){ pl = null; }
+      var want = pl === "Pidgin" ? "pcm" : (pl === "English" ? "en" : null);
+      if(!want || want === lang) return;
+      lang = want;
+      apply();
+      var sel = document.querySelector(".ra-lang-select"); if(sel) sel.value = lang;
+    }catch(_){}
+  }
+  try{ document.addEventListener("ra:synced", adoptProfileLanguage); }catch(_){}
+
   /* ---------- boot ---------- */
   function boot(){
     if(!window.RA_I18N){ return; }
@@ -148,6 +168,6 @@
     }
   };
 
-  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-  else boot();
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ boot(); adoptProfileLanguage(); });
+  else { boot(); adoptProfileLanguage(); }
 })();

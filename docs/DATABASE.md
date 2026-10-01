@@ -66,7 +66,7 @@ idempotent (`on conflict do nothing`), so re-running it changes nothing.
 5. Reviews: `professional_reviews` insert as `pending`; moderation UI in
    `admin.html` calls an admin-only API (service role), never direct table writes.
 
-## Cross-device sync (profile & saved items — `RA_DB.v = "db4"`)
+## Cross-device sync (profile & saved items — `RA_DB.v = "db5"`)
 When signed in, Supabase is the source of truth; localStorage is the offline
 cache. `js/db.js` `remote.syncNow()` runs once per account per page load
 (`ra:backend-ready` / `ra:session-ready`) and after explicit saves:
@@ -84,19 +84,41 @@ cache. `js/db.js` `remote.syncNow()` runs once per account per page load
   conflict honestly. A stale device can therefore never overwrite a newer
   value. First save with no row inserts it; a row already exists with no base
   follows the same conflict rule.
-- **Saved items** sync by identity (`user_id,item_type,ref` upsert + delete),
-  push-before-pull, `ra_removed` tombstones for offline removals — neither
-  device can lose the other's items.
+- **Saved items** sync by identity (`user_id,item_type,ref` upsert + delete)
+  with a 3-way merge against `ra_saved_base` — the server snapshot stored by
+  every successful pull (same idea as `ra_profile_base`). Each sync:
+  1. diffs local vs base → this device's **additions** and **removals**;
+  2. flushes removals first (explicit `ra_removed` tombstones + derived ones),
+     so the pull cannot restore a row deleted here (a failed delete is kept /
+     re-derived and retried next sync);
+  3. pushes **only the additions** (a save pushes only its own row) — the whole
+     local list is never re-uploaded, so a stale device can never resurrect an
+     item the account removed elsewhere;
+  4. **always pulls**, even when the push failed: the account copy is the truth,
+     and additions whose push did not land are retained locally (their diff
+     still marks them new next sync, so they retry — nothing is lost).
+  If `ra_saved` is absent entirely (first sign-in, storage cleared, account
+  switch) the server copy is adopted as-is and nothing is deleted.
+- **Session coverage on save pages** — `js/auth.js` must be loaded wherever
+  `js/db.js` does account work, because `remote.uid()` reads `RA_AUTH`. Every
+  page with db.js has auth.js (rights/topic + videos host save buttons and now
+  load it). Without it a save had no uid → never pushed at save time and the
+  page never synced — the original "saved items don't cross devices" bug.
+- **Signed-out queue flush** — `runSync` also runs one message-only pass per
+  page load when there is no session, so contact.html's undelivered-message
+  queue retries without needing a signed-in page.
 - **Race guard** — a pull that lands after a local save started is discarded,
   so it never wipes the edit or its retry flag.
-- The service worker cache (`rightaware-v7`) purges pre-CAS sync code from
+- The service worker cache (`rightaware-v8`) purges pre-db5 sync code from
   devices; `RA_DB.v` reports the running sync version.
-- **Version bump rule:** when the sync code changes, bump all three together —
-  `DB.v` in `js/db.js`, the `?v=` on account.html's `js/auth.js`/`js/db.js`
-  script tags, and the `=== "db4"` check in `paintSync()`. The versioned script
-  URL is what guarantees the always-fresh account.html fetches fresh code even
-  while an older service worker is still active; the sync pill then shows
-  `SYNC <version>` (or `RELOAD — OLD APP COPY` if a stale copy is running).
+- **Version bump rule:** when the sync code changes, bump all of these
+  together — `DB.v` in `js/db.js`, the `?v=` on **every** page that loads
+  `js/auth.js`/`js/db.js` (account, admin, signup, login, lawyers, contact,
+  videos, rights/topic), the `=== "<version>"` check in `paintSync()`, and the
+  service-worker `CACHE` name. The versioned script URL is what guarantees an
+  always-fresh HTML fetches fresh code even while an older service worker is
+  still active; the sync pill on My Account then shows `SYNC <version>` (or
+  `RELOAD — OLD APP COPY` if a stale copy is running).
 
 ## Seed data
 Seed **categories + FAQs only** at first. Do NOT seed laws text, organizations,

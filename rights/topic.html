@@ -52,7 +52,8 @@
   <div><h4>Contact</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p></div>
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="../js/config.js"></script>
-<script src="../js/db.js"></script>
+<script src="../js/auth.js?v=db5"></script>
+<script src="../js/db.js?v=db5"></script>
 <script src="../content/rights.js"></script>
 <script src="../content/laws.js"></script>
 <script src="../content/organizations.js"></script>
@@ -112,6 +113,8 @@
   document.querySelectorAll(".faq button").forEach(b => b.addEventListener("click", () => b.parentElement.classList.toggle("open")));
   const saveBtn = document.getElementById("saveBtn");
   const paint = () => { const s = RA_DB.isSaved("right", r.id); saveBtn.textContent = s ? "★ Saved" : "☆ Save this guide"; };
+  // Repaint the save state after a cross-device sync changes the saved list.
+  document.addEventListener("ra:synced", paint);
   paint();
   saveBtn.addEventListener("click", () => { paint(RA_DB.toggleSaved("right", r.id, r.title)); paint(); });
 })();

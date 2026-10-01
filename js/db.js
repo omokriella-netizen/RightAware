@@ -1,11 +1,12 @@
-/* RightAware storage layer (v3): localStorage-first — everything works offline
-   and survives reloads. When you are signed in, saved items, your profile and
-   the contact-message queue sync with your account (remote.syncNow, per-account
-   via ra_sync_owner). Consultations, settings and reviews stay device-local for
-   now. Each local method mirrors its Supabase table — see DATABASE.md.
-   Collections: ra_saved(+ra_removed tombstones), ra_reviews(+queue),
-   ra_consultations, ra_messages, ra_notifications, ra_reports, ra_requests,
-   ra_profile, ra_settings. */
+/* RightAware storage layer (v5): localStorage-first — everything works offline
+   and survives reloads. When you are signed in, Supabase is the source of
+   truth: saved items, your profile and the contact-message queue sync with
+   your account (remote.syncNow, per-account via ra_sync_owner). Consultations,
+   settings and reviews stay device-local for now. Each local method mirrors
+   its Supabase table — see DATABASE.md.
+   Collections: ra_saved(+ra_removed tombstones, +ra_saved_base snapshot),
+   ra_reviews(+queue), ra_consultations, ra_messages, ra_notifications,
+   ra_reports, ra_requests, ra_profile(+ra_profile_base), ra_settings. */
 (function(){
   const LS = {
     get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(_){ return d; } },
@@ -20,6 +21,7 @@
     toggleSaved(type, ref, title){
       let list = this.savedList();
       const i = list.findIndex(s => s.type===type && s.ref===ref);
+      let item = null;
       if(i>=0){
         list.splice(i,1);
         // Offline-safe removal: once this device's saved list has been synced to
@@ -33,13 +35,25 @@
           }
         }catch(_){}
       } else {
-        list.push({ type, ref, title, at:new Date().toISOString() });
+        item = { type, ref, title, at:new Date().toISOString() };
+        list.push(item);
+        // Saving again cancels any queued removal for the same row — a
+        // re-adding device must never have its item deleted by an old tombstone.
+        try{
+          const t = LS.get("ra_removed", []);
+          if(t.length){
+            const keepT = t.filter(x => !(x.type===type && x.ref===ref));
+            if(keepT.length !== t.length) LS.set("ra_removed", keepT);
+          }
+        }catch(_){}
       }
       LS.set("ra_saved", list);
       // Sync the change at once when signed in; failures retry on the next syncNow().
+      // Only THIS row is sent — never the whole list (which could re-upload rows
+      // the account removed elsewhere).
       try{
         if(this.remote && this.remote.ready() && this.remote.uid()){
-          let p = i<0 ? this.remote.pushSaved() : this.remote.deleteSaved(type, ref);
+          let p = i<0 ? this.remote.pushSaved([item]) : this.remote.deleteSaved(type, ref);
           if(p && p.catch) p.catch(function(){});
         }
       }catch(_){}
@@ -70,7 +84,7 @@
     saveSettings(s){ LS.set("ra_settings", s); }
   };
   window.RA_DB = DB;
-  DB.v = "db4";   // code-version marker: production sync must run db4 (CAS profile sync)
+  DB.v = "db5";   // code-version marker: production sync must run db5 (CAS profile + 3-way saved-items merge)
 
   /* ---- Supabase remote (used when RA_SUPA is ready; local-first otherwise) ----
      Local collections stay the offline cache; syncNow() mirrors them to Supabase
@@ -79,11 +93,15 @@
   DB.remote = {
     ready(){ try{ return !!(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client); }catch(_){ return false; } },
     uid(){ try{ var u = (window.RA_AUTH && RA_AUTH.current()) || {}; return u.supabaseId || null; }catch(_){ return null; } },
-    async pushSaved(){
+    async pushSaved(list){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
       var self = this;
       try{
-        var rows = DB.savedList().map(function(s){ return { user_id:self.uid(), item_type:s.type, ref:s.ref, title:s.title }; });
+        // Only the rows passed in (the sync passes what this device ADDED since
+        // its last pull; a save passes just the new row). Never the whole local
+        // list — that would re-upload items the account removed elsewhere.
+        var src = (list && list.length !== undefined) ? list : DB.savedList();
+        var rows = src.map(function(s){ return { user_id:self.uid(), item_type:s.type, ref:s.ref, title:s.title }; });
         if(!rows.length) return { ok:true, pushed:0 };
         var r = await RA_SUPA.client.from("saved_items").upsert(rows, { onConflict:"user_id,item_type,ref" });
         return r.error ? { ok:false, error:r.error.message } : { ok:true, pushed:rows.length };
@@ -94,9 +112,42 @@
       try{
         var r = await RA_SUPA.client.from("saved_items").select("item_type,ref,title").eq("user_id", this.uid());
         if(r.error) return { ok:false, error:r.error.message };
-        var list = ((r.data) || []).map(function(x){ return { type:x.item_type, ref:x.ref, title:x.title, at:new Date().toISOString() }; });
-        try{ localStorage.setItem("ra_saved", JSON.stringify(list)); }catch(_){}
-        return { ok:true, pulled:list.length };
+        var server = ((r.data) || []).map(function(x){ return { type:x.item_type, ref:x.ref, title:x.title, at:new Date().toISOString() }; });
+        var key = function(s){ return s.type + "|" + s.ref; };
+        // 3-way merge against ra_saved_base (the server snapshot this device last
+        // pulled): the account copy is the truth, but (1) items ADDED here since
+        // that snapshot stay even if their push has not landed yet, and (2) rows
+        // this device REMOVED since the snapshot are excluded, so a failed delete
+        // cannot be restored by this pull (no stale-local resurrection).
+        var local = null;
+        try{
+          var raw = localStorage.getItem("ra_saved");
+          if(raw !== null){ var parsed = JSON.parse(raw); if(parsed && parsed.length !== undefined) local = parsed; }
+        }catch(_){ local = null; }
+        var out;
+        if(!local){
+          // No local list at all (first sign-in, storage cleared or account
+          // switch): adopt the account copy exactly as it is, delete nothing.
+          out = server;
+        } else {
+          var base = [];
+          try{ var braw = localStorage.getItem("ra_saved_base"); if(braw){ var bp = JSON.parse(braw); if(bp && bp.length !== undefined) base = bp; } }catch(_){ base = []; }
+          var baseKeys = {}, localKeys = {}, serverKeys = {};
+          base.forEach(function(s){ baseKeys[key(s)] = 1; });
+          local.forEach(function(s){ localKeys[key(s)] = 1; });
+          server.forEach(function(s){ serverKeys[key(s)] = 1; });
+          var removedKeys = {};
+          base.forEach(function(s){ if(!localKeys[key(s)]) removedKeys[key(s)] = 1; });
+          out = server.filter(function(s){ return !removedKeys[key(s)]; });
+          local.forEach(function(s){
+            if(!baseKeys[key(s)] && !serverKeys[key(s)]) out.push(s);   // added here, push pending
+          });
+        }
+        try{ localStorage.setItem("ra_saved", JSON.stringify(out)); }catch(_){}
+        // Server snapshot this state is reconciled against — the base for the
+        // next sync's add/remove diff (same idea as ra_profile_base for CAS).
+        try{ localStorage.setItem("ra_saved_base", JSON.stringify(server)); }catch(_){}
+        return { ok:true, pulled:server.length };
       }catch(_){ return { ok:false, error:"load failed" }; }
     },
     async deleteSaved(type, ref){
@@ -222,21 +273,45 @@
           if(owner && owner !== uidNow){
             // A different account signed in on this device: never push the previous
             // account's local copies into this account — start from the server copy.
-            try{ ["ra_saved","ra_profile","ra_profile_dirty","ra_profile_base","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
+            try{ ["ra_saved","ra_saved_base","ra_profile","ra_profile_dirty","ra_profile_base","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
             out.savedPull = await this.pullSaved();
             out.profile = await this.pullProfile();
           } else {
-            // 1) flush queued removals first, so the pull below cannot restore them
-            var tombs = LS.get("ra_removed", []), keep = [];
+            // 1) What did THIS device change since its last pull?
+            //    ra_saved_base is the server snapshot that pull produced, so the
+            //    local-vs-base diff is exactly: additions + removals made here.
+            var localList = null;
+            try{
+              var lr = localStorage.getItem("ra_saved");
+              if(lr !== null){ var lparsed = JSON.parse(lr); if(lparsed && lparsed.length !== undefined) localList = lparsed; }
+            }catch(_){ localList = null; }
+            var added = [], derivedRem = [], kOf = function(s){ return s.type + "|" + s.ref; };
+            if(localList){
+              var bList = [];
+              try{ var br = localStorage.getItem("ra_saved_base"); if(br){ var bparsed = JSON.parse(br); if(bparsed && bparsed.length !== undefined) bList = bparsed; } }catch(_){ bList = []; }
+              var lk = {}, bk = {};
+              localList.forEach(function(s){ lk[kOf(s)] = 1; });
+              bList.forEach(function(s){ bk[kOf(s)] = 1; });
+              added = localList.filter(function(s){ return !bk[kOf(s)]; });
+              derivedRem = bList.filter(function(s){ return !lk[kOf(s)]; });
+            }
+            // 2) Flush removals first (queued tombstones + rows dropped here since
+            //    the last pull), so the pull below cannot restore them. A failed
+            //    delete is retried next sync: the tombstone is kept, and a derived
+            //    removal re-derives from the base while the server still has it.
+            var tombs = LS.get("ra_removed", []), keep = [], seenRem = {};
+            tombs.forEach(function(t){ seenRem[kOf(t)] = 1; });
+            derivedRem.forEach(function(t){ if(!seenRem[kOf(t)]){ tombs.push(t); seenRem[kOf(t)] = 1; } });
             for(var ti = 0; ti < tombs.length; ti++){
               var del = await this.deleteSaved(tombs[ti].type, tombs[ti].ref);
               if(!del.ok) keep.push(tombs[ti]);          // retried on the next sync
             }
-            try{ localStorage.setItem("ra_removed", JSON.stringify(keep)); }catch(_){}
-            // 2) push local saved + profile, then pull (a failed push never wipes
-            //    device-only items; a pull only returns what we just sent)
-            out.saved = await this.pushSaved();
-            if(out.saved && out.saved.ok) out.savedPull = await this.pullSaved();
+            try{ localStorage.setItem("ra_removed", JSON.stringify(keep.slice(-200))); }catch(_){}
+            // 3) Push only the additions, then ALWAYS pull — the account copy must
+            //    arrive even when this device's push failed (the merge keeps any
+            //    additions whose push did not land, so nothing local is lost).
+            out.saved = localList ? await this.pushSaved(added) : { ok:true, pushed:0 };
+            out.savedPull = await this.pullSaved();
             var lp = DB.profile();
             out.profile = (DB.profileEdited() && (lp.name || lp.email || lp.phone))
               ? await this.pushProfile(lp)   // edited here → CAS push (a stale base never wins)
@@ -254,18 +329,27 @@
   /* Sync once per account per page load: at backend-ready, and again if the
      session only becomes known afterwards (js/auth.js fires "ra:session-ready"
      after it mirrors a session) — otherwise a page loaded just before the
-     session was restored would never sync at all. */
+     session was restored would never sync at all. Signed-out visitors get ONE
+     message-queue pass per page load too: contact.html queues undelivered
+     messages locally and has no session layer, so without this the queue could
+     only flush on a signed-in page. If a new event lands while a sync is still
+     in flight, it re-runs afterwards instead of being dropped. */
   try{
-    var syncedUid = null, syncRunning = false;
+    var syncedUid = null, syncedAnon = false, syncRunning = false, syncRetry = false;
     var runSync = function(){
       try{
         if(!DB.remote.ready()) return;
         var u = DB.remote.uid();
-        if(!u || u === syncedUid || syncRunning) return;
+        if(u){ if(u === syncedUid) return; }
+        else if(syncedAnon) return;
+        if(syncRunning){ syncRetry = true; return; }   // re-checked when the flight lands
         syncRunning = true;
         Promise.resolve(DB.remote.syncNow())
-          .then(function(){ syncedUid = u; }).catch(function(){})
-          .then(function(){ syncRunning = false; });
+          .then(function(){ if(u) syncedUid = u; else syncedAnon = true; }).catch(function(){})
+          .then(function(){
+            syncRunning = false;
+            if(syncRetry){ syncRetry = false; try{ runSync(); }catch(_){} }
+          });
       }catch(_){}
     };
     document.addEventListener("ra:backend-ready", runSync);

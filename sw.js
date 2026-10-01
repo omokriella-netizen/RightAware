@@ -1,4 +1,4 @@
-/* RightAware service worker (v7): offline-first public content + privacy rules.
+/* RightAware service worker (v8): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,7 +7,14 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v7: purge the pre-P9-sync js/db.js from device caches. v6 kept serving the
+/* v8: purge pre-db5 copies of js/db.js. db5 fixes saved-items sync — the
+     sync passes only what a device ADDED since its last pull (ra_saved_base
+     snapshot + 3-way merge), the pull always runs even when the push fails,
+     and the pages hosting save buttons (rights/topic, videos) now load
+     js/auth.js so uid() is known and a save pushes immediately. A cached db4
+     copy could re-upload rows the account removed elsewhere and never pushed
+     saves made on those pages — v8 + "?v=db5" tags remove it.
+   v7: purge the pre-P9-sync js/db.js from device caches. v6 kept serving the
     old presence-based profile push from cache (stale-while-revalidate) on the
     first load after a deploy, so a device could push a stale local profile
     over a newer account copy (cross-device B→A revert). v7 forces a fresh
@@ -22,7 +29,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v7";
+const CACHE = "rightaware-v8";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
