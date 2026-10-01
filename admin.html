@@ -161,30 +161,67 @@
     loadApplications();
   }
 
-  /* ---------- application list ---------- */
+  /* ---------- application list ----------
+     appCtx carries per-render context into the item builders: applicant
+     e-mails matched from the application MESSAGE COPIES (the professionals
+     table stores no e-mail column and profiles are not admin-readable via
+     RLS) and specialisations read from professional_specializations. */
+  var appCtx = { emailFor: function(){ return ""; }, specByPro: {} };
+  /* Status pill shows the value the DATABASE actually holds — never a
+     hardcoded label — so an unexpected/NULL status is flagged, not hidden. */
+  function statusPill(st){
+    var s = String(st || "").toLowerCase();
+    if(s === "verified") return '<span class="pill-green">VERIFIED</span>';
+    if(s === "rejected") return '<span class="pill-red">REJECTED</span>';
+    if(s === "pending") return '<span class="pill">PENDING</span>';
+    if(s === "unverified") return '<span class="pill">UNVERIFIED</span>';
+    return '<span class="pill-red">STATUS ' + esc(st || "unset") + '</span>';
+  }
+  /* text[] arrives as a JSON array; tolerate a plain string or null instead of
+     letting .join() throw and silently kill a whole section. */
+  function arr(v, sep){
+    if(Array.isArray(v)) return v.join(sep || ", ");
+    return (v == null || v === "") ? "" : String(v);
+  }
+  /* One broken record must never take down its section: render it as a
+     visible error card instead of vanishing into a swallowed exception. */
+  function safe(fn, row, what){
+    try{ return fn(row); }
+    catch(err){ return '<div class="app-item">⚠ Could not render this ' + esc(what) + ' record (' + esc(err && err.message ? err.message : err) + ').</div>'; }
+  }
   function proItem(p){
-    var specs = Array.isArray(p.consultation_options) ? p.consultation_options.join(", ") : (p.consultation_options || "—");
-    return '<div class="app-item"><details><summary>⚖️ ' + esc(p.name) + ' — ' + esc(p.qualification || "professional") + '</summary>'
-      + '<div class="app-meta"><span class="pill">PENDING</span> ' + esc(p.location || "") + (p.experience_yrs ? " · " + esc(p.experience_yrs) + " yrs" : "")
+    var em = appCtx.emailFor("pro", p.name);
+    var areas = arr(p.consultation_options);
+    var langs = arr(p.languages);
+    var sp = (appCtx.specByPro[p.id] || []).join(", ");
+    return '<div class="app-item"><details open><summary>⚖️ ' + esc(p.name) + ' — ' + esc(p.qualification || "professional") + '</summary>'
+      + '<div class="app-meta">' + statusPill(p.verification_status) + ' ' + esc(p.location || "")
+      + (p.experience_yrs ? " · " + esc(p.experience_yrs) + " yrs" : "")
       + ' · applied ' + esc(String(p.created_at || "").slice(0,10)) + (p.id ? ' · <code>' + esc(p.id) + '</code>' : '') + '</div>'
-      + '<dl class="app-dl"><dt>Areas</dt><dd>' + esc(specs) + '</dd>'
-      + (p.languages && p.languages.length ? '<dt>Languages</dt><dd>' + esc(p.languages.join(", ")) + '</dd>' : '')
+      + '<dl class="app-dl">'
+      + (em ? '<dt>E-mail</dt><dd>' + esc(em) + ' <small>(from this application’s message copy — the professionals table stores no e-mail)</small></dd>' : '')
+      + '<dt>Qualification</dt><dd>' + esc(p.qualification || "—") + '</dd>'
+      + '<dt>Location</dt><dd>' + esc(p.location || "—") + '</dd>'
+      + (sp ? '<dt>Specializations</dt><dd>' + esc(sp) + '</dd>' : '')
+      + (areas ? '<dt>Areas handled</dt><dd>' + esc(areas) + '</dd>' : '')
+      + (langs ? '<dt>Languages</dt><dd>' + esc(langs) + '</dd>' : '')
       + (p.availability ? '<dt>Availability</dt><dd>' + esc(p.availability) + '</dd>' : '')
       + (p.fee_note ? '<dt>Fee note</dt><dd>' + esc(p.fee_note) + '</dd>' : '')
+      + (p.bio ? '<dt>Bio</dt><dd>' + esc(p.bio) + '</dd>' : '')
       + (p.photo_path ? '<dt>Photo file</dt><dd>' + esc(p.photo_path) + ' (filename recorded; original to be checked)</dd>' : '')
-      + (p.bio ? '<dt>Bio</dt><dd>' + esc(p.bio) + '</dd>' : '') + '</dl>'
+      + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-pro" data-id="' + esc(p.id) + '">Approve (publish listing)</button>'
       + '<button class="btn btn-outline btn-sm" data-act="reject-pro" data-id="' + esc(p.id) + '">Reject (keep private)</button></div>'
       + '</details></div>';
   }
   function orgItem(o){
-    var svc = Array.isArray(o.services) ? o.services.join(", ") : (o.services || "—");
-    return '<div class="app-item"><details><summary>🏛 ' + esc(o.name) + ' — ' + esc(o.specialization || "organisation") + '</summary>'
-      + '<div class="app-meta"><span class="pill">PENDING</span> ' + esc(o.location || "")
+    var svc = arr(o.services);
+    return '<div class="app-item"><details open><summary>🏛 ' + esc(o.name) + ' — ' + esc(o.specialization || "organisation") + '</summary>'
+      + '<div class="app-meta">' + statusPill(o.verification_status) + ' ' + esc(o.location || "")
       + ' · applied ' + esc(String(o.created_at || "").slice(0,10)) + (o.id ? ' · <code>' + esc(o.id) + '</code>' : '') + '</div>'
       + '<dl class="app-dl"><dt>Contact</dt><dd>' + esc(o.email || "—") + ' · ' + esc(o.phone || "—") + '</dd>'
       + (o.website ? '<dt>Website</dt><dd>' + esc(o.website) + '</dd>' : '')
-      + '<dt>Services</dt><dd>' + esc(svc) + '</dd>'
+      + '<dt>Services</dt><dd>' + esc(svc || "—") + '</dd>'
       + (o.verification_source ? '<dt>Verification hints</dt><dd>' + esc(o.verification_source) + '</dd>' : '')
       + (o.description ? '<dt>About</dt><dd>' + esc(o.description) + '</dd>' : '') + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-org" data-id="' + esc(o.id) + '">Approve (verify listing)</button>'
@@ -253,9 +290,9 @@
       + "supabase/verification-revoke.sql is not applied yet — the state change and the role revocation ran as two separate steps. Run that file once (additive) to make approval and revocation atomic.";
   }
   function decidedItem(d){
-    var x = d.row, isRej = x.verification_status === "rejected";
+    var x = d.row;
     return '<div class="app-item"><details><summary>' + (d.kind === "pro" ? "⚖️ " : "🏛 ") + esc(x.name) + '</summary>'
-      + '<div class="app-meta"><span class="' + (isRej ? "pill-red" : "pill-green") + '">' + (isRej ? "REJECTED" : "VERIFIED") + '</span> '
+      + '<div class="app-meta">' + statusPill(x.verification_status) + ' '
       + (d.kind === "pro" ? "professional" : "organisation")
       + ' · applied ' + esc(String(x.created_at || "").slice(0,10))
       + (x.verified_at ? ' · decided ' + esc(String(x.verified_at).slice(0,10)) : '')
@@ -281,74 +318,137 @@
        applied yet) needs the row's user_id to remove the role from the
        account; org rows never have user_id and are skipped naturally. */
     var appRows = {};
+    /* Per-section read failures / precise empty-state explanations — surfaced
+       in the UI instead of being swallowed by a silent catch. */
+    var notes = [];
     function stash(rows){
       (rows || []).forEach(function(x){ if(x && x.id && x.user_id) appRows[x.id] = x; });
     }
 
-    // 1) pending Legal Professional applications — the approve/reject workflow.
-    //    Decisions run through the admin-only RPCs (ra_approve_professional /
-    //    ra_revoke_professional). Rows enter as 'pending' from signup; legacy
-    //    'unverified' rows are also awaiting review and are shown here too.
-    var proNote = "";
-    try{
-      var p = await RA_SUPA.client.from("professionals").select("*")
-        .in("verification_status", ["pending","unverified"])
-        .order("created_at", { ascending:false }).limit(20);
-      if(!p.error && p.data && p.data.length){
-        any = true;
-        stash(p.data);
-        out += '<div class="section-head"><h3>⚖️ Legal Professional applications — Approve / Reject</h3></div>' + p.data.map(proItem).join("");
-      } else if(p.error){
-        proNote = '<p class="empty">⚠ Could not read professional applications: ' + esc(p.error.message) + '</p>';
-      } else {
-        proNote = '<p class="empty">No professional applications visible. If applicants used signup, they are either in the contact-message copies below, or the add-on policies in <code>supabase/applications-access.sql</code> still need to be applied.</p>';
-      }
-    }catch(_){}
-
-    // 2) pending organisations (admin policy exists in the base schema)
-    try{
-      var o = await RA_SUPA.client.from("organizations").select("*")
-        .in("verification_status", ["pending","unverified"])
-        .order("created_at", { ascending:false }).limit(20);
-      if(!o.error && o.data && o.data.length){
-        any = true;
-        out += '<div class="section-head"><h3>🏛 Organisation applications — Approve / Reject</h3></div>' + o.data.map(orgItem).join("");
-      }
-    }catch(_){}
-
-    // 3) decided history: verified (approved) + rejected — the admin's record of
-    //    past decisions. Safe to query even before verification-states.sql is run
-    //    (the 'rejected' value simply matches no rows yet).
-    try{
-      var decided = [];
-      var ro = await RA_SUPA.client.from("organizations").select("id,name,verification_status,verified_at,created_at")
-        .in("verification_status", ["rejected","verified"])
-        .order("created_at", { ascending:false }).limit(8);
-      if(!ro.error && ro.data) decided = decided.concat(ro.data.map(function(x){ return { row:x, kind:"org" }; }));
-      var rp = await RA_SUPA.client.from("professionals").select("id,name,verification_status,verified_at,created_at,user_id")
-        .in("verification_status", ["rejected","verified"])
-        .order("created_at", { ascending:false }).limit(8);
-      if(!rp.error && rp.data){ stash(rp.data); decided = decided.concat(rp.data.map(function(x){ return { row:x, kind:"pro" }; })); }
-      decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
-      if(decided.length){
-        out += '<div class="section-head"><h3>🗂 Recently decided — Verified / Rejected (Reopen here)</h3></div>' + decided.map(decidedItem).join("");
-      }
-    }catch(_){}
-
-    // 4) contact-message copies of signup applications — READ STATUS ONLY.
-    //    "Mark reviewed" marks the message read; it is never an approval and
-    //    never touches a professional/organisation record.
+    /* ---- application MESSAGE copies first (read-status only). They also
+       carry the applicant e-mail: the professionals table has no e-mail
+       column and profiles are not admin-readable via RLS, so the message
+       copy is the only stored source — matched by name + application kind. */
+    var queue = [];
     try{
       var q = await RA_SUPA.client.from("contact_messages").select("*")
         .like("topic", "Application%")
-        .order("created_at", { ascending:false }).limit(20);
-      if(!q.error && q.data && q.data.length){
-        any = true;
-        out += '<div class="section-head"><h3>📨 Contact-message copies — read only, no approval here</h3></div>' + q.data.map(queueItem).join("");
-      }
-    }catch(_){}
+        .order("created_at", { ascending:false }).limit(30);
+      if(q.error) throw q.error;
+      queue = q.data || [];
+    }catch(err){
+      notes.push("⚠ Application message copies could not be read: " + esc(err && err.message ? err.message : err));
+    }
+    var emailByName = {};
+    queue.forEach(function(m){
+      var txt = String(m.message || "");
+      var nm = /(^|\n)Name:\s*(.+)/.exec(txt);
+      var em = /(^|\n)Email:\s*(\S+@\S+)/.exec(txt);
+      if(!nm || !em) return;
+      var kind = /PROFESSIONAL APPLICATION/i.test(txt) ? "pro"
+               : /ORGANISATION APPLICATION/i.test(txt) ? "org" : "any";
+      var key = String(nm[2]).trim().toLowerCase();
+      if(!emailByName[key + "|" + kind]) emailByName[key + "|" + kind] = em[2];
+      if(!emailByName[key + "|any"]) emailByName[key + "|any"] = em[2];
+    });
 
-    box.innerHTML = (any ? out : '<p class="empty">No applications are awaiting review right now.</p>') + proNote;
+    /* ---- professional records: read EVERY row this admin session can see
+       (NO status filter — partition below) and split client-side, so no
+       stored value, including NULL or an unexpected one, can hide an
+       application from this dashboard. Decisions still run through the
+       admin-only RPCs (ra_approve_professional / ra_revoke_professional). */
+    var pros = [];
+    try{
+      var p = await RA_SUPA.client.from("professionals").select("*")
+        .order("created_at", { ascending:false }).limit(50);
+      if(p.error) throw p.error;
+      pros = p.data || [];
+    }catch(err){
+      notes.push("⚠ Professional applications could not be read: " + esc(err && err.message ? err.message : err));
+    }
+    stash(pros);
+    var proPending = [], proDecided = [];
+    pros.forEach(function(x){
+      (x.verification_status === "verified" || x.verification_status === "rejected" ? proDecided : proPending).push(x);
+    });
+
+    /* specialisations (public-read table) for the pending cards */
+    var specByPro = {};
+    if(proPending.length){
+      try{
+        var s = await RA_SUPA.client.from("professional_specializations").select("professional_id,specialization")
+          .in("professional_id", proPending.map(function(x){ return x.id; }));
+        if(!s.error && s.data){
+          s.data.forEach(function(r){
+            if(!r.professional_id) return;
+            (specByPro[r.professional_id] = specByPro[r.professional_id] || []).push(r.specialization);
+          });
+        }
+      }catch(_){}
+    }
+    appCtx = {
+      specByPro: specByPro,
+      emailFor: function(kind, name){
+        var key = String(name || "").trim().toLowerCase();
+        return emailByName[key + "|" + kind] || emailByName[key + "|any"] || "";
+      }
+    };
+
+    /* ---- organisations: same unfiltered read + client-side split ---- */
+    var orgs = [];
+    try{
+      var o = await RA_SUPA.client.from("organizations").select("*")
+        .order("created_at", { ascending:false }).limit(50);
+      if(o.error) throw o.error;
+      orgs = o.data || [];
+    }catch(err){
+      notes.push("⚠ Organisation applications could not be read: " + esc(err && err.message ? err.message : err));
+    }
+    var orgPending = [], orgDecided = [];
+    orgs.forEach(function(x){
+      (x.verification_status === "verified" || x.verification_status === "rejected" ? orgDecided : orgPending).push(x);
+    });
+
+    /* ---- render: DECISION RECORDS FIRST, message copies LAST ---- */
+    if(proPending.length){
+      any = true;
+      out += '<div class="section-head"><h3>⚖️ Legal Professional applications — Approve / Reject</h3></div>'
+        + proPending.map(function(x){ return safe(proItem, x, "professional"); }).join("");
+    }
+    if(orgPending.length){
+      any = true;
+      out += '<div class="section-head"><h3>🏛 Organisation applications — Approve / Reject</h3></div>'
+        + orgPending.map(function(x){ return safe(orgItem, x, "organisation"); }).join("");
+    }
+    var decided = proDecided.map(function(x){ return { row:x, kind:"pro" }; })
+      .concat(orgDecided.map(function(x){ return { row:x, kind:"org" }; }));
+    decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
+    if(decided.length){
+      any = true;
+      out += '<div class="section-head"><h3>🗂 Recently decided — Verified / Rejected (Reopen here)</h3></div>'
+        + decided.map(function(d){ return safe(decidedItem, d, d.kind === "pro" ? "professional" : "organisation"); }).join("");
+    }
+    if(queue.length){
+      any = true;
+      out += '<div class="section-head"><h3>📨 Contact-message copies — read only, no approval here</h3></div>'
+        + queue.map(function(m){ return safe(queueItem, m, "message"); }).join("");
+    }
+
+    /* Honest empty state: say exactly what the database returned — never
+       pretend rows exist, never hide a read failure in a silent catch. */
+    if(!notes.length){
+      var appMsgs = queue.length;
+      if(!pros.length && !orgs.length){
+        notes.push("The database returned no professional or organisation application rows for this admin session."
+          + (appMsgs ? " " + appMsgs + " application message cop" + (appMsgs === 1 ? "y exists" : "ies exist")
+            + ", so if application rows are present in the database the admin read policies may be missing — run supabase/applications-access.sql once (sections 1–2), then reload." : ""));
+      } else if(!pros.length && appMsgs){
+        notes.push("Application message copies exist, but no professional rows are visible to this admin session. If rows are present in the database, run supabase/applications-access.sql once (sections 1–2), then reload.");
+      }
+    }
+
+    box.innerHTML = (any ? out : '<p class="empty">No applications are awaiting review right now.</p>')
+      + notes.map(function(n){ return '<p class="empty">' + n + '</p>'; }).join("");
     box.querySelectorAll("button[data-act]").forEach(function(b){
       b.addEventListener("click", async function(){
         b.disabled = true;
@@ -361,7 +461,15 @@
             var note = await revokeProfessional(id, "rejected", appRows);
             if(note) alert("Decision saved.\n\nNote: " + note);
           } else if(act === "approve-org"){
-            await upd("organizations", { verification_status:"verified", verified_at:new Date().toISOString() }, id);
+            var ro = await RA_SUPA.client.rpc("ra_approve_organization", { p_id:id });
+            if(ro.error){
+              var mro = ro.error.message || "";
+              var missRo = ro.error.code === "PGRST202" || ro.error.code === "42883"
+                || (mro.indexOf("ra_approve_organization") > -1 && /does not exist|could not find/i.test(mro));
+              if(!missRo) throw ro.error;
+              await upd("organizations", { verification_status:"verified", verified_at:new Date().toISOString() }, id);
+              alert("Decision saved.\n\nNote: ra_approve_organization is not available in the database yet — run supabase/applications-access.sql once (section 4) to switch organisation approval to the secure RPC path.");
+            }
           } else if(act === "reject-org"){
             var note2 = await rejectRow("organizations", id);
             if(note2) alert("Decision saved.\n\nNote: " + note2);
