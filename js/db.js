@@ -345,6 +345,11 @@
             try{ ["ra_saved","ra_saved_base","ra_profile","ra_profile_dirty","ra_profile_base","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
             out.savedPull = await this.pullSaved();
             out.profile = await this.pullProfile();
+            // The previous account's notifications were just cleared — replace them
+            // with THIS account's server copy right away (sync runs once per account
+            // per page load, so skipping the pull would leave the list empty until
+            // the next full page load).
+            out.notif = await this.pullNotifications();
           } else {
             // 1) What did THIS device change since its last pull?
             //    ra_saved_base is the server snapshot that pull produced, so the
