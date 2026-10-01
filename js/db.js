@@ -65,11 +65,20 @@
     // ---- Contact messages ----
     messages(){ return LS.get("ra_messages", []); },
     addMessage(m){ const all=this.messages(); m.id=uid(); m.at=new Date().toISOString(); m.status="stored-local"; all.unshift(m); LS.set("ra_messages", all); return m; },
-    // ---- Notifications (local demo) ----
+    // ---- Notifications ----
+    // Local copy: the offline/demo view (welcome note included). Signed-in
+    // pages use notificationsLive() instead — Supabase is the source of truth
+    // and the welcome note is never mixed into account rows.
     notifications(){ return LS.get("ra_notifications", [
       { id:"welcome", title:"Welcome to RightAware", body:"Rights guides work offline. Signed in? Your saved items, profile and application status sync with your account.", at:new Date().toISOString(), read:false }
     ]); },
+    // Signed-in pages read this instead: the local mirror of the account's
+    // rows in Supabase (no welcome note) — empty until the first sync lands.
+    notificationsLive(){ return LS.get("ra_notifications", []); },
     markRead(id){ const n=this.notifications().map(x=>x.id===id?Object.assign(x,{read:true}):x); LS.set("ra_notifications", n); },
+    markUnread(id){ const n=this.notifications().map(x=>x.id===id?Object.assign(x,{read:false}):x); LS.set("ra_notifications", n); },
+    markAllRead(){ const n=this.notifications().map(x=>Object.assign(x,{read:true})); LS.set("ra_notifications", n); },
+    removeNotification(id){ const n=this.notifications().filter(x=>x.id!==id); LS.set("ra_notifications", n); },
     pushNotification(t, b){ const n=this.notifications(); n.unshift({id:uid(),title:t,body:b,at:new Date().toISOString(),read:false}); LS.set("ra_notifications", n); },
     // ---- Profile & settings ----
     profile(){ return LS.get("ra_profile", { name:"", email:"", phone:"", state:"", language:"English" }); },
@@ -246,14 +255,74 @@
     async pullNotifications(){
       if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
       try{
-        var r = await RA_SUPA.client.from("notifications").select("id,title,body,read,created_at").eq("user_id", this.uid()).order("created_at", { ascending:false }).limit(20);
+        var r = await RA_SUPA.client.from("notifications")
+          .select("id,title,body,read,created_at")
+          .eq("user_id", this.uid())
+          .order("created_at", { ascending:false })
+          .limit(100);
         if(r.error) return { ok:false, error:r.error.message };
-        var local = []; try{ local = JSON.parse(localStorage.getItem("ra_notifications") || "[]"); }catch(_){}
-        var seen = {}; local.forEach(function(n){ seen[n.id] = 1; });
-        ((r.data) || []).forEach(function(n){ if(!seen[n.id]) local.unshift({ id:n.id, title:n.title, body:n.body, at:n.created_at, read:!!n.read }); });
-        try{ localStorage.setItem("ra_notifications", JSON.stringify(local.slice(0, 50))); }catch(_){}
-        return { ok:true, pulled:((r.data) || []).length };
+        // Server copy is the SOURCE OF TRUTH: the mirror is replaced, not
+        // merged — a read ticked on another device sticks, and a notification
+        // deleted elsewhere disappears here too (RLS own_notif scopes every
+        // row to its account, so this list can only ever be your own).
+        var server = ((r.data) || []).map(function(n){
+          return { id:n.id, title:n.title, body:n.body, at:n.created_at, read:!!n.read };
+        });
+        try{ localStorage.setItem("ra_notifications", JSON.stringify(server)); }catch(_){}
+        var unread = server.filter(function(n){ return !n.read; }).length;
+        try{
+          var c = await RA_SUPA.client.from("notifications")
+            .select("id", { count:"exact", head:true })
+            .eq("user_id", this.uid()).eq("read", false);
+          if(c && !c.error && typeof c.count === "number") unread = c.count;
+        }catch(_){}
+        return { ok:true, pulled:server.length, unread:unread };
       }catch(_){ return { ok:false, error:"sync failed" }; }
+    },
+    /* Read-state and delete writes, each verified by a fresh server re-read
+       before any success is reported (own_notif decides whether the row was
+       actually yours — a blocked write reports honestly instead of pretending). */
+    async setNotifRead(id, read){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("notifications").update({ read: !!read }).eq("id", id);
+        if(r.error) return { ok:false, error:r.error.message };
+        var again = await this.pullNotifications();
+        if(!again.ok) return { ok:false, error:"saved, but re-reading failed: " + again.error };
+        var list = []; try{ list = JSON.parse(localStorage.getItem("ra_notifications") || "[]"); }catch(_){}
+        var row = null;
+        for(var i = 0; i < list.length; i++){ if(list[i].id === id){ row = list[i]; break; } }
+        if(!row || !!row.read !== !!read)
+          return { ok:false, error:"the update did not persist — policy own_notif keeps rows outside your account untouched" };
+        return { ok:true, unread: again.unread };
+      }catch(_){ return { ok:false, error:"update failed" }; }
+    },
+    async markAllNotifsRead(){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("notifications")
+          .update({ read: true }).eq("user_id", this.uid()).eq("read", false);
+        if(r.error) return { ok:false, error:r.error.message };
+        var again = await this.pullNotifications();
+        if(!again.ok) return { ok:false, error:"saved, but re-reading failed: " + again.error };
+        if(again.unread !== 0)
+          return { ok:false, error:"the update did not persist — " + again.unread + " unread remain (policy own_notif)" };
+        return { ok:true, unread:0 };
+      }catch(_){ return { ok:false, error:"update failed" }; }
+    },
+    async deleteNotif(id){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("notifications").delete().eq("id", id);
+        if(r.error) return { ok:false, error:r.error.message };
+        var again = await this.pullNotifications();
+        if(!again.ok) return { ok:false, error:"deleted, but re-reading failed: " + again.error };
+        var list = []; try{ list = JSON.parse(localStorage.getItem("ra_notifications") || "[]"); }catch(_){}
+        var gone = true;
+        for(var i = 0; i < list.length; i++){ if(list[i].id === id){ gone = false; break; } }
+        if(!gone) return { ok:false, error:"the row is still there — policy own_notif keeps it in the owning account" };
+        return { ok:true, unread: again.unread };
+      }catch(_){ return { ok:false, error:"delete failed" }; }
     },
     async syncNow(){
       if(!this.ready()) return { ok:false, error:"backend not connected (demo mode)" };

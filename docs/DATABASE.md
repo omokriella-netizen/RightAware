@@ -237,3 +237,35 @@ additive file (safe to re-run, run **after** the three files above) adds:
   message, verified professionals see their consultation requests, and uploads
   stay folder-scoped. Public exposure is unchanged: anonymous readers still
   see only `verification_status='verified'` rows.
+
+## Notification events (`supabase/notifications-events.sql`)
+The `notifications` table, policy `own_notif` and every read/unread panel
+(`account.html`, both dashboards) already existed — but no code path ever
+wrote a row, so the lists stayed empty (the panels said so honestly). This
+additive file (safe to re-run, run **after** `dashboard-access.sql`) wires
+the existing application lifecycle to real notification rows, entirely inside
+the database:
+
+- `ra_notif_on_professional()` / `ra_notif_on_organization()` — AFTER-row
+  triggers on `professionals` / `organizations`:
+  - **INSERT** (`verification_status='pending'`) → the applicant gets
+    *Application received* (professional: `user_id`; organization: e-mail
+    matched against `auth.users` — the same binding `own_orgs` uses), and
+    every administrator gets *New … application* (unless an admin session
+    created the row);
+  - **UPDATE** with a real state change → *Application approved*
+    (→ verified), *Application not approved* (→ rejected/unverified),
+    *Back under review* (→ pending, i.e. reopened).
+- Covered write paths: the admin RPCs (`ra_approve_*`, `ra_revoke_*`), the
+  admin dashboard's direct-update fallbacks and the SQL editor — no page code
+  and **no policy changes** (zero new/changed policies; `own_notif` unchanged).
+- Failure isolation: each trigger body runs inside an exception handler that
+  logs a warning and lets the original INSERT/UPDATE finish — a notification
+  problem can never break an approval, rejection or reopening.
+- EXECUTE is revoked from PUBLIC/anon (trigger functions cannot be invoked
+  directly — PostgreSQL only allows them as triggers). No data is
+  backfilled: notifications start with events that happen after the file is
+  run.
+- **without** — everything still works, the notification lists simply stay
+  empty. **with** — applicants and administrators see real, per-account,
+  RLS-private rows in the existing notification UI.

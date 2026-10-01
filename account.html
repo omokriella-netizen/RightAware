@@ -23,7 +23,7 @@
 </div></section>
 <section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights, laws & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
 <section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p>Requests made through the demo directory. Payments stay “none” until Paystack is configured.</p></div><div id="consultList" class="cards-grid"></div></div></section>
-<section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div><div id="notifList" style="max-width:760px"></div></div></section>
+<section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2><p id="notifMeta" style="max-width:760px">Loading notifications…</p><p style="max-width:760px"><button class="btn btn-secondary btn-sm" id="notifMarkAll" type="button" style="display:none">Mark all read</button></p></div><div id="notifList" style="max-width:760px"></div><p class="form-note" id="notifOut" role="status" aria-live="polite"></p></div></section>
 <section class="section section-alt"><div class="container contact-grid">
   <form class="form-card rv" id="profileForm"><h2 id="profile">Profile</h2>
     <label>Full name<input id="pName"/></label>
@@ -59,11 +59,62 @@
     document.getElementById("consultList").innerHTML = c.length ? c.map(x=>'<article class="card rv"><span class="tag">'+x.status+'</span><h3 style="margin-top:.4rem">'+(x.to||"Professional")+'</h3><p>'+(x.msg||"")+'</p><p><small>Payment: '+(x.payment&&x.payment.status||"none")+' • '+x.at+'</small></p></article>').join("")
       : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultations yet</h3><p>Requests from the professionals directory will be listed here with payment status.</p><a class="link" href="lawyers.html">Open directory →</a></div>';
   }
+  var notifMsg = "";
+  function notifSignedIn(){ return !!(RA_DB.remote.ready() && RA_DB.remote.uid()); }
+  function notifRows(){ return notifSignedIn() ? RA_DB.notificationsLive() : RA_DB.notifications(); }
   function renderNotif(){
-    const n = RA_DB.notifications();
-    document.getElementById("notifList").innerHTML = n.map(x=>'<div class="result"><strong>'+x.title+'</strong> '+(x.read?"":"<span class='tag'>new</span>")+'<br/>'+x.body+'<br/><small>'+x.at+'</small> <button class="btn btn-outline btn-sm" data-read="'+x.id+'">Mark read</button></div>').join("");
-    document.querySelectorAll("[data-read]").forEach(b=>b.addEventListener("click",()=>{RA_DB.markRead(b.dataset.read);renderNotif();}));
+    var signedIn = notifSignedIn(), n = notifRows();
+    var unread = 0; n.forEach(function(x){ if(!x.read) unread++; });
+    document.getElementById("notifMeta").textContent = signedIn
+      ? (unread ? unread + " unread · from your account (Supabase)" : "All read · from your account (Supabase)")
+      : "Local copy on this device — sign in to sync notifications with your account.";
+    var mb = document.getElementById("notifMarkAll");
+    mb.style.display = unread > 0 ? "" : "none";
+    document.getElementById("notifList").innerHTML = n.length
+      ? n.map(function(x){
+          return '<div class="result"><strong>'+esc(x.title||"(no title)")+'</strong> '+(x.read?"":"<span class='tag'>new</span>")+'<br/>'
+            + esc(x.body||"") +'<br/><small>'+esc(String(x.at||""))+'</small> '
+            + '<button class="btn btn-outline btn-sm" type="button" data-notif-read="'+esc(x.id)+'">'+(x.read?"Mark unread":"Mark read")+'</button> '
+            + '<button class="btn btn-outline btn-sm" type="button" data-notif-del="'+esc(x.id)+'">Delete</button></div>';
+        }).join("")
+      : (signedIn
+          ? '<p class="empty">No notifications yet — application decisions and other account events appear here automatically; nothing is generated for display.</p>'
+          : '<p class="empty">No notifications on this device yet.</p>');
+    document.querySelectorAll("[data-notif-read]").forEach(function(b){ b.addEventListener("click", function(){
+      var id = b.getAttribute("data-notif-read"), row = null;
+      notifRows().forEach(function(x){ if(String(x.id) === id) row = x; });
+      notifAct(id, row && row.read ? "unread" : "read");
+    }); });
+    document.querySelectorAll("[data-notif-del]").forEach(function(b){ b.addEventListener("click", function(){
+      notifAct(b.getAttribute("data-notif-del"), "delete");
+    }); });
+    document.getElementById("notifOut").textContent = notifMsg;
   }
+  /* Every action reports ONLY after the server re-read that proves it stuck
+     (remote) or honestly labels the device-local copy (offline/demo). */
+  function notifDone(r){
+    notifMsg = r.ok ? "✓ Saved — re-read from the database just now."
+      : "⚠ Could not save: " + (r.error || "unknown error");
+    renderNotif();
+  }
+  function notifAct(id, action){
+    if(!notifSignedIn()){
+      if(action === "read") RA_DB.markRead(id);
+      else if(action === "unread") RA_DB.markUnread(id);
+      else RA_DB.removeNotification(id);
+      notifMsg = "✓ Saved on this device (sign in to sync notifications with your account).";
+      renderNotif(); return;
+    }
+    notifMsg = "…"; renderNotif();
+    var p = action === "delete" ? RA_DB.remote.deleteNotif(id) : RA_DB.remote.setNotifRead(id, action === "read");
+    p.then(notifDone, function(e){ notifDone({ ok:false, error:(e && e.message) || "network error" }); });
+  }
+  function notifMarkAll(){
+    if(!notifSignedIn()){ RA_DB.markAllRead(); notifMsg = "✓ All marked read on this device (sign in to sync)."; renderNotif(); return; }
+    notifMsg = "…"; renderNotif();
+    RA_DB.remote.markAllNotifsRead().then(notifDone, function(e){ notifDone({ ok:false, error:(e && e.message) || "network error" }); });
+  }
+  document.getElementById("notifMarkAll").addEventListener("click", notifMarkAll);
   var profileTouched = false;
   function fillProfile(){
     const p = RA_DB.profile();
@@ -168,12 +219,22 @@
       }).catch(function(){});
     }
   }
-  document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); });
+  document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); renderNotif(); });
   /* The account sync finishes AFTER this page first painted, so whatever arrived
      from the other device is in localStorage by now — repaint from it. An edit
-     already in progress is never overwritten. */
-  document.addEventListener("ra:synced", function(){
+     already in progress is never overwritten. A failed notification pull is
+     shown honestly instead of leaving a stale list unexplained. */
+  document.addEventListener("ra:synced", function(ev){
     renderSaved(); renderNotif();
+    var d = ev && ev.detail;
+    if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
+      notifMsg = "⚠ Could not refresh notifications from the server: " + d.notif.error
+        + " — your own notifications are read through policy own_notif (base schema)";
+      renderNotif();
+    } else if(d && d.notif && d.notif.ok !== false){
+      notifMsg = "";
+      renderNotif();
+    }
     if(!profileTouched) fillProfile();
   });
   paintSync(); renderStatus();

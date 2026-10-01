@@ -471,7 +471,7 @@
               + (n.read ? '' : '<div class="ws-actions"><button class="btn btn-outline btn-sm" type="button" data-notif="' + esc(n.id) + '">Mark read</button></div>')
               + '</div>';
           }).join("") + '</div>'
-        : '<p class="empty">No notifications yet — nothing is generated for display. Entries appear here with an unread badge once notification events are wired to your account (roadmap item 2).</p>');
+        : '<p class="empty">No notifications yet — nothing is generated for display. Entries appear here with an unread badge when a real event happens for your account (application decisions and other workflow events).</p>');
     var mb = byId("ntMarkAll");
     if(mb) mb.addEventListener("click", markAllRead);
     Array.prototype.forEach.call(box.querySelectorAll("[data-notif]"), function(b){
