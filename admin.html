@@ -132,7 +132,7 @@
       + '<div id="panelApps" role="tabpanel" aria-labelledby="tabApps">'
         + '<div class="section-head"><span class="eyebrow">Registration applications</span><h2>Awaiting your decision</h2>'
         + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p>'
-        + '<p class="app-meta" id="raBuild">build: admin-20261001-2 · every card, status and control below renders live from the database.</p></div>'
+        + '<p class="app-meta" id="raBuild">build: admin-20261001-3 · every card, status and control below renders live from the database.</p></div>'
         + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
         + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. A message copy is never the application record: each copy states whether its record exists, and when the record is missing (the applicant has not signed in yet) the copy offers <strong>Create application record</strong> from the applicant\'s own submitted data. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
       + '</div>'
@@ -254,11 +254,10 @@
       + '<div class="app-meta">from ' + esc(m.email || "?") + ' · ' + esc(String(m.created_at || m.at || "").slice(0,19).replace("T"," "))
       + ' · status ' + esc(m.status || "new") + '</div>'
       + (isApp ? '<div class="app-meta">✉ Message copy of a signup application — <strong>approval happens on the application records above, not on this message.</strong></div>' : '')
-      + recLine
       + '<dl class="app-dl"><dt>Message</dt><dd>' + esc(m.message || "") + '</dd></dl>'
       + '<div class="app-actions"><a class="btn btn-outline btn-sm" href="mailto:' + esc(m.email || "") + '">Reply by email</a>'
       + '<button class="btn btn-secondary btn-sm" data-act="mark-read" data-id="' + esc(m.id) + '">Mark reviewed</button></div>'
-      + '</details></div>';
+      + '</details>' + recLine + '</div>';
   }
 
   /* Reject stores a distinct 'rejected' state (workflow: submitted → pending →
@@ -568,9 +567,9 @@
       if(!pros.length && !orgs.length){
         notes.push("The database returned no professional or organisation application rows for this admin session."
           + (appMsgs ? " " + appMsgs + " application message cop" + (appMsgs === 1 ? "y exists" : "ies exist")
-            + ", so if application rows are present in the database the admin read policies may be missing — run supabase/applications-access.sql once (sections 1–2), then reload." : ""));
+            + ", but a message copy is not an application record: no application record has been created yet. A record is created automatically when the applicant confirms their email and signs in for the first time — or create it right now with <strong>Create application record</strong> on any copy below. Only if application rows really do exist in the database would the admin read policies be missing instead — run supabase/applications-access.sql once (sections 1–2), then reload." : ""));
       } else if(!pros.length && appMsgs){
-        notes.push("Application message copies exist, but no professional rows are visible to this admin session. If rows are present in the database, run supabase/applications-access.sql once (sections 1–2), then reload.");
+        notes.push("Application message copies exist, but no professional rows are visible to this admin session. A record is created when the applicant confirms their email and signs in — or create it directly from a copy below. If rows are present in the database, run supabase/applications-access.sql once (sections 1–2), then reload.");
       }
     }
 

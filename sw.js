@@ -1,4 +1,4 @@
-/* RightAware service worker (v9): offline-first public content + privacy rules.
+/* RightAware service worker (v10): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,7 +7,19 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v9: purge db5-era js/auth.js + js/db.js from device caches. db6 hardens the
+/* v10: purge pre-multi-app js/auth.js from device caches. This build stores
+       pending professional/organisation applications as a LIST keyed by
+       table + applicant e-mail (ra_pending_apps), so a second application on
+       one browser can never overwrite — and silently destroy — an earlier
+       applicant's payload; a legacy ra_pending_app slot migrates on read. A
+       stale-while-revalidate v9 copy of js/auth.js would still read only the
+       single-slot key while new signup.html writes only the list, orphaning
+       the payload — the version move makes the new flush code live on the
+       first load after this deploy. admin.html (copy-vs-record status now
+       rendered outside the collapsed details, honest empty-state note,
+       build: admin-20261001-3) and signup.html (honest queue-fallback text)
+       are PRIVATE network-first shells and need no cache move.
+    v9: purge db5-era js/auth.js + js/db.js from device caches. db6 hardens the
       auth flows: login.html renders link-error text as TEXT (no HTML injection
       from ?error_description=) and only accepts same-site ?next= targets, the
       pending-application flush refuses a payload whose applicant email does
@@ -38,7 +50,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v9";
+const CACHE = "rightaware-v10";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",

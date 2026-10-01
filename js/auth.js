@@ -203,39 +203,88 @@
      While the confirmation email is still unopened there is NO Supabase session,
      so the direct application insert is rejected by row-level security. The
      payload (never a password) is kept on this device and attached to the
-     account automatically after the user confirms the email and signs in. */
+     account automatically after the user confirms the email and signs in.
+     Storage is a LIST keyed by table + applicant e-mail: a second application
+     from the same browser must never overwrite (and silently destroy) an
+     earlier applicant's payload — every stored payload survives until ITS
+     applicant signs in and it flushes. The legacy single-slot key is migrated
+     on read. */
+  function appKey(x){ return String((x && x.table) || "") + "|" + String((x && x.email) || "").toLowerCase(); }
   Auth.savePendingApplication = function(p){
-    try{ localStorage.setItem("ra_pending_app", JSON.stringify(p)); }catch(_){}
+    try{
+      var list = Auth.pendingApplications().filter(function(x){ return appKey(x) !== appKey(p); });
+      list.push(p);
+      localStorage.setItem("ra_pending_apps", JSON.stringify(list));
+      localStorage.removeItem("ra_pending_app");   // legacy single slot retired
+    }catch(_){}
   };
-  Auth.pendingApplication = function(){
-    try{ return JSON.parse(localStorage.getItem("ra_pending_app") || "null"); }catch(_){ return null; }
+  Auth.pendingApplications = function(){
+    try{
+      var l = JSON.parse(localStorage.getItem("ra_pending_apps") || "[]");
+      if(Array.isArray(l)){
+        var live = l.filter(function(x){ return x && x.table && x.row; });
+        if(live.length) return live;
+        // An empty list falls through to the legacy key below: an old
+        // single-slot payload must still migrate, never be stranded.
+      }
+    }catch(_){}
+    try{ // migrate the legacy single-slot payload (pre-multi-app builds)
+      var one = JSON.parse(localStorage.getItem("ra_pending_app") || "null");
+      if(one && one.table && one.row){
+        localStorage.setItem("ra_pending_apps", JSON.stringify([one]));
+        localStorage.removeItem("ra_pending_app");
+        return [one];
+      }
+    }catch(_){}
+    return [];
+  };
+  Auth.pendingApplication = function(){ // newest stored payload (compatibility)
+    var l = Auth.pendingApplications();
+    return l.length ? l[l.length - 1] : null;
+  };
+  Auth.dropPendingApplication = function(p){
+    try{
+      var k = appKey(p);
+      var rest = Auth.pendingApplications().filter(function(x){ return appKey(x) !== k; });
+      if(rest.length) localStorage.setItem("ra_pending_apps", JSON.stringify(rest));
+      else localStorage.removeItem("ra_pending_apps");
+      localStorage.removeItem("ra_pending_app");
+    }catch(_){}
   };
   Auth.flushPendingApplication = async function(){
     if(!this.supabaseReady()) return null;
-    var p = this.pendingApplication();
-    if(!p || !p.table || !p.row) return null;
+    var list = this.pendingApplications();
+    if(!list.length) return null;
     var me = this.current() || {};
     if(!me.supabaseId || !me.email) return null;
-    // The payload names its applicant: never attach another person's
-    // application to whichever account happens to be signed in on this browser.
-    if(p.email && me.email && String(p.email).toLowerCase() !== String(me.email).toLowerCase()) return null;
-    try{
-      var row = p.row;
-      if(p.table === "professionals") row.user_id = me.supabaseId;
-      var r = await RA_SUPA.client.from(p.table).insert(row);
-      if(r.error){
-        // 23505 = the row from an earlier sign-in already exists — clear the
-        // payload (no more retries) and stay quiet: nothing new was attached.
-        if(r.error.code === "23505"){ try{ localStorage.removeItem("ra_pending_app"); }catch(_){}
-          return null; }
-        return null;               // still not allowed — try again next sign-in
-      }
-      if(p.extraTable && p.extraRows && p.extraRows.length){
-        try{ await RA_SUPA.client.from(p.extraTable).insert(p.extraRows); }catch(_){}
-      }
-      try{ localStorage.removeItem("ra_pending_app"); }catch(_){}
-      return { table:p.table, ref:p.ref || null };
-    }catch(_){ return null; }
+    // Every payload names its applicant: attach ONLY the payload whose e-mail
+    // matches the signed-in account — never another person's application.
+    var mine = list.filter(function(p){
+      var pe = p.email ? String(p.email).toLowerCase() : "";
+      return !!pe && pe === String(me.email).toLowerCase();
+    });
+    if(!mine.length) return null;
+    var first = null;
+    for(var i = 0; i < mine.length; i++){
+      var p = mine[i];
+      try{
+        var row = p.row;
+        if(p.table === "professionals") row.user_id = me.supabaseId;
+        var r = await RA_SUPA.client.from(p.table).insert(row);
+        if(r.error){
+          // 23505 = the row from an earlier sign-in already exists — clear the
+          // payload (no more retries) and stay quiet: nothing new was attached.
+          if(r.error.code === "23505"){ this.dropPendingApplication(p); if(!first) first = { table:p.table, ref:p.ref || null }; }
+          continue;                       // else: still not allowed — retry next sign-in
+        }
+        if(p.extraTable && p.extraRows && p.extraRows.length){
+          try{ await RA_SUPA.client.from(p.extraTable).insert(p.extraRows); }catch(_){}
+        }
+        this.dropPendingApplication(p);
+        if(!first) first = { table:p.table, ref:p.ref || null };
+      }catch(_){}
+    }
+    return first;
   };
   try{
     document.addEventListener("ra:backend-ready", function(){

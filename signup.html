@@ -436,7 +436,7 @@
     // 2. direct application row (works once supabase/applications-access.sql is applied)
     var ins = await client.from(opts.table).insert(opts.row);
     if(!ins.error){
-      try{ localStorage.removeItem("ra_pending_app"); }catch(_){}
+      try{ RA_AUTH.dropPendingApplication({ table:opts.table, email:opts.account.email }); }catch(_){}
       if(opts.extraTable){
         var ex = (opts.extraRows || []).filter(function(r){ return r.professional_id; });
         if(ex.length){ try{ await client.from(opts.extraTable).insert(ex); }catch(_){} }
@@ -450,7 +450,7 @@
     var q = await client.from("contact_messages").insert({ name:opts.account.name, email:opts.account.email, topic:opts.queue.topic, message:opts.queue.message, status:"new" });
     if(!q.error){
       finish({ title:"Application received", ref:ref,
-        detail: acctNote + "<br/><br/>Your application was recorded in RightAware's review queue for an administrator. <strong>Nothing is public until approval.</strong> (Direct application storage replaces this queue once <code>supabase/applications-access.sql</code> is applied.)" });
+        detail: acctNote + "<br/><br/>Your application was recorded in RightAware's review queue for an administrator. <strong>Nothing is public until approval.</strong> Your <strong>application record</strong> is created in the application list automatically the first time you confirm your email and sign in — until then an administrator can create it directly from this message copy." });
       return;
     }
     finish({ title:"Application saved on this device", ref:ref,
