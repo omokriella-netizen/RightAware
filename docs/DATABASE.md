@@ -91,6 +91,12 @@ cache. `js/db.js` `remote.syncNow()` runs once per account per page load
   so it never wipes the edit or its retry flag.
 - The service worker cache (`rightaware-v7`) purges pre-CAS sync code from
   devices; `RA_DB.v` reports the running sync version.
+- **Version bump rule:** when the sync code changes, bump all three together —
+  `DB.v` in `js/db.js`, the `?v=` on account.html's `js/auth.js`/`js/db.js`
+  script tags, and the `=== "db4"` check in `paintSync()`. The versioned script
+  URL is what guarantees the always-fresh account.html fetches fresh code even
+  while an older service worker is still active; the sync pill then shows
+  `SYNC <version>` (or `RELOAD — OLD APP COPY` if a stale copy is running).
 
 ## Seed data
 Seed **categories + FAQs only** at first. Do NOT seed laws text, organizations,
