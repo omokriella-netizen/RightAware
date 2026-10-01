@@ -18,7 +18,7 @@
 --        identity matches the row again.
 --   Both statements run in ONE transaction: either both succeed or neither.
 --
--- admin.html calls it from "Keep private / reject" and "Reopen (back to
+-- admin.html calls it from "Reject (keep private)" and "Reopen (back to
 -- pending)". Until this file is applied, that page falls back to performing
 -- the two halves client-side (its own admin policies allow both) and tells the
 -- administrator to run this file; once applied, the fallback never runs.

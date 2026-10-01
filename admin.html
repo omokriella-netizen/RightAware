@@ -133,7 +133,7 @@
         + '<div class="section-head"><span class="eyebrow">Registration applications</span><h2>Awaiting your decision</h2>'
         + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p></div>'
         + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
-        + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
+        + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
       + '</div>'
       + '<div id="panelContent" role="tabpanel" aria-labelledby="tabContent" hidden>'
         + '<div class="section-head"><span class="eyebrow">Content</span><h2>Catalogues</h2></div>'
@@ -174,7 +174,7 @@
       + (p.photo_path ? '<dt>Photo file</dt><dd>' + esc(p.photo_path) + ' (filename recorded; original to be checked)</dd>' : '')
       + (p.bio ? '<dt>Bio</dt><dd>' + esc(p.bio) + '</dd>' : '') + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-pro" data-id="' + esc(p.id) + '">Approve (publish listing)</button>'
-      + '<button class="btn btn-outline btn-sm" data-act="reject-pro" data-id="' + esc(p.id) + '">Keep private / reject</button></div>'
+      + '<button class="btn btn-outline btn-sm" data-act="reject-pro" data-id="' + esc(p.id) + '">Reject (keep private)</button></div>'
       + '</details></div>';
   }
   function orgItem(o){
@@ -188,13 +188,15 @@
       + (o.verification_source ? '<dt>Verification hints</dt><dd>' + esc(o.verification_source) + '</dd>' : '')
       + (o.description ? '<dt>About</dt><dd>' + esc(o.description) + '</dd>' : '') + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-org" data-id="' + esc(o.id) + '">Approve (verify listing)</button>'
-      + '<button class="btn btn-outline btn-sm" data-act="reject-org" data-id="' + esc(o.id) + '">Keep private / reject</button></div>'
+      + '<button class="btn btn-outline btn-sm" data-act="reject-org" data-id="' + esc(o.id) + '">Reject (keep private)</button></div>'
       + '</details></div>';
   }
   function queueItem(m){
+    var isApp = /^Application/.test(String(m.topic || ""));
     return '<div class="app-item"><details><summary>📨 ' + esc(m.topic || "Application") + ' — ' + esc(m.name || "") + '</summary>'
       + '<div class="app-meta">from ' + esc(m.email || "?") + ' · ' + esc(String(m.created_at || m.at || "").slice(0,19).replace("T"," "))
       + ' · status ' + esc(m.status || "new") + '</div>'
+      + (isApp ? '<div class="app-meta">✉ Message copy of a signup application — <strong>approval happens on the application records above, not on this message.</strong></div>' : '')
       + '<dl class="app-dl"><dt>Message</dt><dd>' + esc(m.message || "") + '</dd></dl>'
       + '<div class="app-actions"><a class="btn btn-outline btn-sm" href="mailto:' + esc(m.email || "") + '">Reply by email</a>'
       + '<button class="btn btn-secondary btn-sm" data-act="mark-read" data-id="' + esc(m.id) + '">Mark reviewed</button></div>'
@@ -283,46 +285,38 @@
       (rows || []).forEach(function(x){ if(x && x.id && x.user_id) appRows[x.id] = x; });
     }
 
-    // 1) queued applications in contact_messages (works today)
+    // 1) pending Legal Professional applications — the approve/reject workflow.
+    //    Decisions run through the admin-only RPCs (ra_approve_professional /
+    //    ra_revoke_professional). Rows enter as 'pending' from signup; legacy
+    //    'unverified' rows are also awaiting review and are shown here too.
+    var proNote = "";
     try{
-      var q = await RA_SUPA.client.from("contact_messages").select("*")
-        .like("topic", "Application%")
+      var p = await RA_SUPA.client.from("professionals").select("*")
+        .in("verification_status", ["pending","unverified"])
         .order("created_at", { ascending:false }).limit(20);
-      if(!q.error && q.data && q.data.length){
+      if(!p.error && p.data && p.data.length){
         any = true;
-        out += '<div class="section-head"><h3>📨 Queued applications (contact queue)</h3></div>' + q.data.map(queueItem).join("");
+        stash(p.data);
+        out += '<div class="section-head"><h3>⚖️ Legal Professional applications — Approve / Reject</h3></div>' + p.data.map(proItem).join("");
+      } else if(p.error){
+        proNote = '<p class="empty">⚠ Could not read professional applications: ' + esc(p.error.message) + '</p>';
+      } else {
+        proNote = '<p class="empty">No professional applications visible. If applicants used signup, they are either in the contact-message copies below, or the add-on policies in <code>supabase/applications-access.sql</code> still need to be applied.</p>';
       }
     }catch(_){}
 
     // 2) pending organisations (admin policy exists in the base schema)
     try{
       var o = await RA_SUPA.client.from("organizations").select("*")
-        .eq("verification_status", "pending")
+        .in("verification_status", ["pending","unverified"])
         .order("created_at", { ascending:false }).limit(20);
       if(!o.error && o.data && o.data.length){
         any = true;
-        out += '<div class="section-head"><h3>🏛 Organisation applications (direct)</h3></div>' + o.data.map(orgItem).join("");
+        out += '<div class="section-head"><h3>🏛 Organisation applications — Approve / Reject</h3></div>' + o.data.map(orgItem).join("");
       }
     }catch(_){}
 
-    // 3) pending professionals (needs supabase/applications-access.sql)
-    var proNote = "";
-    try{
-      var p = await RA_SUPA.client.from("professionals").select("*")
-        .eq("verification_status", "pending")
-        .order("created_at", { ascending:false }).limit(20);
-      if(!p.error && p.data && p.data.length){
-        any = true;
-        stash(p.data);
-        out += '<div class="section-head"><h3>⚖️ Professional applications (direct)</h3></div>' + p.data.map(proItem).join("");
-      } else if(p.error){
-        proNote = '<p class="empty">⚠ Could not read professional applications: ' + esc(p.error.message) + '</p>';
-      } else {
-        proNote = '<p class="empty">No professional applications visible. If applicants used signup, they are either in the contact queue above, or the add-on policies in <code>supabase/applications-access.sql</code> still need to be applied.</p>';
-      }
-    }catch(_){}
-
-    // 4) decided history: verified (approved) + rejected — the admin's record of
+    // 3) decided history: verified (approved) + rejected — the admin's record of
     //    past decisions. Safe to query even before verification-states.sql is run
     //    (the 'rejected' value simply matches no rows yet).
     try{
@@ -337,7 +331,20 @@
       if(!rp.error && rp.data){ stash(rp.data); decided = decided.concat(rp.data.map(function(x){ return { row:x, kind:"pro" }; })); }
       decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
       if(decided.length){
-        out += '<div class="section-head"><h3>🗂 Recently decided</h3></div>' + decided.map(decidedItem).join("");
+        out += '<div class="section-head"><h3>🗂 Recently decided — Verified / Rejected (Reopen here)</h3></div>' + decided.map(decidedItem).join("");
+      }
+    }catch(_){}
+
+    // 4) contact-message copies of signup applications — READ STATUS ONLY.
+    //    "Mark reviewed" marks the message read; it is never an approval and
+    //    never touches a professional/organisation record.
+    try{
+      var q = await RA_SUPA.client.from("contact_messages").select("*")
+        .like("topic", "Application%")
+        .order("created_at", { ascending:false }).limit(20);
+      if(!q.error && q.data && q.data.length){
+        any = true;
+        out += '<div class="section-head"><h3>📨 Contact-message copies — read only, no approval here</h3></div>' + q.data.map(queueItem).join("");
       }
     }catch(_){}
 
