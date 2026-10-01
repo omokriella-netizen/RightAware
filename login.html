@@ -68,12 +68,18 @@
 <footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="js/config.js"></script>
 <script src="js/turnstile.js"></script>
-<script src="js/auth.js?v=db5"></script>
+<script src="js/auth.js?v=db6"></script>
 <script src="app.js"></script>
 <script>
 (function(){
   var params = new URLSearchParams(location.search);
-  var next = params.get("next") || "account.html";
+  var next = (params.get("next") || "").trim() || "account.html";
+  // Post-login redirects stay on this site: only a clean relative page path is
+  // honoured — a crafted ?next= (https://…, //host, \, whitespace, any scheme)
+  // falls back to the account page and can never bounce a fresh session off-site.
+  if(/^[a-z][a-z0-9+.-]*:/i.test(next) || next.charAt(0) === "/" || /[\\\s]/.test(next)){
+    next = "account.html";
+  }
   var out = document.getElementById("lOut");
   var loginForm = document.getElementById("loginForm");
   var recoveryForm = document.getElementById("recoveryForm");
@@ -141,7 +147,10 @@
         unverifiedBox.hidden = false;
         return "error";
       }
-      out.innerHTML = "⚠ " + (errDesc || err || "This link is not valid.");
+      // error/error_description come straight from the link URL (attacker-
+      // controllable): render them as text — an <img onerror> in the query
+      // string must never become live HTML on this page.
+      out.textContent = "⚠ " + (errDesc || err || "This link is not valid.");
       return "error";
     }
     if(type === "recovery" || recoveryParam){

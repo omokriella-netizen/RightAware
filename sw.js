@@ -1,4 +1,4 @@
-/* RightAware service worker (v8): offline-first public content + privacy rules.
+/* RightAware service worker (v9): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -7,7 +7,16 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v8: purge pre-db5 copies of js/db.js. db5 fixes saved-items sync — the
+/* v9: purge db5-era js/auth.js + js/db.js from device caches. db6 hardens the
+      auth flows: login.html renders link-error text as TEXT (no HTML injection
+      from ?error_description=) and only accepts same-site ?next= targets, the
+      pending-application flush refuses a payload whose applicant email does
+      not match the signed-in account (and stops retrying a row that already
+      exists), and the organisation status lookup matches email
+      case-insensitively. HTML shells are network-first, but js/auth.js is
+      stale-while-revalidate — the version move makes the new auth code live on
+      the first load after this deploy.
+    v8: purge pre-db5 copies of js/db.js. db5 fixes saved-items sync — the
      sync passes only what a device ADDED since its last pull (ra_saved_base
      snapshot + 3-way merge), the pull always runs even when the push fails,
      and the pages hosting save buttons (rights/topic, videos) now load
@@ -29,7 +38,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v8";
+const CACHE = "rightaware-v9";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",

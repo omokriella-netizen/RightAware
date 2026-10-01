@@ -66,7 +66,7 @@ idempotent (`on conflict do nothing`), so re-running it changes nothing.
 5. Reviews: `professional_reviews` insert as `pending`; moderation UI in
    `admin.html` calls an admin-only API (service role), never direct table writes.
 
-## Cross-device sync (profile & saved items — `RA_DB.v = "db5"`)
+## Cross-device sync (profile & saved items — `RA_DB.v = "db6"`)
 When signed in, Supabase is the source of truth; localStorage is the offline
 cache. `js/db.js` `remote.syncNow()` runs once per account per page load
 (`ra:backend-ready` / `ra:session-ready`) and after explicit saves:
@@ -107,10 +107,15 @@ cache. `js/db.js` `remote.syncNow()` runs once per account per page load
 - **Signed-out queue flush** — `runSync` also runs one message-only pass per
   page load when there is no session, so contact.html's undelivered-message
   queue retries without needing a signed-in page.
+- **Pending-application attach guard** — `ra_pending_app` records the
+  applicant's email; `flushPendingApplication()` attaches the payload only when
+  the signed-in account matches that email (a shared browser must never file
+  person B's application under person A's account), and a row that already
+  exists (unique violation) clears the payload instead of retrying forever.
 - **Race guard** — a pull that lands after a local save started is discarded,
   so it never wipes the edit or its retry flag.
-- The service worker cache (`rightaware-v8`) purges pre-db5 sync code from
-  devices; `RA_DB.v` reports the running sync version.
+- The service worker cache (`rightaware-v9`) purges pre-db6 sync/auth code
+  from devices; `RA_DB.v` reports the running sync version.
 - **Version bump rule:** when the sync code changes, bump all of these
   together — `DB.v` in `js/db.js`, the `?v=` on **every** page that loads
   `js/auth.js`/`js/db.js` (account, admin, signup, login, lawyers, contact,

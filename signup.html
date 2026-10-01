@@ -226,8 +226,8 @@
 
 <script src="js/config.js"></script>
 <script src="js/turnstile.js"></script>
-<script src="js/auth.js?v=db5"></script>
-<script src="js/db.js?v=db5"></script>
+<script src="js/auth.js?v=db6"></script>
+<script src="js/db.js?v=db6"></script>
 <script src="app.js"></script>
 <script>
 (function(){
@@ -401,7 +401,7 @@
     // unopened there is no session, so the direct insert below would be refused
     // by row-level security. It attaches automatically after confirm + sign-in.
     RA_AUTH.savePendingApplication({ table:opts.table, row:opts.row, extraTable:opts.extraTable || null,
-      extraRows:opts.extraRows || [], ref:ref });
+      extraRows:opts.extraRows || [], ref:ref, email:opts.account.email });
 
     // 1. account (the password never enters the application payload)
     var acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
@@ -421,7 +421,8 @@
     // REAL signed-in session for THIS applicant's email exists (never a stale
     // session from another account on the same browser).
     var me = null; try{ me = RA_AUTH.current(); }catch(_){}
-    if(opts.table === "professionals" && me && me.supabaseId && !me.demo && me.email === opts.account.email){
+    if(opts.table === "professionals" && me && me.supabaseId && !me.demo
+       && String(me.email||"").toLowerCase() === String(opts.account.email||"").toLowerCase()){
       opts.row.user_id = me.supabaseId;
     }
 
@@ -528,7 +529,8 @@
         photo_path: photo ? photo.name : null, verification_status:"pending", is_demo:false };
       // Link the row to this applicant's account only when a real session for
       // THIS email exists (never reuse a stale session from another account).
-      try{ var me1 = RA_AUTH.current(); if(me1 && me1.supabaseId && !me1.demo && me1.email === em) row.user_id = me1.supabaseId; }catch(_){}
+      try{ var me1 = RA_AUTH.current(); if(me1 && me1.supabaseId && !me1.demo
+        && String(me1.email||"").toLowerCase() === String(em||"").toLowerCase()) row.user_id = me1.supabaseId; }catch(_){}
       if(!row.user_id) delete row.user_id;
 
       submitApplication({

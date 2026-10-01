@@ -77,9 +77,13 @@
     try{
       var email = (this.current()||{}).email;
       if(email){
+        // Case-insensitive exact match (the account email is normalised by
+        // Supabase; the form captured it as typed). Pattern chars are escaped
+        // so "john_doe@x.com" never over-matches another address.
+        var pat = String(email).replace(/([\\%_])/g, "\\$1");
         var org = await RA_SUPA.client.from("organizations")
           .select("id,name,verification_status,created_at")
-          .eq("email", email).limit(1);
+          .ilike("email", pat).limit(1);
         if(org && !org.error && org.data && org.data.length) return { path:"organisation", row:org.data[0] };
       }
     }catch(_){}
@@ -212,11 +216,20 @@
     if(!p || !p.table || !p.row) return null;
     var me = this.current() || {};
     if(!me.supabaseId || !me.email) return null;
+    // The payload names its applicant: never attach another person's
+    // application to whichever account happens to be signed in on this browser.
+    if(p.email && me.email && String(p.email).toLowerCase() !== String(me.email).toLowerCase()) return null;
     try{
       var row = p.row;
       if(p.table === "professionals") row.user_id = me.supabaseId;
       var r = await RA_SUPA.client.from(p.table).insert(row);
-      if(r.error) return null;               // still not allowed — try again next sign-in
+      if(r.error){
+        // 23505 = the row from an earlier sign-in already exists — clear the
+        // payload (no more retries) and stay quiet: nothing new was attached.
+        if(r.error.code === "23505"){ try{ localStorage.removeItem("ra_pending_app"); }catch(_){}
+          return null; }
+        return null;               // still not allowed — try again next sign-in
+      }
       if(p.extraTable && p.extraRows && p.extraRows.length){
         try{ await RA_SUPA.client.from(p.extraTable).insert(p.extraRows); }catch(_){}
       }

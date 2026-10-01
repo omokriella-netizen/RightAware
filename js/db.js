@@ -84,7 +84,7 @@
     saveSettings(s){ LS.set("ra_settings", s); }
   };
   window.RA_DB = DB;
-  DB.v = "db5";   // code-version marker: production sync must run db5 (CAS profile + 3-way saved-items merge)
+  DB.v = "db6";   // code-version marker: production must run db6 (db5 sync engine + auth-flow hardening)
 
   /* ---- Supabase remote (used when RA_SUPA is ready; local-first otherwise) ----
      Local collections stay the offline cache; syncNow() mirrors them to Supabase
