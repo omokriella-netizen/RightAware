@@ -217,6 +217,39 @@
       throw err;
     }
   }
+
+  /* Revoke lifecycle: approval (ra_approve_professional) verifies the row AND
+     grants the 'professional' role together, so rejecting or reopening a
+     previously approved professional must remove that role too — otherwise the
+     account keeps a professional identity while the row says pending/rejected
+     and role, status and access disagree.
+     Primary path: ra_revoke_professional — one admin-only transaction that
+     sets the state and deletes the role (supabase/verification-revoke.sql).
+     Until that file is applied PostgREST cannot find the function, so fall
+     back to the two halves this page's own admin policies allow (status
+     update + role delete via the admin_roles policy) and honestly ask the
+     administrator to apply the SQL. */
+  async function revokeProfessional(id, state, rows){
+    var r = await RA_SUPA.client.rpc("ra_revoke_professional", { p_id:id, p_state:state });
+    if(!r.error) return null;
+    var msg = r.error.message || "";
+    var missing = r.error.code === "PGRST202" || r.error.code === "42883"
+      || (msg.indexOf("ra_revoke_professional") > -1 && /does not exist|could not find/i.test(msg));
+    if(!missing) throw r.error;
+    var note = null;
+    if(state === "rejected") note = await rejectRow("professionals", id);
+    else await upd("professionals", { verification_status:"pending", verified_at:null }, id);
+    var uid = (rows[id] || {}).user_id;
+    if(uid){
+      var d = await RA_SUPA.client.from("user_roles").delete().eq("user_id", uid).eq("role", "professional");
+      if(d.error) throw d.error;
+    } else {
+      note = (note ? note + "\n\n" : "")
+        + "This row's account link (user_id) was not loaded, so the professional role was NOT revoked on the account.";
+    }
+    return (note ? note + "\n\n" : "")
+      + "supabase/verification-revoke.sql is not applied yet — the state change and the role revocation ran as two separate steps. Run that file once (additive) to make approval and revocation atomic.";
+  }
   function decidedItem(d){
     var x = d.row, isRej = x.verification_status === "rejected";
     return '<div class="app-item"><details><summary>' + (d.kind === "pro" ? "⚖️ " : "🏛 ") + esc(x.name) + '</summary>'
@@ -242,6 +275,13 @@
     var box = document.getElementById("appsBox");
     if(!box) return;
     var out = "", any = false;
+    /* Full professional rows keyed by id. The revoke fallback (SQL add-on not
+       applied yet) needs the row's user_id to remove the role from the
+       account; org rows never have user_id and are skipped naturally. */
+    var appRows = {};
+    function stash(rows){
+      (rows || []).forEach(function(x){ if(x && x.id && x.user_id) appRows[x.id] = x; });
+    }
 
     // 1) queued applications in contact_messages (works today)
     try{
@@ -273,6 +313,7 @@
         .order("created_at", { ascending:false }).limit(20);
       if(!p.error && p.data && p.data.length){
         any = true;
+        stash(p.data);
         out += '<div class="section-head"><h3>⚖️ Professional applications (direct)</h3></div>' + p.data.map(proItem).join("");
       } else if(p.error){
         proNote = '<p class="empty">⚠ Could not read professional applications: ' + esc(p.error.message) + '</p>';
@@ -290,10 +331,10 @@
         .in("verification_status", ["rejected","verified"])
         .order("created_at", { ascending:false }).limit(8);
       if(!ro.error && ro.data) decided = decided.concat(ro.data.map(function(x){ return { row:x, kind:"org" }; }));
-      var rp = await RA_SUPA.client.from("professionals").select("id,name,verification_status,verified_at,created_at")
+      var rp = await RA_SUPA.client.from("professionals").select("id,name,verification_status,verified_at,created_at,user_id")
         .in("verification_status", ["rejected","verified"])
         .order("created_at", { ascending:false }).limit(8);
-      if(!rp.error && rp.data) decided = decided.concat(rp.data.map(function(x){ return { row:x, kind:"pro" }; }));
+      if(!rp.error && rp.data){ stash(rp.data); decided = decided.concat(rp.data.map(function(x){ return { row:x, kind:"pro" }; })); }
       decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
       if(decided.length){
         out += '<div class="section-head"><h3>🗂 Recently decided</h3></div>' + decided.map(decidedItem).join("");
@@ -310,7 +351,7 @@
             var r = await RA_SUPA.client.rpc("ra_approve_professional", { p_id:id });
             if(r.error) throw r.error;
           } else if(act === "reject-pro"){
-            var note = await rejectRow("professionals", id);
+            var note = await revokeProfessional(id, "rejected", appRows);
             if(note) alert("Decision saved.\n\nNote: " + note);
           } else if(act === "approve-org"){
             await upd("organizations", { verification_status:"verified", verified_at:new Date().toISOString() }, id);
@@ -318,7 +359,8 @@
             var note2 = await rejectRow("organizations", id);
             if(note2) alert("Decision saved.\n\nNote: " + note2);
           } else if(act === "reopen-pro"){
-            await upd("professionals", { verification_status:"pending", verified_at:null }, id);
+            var note3 = await revokeProfessional(id, "pending", appRows);
+            if(note3) alert("Decision saved.\n\nNote: " + note3);
           } else if(act === "reopen-org"){
             await upd("organizations", { verification_status:"pending", verified_at:null }, id);
           } else if(act === "mark-read"){

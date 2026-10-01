@@ -180,3 +180,21 @@ refreshes the applicant's own-row read policies so My Account can show
 - **with** — distinct rejected state, admin "Recently decided" history, and
   applicant-facing rejected status. Public SELECT policies are unchanged either
   way: only `verification_status='verified'` rows are ever public.
+
+## Revocation add-on (`supabase/verification-revoke.sql`)
+Approval (`ra_approve_professional`) verifies the row **and** grants the
+`professional` role together, so rejecting or reopening an already-approved
+professional must remove that role again — otherwise the account keeps a
+professional identity while the row says pending/rejected. This optional,
+additive file (safe to re-run, run **after** `applications-access.sql` and
+`verification-states.sql`) adds the admin-only
+`ra_revoke_professional(p_id, p_state)` function: it sets the row to
+`rejected` or `pending` **and** deletes the granted `professional` role in one
+transaction (state and role can never disagree).
+
+- **without** — admin.html still changes the row's state directly and, as a
+  fallback, removes the role through the admin's own `admin_roles` policy in a
+  second step, then tells the administrator to run the file; nothing breaks.
+- **with** — rejection/reopen is atomic server-side, the fallback never runs.
+  Organizations have no role to revoke (their status *is* their access
+  visibility), so they are unaffected.

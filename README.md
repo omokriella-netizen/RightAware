@@ -46,7 +46,9 @@ labelled `AWAITING UPLOAD / OVERVIEW / DRAFT / DEMO / PLACEHOLDER`.
 - **Backend (schema already created; not re-run):** 19 tables + RLS in
   `supabase/supabase-final.sql`, grants in `supabase/fix-access.sql` (applied),
   **optional add-on** `supabase/applications-access.sql` (policies for direct
-  applications, own-row reads, own-roles helper, approval functions — additive only).
+  applications, own-row reads, own-roles helper, approval functions — additive
+  only), plus `verification-states.sql` / `verification-revoke.sql`
+  (distinct Rejected state; atomic approve↔revoke — additive only).
 - See docs/SETUP.md, ENVIRONMENT.md, DATABASE.md, DEPLOYMENT.md,
   CONTENT_UPLOAD_GUIDE.md.
 
