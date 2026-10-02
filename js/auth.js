@@ -64,14 +64,33 @@
       return u.role;
     }catch(_){ return "user"; }
   };
+  /* The REAL Supabase session — never the local mirror. The mirror can hold an
+     old device login (no supabaseId) while a Supabase session exists, or a
+     stale id after sign-out, so anything that LINKS data to an applicant
+     (application rows, own-row reads) must ask the session itself. Returns
+     {id,email}, optionally requiring the session e-mail to match an address,
+     or null when nobody is signed in. */
+  Auth.liveUser = async function(matchEmail){
+    try{
+      if(!this.supabaseReady()) return null;
+      var r = await RA_SUPA.client.auth.getSession();
+      var u = r && r.data && r.data.session && r.data.session.user;
+      if(!u || !u.id) return null;
+      if(matchEmail != null && String(matchEmail) !== "" &&
+         String(u.email || "").toLowerCase() !== String(matchEmail || "").toLowerCase()) return null;
+      return { id:String(u.id), email:String(u.email || "") };
+    }catch(_){ return null; }
+  };
   /* Application status for the signed-in user (professional/org pathways).
      Returns null when nothing is found or the add-on policies are not applied. */
   Auth.myApplication = async function(){
     if(!this.supabaseReady()) return null;
     try{
+      var live = await this.liveUser();
+      var uid = live ? live.id : ((this.current()||{}).supabaseId || "");
       var pro = await RA_SUPA.client.from("professionals")
         .select("id,name,verification_status,qualification,location,created_at")
-        .eq("user_id", (this.current()||{}).supabaseId || "").limit(1);
+        .eq("user_id", uid || "").limit(1);
       if(pro && !pro.error && pro.data && pro.data.length) return { path:"professional", row:pro.data[0] };
     }catch(_){}
     try{
@@ -255,13 +274,21 @@
     if(!this.supabaseReady()) return null;
     var list = this.pendingApplications();
     if(!list.length) return null;
+    // The live session is the authority when one exists. A mirrored login only
+    // decides WHEN NO SESSION resolves — and that path can never produce a
+    // wrong link: every insert below then goes out unauthenticated and the
+    // row-level policies refuse it (payload kept for the next real sign-in).
+    var live = await this.liveUser();
     var me = this.current() || {};
-    if(!me.supabaseId || !me.email) return null;
+    var who = live ? { id:String(live.id), email:String(live.email) }
+            : (me && me.supabaseId && me.email
+               ? { id:String(me.supabaseId), email:String(me.email) } : null);
+    if(!who) return null;
     // Every payload names its applicant: attach ONLY the payload whose e-mail
     // matches the signed-in account — never another person's application.
     var mine = list.filter(function(p){
       var pe = p.email ? String(p.email).toLowerCase() : "";
-      return !!pe && pe === String(me.email).toLowerCase();
+      return !!pe && pe === String(who.email).toLowerCase();
     });
     if(!mine.length) return null;
     var first = null;
@@ -269,13 +296,37 @@
       var p = mine[i];
       try{
         var row = p.row;
-        if(p.table === "professionals") row.user_id = me.supabaseId;
+        if(p.table === "professionals"){
+          // Already recorded for this account? Then this payload is history:
+          // keep the record that exists and retire the payload silently —
+          // exactly the rule 23505 applies to, checked before we can even
+          // form a second row. (A rejected/unverified row does NOT block a
+          // legitimate re-application — only pending/approved records do.)
+          var own = await RA_SUPA.client.from("professionals")
+            .select("id, verification_status").eq("user_id", who.id)
+            .in("verification_status", ["pending","verified"]).limit(1);
+          if(own && !own.error && own.data && own.data.length){
+            this.dropPendingApplication(p);
+            if(!first) first = { table:p.table, ref:p.ref || null };
+            continue;
+          }
+          row.user_id = who.id;
+        }
         var r = await RA_SUPA.client.from(p.table).insert(row);
         if(r.error){
           // 23505 = the row from an earlier sign-in already exists — clear the
           // payload (no more retries) and stay quiet: nothing new was attached.
           if(r.error.code === "23505"){ this.dropPendingApplication(p); if(!first) first = { table:p.table, ref:p.ref || null }; }
           continue;                       // else: still not allowed — retry next sign-in
+        }
+        // A payload saved while signed out carries no specialisation rows
+        // (they could not be authorised then): rebuild them from the row's own
+        // consultation options so an attached record is complete.
+        if(p.table === "professionals" && p.extraTable && (!p.extraRows || !p.extraRows.length)
+           && Array.isArray(row.consultation_options) && row.consultation_options.length){
+          p.extraRows = row.consultation_options.map(function(s){
+            return { professional_id: row.id, specialization: s };
+          });
         }
         if(p.extraTable && p.extraRows && p.extraRows.length){
           try{ await RA_SUPA.client.from(p.extraTable).insert(p.extraRows); }catch(_){}

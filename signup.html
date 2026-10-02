@@ -309,6 +309,47 @@
       localStorage.setItem("ra_applications", JSON.stringify(a));
     }catch(_){}
   }
+  /* Receipts are a per-device convenience, never the source of truth. When an
+     attempt must NOT become a receipt (it duplicated an existing record) it is
+     removed again so the applicant's original reference stays the one shown. */
+  function dropLocalReceipt(ref){
+    try{
+      var a = JSON.parse(localStorage.getItem("ra_applications")||"[]");
+      a = a.filter(function(x){ return !(x && x.ref === ref); });
+      localStorage.setItem("ra_applications", JSON.stringify(a));
+    }catch(_){}
+  }
+  function findReceipt(path, email){ // newest matching receipt (list is newest-first)
+    try{
+      var a = JSON.parse(localStorage.getItem("ra_applications")||"[]");
+      for(var i=0;i<a.length;i++){
+        var x = a[i];
+        if(x && x.path === path && String(x.email||"").toLowerCase() === String(email||"").toLowerCase()) return x;
+      }
+    }catch(_){}
+    return null;
+  }
+  /* The authenticated Supabase session is the authority for linking an
+     application to an applicant — never the local mirror, which can hold an old
+     device login without a session. Returns the session uuid only when that
+     session's e-mail is this applicant's address; null when nobody signed in
+     for this address (so another account's session is never reused). */
+  async function liveApplicantId(email, sessionOnly){
+    try{
+      if(window.RA_SUPA && RA_SUPA.client && RA_SUPA.client.auth && RA_SUPA.client.auth.getSession){
+        var r = await RA_SUPA.client.auth.getSession();
+        var u = r && r.data && r.data.session && r.data.session.user;
+        if(u && u.id && String(u.email||"").toLowerCase() === String(email||"").toLowerCase()) return String(u.id);
+      }
+    }catch(_){}
+    if(sessionOnly) return null;   // caller needs a REAL session, not a mirror
+    try{ // fall back to the mirrored login (previous behaviour) when no session resolves
+      var m = RA_AUTH.current();
+      if(m && m.supabaseId && !m.demo
+         && String(m.email||"").toLowerCase() === String(email||"").toLowerCase()) return String(m.supabaseId);
+    }catch(_){}
+    return null;
+  }
   function fileNote(inputId){
     var f = document.getElementById(inputId).files[0];
     if(!f) return null;
@@ -360,7 +401,10 @@
     }).catch(function(){ out.textContent = "⚠ Could not resend — try again shortly."; });
   });
 
+  var submitBusy = false;   // one application attempt at a time — a double click
+                            // can never race a second insert for the same user.
   function finish(o){
+    submitBusy = false;
     document.getElementById("doneTitle").textContent = o.title;
     document.getElementById("doneRef").textContent = o.ref ? ("Reference: " + o.ref + " — status: AWAITING ADMIN REVIEW.") : "";
     document.getElementById("doneDetail").innerHTML = o.detail;
@@ -383,6 +427,8 @@
 
   async function submitApplication(opts){
     // opts: { path, table, row, extraTable?, extraRows?, account:{name,email,pass}, queue:{topic,message}, captchaToken? }
+    if(submitBusy) return;   // already submitting: no second attempt, no duplicate record
+    submitBusy = true;
     var ref = refNo(opts.path === "professional" ? "PRO" : "ORG");
     var localRec = { ref:ref, path:opts.path, name:opts.account.name, email:opts.account.email,
                      at:new Date().toISOString(), status:"awaiting-review", mode:"local" };
@@ -404,8 +450,17 @@
       extraRows:opts.extraRows || [], ref:ref, email:opts.account.email });
 
     // 1. account (the password never enters the application payload)
-    var acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
-                                           { captchaToken: opts.captchaToken });
+    //    An applicant who is ALREADY signed in IS the account: no signup call
+    //    is made (it could only answer "already registered" — and must never
+    //    disturb the live session the row is about to be linked to).
+    var acctRes;
+    var signedInAs = await liveApplicantId(opts.account.email, true);
+    if(signedInAs){
+      acctRes = { ok:true, note:"✅ Signed in as " + opts.account.email + " — this application is attached to that account." };
+    } else {
+      acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
+                                         { captchaToken: opts.captchaToken });
+    }
     var acctNote;
     if(acctRes.ok && acctRes.needsConfirm){
       acctNote = acctRes.note + " After confirming, sign in — this application attaches to your account automatically.";
@@ -417,13 +472,12 @@
       acctNote = "⚠ Account step: " + (acctRes.error || "failed") + ". Your application will still be recorded for review.";
     }
 
-    // attach the account to the row where the schema supports it — only when a
-    // REAL signed-in session for THIS applicant's email exists (never a stale
-    // session from another account on the same browser).
-    var me = null; try{ me = RA_AUTH.current(); }catch(_){}
-    if(opts.table === "professionals" && me && me.supabaseId && !me.demo
-       && String(me.email||"").toLowerCase() === String(opts.account.email||"").toLowerCase()){
-      opts.row.user_id = me.supabaseId;
+    // attach the account to the row where the schema supports it — from the
+    // LIVE Supabase session, and only when it is a signed-in session for THIS
+    // applicant's e-mail (never a stale device login or another account).
+    if(opts.table === "professionals"){
+      var liveUid = await liveApplicantId(opts.account.email);
+      if(liveUid) opts.row.user_id = liveUid;
     }
 
     var client = await withClientP();
@@ -431,6 +485,29 @@
       finish({ title:"Application saved on this device", ref:ref,
         detail: acctNote + "<br/><br/>⚠ Could not reach RightAware's backend. This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
       return;
+    }
+
+    // 2a. this account already has a pending/approved professional record?
+    //     Never create a second row: the record that exists stays the
+    //     application of record, and this attempt's receipt is retired so the
+    //     applicant's original reference remains the one shown.
+    if(opts.table === "professionals" && opts.row.user_id){
+      var own = await client.from(opts.table).select("id, verification_status")
+        .eq("user_id", opts.row.user_id)
+        .in("verification_status", ["pending","verified"]).limit(1);
+      if(own && !own.error && own.data && own.data.length){
+        try{ RA_AUTH.dropPendingApplication({ table:opts.table, email:opts.account.email }); }catch(_){}
+        dropLocalReceipt(ref);
+        var prev = findReceipt(opts.path, opts.account.email);
+        var st = own.data[0].verification_status;
+        finish({ title:"Application already submitted",
+          ref: (st === "pending" && prev) ? prev.ref : null,
+          detail: acctNote + "<br/><br/>" + (st === "verified"
+            ? "This account already has an <strong>approved</strong> professional record — no second application was created."
+            : "Your professional application for this account is <strong>already in the review queue</strong> — no duplicate was created.")
+          + " Status: <strong>" + esc(st) + "</strong>, read live from RightAware." });
+        return;
+      }
     }
 
     // 2. direct application row (works once supabase/applications-access.sql is applied)
@@ -508,7 +585,7 @@
     var photo = fileNote("pPhoto"); if(photo && photo.error) return bad(photo.error, "pPhoto");
     var trap = spamTrap(); if(trap) return bad(trap);
 
-    withCaptcha(panes.pro).then(function(cap){
+    withCaptcha(panes.pro).then(async function(cap){
       if(cap.error) return bad(cap.error);
       var docLines = [];
       if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded — original requested during verification).");
@@ -527,10 +604,11 @@
         location:val("pLoc"), languages:chips("pLangs"), bio:val("pBio"),
         consultation_options:specs, fee_note:val("pFee") || null, availability:val("pAvail"),
         photo_path: photo ? photo.name : null, verification_status:"pending", is_demo:false };
-      // Link the row to this applicant's account only when a real session for
-      // THIS email exists (never reuse a stale session from another account).
-      try{ var me1 = RA_AUTH.current(); if(me1 && me1.supabaseId && !me1.demo
-        && String(me1.email||"").toLowerCase() === String(em||"").toLowerCase()) row.user_id = me1.supabaseId; }catch(_){}
+      // Link the row to this applicant's account from the LIVE session — only
+      // a signed-in session for THIS e-mail counts (never a stale device login
+      // or another account's session). extraRows below follow this link.
+      var uid1 = await liveApplicantId(em);
+      if(uid1) row.user_id = uid1;
       if(!row.user_id) delete row.user_id;
 
       submitApplication({
