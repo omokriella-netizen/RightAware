@@ -1,672 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sign Up — RightAware</title>
-<meta name="description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
-<link rel="stylesheet" href="styles.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  .path-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.2rem 0}
-  .path-card{text-align:left;cursor:pointer;border:1px solid var(--border);background:#fff;border-radius:14px;padding:1.1rem;box-shadow:var(--shadow);transition:.15s}
-  .path-card:hover,.path-card:focus-visible{border-color:var(--green);transform:translateY(-2px)}
-  .path-card[aria-pressed="true"]{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.25)}
-  .path-card h3{margin:.4rem 0 .3rem}
-  .path-card p{margin:0;font-size:.86rem;color:var(--muted)}
-  .path-card .icon{font-size:1.6rem}
-  .field-note{font-size:.78rem;color:var(--muted);margin-top:-.3rem}
-  .chips{display:flex;flex-wrap:wrap;gap:.4rem}
-  .chips label{border:1px solid var(--border);border-radius:999px;padding:.3rem .7rem;font-size:.82rem;cursor:pointer;background:#f8fafc}
-  .chips input{margin-right:.35rem}
-  .chips label:has(input:checked){border-color:var(--green);background:#ecfdf5}
-  fieldset{border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin:1rem 0}
-  legend{font-weight:700;font-size:.85rem;padding:0 .4rem}
-  #backBtn{margin-bottom:.8rem}
-  .status-pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:800}
-  @media(max-width:820px){.path-grid{grid-template-columns:1fr}}
+  /* =========================================================
+     RIGHTAWARE — SIGN UP / GET STARTED PAGE
+     Hero logo card styling
+     ========================================================= */
+
+  .path-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1rem;
+    margin:1.2rem 0;
+  }
+
+  .path-card{
+    text-align:left;
+    cursor:pointer;
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:14px;
+    padding:1.1rem;
+    box-shadow:var(--shadow);
+    transition:.15s;
+  }
+
+  .path-card:hover,
+  .path-card:focus-visible{
+    border-color:var(--green);
+    transform:translateY(-2px);
+  }
+
+  .path-card[aria-pressed="true"]{
+    border-color:var(--green);
+    box-shadow:0 0 0 3px rgba(34,197,94,.25);
+  }
+
+  .path-card h3{
+    margin:.4rem 0 .3rem;
+  }
+
+  .path-card p{
+    margin:0;
+    font-size:.86rem;
+    color:var(--muted);
+  }
+
+  .path-card .icon{
+    font-size:1.6rem;
+  }
+
+  .field-note{
+    font-size:.78rem;
+    color:var(--muted);
+    margin-top:-.3rem;
+  }
+
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.4rem;
+  }
+
+  .chips label{
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:.3rem .7rem;
+    font-size:.82rem;
+    cursor:pointer;
+    background:#f8fafc;
+  }
+
+  .chips input{
+    margin-right:.35rem;
+  }
+
+  .chips label:has(input:checked){
+    border-color:var(--green);
+    background:#ecfdf5;
+  }
+
+  fieldset{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:.9rem 1rem;
+    margin:1rem 0;
+  }
+
+  legend{
+    font-weight:700;
+    font-size:.85rem;
+    padding:0 .4rem;
+  }
+
+  #backBtn{
+    margin-bottom:.8rem;
+  }
+
+  .status-pill{
+    display:inline-block;
+    padding:.2rem .6rem;
+    border-radius:999px;
+    font-size:.75rem;
+    font-weight:800;
+  }
+
+
+  /* =========================================================
+     GET STARTED HERO — RIGHTAWARE LOGO
+     This changes ONLY the large logo card on signup.html.
+     It does NOT affect the footer logo.
+     ========================================================= */
+
+  .page-hero-media{
+    margin:0;
+    background:#ffffff;
+    border-radius:20px;
+    padding:2.5rem;
+    min-height:320px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:0 18px 50px rgba(0,0,0,.18);
+    overflow:hidden;
+  }
+
+  .page-hero-media img{
+    display:block;
+    width:100%;
+    max-width:360px;
+    height:auto;
+
+    border-radius:0;
+    box-shadow:none;
+    object-fit:contain;
+  }
+
+
+  /* Mobile */
+  @media(max-width:900px){
+
+    .path-grid{
+      grid-template-columns:1fr;
+    }
+
+    .page-hero-media{
+      min-height:240px;
+      padding:2rem;
+      border-radius:18px;
+    }
+
+    .page-hero-media img{
+      max-width:280px;
+    }
+  }
+
+  @media(max-width:520px){
+
+    .page-hero-media{
+      min-height:210px;
+      padding:1.5rem;
+    }
+
+    .page-hero-media img{
+      max-width:240px;
+    }
+  }
 </style>
-</head>
-<body>
-<header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-  <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
-  <div class="header-actions"><a class="btn btn-outline btn-sm" href="login.html">Log In</a><a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
-  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="login.html">Log In</a><a href="contact.html">Contact Us</a></div></header>
-
-<main>
-<section class="page-hero"><div class="container page-hero-grid rv">
-  <div>
-    <span class="eyebrow">Join RightAware</span>
-    <h1>Create your account or apply to be listed</h1>
-    <p class="lead-dark">Three separate pathways. <strong>Professionals and organisations are never published automatically</strong> — an administrator must approve each application first, and unverified applications stay private.</p>
-  </div>
-  <figure class="page-hero-media"><img src="assets/images/logo-rightaware.png" alt="RightAware logo" loading="lazy"/></figure>
-</div></section>
-
-<section class="section"><div class="container" style="max-width:720px">
-  <div class="form-card rv">
-    <h2 id="stepTitle">1. Choose how you're joining</h2>
-    <p class="field-note">Already registered? <a class="link" href="login.html">Log in →</a></p>
-
-    <!-- STEP 1: pathway -->
-    <div id="stepChoose">
-      <div class="path-grid" role="group" aria-label="Registration pathway">
-        <button type="button" class="path-card" data-path="user" aria-pressed="false">
-          <div class="icon">🙋</div><h3>Individual</h3>
-          <p>Read the guides, save rights, keep private reports on your account. Free, no approval needed.</p>
-        </button>
-        <button type="button" class="path-card" data-path="professional" aria-pressed="false">
-          <div class="icon">⚖️</div><h3>Legal professional</h3>
-          <p>Lawyers, legal-aid officers, law students and clinic staff. Applies for the directory — listed only after admin approval.</p>
-        </button>
-        <button type="button" class="path-card" data-path="organisation" aria-pressed="false">
-          <div class="icon">🏛</div><h3>Organisation</h3>
-          <p>NGOs, law clinics, community and support groups. Listed publicly only after admin approval.</p>
-        </button>
-      </div>
-      <div class="notice" style="margin-top:.6rem">🔐 <strong>Privacy first:</strong> applications are visible only to administrators during review. Your contact details, documents and messages are never shown to the public or to other users.</div>
-    </div>
-
-    <!-- STEP 2a: general user -->
-    <form id="formUser" hidden>
-      <button type="button" class="btn btn-outline btn-sm" id="backBtnUser">← Choose a different pathway</button>
-      <h3>🙋 Individual</h3>
-      <label>Full name<input id="uName" required placeholder="Your name" autocomplete="name"/></label>
-      <label>Email<input id="uEmail" type="email" required placeholder="you@example.com" autocomplete="email"/></label>
-      <div class="form-row">
-        <label>Password<input id="uPass" type="password" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password"/></label>
-        <label>Confirm password<input id="uPass2" type="password" required placeholder="Repeat password" autocomplete="new-password"/></label>
-      </div>
-      <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="uConsent" required/> I agree that RightAware stores my account details to provide the service. <a class="link" href="about.html#privacy">How my data is handled →</a></label>
-      <div class="ra-captcha" data-captcha></div>
-      <button class="btn btn-primary" style="width:100%" type="submit">Create account</button>
-      <p class="form-note" id="uOut" aria-live="polite"></p>
-    </form>
-
-    <!-- STEP 2b: legal professional -->
-    <form id="formPro" hidden>
-      <button type="button" class="btn btn-outline btn-sm" id="backBtnPro">← Choose a different pathway</button>
-      <h3>⚖️ Legal professional application</h3>
-      <p class="field-note">Your application is reviewed by an administrator. <strong>Nothing is published until you are approved</strong>, and approval only follows credential checks.</p>
-
-      <div class="form-row">
-        <label>Full name<input id="pName" required placeholder="e.g. Amina Yusuf" autocomplete="name"/></label>
-        <label>Email<input id="pEmail" type="email" required placeholder="you@example.com" autocomplete="email"/></label>
-      </div>
-      <div class="form-row">
-        <label>Phone<input id="pPhone" type="tel" required placeholder="e.g. 0800 000 0000" autocomplete="tel"/></label>
-        <label>Password (for your account)<input id="pPass" type="password" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password"/></label>
-      </div>
-
-      <fieldset>
-        <legend>Professional details</legend>
-        <div class="form-row">
-          <label>Professional title / qualification<input id="pQual" required placeholder="e.g. Barrister &amp; Solicitor, Legal Aid Officer"/></label>
-          <label>Years of experience<input id="pYears" type="number" min="0" max="60" placeholder="e.g. 5"/></label>
-        </div>
-        <label>Location (state) <select id="pLoc"><option>Lagos</option><option>Abuja FCT</option><option>Rivers</option><option>Oyo</option><option>Kano</option><option>Enugu</option><option>Kaduna</option><option>Ogun</option><option>Anambra</option><option>Plateau</option><option>Other (Nigeria)</option></select></label>
-        <label>Areas you handle <span class="field-note">(pick at least one)</span></label>
-        <div class="chips" id="pSpecs">
-          <label><input type="checkbox" value="Human Rights & Police Matters"/>Human Rights &amp; Police Matters</label>
-          <label><input type="checkbox" value="Family & Gender-Based Violence"/>Family &amp; Gender-Based Violence</label>
-          <label><input type="checkbox" value="Employment & Workplace Disputes"/>Employment &amp; Workplace Disputes</label>
-          <label><input type="checkbox" value="Tenancy & Property"/>Tenancy &amp; Property</label>
-          <label><input type="checkbox" value="Consumer & Digital Fraud"/>Consumer &amp; Digital Fraud</label>
-          <label><input type="checkbox" value="Criminal Defence"/>Criminal Defence</label>
-          <label><input type="checkbox" value="Free Clinic — Students & Low Income"/>Free Clinic — Students &amp; Low Income</label>
-        </div>
-        <label>Languages you work in <span class="field-note">(shown on your profile)</span></label>
-        <div class="chips" id="pLangs">
-          <label><input type="checkbox" value="English" checked/>English</label>
-          <label><input type="checkbox" value="Nigerian Pidgin"/>Nigerian Pidgin</label>
-          <label><input type="checkbox" value="Hausa"/>Hausa</label>
-          <label><input type="checkbox" value="Yoruba"/>Yoruba</label>
-          <label><input type="checkbox" value="Igbo"/>Igbo</label>
-        </div>
-        <label>Availability <select id="pAvail"><option>Open to new requests</option><option>Pro bono only</option><option>Limited availability</option><option>Not currently taking requests</option></select></label>
-        <label>About you <span class="field-note">(short bio — describe experience accurately; do not promise case outcomes)</span><textarea id="pBio" rows="3" maxlength="600" placeholder="What you do, where, and who you help."></textarea></label>
-        <label>Consultation fee note <span class="field-note">(optional — write your own wording; leave blank if unknown)</span><input id="pFee" placeholder="e.g. Free first consultation"/></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Credential documents</legend>
-        <label>ID or practising certificate <span class="field-note">(PDF/JPG/PNG, max 5MB — filename recorded; you'll present the original during verification)</span><input id="pIdFile" type="file" accept=".pdf,.jpg,.jpeg,.png"/></label>
-        <label>Profile photo <span class="field-note">(optional, JPG/PNG, max 5MB)</span><input id="pPhoto" type="file" accept=".jpg,.jpeg,.png"/></label>
-      </fieldset>
-
-      <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="pConsent" required/> I confirm these details are accurate, that I have the right to list them, and I consent to RightAware storing this application for review. I understand my profile stays private until an administrator approves it.</label>
-      <div class="ra-captcha" data-captcha></div>
-      <button class="btn btn-primary" style="width:100%" type="submit">Submit professional application</button>
-      <p class="form-note" id="pOut" aria-live="polite"></p>
-    </form>
-
-    <!-- STEP 2c: organisation -->
-    <form id="formOrg" hidden>
-      <button type="button" class="btn btn-outline btn-sm" id="backBtnOrg">← Choose a different pathway</button>
-      <h3>🏛 Organisation application</h3>
-      <p class="field-note">For NGOs, law clinics, community groups and support organisations. <strong>Listed publicly only after administrator verification.</strong></p>
-
-      <div class="form-row">
-        <label>Organisation name<input id="oName" required placeholder="Registered or community name"/></label>
-        <label>Contact person (your name)<input id="oPerson" required placeholder="Who is applying" autocomplete="name"/></label>
-      </div>
-      <div class="form-row">
-        <label>Work email<input id="oEmail" type="email" required placeholder="you@organisation.org" autocomplete="email"/></label>
-        <label>Phone<input id="oPhone" type="tel" required placeholder="Contact number" autocomplete="tel"/></label>
-      </div>
-      <label>Password (for your account)<input id="oPass" type="password" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password"/></label>
-
-      <fieldset>
-        <legend>Organisation details</legend>
-        <label>Organisation type <select id="oType"><option>NGO / Non-profit</option><option>Law clinic / Legal aid</option><option>Community group</option><option>Support service (shelter, helpline)</option><option>Media / education</option><option>Professional body</option><option>Other</option></select></label>
-        <label>Services provided <span class="field-note">(pick at least one)</span></label>
-        <div class="chips" id="oServices">
-          <label><input type="checkbox" value="Legal aid / representation"/>Legal aid / representation</label>
-          <label><input type="checkbox" value="Rights education & sensitisation"/>Rights education &amp; sensitisation</label>
-          <label><input type="checkbox" value="Gender-based violence support"/>Gender-based violence support</label>
-          <label><input type="checkbox" value="Housing & tenancy support"/>Housing &amp; tenancy support</label>
-          <label><input type="checkbox" value="Employment support"/>Employment support</label>
-          <label><input type="checkbox" value="Digital rights & scams"/>Digital rights &amp; scams</label>
-          <label><input type="checkbox" value="Emergency / relief support"/>Emergency / relief support</label>
-        </div>
-        <div class="form-row">
-          <label>State <select id="oState"><option>Lagos</option><option>Abuja FCT</option><option>Rivers</option><option>Oyo</option><option>Kano</option><option>Enugu</option><option>Kaduna</option><option>Ogun</option><option>Anambra</option><option>Plateau</option><option>Nationwide / Other</option></select></label>
-          <label>Address <span class="field-note">(optional)</span><input id="oAddress" placeholder="Street / area, if you have one"/></label>
-        </div>
-        <label>Website <span class="field-note">(optional)</span><input id="oWeb" type="url" placeholder="https://…"/></label>
-        <label>How can we verify you? <span class="field-note">(optional — e.g. registration number, official website, known partner. Do not claim verification you cannot back up.)</span><textarea id="oVerify" rows="2" maxlength="400"></textarea></label>
-        <label>About the organisation <span class="field-note">(what you do and who you help)</span><textarea id="oAbout" rows="3" maxlength="600" required></textarea></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Documents</legend>
-        <label>Registration document <span class="field-note">(PDF/JPG/PNG, max 5MB — filename recorded; original requested during verification)</span><input id="oDoc" type="file" accept=".pdf,.jpg,.jpeg,.png"/></label>
-        <label>Logo <span class="field-note">(optional, JPG/PNG, max 5MB)</span><input id="oLogo" type="file" accept=".jpg,.jpeg,.png"/></label>
-      </fieldset>
-
-      <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="oConsent" required/> I confirm I am authorised to apply for this organisation and consent to RightAware storing this application for review. The listing stays private until an administrator approves it.</label>
-      <div class="ra-captcha" data-captcha></div>
-      <button class="btn btn-primary" style="width:100%" type="submit">Submit organisation application</button>
-      <p class="form-note" id="oOut" aria-live="polite"></p>
-    </form>
-
-    <!-- STEP 3: result -->
-    <div id="stepDone" hidden>
-      <div class="icon" style="font-size:2.4rem">✅</div>
-      <h2 id="doneTitle">Application received</h2>
-      <p id="doneRef"></p>
-      <div id="doneDetail" class="notice"></div>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
-        <a class="btn btn-primary" href="account.html">Open my account</a>
-        <a class="btn btn-secondary" href="rights.html">Explore rights while you wait</a>
-      </div>
-    </div>
-
-    <!-- STEP 3b: email confirmation required / already registered -->
-    <div id="stepConfirm" hidden>
-      <div class="icon" style="font-size:2.4rem">📧</div>
-      <h2 id="confirmTitle">Confirm your email</h2>
-      <p id="confirmLine"></p>
-      <div id="confirmDetail" class="notice"></div>
-      <div class="ra-captcha" data-captcha></div>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
-        <button class="btn btn-secondary" id="resendBtn" type="button">Resend confirmation email</button>
-        <a class="btn btn-primary" href="login.html">Open Log In</a>
-        <a class="btn btn-outline" href="index.html">Back home</a>
-      </div>
-      <p class="form-note" id="resendOut" aria-live="polite"></p>
-    </div>
-  </div>
-</div>
-</section>
-</main>
-
-<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 — General legal information only, not legal advice.</small></div></footer>
-
-<script src="js/config.js"></script>
-<script src="js/turnstile.js"></script>
-<script src="js/auth.js?v=db6"></script>
-<script src="js/db.js?v=db6"></script>
-<script src="app.js"></script>
-<script>
-(function(){
-  "use strict";
-  var openedAt = Date.now();
-  var stepTitle = document.getElementById("stepTitle");
-  var panes = { choose:document.getElementById("stepChoose"), user:document.getElementById("formUser"),
-                pro:document.getElementById("formPro"), org:document.getElementById("formOrg"),
-                done:document.getElementById("stepDone"), confirm:document.getElementById("stepConfirm") };
-
-  function show(which, title){
-    Object.keys(panes).forEach(function(k){ panes[k].hidden = (k !== which); });
-    stepTitle.textContent = title;
-    stepTitle.scrollIntoView({ behavior:"smooth", block:"start" });
-    // Start the CAPTCHA widget early (only when configured) so it is ready on submit.
-    try{
-      if(window.RA_TURNSTILE && RA_TURNSTILE.configured() && window.RA_SUPA && RA_SUPA.ready){
-        var box = panes[which] && panes[which].querySelector("[data-captcha]");
-        if(box) RA_TURNSTILE.mount(box);
-      }
-    }catch(_){}
-  }
-  function back(btn, form){ btn.addEventListener("click", function(){ show("choose", "1. Choose how you're joining"); }); }
-
-  document.querySelectorAll(".path-card").forEach(function(c){
-    c.addEventListener("click", function(){
-      document.querySelectorAll(".path-card").forEach(function(x){ x.setAttribute("aria-pressed", x===c ? "true":"false"); });
-      if(c.dataset.path === "user") show("user", "2. Individual — create your account");
-      if(c.dataset.path === "professional") show("pro", "2. Legal professional — your application");
-      if(c.dataset.path === "organisation") show("org", "2. Organisation — your application");
-    });
-  });
-  /* deep link: signup.html?path=professional | organisation | user */
-  try{
-    var pre = new URLSearchParams(location.search).get("path");
-    if(pre){
-      var pc = document.querySelector('.path-card[data-path="'+pre+'"]');
-      if(pc) pc.click();
-    }
-  }catch(_){}
-  back(document.getElementById("backBtnUser"));
-  back(document.getElementById("backBtnPro"));
-  back(document.getElementById("backBtnOrg"));
-
-  /* ---------- shared helpers ---------- */
-  function val(id){ var el=document.getElementById(id); return el ? el.value.trim() : ""; }
-  function checked(id){ var el=document.getElementById(id); return el ? el.checked : false; }
-  function chips(boxId){
-    var out=[];
-    document.querySelectorAll("#"+boxId+" input:checked").forEach(function(i){ out.push(i.value); });
-    return out;
-  }
-  function bad(msg, fieldId){
-    var out = { user:"uOut", pro:"pOut", org:"oOut" };
-    var id = current; document.getElementById(out[id]).textContent = "⚠ " + msg;
-    if(fieldId){ var f=document.getElementById(fieldId); if(f) f.focus(); }
-    return false;
-  }
-  var current = "user";
-  function emailOK(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
-  function passOK(p){ return p.length >= 8; }
-  function spamTrap(){
-    if(Date.now() - openedAt < 2500){ return "Please take a moment to review before submitting."; }
-    try{
-      var t = JSON.parse(localStorage.getItem("ra_signup_times")||"[]");
-      var cut = Date.now() - 15*60*1000;
-      t = t.filter(function(x){ return x > cut; });
-      if(t.length >= 5) return "Too many attempts from this device. Try again in a few minutes.";
-      t.push(Date.now());
-      localStorage.setItem("ra_signup_times", JSON.stringify(t));
-    }catch(_){}
-    return null;
-  }
-  function refNo(prefix){ return "RA-APP-" + prefix + "-" + Date.now().toString(36).toUpperCase().slice(-6); }
-  function saveLocal(rec){
-    try{
-      var a = JSON.parse(localStorage.getItem("ra_applications")||"[]");
-      a.unshift(rec);
-      localStorage.setItem("ra_applications", JSON.stringify(a));
-    }catch(_){}
-  }
-  /* Receipts are a per-device convenience, never the source of truth. When an
-     attempt must NOT become a receipt (it duplicated an existing record) it is
-     removed again so the applicant's original reference stays the one shown. */
-  function dropLocalReceipt(ref){
-    try{
-      var a = JSON.parse(localStorage.getItem("ra_applications")||"[]");
-      a = a.filter(function(x){ return !(x && x.ref === ref); });
-      localStorage.setItem("ra_applications", JSON.stringify(a));
-    }catch(_){}
-  }
-  function findReceipt(path, email){ // newest matching receipt (list is newest-first)
-    try{
-      var a = JSON.parse(localStorage.getItem("ra_applications")||"[]");
-      for(var i=0;i<a.length;i++){
-        var x = a[i];
-        if(x && x.path === path && String(x.email||"").toLowerCase() === String(email||"").toLowerCase()) return x;
-      }
-    }catch(_){}
-    return null;
-  }
-  /* The authenticated Supabase session is the authority for linking an
-     application to an applicant — never the local mirror, which can hold an old
-     device login without a session. Returns the session uuid only when that
-     session's e-mail is this applicant's address; null when nobody signed in
-     for this address (so another account's session is never reused). */
-  async function liveApplicantId(email, sessionOnly){
-    try{
-      if(window.RA_SUPA && RA_SUPA.client && RA_SUPA.client.auth && RA_SUPA.client.auth.getSession){
-        var r = await RA_SUPA.client.auth.getSession();
-        var u = r && r.data && r.data.session && r.data.session.user;
-        if(u && u.id && String(u.email||"").toLowerCase() === String(email||"").toLowerCase()) return String(u.id);
-      }
-    }catch(_){}
-    if(sessionOnly) return null;   // caller needs a REAL session, not a mirror
-    try{ // fall back to the mirrored login (previous behaviour) when no session resolves
-      var m = RA_AUTH.current();
-      if(m && m.supabaseId && !m.demo
-         && String(m.email||"").toLowerCase() === String(email||"").toLowerCase()) return String(m.supabaseId);
-    }catch(_){}
-    return null;
-  }
-  function fileNote(inputId){
-    var f = document.getElementById(inputId).files[0];
-    if(!f) return null;
-    if(f.size > 5*1024*1024) return { error:"“"+f.name+"” is larger than 5MB — please use a smaller file." };
-    return { name:f.name, size:f.size, recordedOnly:true };
-  }
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
-
-  /* ---- CAPTCHA (Cloudflare Turnstile; public site key via TURNSTILE_SITE_KEY).
-     Runs only when the Supabase backend is up; with no site key configured the
-     widget area stays empty and submission continues (CAPTCHA not yet enabled). */
-  var lastSignupEmail = "";
-  function capBox(scope){ return (scope || document).querySelector("[data-captcha]"); }
-  function withCaptcha(scope){
-    if(!(window.RA_SUPA && RA_SUPA.ready) || !window.RA_TURNSTILE) return Promise.resolve({ token:null });
-    return RA_TURNSTILE.gate(capBox(scope)).then(function(g){
-      if(g.unconfigured) return { token:null };
-      if(g.blocked) return { error: g.error
-        ? "CAPTCHA could not load — check your connection (or disable blocking) and try again."
-        : "Please complete the CAPTCHA check to continue." };
-      return { token:g.token };
-    });
-  }
-
-  /* ---- "Check your inbox" / "Already registered" result pane ---- */
-  function showConfirm(email, exists){
-    if(email) lastSignupEmail = email;
-    document.getElementById("confirmTitle").textContent = exists ? "Already registered" : "Confirm your email";
-    document.getElementById("confirmLine").textContent = exists
-      ? "An account with this email address already exists."
-      : "One more step — your account is not active yet.";
-    document.getElementById("confirmDetail").innerHTML = exists
-      ? "If you registered but never opened the confirmation link, request it again below (check your spam folder first). If you already confirmed it, simply <a class='link' href='login.html'>log in →</a>."
-      : "We sent a confirmation link to <strong>" + esc(lastSignupEmail) + "</strong>. RightAware does <strong>not</strong> treat your account as verified until you open that link — afterwards, log in normally. Didn’t get it? Request a resend below (check spam too).";
-    document.getElementById("resendOut").textContent = "";
-    show("confirm", "3. Check your inbox");
-  }
-  document.getElementById("resendBtn").addEventListener("click", function(){
-    var out = document.getElementById("resendOut");
-    if(!lastSignupEmail){ out.textContent = "No signup email to resend to — sign up again."; return; }
-    var box = capBox(panes.confirm);
-    var gate = (window.RA_TURNSTILE && RA_TURNSTILE.configured() && box)
-      ? RA_TURNSTILE.gate(box) : Promise.resolve({ token:null, unconfigured:true });
-    gate.then(function(g){
-      if(g.blocked){ out.textContent = g.error ? ("⚠ " + g.error) : "⚠ Please complete the CAPTCHA check first."; return; }
-      out.textContent = "Sending…";
-      return RA_AUTH.resendConfirmation(lastSignupEmail, { captchaToken: g.token || undefined })
-        .then(function(msg){ out.textContent = msg; });
-    }).catch(function(){ out.textContent = "⚠ Could not resend — try again shortly."; });
-  });
-
-  var submitBusy = false;   // one application attempt at a time — a double click
-                            // can never race a second insert for the same user.
-  function finish(o){
-    submitBusy = false;
-    document.getElementById("doneTitle").textContent = o.title;
-    document.getElementById("doneRef").textContent = o.ref ? ("Reference: " + o.ref + " — status: AWAITING ADMIN REVIEW.") : "";
-    document.getElementById("doneDetail").innerHTML = o.detail;
-    show("done", "3. Done");
-  }
-
-  /* Submit chain: (1) create auth account when backend is up, (2) direct application
-     insert when the applications policies exist, (3) contact-message queue fallback,
-     (4) local device record. Never places passwords in application payloads. */
-  function withClientP(){ // Promise<client|null> — waits for the connector, with timeout
-    return new Promise(function(res){
-      if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client){ res(RA_SUPA.client); return; }
-      var fired = false;
-      function once(){ if(fired) return; fired = true;
-        res(window.RA_SUPA && RA_SUPA.client ? RA_SUPA.client : null); }
-      document.addEventListener("ra:backend-ready", once, { once:true });
-      setTimeout(once, 6000);
-    });
-  }
-
-  async function submitApplication(opts){
-    // opts: { path, table, row, extraTable?, extraRows?, account:{name,email,pass}, queue:{topic,message}, captchaToken? }
-    if(submitBusy) return;   // already submitting: no second attempt, no duplicate record
-    submitBusy = true;
-    var ref = refNo(opts.path === "professional" ? "PRO" : "ORG");
-    var localRec = { ref:ref, path:opts.path, name:opts.account.name, email:opts.account.email,
-                     at:new Date().toISOString(), status:"awaiting-review", mode:"local" };
-    saveLocal(localRec);
-
-    // 0. demo mode (no backend at all): everything stays on this device
-    if(!(window.RA_SUPA && RA_SUPA.ready)){
-      var du = RA_AUTH.signup(opts.account.name, opts.account.email);
-      RA_DB.saveProfile({ name:du.name, email:du.email, phone:"", state:opts.row.location||"", language:"English" });
-      finish({ title:"Saved on this device (demo mode)", ref:ref,
-        detail:"⚠ The backend is <strong>not connected</strong>, so this application was <strong>not submitted to RightAware</strong> — it only exists in this browser. When the site is connected, re-submit so an administrator can review it." });
-      return;
-    }
-
-    // Remember the application on this device: while the confirmation email is
-    // unopened there is no session, so the direct insert below would be refused
-    // by row-level security. It attaches automatically after confirm + sign-in.
-    RA_AUTH.savePendingApplication({ table:opts.table, row:opts.row, extraTable:opts.extraTable || null,
-      extraRows:opts.extraRows || [], ref:ref, email:opts.account.email });
-
-    // 1. account (the password never enters the application payload)
-    //    An applicant who is ALREADY signed in IS the account: no signup call
-    //    is made (it could only answer "already registered" — and must never
-    //    disturb the live session the row is about to be linked to).
-    var acctRes;
-    var signedInAs = await liveApplicantId(opts.account.email, true);
-    if(signedInAs){
-      acctRes = { ok:true, note:"✅ Signed in as " + opts.account.email + " — this application is attached to that account." };
-    } else {
-      acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
-                                         { captchaToken: opts.captchaToken });
-    }
-    var acctNote;
-    if(acctRes.ok && acctRes.needsConfirm){
-      acctNote = acctRes.note + " After confirming, sign in — this application attaches to your account automatically.";
-    } else if(acctRes.ok){
-      acctNote = acctRes.note || "Account created.";
-    } else if(acctRes.alreadyRegistered){
-      acctNote = "⚠ " + acctRes.error + " Sign in (or confirm your email first) and this application will attach to your account automatically.";
-    } else {
-      acctNote = "⚠ Account step: " + (acctRes.error || "failed") + ". Your application will still be recorded for review.";
-    }
-
-    // attach the account to the row where the schema supports it — from the
-    // LIVE Supabase session, and only when it is a signed-in session for THIS
-    // applicant's e-mail (never a stale device login or another account).
-    if(opts.table === "professionals"){
-      var liveUid = await liveApplicantId(opts.account.email);
-      if(liveUid) opts.row.user_id = liveUid;
-    }
-
-    var client = await withClientP();
-    if(!client){
-      finish({ title:"Application saved on this device", ref:ref,
-        detail: acctNote + "<br/><br/>⚠ Could not reach RightAware's backend. This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
-      return;
-    }
-
-    // 2a. this account already has a pending/approved professional record?
-    //     Never create a second row: the record that exists stays the
-    //     application of record, and this attempt's receipt is retired so the
-    //     applicant's original reference remains the one shown.
-    if(opts.table === "professionals" && opts.row.user_id){
-      var own = await client.from(opts.table).select("id, verification_status")
-        .eq("user_id", opts.row.user_id)
-        .in("verification_status", ["pending","verified"]).limit(1);
-      if(own && !own.error && own.data && own.data.length){
-        try{ RA_AUTH.dropPendingApplication({ table:opts.table, email:opts.account.email }); }catch(_){}
-        dropLocalReceipt(ref);
-        var prev = findReceipt(opts.path, opts.account.email);
-        var st = own.data[0].verification_status;
-        finish({ title:"Application already submitted",
-          ref: (st === "pending" && prev) ? prev.ref : null,
-          detail: acctNote + "<br/><br/>" + (st === "verified"
-            ? "This account already has an <strong>approved</strong> professional record — no second application was created."
-            : "Your professional application for this account is <strong>already in the review queue</strong> — no duplicate was created.")
-          + " Status: <strong>" + esc(st) + "</strong>, read live from RightAware." });
-        return;
-      }
-    }
-
-    // 2. direct application row (works once supabase/applications-access.sql is applied)
-    var ins = await client.from(opts.table).insert(opts.row);
-    if(!ins.error){
-      try{ RA_AUTH.dropPendingApplication({ table:opts.table, email:opts.account.email }); }catch(_){}
-      if(opts.extraTable){
-        var ex = (opts.extraRows || []).filter(function(r){ return r.professional_id; });
-        if(ex.length){ try{ await client.from(opts.extraTable).insert(ex); }catch(_){} }
-      }
-      finish({ title:"Application submitted for review", ref:ref,
-        detail: acctNote + "<br/><br/>Your application was stored in RightAware's application list. An administrator reviews it personally — <strong>your profile will not appear anywhere until it is approved</strong>." });
-      return;
-    }
-
-    // 3. queue fallback: contact_messages (anon insert is allowed by the schema)
-    var q = await client.from("contact_messages").insert({ name:opts.account.name, email:opts.account.email, topic:opts.queue.topic, message:opts.queue.message, status:"new" });
-    if(!q.error){
-      finish({ title:"Application received", ref:ref,
-        detail: acctNote + "<br/><br/>Your application was recorded in RightAware's review queue for an administrator. <strong>Nothing is public until approval.</strong> Your <strong>application record</strong> is created in the application list automatically the first time you confirm your email and sign in — until then an administrator can create it directly from this message copy." });
-      return;
-    }
-    finish({ title:"Application saved on this device", ref:ref,
-      detail: acctNote + "<br/><br/>⚠ Delivery to RightAware failed (" + (q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
-  }
-
-  /* ---------- pathway: individual (general user) ---------- */
-  document.getElementById("formUser").addEventListener("submit", function(e){
-    e.preventDefault(); current = "user";
-    var n=val("uName"), em=val("uEmail"), p=val("uPass"), p2=val("uPass2");
-    if(n.length < 2) return bad("Please enter your full name.", "uName");
-    if(!emailOK(em)) return bad("Please enter a valid email address.", "uEmail");
-    if(!passOK(p)) return bad("Password must be at least 8 characters.", "uPass");
-    if(p !== p2) return bad("Passwords do not match.", "uPass2");
-    if(!checked("uConsent")) return bad("Please tick the consent box to continue.");
-    var trap = spamTrap(); if(trap) return bad(trap);
-    var out = document.getElementById("uOut"); out.textContent = "Creating your account…";
-
-    withCaptcha(panes.user).then(function(cap){
-      if(cap.error){ out.textContent = "⚠ " + cap.error; return; }
-      if(window.RA_SUPA && RA_SUPA.ready){
-        RA_AUTH.signupLive(n, em, p, { captchaToken: cap.token || undefined }).then(function(r){
-          if(!r.ok){
-            if(r.alreadyRegistered){ showConfirm(em, true); return; }
-            out.textContent = "⚠ " + r.error + " — if you already have an account, log in instead.";
-            return;
-          }
-          if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
-          RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
-          finish({ title:"Account created", ref:null,
-            detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
-        });
-      } else {
-        RA_AUTH.signup(n, em);
-        RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
-        finish({ title:"Demo account created on this device", ref:null,
-          detail:"⚠ The backend is <strong>not connected</strong> — this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
-      }
-    });
-  });
-
-  /* ---------- pathway: legal professional ---------- */
-  document.getElementById("formPro").addEventListener("submit", function(e){
-    e.preventDefault(); current = "pro";
-    var n=val("pName"), em=val("pEmail"), ph=val("pPhone"), pw=val("pPass"), q=val("pQual");
-    if(n.length < 2) return bad("Please enter your full name.", "pName");
-    if(!emailOK(em)) return bad("Please enter a valid email address.", "pEmail");
-    if(ph.replace(/\D/g,"").length < 7) return bad("Please enter a valid phone number.", "pPhone");
-    if(!passOK(pw)) return bad("Password must be at least 8 characters.", "pPass");
-    if(q.length < 3) return bad("Please state your professional title or qualification.", "pQual");
-    var specs = chips("pSpecs"); if(!specs.length) return bad("Pick at least one area you handle.");
-    if(val("pBio").length < 30) return bad("Please write a short bio (at least 30 characters) describing your work.", "pBio");
-    if(!checked("pConsent")) return bad("Please tick the declaration to continue.");
-    var idFile = fileNote("pIdFile"); if(idFile && idFile.error) return bad(idFile.error, "pIdFile");
-    var photo = fileNote("pPhoto"); if(photo && photo.error) return bad(photo.error, "pPhoto");
-    var trap = spamTrap(); if(trap) return bad(trap);
-
-    withCaptcha(panes.pro).then(async function(cap){
-      if(cap.error) return bad(cap.error);
-      var docLines = [];
-      if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded — original requested during verification).");
-      if(photo) docLines.push("Photo recorded: " + photo.name + " (not uploaded yet).");
-      var queueMsg =
-        "PROFESSIONAL APPLICATION (submitted via signup)\n" +
-        "Name: " + n + "\nEmail: " + em + "\nPhone: " + ph + "\nQualification: " + q + "\n" +
-        "Years: " + (val("pYears") || "not stated") + "\nLocation: " + val("pLoc") + "\n" +
-        "Areas: " + specs.join("; ") + "\nLanguages: " + chips("pLangs").join("; ") + "\n" +
-        "Availability: " + val("pAvail") + "\nFee note: " + (val("pFee") || "—") + "\n" +
-        "Bio: " + val("pBio") + "\n" + docLines.join("\n") +
-        "\nStatus: PENDING — publish only after admin approval.";
-
-      var pid = "prof-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
-      var row = { id:pid, name:n, qualification:q, experience_yrs:val("pYears") || null,
-        location:val("pLoc"), languages:chips("pLangs"), bio:val("pBio"),
-        consultation_options:specs, fee_note:val("pFee") || null, availability:val("pAvail"),
-        photo_path: photo ? photo.name : null, verification_status:"pending", is_demo:false };
-      // Link the row to this applicant's account from the LIVE session — only
-      // a signed-in session for THIS e-mail counts (never a stale device login
-      // or another account's session). extraRows below follow this link.
-      var uid1 = await liveApplicantId(em);
-      if(uid1) row.user_id = uid1;
-      if(!row.user_id) delete row.user_id;
-
-      submitApplication({
-        path:"professional", table:"professionals", row:row,
-        extraTable:"professional_specializations",
-        extraRows: row.user_id ? specs.map(function(s){ return { professional_id:pid, specialization:s }; }) : [],
-        account:{ name:n, email:em, pass:pw },
-        queue:{ topic:"Application — Legal professional", message:queueMsg },
-        captchaToken: cap.token || undefined
-      });
-    });
-  });
-
-  /* ---------- pathway: organisation ---------- */
-  document.getElementById("formOrg").addEventListener("submit", function(e){
-    e.preventDefault(); current = "org";
-    var n=val("oName"), person=val("oPerson"), em=val("oEmail"), ph=val("oPhone"), pw=val("oPass");
-    if(n.length < 3) return bad("Please enter the organisation's name.", "oName");
-    if(person.length < 2) return bad("Please enter the contact person's name.", "oPerson");
-    if(!emailOK(em)) return bad("Please enter a valid work email.", "oEmail");
-    if(ph.replace(/\D/g,"").length < 7) return bad("Please enter a valid phone number.", "oPhone");
-    if(!passOK(pw)) return bad("Password must be at least 8 characters.", "oPass");
-    var services = chips("oServices"); if(!services.length) return bad("Pick at least one service you provide.");
-    if(val("oAbout").length < 30) return bad("Please describe the organisation (at least 30 characters).", "oAbout");
-    if(val("oWeb") && !/^https?:\/\//i.test(val("oWeb"))) return bad("Website must start with http:// or https://", "oWeb");
-    if(!checked("oConsent")) return bad("Please tick the declaration to continue.");
-    var doc = fileNote("oDoc"); if(doc && doc.error) return bad(doc.error, "oDoc");
-    var logo = fileNote("oLogo"); if(logo && logo.error) return bad(logo.error, "oLogo");
-    var trap = spamTrap(); if(trap) return bad(trap);
-
-    withCaptcha(panes.org).then(function(cap){
-      if(cap.error) return bad(cap.error);
-      var docLines = [];
-      if(doc) docLines.push("Registration file recorded: " + doc.name + " (not uploaded — original requested during verification).");
-      if(logo) docLines.push("Logo recorded: " + logo.name + " (not uploaded yet).");
-      var queueMsg =
-        "ORGANISATION APPLICATION (submitted via signup)\n" +
-        "Organisation: " + n + "\nContact: " + person + " (" + val("oType") + ")\nEmail: " + em + "\nPhone: " + ph + "\n" +
-        "State: " + val("oState") + "\nAddress: " + (val("oAddress") || "—") + "\nWebsite: " + (val("oWeb") || "—") + "\n" +
-        "Services: " + services.join("; ") + "\nVerification hints: " + (val("oVerify") || "—") + "\n" +
-        "About: " + val("oAbout") + "\n" + docLines.join("\n") +
-        "\nStatus: PENDING — list publicly only after admin verification.";
-
-      var oid = "org-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
-      var row = { id:oid, name:n, description:val("oAbout"), services:services, specialization:val("oType"),
-        location:val("oState"), address:val("oAddress") || null, phone:ph, email:em,
-        website:val("oWeb") || null, logo_path: logo ? logo.name : null,
-        verification_status:"pending", verification_source:val("oVerify") || null, source_note:"Applied via site signup; awaiting admin review." };
-
-      submitApplication({
-        path:"organisation", table:"organizations", row:row,
-        account:{ name:person, email:em, pass:pw },
-        queue:{ topic:"Application — Organisation", message:queueMsg },
-        captchaToken: cap.token || undefined
-      });
-    });
-  });
-})();
-</script>
-</body>
-</html>
