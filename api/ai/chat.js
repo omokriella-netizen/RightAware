@@ -1,360 +1,96 @@
-/* RightAware AI — POST /api/ai/chat
-   Real AI + Nigerian Pidgin + verified RightAware knowledge base
-*/
 "use strict";
+
+/*
+ * RightAware AI
+ * Temporary stable production endpoint.
+ * This version intentionally keeps the serverless function simple
+ * so we can verify the OpenAI connection first.
+ */
 
 const DISCLAIMER =
   "General legal information only — not legal advice. Verify important points with a qualified professional.";
 
-const SYSTEM = [
-  "You are RightAware AI — the Nigerian civic and legal-awareness assistant inside RightAware.",
-  "You explain verified Nigerian rights, laws, civic responsibilities and practical next steps in language ordinary Nigerians can understand.",
-  "You are not a generic chatbot and you are not a lawyer.",
+const MODEL =
+  process.env.AI_MODEL || "gpt-6-luna";
 
-  "LANGUAGE:",
-  "- Match the user's language.",
-  "- If the user writes Nigerian Pidgin, answer naturally in Nigerian Pidgin.",
-  "- If the user mixes Pidgin and English, respond naturally in the same style.",
-  "- Understand expressions such as wetin be my right, wetin I fit do, police carry me go station, dem arrest me, dem wan throw me out, dem dey threaten me.",
+const API_URL =
+  process.env.AI_BASE_URL ||
+  "https://api.openai.com/v1/responses";
 
-  "LEGAL SAFETY:",
-  "- Base legal claims ONLY on the verified CONTEXT supplied with the question.",
-  "- Never invent laws, sections, cases, statistics, organisations, contacts or URLs.",
-  "- If the supplied verified context does not contain the answer, say that you do not have enough verified information and direct the user to Get Help or the Rights Library.",
-  "- Never claim to be a lawyer.",
-  "- Give general legal information, not legal advice.",
-  "- If someone may be in immediate danger or is under arrest, give practical safety steps first.",
-  "- Never ask for or repeat passwords, OTPs, PINs or bank details.",
+const SYSTEM = `
+You are RightAware AI, the Nigerian civic and legal-awareness assistant.
 
-  "RESPONSE STYLE:",
-  "- Answer the actual question directly.",
-  "- Do not start with Thanks — based on those words.",
-  "- Use short paragraphs and simple bullet points.",
-  "- Keep answers under about 220 words.",
-  "- End every answer with exactly:",
-  "General legal information only — not legal advice. Verify important points with a qualified professional."
-].join("\n");
+Your job is to help Nigerians understand their rights, civic responsibilities
+and general legal information in simple language.
 
-const RATE_LIMIT = 20;
-const RATE_WINDOW = 60000;
-const PROVIDER_TIMEOUT = 20000;
+You are not a lawyer and you do not provide legal advice.
 
-const DEFAULT_MODEL = "gpt-6-luna";
-const DEFAULT_BASE_URL = "https://api.openai.com/v1/responses";
+Important rules:
 
-const FALLBACK_LINKS = [
-  { t: "Browse rights library", u: "rights.html" },
-  { t: "Get Help", u: "help.html" }
-];
+1. Never invent Nigerian laws, legal sections, cases, statistics,
+organisations, phone numbers, emails or URLs.
 
-let kbCache = null;
+2. If you do not have enough verified information, say so clearly.
 
-function str(v) {
-  if (v == null) return "";
-  if (Array.isArray(v)) return v.join(" ");
-  return String(v);
-}
+3. If the user writes Nigerian Pidgin, respond naturally in Nigerian Pidgin.
 
-function clip(s, n) {
-  s = String(s == null ? "" : s);
-  return s.length > n ? s.slice(0, n - 3) + "..." : s;
-}
+4. If the user mixes English and Nigerian Pidgin, respond naturally
+in the same style.
 
-/* ---------- VERIFIED RIGHTAWARE KNOWLEDGE BASE ---------- */
+5. If someone says they have been arrested, threatened or are in immediate
+danger, give practical safety guidance first.
 
-function kb() {
-  if (kbCache) return kbCache;
+6. Never request passwords, PINs, OTPs or bank details.
 
-  const g = globalThis;
+7. Keep responses clear and concise.
 
-  if (typeof g.window === "undefined") {
-    g.window = g;
-  }
+8. End every response with:
 
-  try {
-    require("../../content/rights.js");
-  } catch (e) {}
-
-  try {
-    require("../../content/laws.js");
-  } catch (e) {}
-
-  try {
-    require("../../data.js");
-  } catch (e) {}
-
-  const w = g.window || g;
-  const items = [];
-
-  (w.RA_RIGHTS_DETAIL || []).forEach(function (r) {
-    if (!r || !r.title) return;
-
-    const txt =
-      String(r.title) +
-      ": " +
-      str(r.summary) +
-      (str(r.keywords)
-        ? " Keywords: " + str(r.keywords)
-        : "");
-
-    items.push({
-      kind: "Rights Library",
-      t: String(r.title),
-      u: r.fullGuide
-        ? String(r.fullGuide)
-        : "rights/topic.html?id=" +
-          encodeURIComponent(String(r.id || "")),
-      txt: txt,
-      hay: txt.toLowerCase(),
-      tl: String(r.title).toLowerCase()
-    });
-  });
-
-  (w.RA_LAWS || []).forEach(function (l) {
-    if (!l || !l.title) return;
-
-    const txt =
-      String(l.title) +
-      ": " +
-      str(l.description) +
-      (str(l.category)
-        ? " (" +
-          str(l.category) +
-          (str(l.docType)
-            ? ", " + str(l.docType)
-            : "") +
-          ")"
-        : "");
-
-    items.push({
-      kind: "Laws & Legal Documents",
-      t: String(l.title),
-      u: "laws.html",
-      txt: txt,
-      hay: txt.toLowerCase(),
-      tl: String(l.title).toLowerCase()
-    });
-  });
-
-  (w.RA_FAQS || []).forEach(function (f) {
-    if (!f || !f.q) return;
-
-    const txt =
-      String(f.q) +
-      " — " +
-      str(f.a);
-
-    items.push({
-      kind: "FAQ",
-      t: String(f.q),
-      u: "resources.html#faqs",
-      txt: txt,
-      hay: txt.toLowerCase(),
-      tl: String(f.q).toLowerCase()
-    });
-  });
-
-  kbCache = items;
-
-  return items;
-}
-
-/* ---------- NIGERIAN PIDGIN ---------- */
-
-const PIDGIN = [
-  [/\\bwetin be my right\\b/gi, "rights legal rights"],
-  [/\\bwetin i fit do\\b/gi, "what can I do options next steps"],
-  [/\\bwetin\\b/gi, "what"],
-  [/\\bfit\\b/gi, "can"],
-  [/\\bdey\\b/gi, "is are doing"],
-  [/\\bdem\\b/gi, "they"],
-  [/\\buna\\b/gi, "you"],
-  [/\\bdis\\b/gi, "this"],
-  [/\\bdat\\b/gi, "that"],
-  [/\\bna\\b/gi, "is"],
-  [/\\bwan\\b/gi, "want"],
-  [/\\bno get\\b/gi, "do not have"],
-  [/\\bcarry me go station\\b/gi, "arrest detained police station"],
-  [/\\bcarry me\\b/gi, "arrest detained"],
-  [/\\bpolice carry\\b/gi, "police arrest"],
-  [/\\bdem arrest me\\b/gi, "arrest detained"],
-  [/\\bjail\\b/gi, "prison detention arrest"],
-  [/\\bthrow me out\\b/gi, "eviction landlord housing"],
-  [/\\blandlord\\b/gi, "landlord tenancy eviction housing"],
-  [/\\bthreaten\\b/gi, "threat intimidation"],
-  [/\\bsalary\\b/gi, "wages employment unpaid salary"],
-  [/\\bwork money\\b/gi, "employment wages salary"],
-  [/\\bscam\\b/gi, "fraud online scam"],
-  [/\\bdey mad\\b/gi, "insult abuse"]
-];
-
-function expandPidgin(s) {
-  let q = String(s || "").toLowerCase();
-
-  for (let i = 0; i < PIDGIN.length; i++) {
-    q = q.replace(
-      PIDGIN[i][0],
-      " " + PIDGIN[i][1] + " "
-    );
-  }
-
-  return q;
-}
-
-const STOP = {};
-
-(
-  "the a an of and or to in is are my i me can how what do does for with on at be was were this that if it you your about please help there here their they them from into out up down not yes has have had been being will would should could just also any all some more than then when who whom which why"
-)
-  .split(" ")
-  .forEach(function (w) {
-    STOP[w] = 1;
-  });
-
-function stems(t) {
-  const out = [t];
-
-  if (t.length > 4 && /(ed|es|s)$/.test(t)) {
-    out.push(
-      t.replace(/(ed|es|s)$/, "")
-    );
-  }
-
-  if (t.length > 5 && /ing$/.test(t)) {
-    out.push(
-      t.replace(/ing$/, "")
-    );
-  }
-
-  return out;
-}
-
-function tokens(s) {
-  return expandPidgin(s)
-    .split(/[^a-z0-9]+/)
-    .filter(function (t) {
-      return t.length > 2 && !STOP[t];
-    });
-}
-
-function score(item, ts) {
-  let sc = 0;
-
-  for (let i = 0; i < ts.length; i++) {
-    const group = stems(ts[i]);
-
-    let titleHit = false;
-    let bodyHit = false;
-
-    for (let j = 0; j < group.length; j++) {
-      if (item.tl.indexOf(group[j]) >= 0) {
-        titleHit = true;
-      }
-
-      if (item.hay.indexOf(group[j]) >= 0) {
-        bodyHit = true;
-      }
-    }
-
-    if (titleHit) {
-      sc += 4;
-    } else if (bodyHit) {
-      sc += 2;
-    }
-  }
-
-  return sc;
-}
-
-function retrieve(q, items) {
-  const ts = tokens(q);
-
-  if (!ts.length) return [];
-
-  return items
-    .map(function (item) {
-      return {
-        it: item,
-        sc: score(item, ts)
-      };
-    })
-    .filter(function (x) {
-      return x.sc >= 2;
-    })
-    .sort(function (a, b) {
-      return b.sc - a.sc;
-    })
-    .slice(0, 5)
-    .map(function (x) {
-      return x.it;
-    });
-}
-
-function buildContext(srcs) {
-  if (!srcs.length) {
-    return "(No verified source matched this question. Do not invent an answer.)";
-  }
-
-  return srcs
-    .map(function (s, i) {
-      return (
-        "[" +
-        (i + 1) +
-        "] (" +
-        s.kind +
-        ") " +
-        s.txt
-      );
-    })
-    .join("\n\n")
-    .slice(0, 8000);
-}
-
-/* ---------- RATE LIMIT ---------- */
-
-const buckets = Object.create(null);
-
-function rateLimited(ip) {
-  const now = Date.now();
-  const arr = buckets[ip] || [];
-
-  const keep = arr.filter(function (time) {
-    return now - time < RATE_WINDOW;
-  });
-
-  if (keep.length >= RATE_LIMIT) {
-    buckets[ip] = keep;
-    return true;
-  }
-
-  keep.push(now);
-  buckets[ip] = keep;
-
-  return false;
-}
-
-/* ---------- API ---------- */
+General legal information only — not legal advice. Verify important points with a qualified professional.
+`;
 
 module.exports = async function (req, res) {
 
-  const configured = !!process.env.AI_API_KEY;
-
+  /*
+   * Only POST is allowed.
+   */
   if (req.method !== "POST") {
     return res.status(405).json({
       ok: false,
-      code: "method",
-      error: "POST only.",
-      configured: configured
+      error: "POST only."
     });
   }
 
+  /*
+   * Confirm that the server actually has the key.
+   */
+  const apiKey = process.env.AI_API_KEY;
+
+  if (!apiKey) {
+    return res.status(200).json({
+      ok: false,
+      diagnostic: true,
+      text:
+        "RightAware AI diagnostic:\n\n" +
+        "AI_API_KEY is NOT available to this Production deployment.\n\n" +
+        "Check Vercel Environment Variables.",
+      disclaimer: DISCLAIMER
+    });
+  }
+
+  /*
+   * Read request body.
+   */
   let body = req.body;
 
   if (typeof body === "string") {
     try {
       body = JSON.parse(body);
-    } catch (e) {
-      body = null;
+    } catch (error) {
+      return res.status(400).json({
+        ok: false,
+        error: "Invalid JSON request."
+      });
     }
   }
 
@@ -365,4 +101,176 @@ module.exports = async function (req, res) {
       ? body.message.trim()
       : "";
 
-  if (!message || message.length > 2000) {
+  if (!message) {
+    return res.status(400).json({
+      ok: false,
+      error: "Please provide a message."
+    });
+  }
+
+  if (message.length > 2000) {
+    return res.status(400).json({
+      ok: false,
+      error: "Message is too long."
+    });
+  }
+
+  /*
+   * Send request to OpenAI Responses API.
+   */
+  try {
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + apiKey
+      },
+
+      body: JSON.stringify({
+        model: MODEL,
+
+        instructions: SYSTEM,
+
+        input: message,
+
+        max_output_tokens: 900
+      })
+    });
+
+    /*
+     * Read the provider response.
+     */
+    const providerText =
+      await response.text();
+
+    let providerData = null;
+
+    try {
+      providerData =
+        JSON.parse(providerText);
+    } catch (error) {
+      providerData = null;
+    }
+
+    /*
+     * Provider returned an error.
+     */
+    if (!response.ok) {
+
+      const providerMessage =
+        providerData &&
+        providerData.error &&
+        providerData.error.message
+          ? providerData.error.message
+          : providerData &&
+            providerData.message
+          ? providerData.message
+          : providerText
+          ? providerText.slice(0, 500)
+          : "No provider error message.";
+
+      console.error(
+        "RIGHTAWARE_OPENAI_ERROR",
+        response.status,
+        providerMessage
+      );
+
+      /*
+       * Return 200 temporarily so the website
+       * displays the diagnostic instead of hiding it.
+       */
+      return res.status(200).json({
+        ok: false,
+        diagnostic: true,
+
+        text:
+          "RightAware AI connection diagnostic:\n\n" +
+          "OpenAI status: " +
+          response.status +
+          "\n\n" +
+          providerMessage,
+
+        disclaimer:
+          "Temporary technical diagnostic."
+      });
+    }
+
+    /*
+     * Extract Responses API output.
+     */
+    const outputText =
+      providerData &&
+      typeof providerData.output_text === "string"
+        ? providerData.output_text.trim()
+        : "";
+
+    /*
+     * Provider responded but no text was found.
+     */
+    if (!outputText) {
+
+      console.error(
+        "RIGHTAWARE_OPENAI_NO_OUTPUT",
+        providerData
+      );
+
+      return res.status(200).json({
+        ok: false,
+        diagnostic: true,
+
+        text:
+          "RightAware AI connection diagnostic:\n\n" +
+          "OpenAI accepted the request, but the response did not contain output_text.\n\n" +
+          "Model used: " +
+          MODEL,
+
+        disclaimer:
+          "Temporary technical diagnostic."
+      });
+    }
+
+    /*
+     * SUCCESS.
+     */
+    return res.status(200).json({
+
+      ok: true,
+
+      text: outputText,
+
+      links: [],
+
+      sources: [],
+
+      disclaimer: DISCLAIMER,
+
+      model: MODEL
+    });
+
+  } catch (error) {
+
+    console.error(
+      "RIGHTAWARE_AI_FUNCTION_ERROR",
+      error
+    );
+
+    return res.status(200).json({
+      ok: false,
+      diagnostic: true,
+
+      text:
+        "RightAware AI connection diagnostic:\n\n" +
+        (
+          error &&
+          error.message
+            ? error.message
+            : "Unknown server error."
+        ),
+
+      disclaimer:
+        "Temporary technical diagnostic."
+    });
+  }
+};
