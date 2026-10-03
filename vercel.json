@@ -18,6 +18,7 @@
     { "source": "/login", "destination": "/login.html", "permanent": true },
     { "source": "/offline", "destination": "/offline.html", "permanent": true },
     { "source": "/organizations", "destination": "/organizations.html", "permanent": true },
+    { "source": "/organization", "destination": "/organization.html", "permanent": true },
     { "source": "/resources", "destination": "/resources.html", "permanent": true },
     { "source": "/rights", "destination": "/rights.html", "permanent": true },
     { "source": "/search", "destination": "/search.html", "permanent": true },
@@ -25,7 +26,8 @@
     { "source": "/videos", "destination": "/videos.html", "permanent": true },
     { "source": "/rights/topic", "destination": "/rights/topic.html", "permanent": true },
     { "source": "/rights/arrest-rights", "destination": "/rights/arrest-rights.html", "permanent": true },
-    { "source": "/printables", "destination": "/printables.html", "permanent": true }
+    { "source": "/printables", "destination": "/printables.html", "permanent": true },
+    { "source": "/professional", "destination": "/professional.html", "permanent": true }
   ],
   "headers": [
     {

@@ -4,24 +4,39 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Account — RightAware</title>
 <meta name="description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
+<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="My Account — RightAware"/>
+<meta property="og:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/account.html"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="My Account — RightAware"/>
+<meta name="twitter:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/account.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="container header-inner">
   <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
   <div class="header-actions"><span id="whoChip" class="tag"></span><button class="btn btn-outline btn-sm" id="logoutBtn">Log Out</button>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="account.html">My Account</a><a href="contact.html">Contact Us</a></div></header>
-<main>
+<main id="main">
 <section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Your profile, saved items, account role and application status sync with your account when you are signed in — and everything stays available on this device.</p>
 <div class="chip-row"><a href="#mystatus">My status</a><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
 <section class="section section-alt" id="mystatus"><div class="container">
   <div class="section-head"><span class="eyebrow">Access & applications</span><h2>My status</h2></div>
   <div id="statusBox" class="cards-grid" aria-live="polite"></div>
 </div></section>
-<section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights, laws & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
+<section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
 <section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p id="consultMeta" style="max-width:760px">Loading consultations…</p></div><div id="consultList" class="cards-grid"></div><p class="form-note" id="consultOut" role="status" aria-live="polite"></p></div></section>
 <section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2><p id="notifMeta" style="max-width:760px">Loading notifications…</p><p style="max-width:760px"><button class="btn btn-secondary btn-sm" id="notifMarkAll" type="button" style="display:none">Mark all read</button></p></div><div id="notifList" style="max-width:760px"></div><p class="form-note" id="notifOut" role="status" aria-live="polite"></p></div></section>
 <section class="section section-alt"><div class="container contact-grid">
@@ -204,6 +219,15 @@
     box.innerHTML = html;
     if(RA_AUTH.supabaseReady()){
       RA_AUTH.myApplication().then(function(app){
+        if(app && app.error){
+          var errCard = document.createElement("article");
+          errCard.className = "card";
+          errCard.innerHTML = '<span class="tag">Application (live)</span><h3>⚠ Live status unavailable</h3>'
+            + '<p><small>Your application could not be read from the server right now: '
+            + esc(app.error) + ' — try again in a moment.</small></p>';
+          box.appendChild(errCard);
+          return;
+        }
         if(!app) return;
         var st = app.row.verification_status;
         var isPro = app.path === "professional";
@@ -236,7 +260,12 @@
       }).catch(function(){});
     }
   }
-  document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); renderNotif(); renderConsult(); });
+  document.addEventListener("ra:backend-ready", function(){
+    paintSync(); renderStatus(); renderNotif(); renderConsult();
+    // fetchRole() resolves AFTER the first paint — repaint when the real role
+    // arrives so an admin/professional does not sit on "General user" until reload.
+    RA_AUTH.fetchRole().then(function(){ renderStatus(); });
+  });
   /* The account sync finishes AFTER this page first painted, so whatever arrived
      from the other device is in localStorage by now — repaint from it. An edit
      already in progress is never overwritten. A failed notification pull is

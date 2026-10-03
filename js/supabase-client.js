@@ -38,9 +38,12 @@
   };
   window.RA_SUPA.clearLocal = function(){ try{ localStorage.removeItem("ra_env"); }catch(_){} location.reload(); };
 
+  var started = false;
   function start(c){
+    if(started) return;
     if(!c.SUPABASE_URL || !c.SUPABASE_PUBLISHABLE_KEY) return;
     if(!/^https?:\/\//.test(c.SUPABASE_URL)) return;
+    started = true;
     var s = document.createElement("script");
     s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
     s.onload = function(){
@@ -55,21 +58,34 @@
               if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = c.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = c.SUPABASE_PUBLISHABLE_KEY; }
             }catch(_){}
             document.dispatchEvent(new CustomEvent("ra:backend-ready"));
+          } else {
+            window.RA_SUPA.error = (r && r.error && (r.error.message || String(r.error))) || "backend probe failed";
+            if(window.console && console.warn) console.warn("RightAware: Supabase readiness probe failed — staying in demo mode:", window.RA_SUPA.error);
           }
-        }).catch(function(){});
+        }).catch(function(e){
+          window.RA_SUPA.error = (e && (e.message || String(e))) || "backend probe failed";
+          if(window.console && console.warn) console.warn("RightAware: Supabase readiness probe failed — staying in demo mode:", window.RA_SUPA.error);
+        });
       }catch(_){}
     };
     document.head.appendChild(s);
   }
 
   var c = creds();
-  if(c.SUPABASE_URL && c.SUPABASE_PUBLISHABLE_KEY){ start(c); return; }
-  // No credentials yet: try the generated local public file (git-ignored).
-  // Missing file = quiet demo mode (onerror is expected on fresh checkouts).
+  if(c.SUPABASE_URL && c.SUPABASE_PUBLISHABLE_KEY) start(c);
+  // ALWAYS try the generated public file (git-ignored). It merges only keys
+  // that are still missing (never clobbers window.__ENV__/ra_env values) and
+  // it may carry TURNSTILE_SITE_KEY even when the Supabase credentials already
+  // came from elsewhere — skipping it silently disabled CAPTCHA. Missing file
+  // = quiet demo mode (onerror is expected on fresh checkouts).
   try{
     var es = document.createElement("script");
     es.src = base + "env.local.js";
-    es.onload = function(){ var c2 = creds(); if(c2.SUPABASE_URL && c2.SUPABASE_PUBLISHABLE_KEY) start(c2); };
+    es.onload = function(){
+      if(started) return; // already started from existing creds
+      var c2 = creds();
+      if(c2.SUPABASE_URL && c2.SUPABASE_PUBLISHABLE_KEY) start(c2);
+    };
     es.onerror = function(){ /* no generated env file - stay in demo mode */ };
     document.head.appendChild(es);
   }catch(_){}

@@ -4,10 +4,25 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>RightAware AI — RightAware</title>
 <meta name="description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
+<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="RightAware AI — RightAware"/>
+<meta property="og:description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/ai.html"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="RightAware AI — RightAware"/>
+<meta name="twitter:description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/ai.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
@@ -24,7 +39,7 @@
     <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
-<main>
+<main id="main">
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
   <span class="eyebrow">RightAware AI</span><h1>AI assistant <span class="pill" id="aiModePill">AI ASSISTANT</span></h1>
@@ -60,11 +75,13 @@
 <script>
 (function(){
   var box=document.getElementById("chatBox"), form=document.getElementById("chatForm"), input=document.getElementById("chatInput"), pill=document.getElementById("aiModePill");
-  var mode="pending"; /* pending | live | demo (labelled library match) */
+  var mode="pending"; /* pending | live | auth (sign-in required) | demo (labelled library match) */
   function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
   function setPill(){
     if(!pill) return;
-    pill.textContent = mode==="live" ? "AI: LIVE" : (mode==="demo" ? "AI: LIBRARY MATCHES (DEMO)" : "AI ASSISTANT");
+    pill.textContent = mode==="live" ? "AI: LIVE"
+      : (mode==="auth" ? "AI: SIGN IN REQUIRED"
+      : (mode==="demo" ? "AI: LIBRARY MATCHES (DEMO)" : "AI ASSISTANT"));
   }
   function add(who, text, html, label){
     var d=document.createElement("div"); d.className="msg "+who;
@@ -101,10 +118,25 @@
     setTimeout(function(){
       if(!window.RA_AI){ showDemo(q); return; }
       window.RA_AI.ask(q).then(function(r){
+        if(r && r.needsAuth){
+          mode="auth"; setPill();
+          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");
+          return;
+        }
         if(r && !r.demo && r.text){
           mode="live"; setPill();
           add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");
-        }else{ showDemo(q); }
+          return;
+        }
+        if(r && r.text){
+          /* Labelled fallback from js/ai.js (library match) — render ITS answer
+             and links instead of the canned on-page script, so nothing the
+             client computed is thrown away. */
+          mode="demo"; setPill();
+          add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (library match):");
+          return;
+        }
+        showDemo(q);
       }, function(){ showDemo(q); });
     },350);
   });

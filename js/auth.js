@@ -13,7 +13,8 @@
   const Auth = {
     mode: "demo",
     current(){ try{ return JSON.parse(localStorage.getItem(KEY) || "null"); }catch(_){ return null; } },
-    isAdmin(){ const u = this.current(); return !!(u && u.role === "admin" && this.mode !== "demo"); },
+    // isAdmin() removed (dead code): admin gating is RLS-backed server-side and
+    // every page checks RA_AUTH.current().role directly.
     // NOTE: in demo mode ANY @admin flag is ignored — admin.html enforces this.
     signup(name, email){ const u = { name, email, role:"user", at:new Date().toISOString(), demo:true }; try{localStorage.setItem(KEY, JSON.stringify(u));}catch(_){} return u; },
     login(email){ const u = { name:(email||"").split("@")[0]||"Member", email, role:"user", at:new Date().toISOString(), demo:true }; try{localStorage.setItem(KEY, JSON.stringify(u));}catch(_){} return u; },
@@ -85,6 +86,7 @@
      Returns null when nothing is found or the add-on policies are not applied. */
   Auth.myApplication = async function(){
     if(!this.supabaseReady()) return null;
+    var errs = [];
     try{
       var live = await this.liveUser();
       var uid = live ? live.id : ((this.current()||{}).supabaseId || "");
@@ -92,7 +94,8 @@
         .select("id,name,verification_status,qualification,location,created_at")
         .eq("user_id", uid || "").limit(1);
       if(pro && !pro.error && pro.data && pro.data.length) return { path:"professional", row:pro.data[0] };
-    }catch(_){}
+      if(pro && pro.error) errs.push((pro.error.message || String(pro.error)) + " (professionals)");
+    }catch(e){ errs.push(((e && e.message) || String(e)) + " (professionals)"); }
     try{
       var email = (this.current()||{}).email;
       if(email){
@@ -104,8 +107,11 @@
           .select("id,name,verification_status,created_at")
           .ilike("email", pat).limit(1);
         if(org && !org.error && org.data && org.data.length) return { path:"organisation", row:org.data[0] };
+        if(org && org.error) errs.push((org.error.message || String(org.error)) + " (organizations)");
       }
-    }catch(_){}
+    }catch(e){ errs.push(((e && e.message) || String(e)) + " (organizations)"); }
+    // {error} = reads failed (report honestly); null = reads worked, no application.
+    if(errs.length) return { error: errs.join("; ") };
     return null;
   };
   /* Root URL of the site (for Supabase email links). js/auth.js is a sync script
@@ -306,30 +312,65 @@
             .select("id, verification_status").eq("user_id", who.id)
             .in("verification_status", ["pending","verified"]).limit(1);
           if(own && !own.error && own.data && own.data.length){
+            // Heal the record if its specialisation rows never attached.
+            if(p.extraTable && Array.isArray(row.consultation_options) && row.consultation_options.length){
+              try{
+                var exHeal = await RA_SUPA.client.from(p.extraTable)
+                  .upsert(row.consultation_options.map(function(s){ return { professional_id: row.id, specialization: s }; }),
+                          { onConflict:"professional_id,specialization", ignoreDuplicates:true });
+                if(exHeal && exHeal.error) throw new Error(exHeal.error.message);
+              }catch(e){
+                if(window.console && console.warn) console.warn("RightAware: specialisation rows not attached:", (e && e.message) || String(e));
+                continue; // keep the payload: retry next sign-in
+              }
+            }
             this.dropPendingApplication(p);
             if(!first) first = { table:p.table, ref:p.ref || null };
             continue;
           }
           row.user_id = who.id;
         }
-        var r = await RA_SUPA.client.from(p.table).insert(row);
-        if(r.error){
-          // 23505 = the row from an earlier sign-in already exists — clear the
-          // payload (no more retries) and stay quiet: nothing new was attached.
-          if(r.error.code === "23505"){ this.dropPendingApplication(p); if(!first) first = { table:p.table, ref:p.ref || null }; }
-          continue;                       // else: still not allowed — retry next sign-in
-        }
         // A payload saved while signed out carries no specialisation rows
         // (they could not be authorised then): rebuild them from the row's own
-        // consultation options so an attached record is complete.
+        // consultation options BEFORE the insert so both the success path and
+        // the 23505 retry path below can attach a complete record.
         if(p.table === "professionals" && p.extraTable && (!p.extraRows || !p.extraRows.length)
            && Array.isArray(row.consultation_options) && row.consultation_options.length){
           p.extraRows = row.consultation_options.map(function(s){
             return { professional_id: row.id, specialization: s };
           });
         }
+        var r = await RA_SUPA.client.from(p.table).insert(row);
+        if(r.error){
+          // 23505 = the row from an earlier sign-in already exists — make sure
+          // its specialisation rows exist too (idempotent upsert), clear the
+          // payload (no more retries) and stay quiet: nothing new attached.
+          if(r.error.code === "23505"){
+            if(p.extraTable && p.extraRows && p.extraRows.length){
+              try{
+                var ex0 = await RA_SUPA.client.from(p.extraTable)
+                  .upsert(p.extraRows, { onConflict:"professional_id,specialization", ignoreDuplicates:true });
+                if(ex0 && ex0.error) throw new Error(ex0.error.message);
+              }catch(e){
+                if(window.console && console.warn) console.warn("RightAware: specialisation rows not attached:", (e && e.message) || String(e));
+                continue; // keep the payload: retry the specialisations next sign-in
+              }
+            }
+            this.dropPendingApplication(p); if(!first) first = { table:p.table, ref:p.ref || null };
+          }
+          continue;                       // else: still not allowed — retry next sign-in
+        }
         if(p.extraTable && p.extraRows && p.extraRows.length){
-          try{ await RA_SUPA.client.from(p.extraTable).insert(p.extraRows); }catch(_){}
+          try{
+            var exr = await RA_SUPA.client.from(p.extraTable)
+              .upsert(p.extraRows, { onConflict:"professional_id,specialization", ignoreDuplicates:true });
+            if(exr && exr.error) throw new Error(exr.error.message);
+          }catch(e){
+            // The main row exists; the specialisation rows failed. Keep the
+            // payload (retry next sign-in) and say so instead of vanishing.
+            if(window.console && console.warn) console.warn("RightAware: specialisation rows not attached:", (e && e.message) || String(e));
+            continue;
+          }
         }
         this.dropPendingApplication(p);
         if(!first) first = { table:p.table, ref:p.ref || null };
