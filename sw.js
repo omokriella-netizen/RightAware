@@ -1,13 +1,23 @@
-/* RightAware service worker (v10): offline-first public content + privacy rules.
+/* RightAware service worker (v11): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
      cross-origin requests (Supabase REST, CDNs), private shells
-     (account/admin/login/signup), and any non-GET request.
+     (account/admin/login/signup + the professional/organisation workspaces),
+     and any non-GET request.
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v10: purge pre-multi-app js/auth.js from device caches. This build stores
+/* v11: purge stale precaches of the files changed together in this build:
+       js/auth.js (specialisation rows now attach with an idempotent upsert and
+       retry honestly instead of failing silently; dead isAdmin removed),
+       js/ai.js (401 now surfaces an explicit "sign in required" answer instead
+       of masquerading as an offline fallback), js/config.js (dead
+       OFFLINE_CACHE flag removed) and styles.css (keyboard focus rings
+       restored on the hero search). The professional/organisation workspace
+       shells join PRIVATE (network-first, never cached) so the privacy policy
+       matches what the pages actually are.
+     v10: purge pre-multi-app js/auth.js from device caches. This build stores
        pending professional/organisation applications as a LIST keyed by
        table + applicant e-mail (ra_pending_apps), so a second application on
        one browser can never overwrite — and silently destroy — an earlier
@@ -50,7 +60,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v10";
+const CACHE = "rightaware-v11";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
@@ -64,10 +74,15 @@ const CORE = [
   "./content/organizations.js", "./content/professionals.js",
   "./offline.html"
 ];
-const PRIVATE = ["/account.html", "/admin.html", "/login.html", "/signup.html"];
+const PRIVATE = ["/account.html", "/admin.html", "/login.html", "/signup.html",
+                 "/professional.html", "/organization.html"];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch((err) => {
+    // Never hide a broken precache list: one missing CORE URL must be visible.
+    console.error("RightAware SW: precache failed (core files may be missing):", err);
+    return self.skipWaiting();
+  }));
 });
 self.addEventListener("activate", (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));

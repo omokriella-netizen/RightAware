@@ -4,11 +4,26 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>RightAware — Understand your Rights. Know your power.</title>
 <meta name="description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="RightAware — Understand your Rights. Know your power."/>
+<meta property="og:description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="RightAware — Understand your Rights. Know your power."/>
+<meta name="twitter:description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/"/>
 <link rel="stylesheet" href="styles.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
@@ -28,7 +43,7 @@
   </div>
 </header>
 
-<main>
+<main id="main">
 <section class="hero" id="get-started">
   <div class="container hero-grid">
     <div class="hero-copy rv">
@@ -56,7 +71,7 @@
 <section class="search-section"><div class="container search-box rv">
   <h2>Find rights and legal information</h2>
   <p>Search in plain English or Pidgin. Example: “police arrest me”, “landlord lock my shop”, “work sack me”.</p>
-  <form id="homeSearchForm" class="search-form" role="search"><input id="homeSearchInput" type="search" placeholder="Search rights, laws, topics…" autocomplete="off"/><button class="btn btn-primary" type="submit">Search</button></form>
+  <form id="homeSearchForm" class="search-form" role="search"><input id="homeSearchInput" aria-label="Search rights, laws and resources" type="search" placeholder="Search rights, laws, topics…" autocomplete="off"/><button class="btn btn-primary" type="submit">Search</button></form>
   <div class="quick-tags">
     <button type="button" data-q="arrest">Arrest</button><button type="button" data-q="bail">Bail</button><button type="button" data-q="rent">Rent & Tenancy</button><button type="button" data-q="employment">Employment</button><button type="button" data-q="vote">Voting</button><button type="button" data-q="scam">Online scam</button>
   </div>
@@ -133,6 +148,7 @@
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="content/laws.js"></script>
+<script src="js/config.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){

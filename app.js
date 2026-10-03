@@ -60,7 +60,7 @@
     }
     // Service worker: offline-first core content (http(s) hosts only; skipped on file://)
     if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
-      navigator.serviceWorker.register("/sw.js").catch(function(){});
+      navigator.serviceWorker.register("/sw.js").catch(function(e){ console.warn("[RA] service worker registration failed:", e); });
     }
     // Offline indicator (persistent banner while offline; live features pause)
     try{
@@ -100,7 +100,7 @@
       var engS = document.createElement("script");
       engS.src = rootBase + "js/i18n.js";
       dictS.onload = function(){ document.head.appendChild(engS); };
-      dictS.onerror = function(){ /* English-only; site keeps working */ };
+      dictS.onerror = function(e){ console.warn("[RA] dictionary script failed to load; staying English-only:", e); /* English-only; site keeps working */ };
       document.head.appendChild(dictS);
     }catch(_){}
     // mailto: launch guard. The real <a href="mailto:..."> always runs first and

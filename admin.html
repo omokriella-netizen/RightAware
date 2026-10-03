@@ -4,6 +4,20 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin — RightAware</title>
 <meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
+<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="Admin — RightAware"/>
+<meta property="og:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/admin.html"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Admin — RightAware"/>
+<meta name="twitter:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/admin.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -22,13 +36,14 @@
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="container header-inner">
   <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
   <div class="header-actions"><a class="btn btn-outline btn-sm" href="index.html">← Site</a>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="contact.html">Contact</a></div></header>
-<main>
+<main id="main">
 <section class="page-hero"><div class="container rv"><span class="eyebrow">Admin</span><h1 id="adminTitle">Checking access…</h1>
 <p class="lead-dark" id="adminLine">Verifying your account role against the database…</p></div></section>
 <section class="section"><div class="container" id="adminBody"></div></section>

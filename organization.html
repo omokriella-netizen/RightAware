@@ -4,6 +4,20 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Organization workspace — RightAware</title>
 <meta name="description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
+<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="Organization workspace — RightAware"/>
+<meta property="og:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/organization.html"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Organization workspace — RightAware"/>
+<meta name="twitter:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/organization.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -36,13 +50,14 @@
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="container header-inner">
   <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
   <div class="header-actions"><a class="btn btn-outline btn-sm" href="account.html">My account</a>
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="contact.html">Contact</a></div></header>
-<main>
+<main id="main">
 <section class="page-hero"><div class="container rv"><span class="eyebrow">Organization</span><h1 id="wsTitle">Checking access…</h1>
 <p class="lead-dark" id="wsLine">Verifying your organization record against the database…</p></div></section>
 <section class="section"><div class="container" id="wsBody"></div></section>
@@ -287,7 +302,7 @@
       + '<p>Edit what ordinary visitors are allowed to see. Save re-reads the record from the database — the page never reports success it did not verify.</p></div>'
       + '<div class="ws-form">'
       + '<div class="ws-actions" style="margin-bottom:1rem;align-items:center">'
-        + (url ? '<img class="ws-photo" id="pfPhoto" src="' + esc(url) + '" alt="Organization logo"/>'
+        + (url ? '<img loading="lazy" class="ws-photo" id="pfPhoto" src="' + esc(url) + '" alt="Organization logo"/>'
                : '<div class="ws-photo" id="pfPhoto" aria-hidden="true">' + esc(String(row.name || "?").charAt(0)) + '</div>')
         + '<div><label style="margin:0">Organization logo<input type="file" id="pfFile" accept="image/jpeg,image/png,image/webp,image/gif"/></label>'
         + '<div class="ws-actions"><button type="button" class="btn btn-outline btn-sm" id="pfPhotoBtn">Upload logo</button></div>'

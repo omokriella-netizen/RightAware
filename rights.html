@@ -4,10 +4,25 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Explore Rights — RightAware Library</title>
 <meta name="description" content="Searchable library of Nigerian rights: fundamental, police & arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
+<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="Explore Rights — RightAware Library"/>
+<meta property="og:description" content="Searchable library of Nigerian rights: fundamental, police &amp; arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/rights.html"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Explore Rights — RightAware Library"/>
+<meta name="twitter:description" content="Searchable library of Nigerian rights: fundamental, police &amp; arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/rights.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
@@ -24,7 +39,7 @@
     <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
-<main>
+<main id="main">
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
   <span class="eyebrow">Explore Rights</span>
@@ -35,7 +50,8 @@
   <figure class="page-hero-media"><img src="assets/images/rights-collage.jpg" alt="The word “RIGHTS” spelled out with letters cut from newspapers and magazines" loading="lazy"/></figure>
 </div></section>
 <section class="section"><div class="container">
-  <div id="libGrid" class="cards-grid"></div>
+  <h2 class="sr-only">Browse rights by category</h2>
+    <div id="libGrid" class="cards-grid"></div>
   <div class="notice rv" style="margin-top:1.5rem">⚠️ <strong>Verification note:</strong> overviews are general information, not legal advice. Source hints on each page show which official text to confirm. Laws differ by state and change over time.</div>
 </div></section>
 </main>
@@ -47,6 +63,7 @@
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
+<script src="js/config.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){

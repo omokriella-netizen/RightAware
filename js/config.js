@@ -1,8 +1,9 @@
 /* RightAware runtime config (v2). No secrets here — only public flags.
    Backend keys (Supabase, Paystack secret, AI) live in server env vars / Vercel
    dashboard and are NEVER placed in frontend code. See .env.example + ENVIRONMENT.md.
-   Vercel can inject public values via a <script>window.__ENV__ = {...}</script> snippet;
-   without it, the app runs fully in local/offline demo mode. */
+   Public values arrive as window.__ENV__ via env.local.js — generated at build time by
+   tools/make-env.vercel.js (whitelist only) and always loaded by js/supabase-client.js;
+   without real values the app runs fully in local/offline demo mode. */
 window.RA_CONFIG = Object.assign({
   APP_NAME: "RightAware",
   ENV: "local",                 // local | preview | production
@@ -12,7 +13,6 @@ window.RA_CONFIG = Object.assign({
   PAYSTACK_PUBLIC_KEY: "",      // public key only — secret stays server-side
   TURNSTILE_SITE_KEY: "",       // public Cloudflare Turnstile site key (CAPTCHA); empty = not configured
   AI_ENDPOINT: "/api/ai/chat",  // live route (Stage 7); answers 501 until AI_API_KEY is set server-side, client then falls back to labelled library matches
-  OFFLINE_CACHE: "rightaware-v2",
   SUPPORT_EMAIL_PLACEHOLDER: "hello@rightaware.ng",
   CONTACT_STATUS: "placeholder" // placeholder | live
 }, (window.__ENV__ || {}));
