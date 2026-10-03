@@ -139,8 +139,11 @@
     else { isLive=false; }
     document.getElementById("reqTitle").textContent="Request help — "+(current?current.name:"");
     document.getElementById("reqNote").textContent = isLive
-      ? "This is a verified professional. Your request is recorded and reviewed by RightAware (their direct contact details are never shown publicly). Never share passwords, OTPs or bank details."
+      ? ((window.RA_DB&&RA_DB.remote.ready()&&RA_DB.remote.uid())
+          ? "This is a verified professional. Your request is created as a real consultation request on your account — the professional accepts or declines from their workspace. Never share passwords, OTPs or bank details."
+          : "This is a verified professional. Sign in to send a real consultation request; without a session it goes to RightAware's contact queue instead. Never share passwords, OTPs or bank details.")
       : "Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.";
+    document.getElementById("reqSend").textContent = isLive ? "Send request" : "Send Request (demo)";
     currentIsLive=isLive;
     document.getElementById("reqOut").textContent="";
     document.getElementById("reqModal").classList.add("open");
@@ -150,9 +153,29 @@
     var n=document.getElementById("reqName").value.trim(),m=document.getElementById("reqMsg").value.trim();
     if(!n||!m){document.getElementById("reqOut").textContent="Please add your name and a brief description.";return;}
     try{var a=JSON.parse(localStorage.getItem("ra_requests")||"[]");a.push({to:current&&current.id,at:new Date().toISOString(),name:n,msg:m});localStorage.setItem("ra_requests",JSON.stringify(a));}catch(_){}
+    var out=document.getElementById("reqOut");
+    var liveNow=!!(currentIsLive && window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client);
+    var signedIn=!!(window.RA_DB && RA_DB.remote.ready() && RA_DB.remote.uid());
     RA_DB.addConsultation({ to:(current&&current.name)||"Professional", msg:m, status:"requested", payment:{status:"none"} });
-    if(currentIsLive && window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client){
-      var out=document.getElementById("reqOut");
+    if(liveNow && signedIn){
+      // V1: a signed-in request to a VERIFIED professional becomes a REAL
+      // consultations row (own_cons_ins pins user, 'requested', no payment
+      // and the verified target). Success is claimed only from the response;
+      // the account page re-reads the row from Supabase.
+      out.textContent="Sending…";
+      RA_DB.remote.pushConsultation({ professionalId:(current&&current.id)||null, msg:(n+": "+m) }).then(function(r){
+        if(r && r.ok){
+          try{ RA_DB.remote.pullConsultations(); }catch(_){}
+          out.textContent="✅ Consultation request sent — a real row is now on your account, addressed to "+((current&&current.name)||"this professional")+". Track its status in My Account → Consultations; the professional accepts or declines from their workspace. Payments remain disabled until Paystack is configured.";
+        } else {
+          out.textContent="⚠ Could not send ("+((r&&r.error)||"network")+"). Your copy is saved on this device — please retry, or use the contact page.";
+        }
+      }).catch(function(){ out.textContent="⚠ Delivery failed (network). Saved on this device only."; });
+      return;
+    }
+    if(liveNow){
+      // Signed out: RLS allows no row without a session — fall back to the
+      // existing contact queue so the request still reaches RightAware.
       out.textContent="Sending…";
       RA_SUPA.client.from("contact_messages").insert({
         name:n, email:(RA_AUTH.current()||{}).email||"",
@@ -160,7 +183,7 @@
         message:"Request for help directed to "+((current&&current.name)||"a verified professional")+" ("+(current&&current.id)+"):\n"+m, status:"new"
       }).then(function(r){
         out.textContent = (r&&!r.error)
-          ? "✅ Request sent to RightAware for follow-up with this professional. Payments remain disabled until Paystack is configured."
+          ? "✅ Request sent to RightAware for follow-up with this professional. Sign in to send it as a real consultation request the professional can accept or decline. Payments remain disabled until Paystack is configured."
           : "⚠ Could not deliver ("+((r&&r.error&&r.error.message)||"network")+"). Your copy is saved on this device — please retry or use the contact page.";
       }).catch(function(){ out.textContent="⚠ Delivery failed (network). Saved on this device only."; });
       return;

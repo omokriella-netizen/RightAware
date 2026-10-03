@@ -1,12 +1,15 @@
 /* RightAware storage layer (v5): localStorage-first — everything works offline
    and survives reloads. When you are signed in, Supabase is the source of
    truth: saved items, your profile and the contact-message queue sync with
-   your account (remote.syncNow, per-account via ra_sync_owner). Consultations,
-   settings and reviews stay device-local for now. Each local method mirrors
-   its Supabase table — see DATABASE.md.
+   your account (remote.syncNow, per-account via ra_sync_owner). Consultations
+   sync too when you are signed in: a real row the target professional accepts
+   or declines (ra_consultations_remote mirrors the account's rows;
+   device-local receipts stay separate). Settings and reviews stay
+   device-local. Each local method mirrors its Supabase table — see DATABASE.md.
    Collections: ra_saved(+ra_removed tombstones, +ra_saved_base snapshot),
-   ra_reviews(+queue), ra_consultations, ra_messages, ra_notifications,
-   ra_reports, ra_requests, ra_profile(+ra_profile_base), ra_settings. */
+   ra_reviews(+queue), ra_consultations(+ra_consultations_remote mirror),
+   ra_messages, ra_notifications, ra_reports, ra_requests,
+   ra_profile(+ra_profile_base), ra_settings. */
 (function(){
   const LS = {
     get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(_){ return d; } },
@@ -60,8 +63,13 @@
       return i<0;
     },
     // ---- Consultations ----
+    // Local receipts (below) are the offline / signed-out / demo view.
     consultations(){ return LS.get("ra_consultations", []); },
     addConsultation(c){ const all=this.consultations(); c.id=uid(); c.at=new Date().toISOString(); c.status=c.status||"requested"; c.payment=c.payment||{status:"none"}; all.unshift(c); LS.set("ra_consultations", all); return c; },
+    // Signed-in pages read this instead: the local mirror of the account's
+    // REAL rows in Supabase — empty until the first sync lands, and never
+    // mixed with the device-local receipts above.
+    consultationsLive(){ return LS.get("ra_consultations_remote", []); },
     // ---- Contact messages ----
     messages(){ return LS.get("ra_messages", []); },
     addMessage(m){ const all=this.messages(); m.id=uid(); m.at=new Date().toISOString(); m.status="stored-local"; all.unshift(m); LS.set("ra_messages", all); return m; },
@@ -194,11 +202,26 @@
     },
     async pushConsultation(c){
       if(!this.ready()) return { ok:false, error:"backend not connected" };
+      if(!this.uid()) return { ok:false, error:"login required" };
+      var pid = c && c.professionalId;
+      if(!pid)
+        return { ok:false, error:"no verified professional selected — a real request must name the professional it is addressed to" };
       try{
         var r = await RA_SUPA.client.from("consultations").insert({
-          user_id:this.uid(), professional_id:null,
-          message:("To: " + (c.to || "Professional") + " | " + (c.msg || "")), status:"requested" }).select("id").single();
-        return r.error ? { ok:false, error:r.error.message } : { ok:true, id:r.data && r.data.id };
+          user_id:this.uid(), professional_id:pid,
+          message:(c.msg || ""), status:"requested" }).select("id,professional_id,status,created_at").single();
+        if(r.error){
+          var m = r.error.message || "";
+          // RLS refused the row (own_cons_ins): only a signed-in user may
+          // request, and only against a VERIFIED professional — say so
+          // honestly instead of pretending the request went through.
+          if(r.error.code === "42501" || r.error.code === "42503" || /row-level security|permission denied/i.test(m))
+            return { ok:false, error:"the database refused this request — it goes through only when you are signed in and the professional is verified on the directory (" + m + ")" };
+          if(r.error.code === "23503" || /foreign key/i.test(m))
+            return { ok:false, error:"that professional record no longer exists — reload the directory and try again" };
+          return { ok:false, error:m };
+        }
+        return { ok:true, id:r.data && r.data.id };
       }catch(_){ return { ok:false, error:"request failed" }; }
     },
     async pushMessage(m){
@@ -279,6 +302,29 @@
         return { ok:true, pulled:server.length, unread:unread };
       }catch(_){ return { ok:false, error:"sync failed" }; }
     },
+    async pullConsultations(){
+      if(!this.ready() || !this.uid()) return { ok:false, error:"login required" };
+      try{
+        var r = await RA_SUPA.client.from("consultations")
+          .select("id,professional_id,message,status,payment_reference,created_at")
+          .eq("user_id", this.uid())
+          .order("created_at", { ascending:false })
+          .limit(100);
+        if(r.error) return { ok:false, error:r.error.message };
+        // Server copy is the SOURCE OF TRUTH when signed in (policy
+        // own_cons_sel scopes every visible row to this account): the mirror
+        // is replaced, not merged. Device-local demo receipts live in their
+        // own key and are never mixed in — same rule as notifications.
+        var server = ((r.data) || []).map(function(x){
+          return { id:x.id, professionalId:x.professional_id, to:null,
+                   msg:(x.message || ""), status:x.status,
+                   payment:(x.payment_reference ? { status:"reference", ref:x.payment_reference } : { status:"none" }),
+                   at:x.created_at, live:true };
+        });
+        try{ localStorage.setItem("ra_consultations_remote", JSON.stringify(server)); }catch(_){}
+        return { ok:true, pulled:server.length };
+      }catch(_){ return { ok:false, error:"sync failed" }; }
+    },
     /* Read-state and delete writes, each verified by a fresh server re-read
        before any success is reported (own_notif decides whether the row was
        actually yours — a blocked write reports honestly instead of pretending). */
@@ -342,14 +388,16 @@
           if(owner && owner !== uidNow){
             // A different account signed in on this device: never push the previous
             // account's local copies into this account — start from the server copy.
-            try{ ["ra_saved","ra_saved_base","ra_profile","ra_profile_dirty","ra_profile_base","ra_removed","ra_notifications"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
+            try{ ["ra_saved","ra_saved_base","ra_profile","ra_profile_dirty","ra_profile_base","ra_removed","ra_notifications","ra_consultations_remote"].forEach(function(k){ localStorage.removeItem(k); }); }catch(_){}
             out.savedPull = await this.pullSaved();
             out.profile = await this.pullProfile();
             // The previous account's notifications were just cleared — replace them
             // with THIS account's server copy right away (sync runs once per account
             // per page load, so skipping the pull would leave the list empty until
-            // the next full page load).
+            // the next full page load). The consultation mirror is cleared and
+            // refilled for exactly the same reason.
             out.notif = await this.pullNotifications();
+            out.consult = await this.pullConsultations();
           } else {
             // 1) What did THIS device change since its last pull?
             //    ra_saved_base is the server snapshot that pull produced, so the
@@ -391,6 +439,7 @@
               ? await this.pushProfile(lp)   // edited here → CAS push (a stale base never wins)
               : await this.pullProfile();    // otherwise the account copy is the truth
             out.notif = await this.pullNotifications();
+            out.consult = await this.pullConsultations();
           }
           try{ localStorage.setItem("ra_sync_owner", uidNow); }catch(_){}
         }

@@ -62,6 +62,8 @@
   var ws = null;          // workspace state: { row, specs, cons, revs, notifs }
   var uRef = null;        // the signed-in account (set at boot)
   var ntMsg = "";         // notification action feedback, survives re-renders
+  var coMsg = "";         // consultation decision feedback, survives re-renders
+  var coBusy = false;     // one decision in flight at a time (buttons disabled)
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
   function byId(id){ return document.getElementById(id); }
@@ -368,6 +370,11 @@
       ? " — this edit needs supabase/dashboard-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
       : "";
   }
+  function respondHint(err){
+    return /does not exist|schema cache/i.test(String(err))
+      ? " — a decision needs supabase/consultations-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
+      : "";
+  }
   function saveProfile(){
     if(!ws || !ws.row) return;
     var args = {
@@ -475,20 +482,74 @@
       ? errBox("Could not read your consultation requests", res.error + " — the professional-side read comes from policy pro_read_consultations (supabase/dashboard-access.sql, run once)")
       : "";
     var rows = res.rows;
+    var open = rows.filter(function(c){ return String(c.status) === "requested"; }).length;
     var head = '<div class="section-head"><span class="eyebrow">Consultations</span><h2>Incoming service requests</h2>'
-      + '<p>Requests addressed to your record, read live from the consultations table. Statuses shown are the exact values the database holds.</p></div>';
+      + '<p>Requests addressed to your record, read live from the consultations table. Statuses shown are the exact values the database holds.'
+      + (rows.length ? ' ' + open + ' awaiting your decision.' : '') + '</p>'
+      + '<p class="ws-out" id="coOut">' + esc(coMsg) + '</p></div>';
     var list = errs ? errs
       : (rows.length
         ? '<div class="ws-list">' + rows.map(function(c){
+            var decided = String(c.status) !== "requested";
+            var acts = decided ? ''
+              : '<div class="ws-actions">'
+                + '<button class="btn btn-primary" type="button" data-accept="' + esc(c.id) + '"' + (coBusy ? ' disabled' : '')
+                + ' aria-label="Accept the consultation request dated ' + esc(fmtDate(c.created_at)) + '">✓ Accept request</button> '
+                + '<button class="btn btn-secondary" type="button" data-decline="' + esc(c.id) + '"' + (coBusy ? ' disabled' : '')
+                + ' aria-label="Decline the consultation request dated ' + esc(fmtDate(c.created_at)) + '">✗ Decline request</button>'
+                + '</div>';
             return '<div class="ws-item"><div class="ws-meta">' + pill(c.status) + ' <span>' + esc(fmtDate(c.created_at)) + '</span>'
               + (c.payment_reference ? '<span>payment reference on file</span>' : '') + '</div>'
               + '<h4>' + esc(statusLabel(c.status)) + '</h4>'
               + (c.message ? '<p>' + esc(c.message) + '</p>' : '')
+              + acts
               + '<div class="ws-meta">status in database: <code>' + esc(c.status || "unset") + '</code></div></div>';
           }).join("") + '</div>'
-          + '<div class="notice" style="margin-top:.9rem">Read-only for now: accepting, declining, completing and replying land with the consultation workflow (roadmap item 3). Statuses accepted by the workflow: pending, accepted, declined, completed, cancelled — plus today\'s <code>requested</code>. Nothing here is ever generated for display.</div>'
+          + '<div class="notice" style="margin-top:.9rem">V1 lifecycle: <code>requested → accepted</code> or <code>requested → declined</code> — each decision goes through the database function <code>ra_consult_respond</code> (supabase/consultations-access.sql), which re-checks that the row is addressed to YOUR verified record and is still open. The requesting individual is notified through the notifications table. Nothing here is ever generated for display.</div>'
         : '<p class="empty">No consultation requests are directed at your record yet. Real requests appear here with their status; this page never invents sample entries.</p>');
     byId("panelCo").innerHTML = head + list;
+    Array.prototype.forEach.call(byId("panelCo").querySelectorAll("[data-accept]"), function(b){
+      b.addEventListener("click", function(){ respondConsult(b.getAttribute("data-accept"), "accepted"); });
+    });
+    Array.prototype.forEach.call(byId("panelCo").querySelectorAll("[data-decline]"), function(b){
+      b.addEventListener("click", function(){ respondConsult(b.getAttribute("data-decline"), "declined"); });
+    });
+  }
+
+  /* The ONLY decision path: ra_consult_respond (security-definer) verifies in
+     the database that this account owns the addressed VERIFIED record and that
+     the row is still 'requested' — then the row is re-read before any success
+     is claimed (never trusting the call's own response). */
+  function respondConsult(id, status){
+    if(!ws || !ws.row || coBusy) return;
+    coBusy = true;
+    coMsg = "… Sending your decision to the database …";
+    renderConsults();
+    var done = function(msg){
+      coBusy = false;
+      coMsg = msg;
+      renderConsults(); renderOverview();
+    };
+    rpcCall("ra_consult_respond", { p_id: id, p_status: status }).then(function(r){
+      if(r && r.error){
+        done("⚠ Decision failed: " + (r.error.message || r.error) + respondHint(r.error.message || r.error));
+        return;
+      }
+      return qConsults(ws.row.id).then(function(res){
+        ws.cons = res;
+        var row = null;
+        res.rows.forEach(function(c){ if(String(c.id) === String(id)) row = c; });
+        if(res.error){
+          done("⚠ Saved, but re-reading the request failed: " + res.error + " — reload before trusting the state.");
+        } else if(row && String(row.status) === status){
+          done("✓ " + (status === "accepted" ? "Accepted" : "Declined") + " — re-read from the database just now. The requester sees the new status and gets one notification.");
+        } else {
+          done("⚠ The decision was sent but the re-read does not show it (" + (row ? String(row.status) : "row not visible") + "). Reload before trusting it.");
+        }
+      });
+    }, function(e){
+      done("⚠ Decision failed: " + ((e && e.message) || e) + respondHint((e && e.message) || e));
+    });
   }
 
   function renderReviews(){

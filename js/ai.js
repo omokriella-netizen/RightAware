@@ -5,7 +5,9 @@
    (429/502/network), the client falls back to the on-device knowledge base and
    LABELS the answer (demo:true) — a fallback is never presented as an AI answer.
    The client NEVER holds an AI key. Every answer carries the legal-info disclaimer.
-   The assistant must never claim to be a lawyer and never fabricate citations. */
+   The assistant must never claim to be a lawyer and never fabricate citations.
+   The Supabase session token is attached when one exists — a configured AI key
+   is only spendable by signed-in callers (401 otherwise). */
 (function(){
   const DISCLAIMER = "General legal information only — not legal advice. Verify important points with a qualified professional.";
   function localKB(q){
@@ -33,15 +35,26 @@
       if(this.mode()==="server"){
         let data = null;
         try{
-          const res = await fetch(RA_CONFIG.AI_ENDPOINT, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ message:m }) });
+          /* Attach the Supabase session token when one exists: a configured AI
+             key is only spendable by signed-in callers (401 otherwise). */
+          const headers = {"Content-Type":"application/json"};
+          try{
+            if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client && RA_SUPA.client.auth){
+              const s = await RA_SUPA.client.auth.getSession();
+              const tok = s && s.data && s.data.session && s.data.session.access_token;
+              if(tok) headers["Authorization"] = "Bearer " + tok;
+            }
+          }catch(_){}
+          const res = await fetch(RA_CONFIG.AI_ENDPOINT, { method:"POST", headers:headers, body:JSON.stringify({ message:m }) });
           try{ data = await res.json(); }catch(_){ data = null; }
           if(res.ok && data && data.text){
             return { text:String(data.text), links:data.links||[], sources:data.sources||[], disclaimer:data.disclaimer||DISCLAIMER };
           }
-          /* 501 = the key is not configured server-side: stop calling for this
+          /* 501 = the key is not configured server-side; 401 = the server
+             requires a signed-in account. Either way stop calling for this
              session and fall back. 429/502 are transient: fall back without
              disabling the server for later questions. */
-          if(res.status===501 || (data && data.code==="not_configured")) this._down = true;
+          if(res.status===501 || res.status===401 || (data && (data.code==="not_configured" || data.code==="unauthorized"))) this._down = true;
         }catch(_){ /* network/provider trouble — fall back below */ }
         return serverFallback(m);
       }

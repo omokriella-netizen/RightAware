@@ -28,7 +28,12 @@
    Professional/Organization dashboards (owner-locked profile edits, own-folder
    photo/logo uploads, consultation reads) `supabase/dashboard-access.sql`,
    and for real notification events on the application lifecycle
-   `supabase/notifications-events.sql` — each once in the SQL editor;
+   `supabase/notifications-events.sql` — each once in the SQL editor; for the
+   consultation request workflow (pinned insert/read policies, admin read,
+   the `ra_consult_respond` decision function)
+   `supabase/consultations-access.sql` and then the requester notification on
+   accept/decline `supabase/consultations-events.sql` — each once in the SQL
+   editor, in that order;
    enable **CAPTCHA** (Cloudflare Turnstile) under Authentication → Settings →
    CAPTCHA: public site key in `.env.local` as `TURNSTILE_SITE_KEY`, the secret
    only in Supabase (ENVIRONMENT.md → “CAPTCHA”). No Microsoft/social login is

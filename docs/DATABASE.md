@@ -224,7 +224,8 @@ additive file (safe to re-run, run **after** the three files above) adds:
   editable through it.
 - `pro_read_consultations` — SELECT policy: consultation rows whose
   `professional_id` is the caller's own **verified** professionals row (the
-  existing `own_cons` policy for the client side is untouched).
+  client-side `own_cons` policy was still in place when this file landed and
+  is replaced later by `supabase/consultations-access.sql`, below).
 - Storage policies confining `pro-photos` / `org-logos` INSERT/UPDATE/DELETE
   to the caller's own UUID folder (image extensions only; the buckets are
   created if missing and kept public-read).
@@ -269,3 +270,51 @@ the database:
 - **without** — everything still works, the notification lists simply stay
   empty. **with** — applicants and administrators see real, per-account,
   RLS-private rows in the existing notification UI.
+
+## Consultation requests (`supabase/consultations-access.sql` + `supabase/consultations-events.sql`)
+The `consultations` table existed from the base schema but was unusable: its
+only policy (`own_cons`, FOR ALL) let a signed-in requester insert **and
+edit/delete** their own row with any status/payment value (self-accept
+spoofing), no professional could ever decide a request, administrators had no
+read path, and the client pushed `professional_id = null`. These two additive
+files (safe to re-run, run **after** `dashboard-access.sql` and
+`notifications-events.sql`) wire the real V1 workflow — a signed-in individual
+requests → a real row → the verified professional accepts or declines through
+server authorization → the requester reads the status from Supabase:
+
+- `consultations-access.sql`:
+  - a status **CHECK** enforcing the V1 lifecycle exactly
+    (`requested`, `accepted`, `declined` — added with a `NOT VALID` fallback
+    if a legacy row holds another value); `payment_reference` stays nullable;
+  - `own_cons` is **replaced** by `own_cons_ins` (INSERT, authenticated:
+    `auth.uid() = user_id`, `status = 'requested'`, `payment_reference is
+    null`, target row must be a verified, non-demo professionals row) and
+    `own_cons_sel` (SELECT own rows only). The requester gets **no** update or
+    delete policy — no self-approval, no status/payment spoof, no hard
+    delete (history preserved; cancellation would be a status transition and
+    V1 has none);
+  - `admin_cons_read` — administrators read every consultation through
+    `ra_is_admin()` inside RLS (visibility is a database decision, never
+    hidden UI);
+  - `ra_consult_respond(p_id, p_status)` — the only decision path:
+    security-definer, `set search_path = public`, revoked from PUBLIC/anon
+    and granted to `authenticated`. It re-checks that the caller owns a
+    verified, non-demo professionals row, that the row is addressed to that
+    record (a stranger's row answers with the same message as a missing one),
+    and that the row is still `requested` — then updates and returns the row
+    as jsonb. `professional.html` re-reads the row before claiming success.
+- `consultations-events.sql`:
+  - `ra_notif_on_consultation()` — AFTER UPDATE of `status` trigger, same
+    best-effort pattern as `notifications-events.sql` (exception handler
+    swallows errors so a decision can never fail because of it): when the
+    status really changed to `accepted` or `declined` and the row carries its
+    requester, **exactly one** notification lands in the existing
+    `notifications` table for the requesting individual — nobody else. No
+    policies, no ALTER, no backfill.
+
+- **without** — the directory keeps writing `contact_messages` (signed-out
+  fallback), the workspace consultations panel stays read-only and the RPC
+  error names the file to run. **with** — a real request row exists per
+  account, only the addressed verified professional can decide it (server-side
+  re-checks), the requester sees the status live in My Account and is
+  notified once through the existing notification architecture.

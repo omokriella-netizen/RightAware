@@ -22,7 +22,7 @@
   <div id="statusBox" class="cards-grid" aria-live="polite"></div>
 </div></section>
 <section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights, laws & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
-<section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p>Requests made through the demo directory. Payments stay “none” until Paystack is configured.</p></div><div id="consultList" class="cards-grid"></div></div></section>
+<section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p id="consultMeta" style="max-width:760px">Loading consultations…</p></div><div id="consultList" class="cards-grid"></div><p class="form-note" id="consultOut" role="status" aria-live="polite"></p></div></section>
 <section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2><p id="notifMeta" style="max-width:760px">Loading notifications…</p><p style="max-width:760px"><button class="btn btn-secondary btn-sm" id="notifMarkAll" type="button" style="display:none">Mark all read</button></p></div><div id="notifList" style="max-width:760px"></div><p class="form-note" id="notifOut" role="status" aria-live="polite"></p></div></section>
 <section class="section section-alt"><div class="container contact-grid">
   <form class="form-card rv" id="profileForm"><h2 id="profile">Profile</h2>
@@ -54,10 +54,27 @@
       : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap ☆ Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
     document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
   }
+  var consultMsg = "";
+  function consultSignedIn(){ return !!(RA_DB.remote.ready() && RA_DB.remote.uid()); }
+  // Signed in → the account's REAL rows in Supabase (the mirror syncNow just
+  // refreshed); signed out → the device-local receipts. Never a blend.
+  function consultRows(){ return consultSignedIn() ? RA_DB.consultationsLive() : RA_DB.consultations(); }
   function renderConsult(){
-    const c = RA_DB.consultations();
-    document.getElementById("consultList").innerHTML = c.length ? c.map(x=>'<article class="card rv"><span class="tag">'+x.status+'</span><h3 style="margin-top:.4rem">'+(x.to||"Professional")+'</h3><p>'+(x.msg||"")+'</p><p><small>Payment: '+(x.payment&&x.payment.status||"none")+' • '+x.at+'</small></p></article>').join("")
-      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultations yet</h3><p>Requests from the professionals directory will be listed here with payment status.</p><a class="link" href="lawyers.html">Open directory →</a></div>';
+    var signedIn = consultSignedIn(), c = consultRows();
+    document.getElementById("consultMeta").textContent = signedIn
+      ? "From your account (Supabase) — real requests, database is the source of truth. Payments stay “none” until Paystack is configured."
+      : "Local copy on this device — sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
+    document.getElementById("consultList").innerHTML = c.length ? c.map(function(x){
+      var st = String(x.status || "requested");
+      var stLabel = st === "accepted" ? "✓ accepted" : st === "declined" ? "✗ declined" : st;
+      return '<article class="card rv"><span class="tag">'+esc(stLabel)+'</span><h3 style="margin-top:.4rem">'+esc(x.to || (x.live ? "Consultation request" : "Professional"))+'</h3>'
+        + '<p>'+esc(x.msg || "")+'</p>'
+        + '<p><small>Payment: '+esc((x.payment && x.payment.status) || "none")+' • '+esc(String(x.at || ""))+'</small></p></article>';
+    }).join("")
+      : (signedIn
+          ? '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultation requests yet</h3><p>Requests you send from the professionals directory appear here with their real status; nothing is generated for display.</p><a class="link" href="lawyers.html">Open directory →</a></div>'
+          : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultations yet</h3><p>Requests from the professionals directory will be listed here with payment status.</p><a class="link" href="lawyers.html">Open directory →</a></div>');
+    document.getElementById("consultOut").textContent = consultMsg;
   }
   var notifMsg = "";
   function notifSignedIn(){ return !!(RA_DB.remote.ready() && RA_DB.remote.uid()); }
@@ -219,13 +236,13 @@
       }).catch(function(){});
     }
   }
-  document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); renderNotif(); });
+  document.addEventListener("ra:backend-ready", function(){ paintSync(); renderStatus(); renderNotif(); renderConsult(); });
   /* The account sync finishes AFTER this page first painted, so whatever arrived
      from the other device is in localStorage by now — repaint from it. An edit
      already in progress is never overwritten. A failed notification pull is
      shown honestly instead of leaving a stale list unexplained. */
   document.addEventListener("ra:synced", function(ev){
-    renderSaved(); renderNotif();
+    renderSaved(); renderNotif(); renderConsult();
     var d = ev && ev.detail;
     if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
       notifMsg = "⚠ Could not refresh notifications from the server: " + d.notif.error
@@ -234,6 +251,14 @@
     } else if(d && d.notif && d.notif.ok !== false){
       notifMsg = "";
       renderNotif();
+    }
+    if(consultSignedIn() && d && d.consult && d.consult.ok === false && d.consult.error){
+      consultMsg = "⚠ Could not refresh consultations from the server: " + d.consult.error
+        + " — your own rows are read through policy own_cons_sel (supabase/consultations-access.sql)";
+      renderConsult();
+    } else if(d && d.consult && d.consult.ok !== false){
+      consultMsg = "";
+      renderConsult();
     }
     if(!profileTouched) fillProfile();
   });

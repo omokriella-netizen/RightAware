@@ -127,8 +127,9 @@ with explicit column whitelists** — the direct tables stay editor/admin-only:
    `verification_status = 'verified'` on that own row — consultations are a
    verified-professional privilege, so an unverified/rejected professional
    record gains no read from this policy. Read-only; adds no new public
-   exposure. (The professional-side consultation workflow itself is roadmap
-   item 3 — this policy only prepares the row read.)
+   exposure. (The professional-side consultation workflow itself landed later
+   with `supabase/consultations-access.sql` — this policy only prepares the
+   row read.)
 4. No changes to any existing policy, table, CHECK, or the approval/revoke
    functions. Nothing is granted to `anon`.
 5. **As built: photo/logo uploads** (the phase brief asks for a real profile
@@ -166,8 +167,10 @@ with explicit column whitelists** — the direct tables stay editor/admin-only:
   Neither replaces account, admin, or any public page.
 - **Not part of this step — workflows** (they land with their own roadmap
   items and plug into the panels below): consultation answers / accept-decline
-  actions (item 3), review submission & moderation tooling (item 4),
-  notification *production* (item 2), payments (item 7). **As built**, both
+  actions (item 3 — landed with `supabase/consultations-access.sql` +
+  `supabase/consultations-events.sql`), review submission & moderation tooling
+  (item 4), notification *production* (item 2 — landed), payments (item 7).
+  **As built**, both
   pages nevertheless include the **read-only** structures the phase brief asks
   for: the consultations panel (real rows + status labels), the reviews panel
   (published rows + computed rating summary, never editable) and the
@@ -245,6 +248,10 @@ Built exactly to §2, with the phase brief's expanded read-only sections (see
 policies/tables/CHECKs, the approval/revoke functions, `admin.html`, public
 directory pages, and the contact-message flows. **Roadmap note for item 3:**
 tightening `own_cons` `WITH CHECK` (so a client cannot point a new request at
-another professional's record) belongs with the consultation workflow and was
+another professional's record) belonged with the consultation workflow and was
 left untouched here — `pro_read_consultations` already confines professional
-reads to their own verified row.
+reads to their own verified row. **Landed:** the pinned `own_cons_ins` /
+`own_cons_sel` pair, the admin read policy, the `ra_consult_respond` decision
+function and the requester notification trigger are now in
+`supabase/consultations-access.sql` + `supabase/consultations-events.sql`
+(phase 3) — `dashboard-access.sql` itself stays exactly as applied.

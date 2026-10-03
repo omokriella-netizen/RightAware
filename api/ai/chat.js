@@ -13,7 +13,12 @@
    cases, statistics, organisations, contacts or URLs; always carries the
    legal-info disclaimer; never claims to be a lawyer; never echoes the API key;
    never logs message content. Best-effort in-memory rate limit of 20 messages
-   per minute per IP (per function instance). */
+   per minute per IP (per function instance).
+   Auth: the unconfigured answer (501 not_configured, with its fallback links)
+   is checked FIRST so the client contract is unchanged; when AI_API_KEY IS
+   configured, spending it additionally requires a verified Supabase JWT
+   (Authorization: Bearer …, checked server-side against SUPABASE_URL) — an
+   anonymous caller can never consume the key. */
 "use strict";
 
 const DISCLAIMER = "General legal information only — not legal advice. Verify important points with a qualified professional.";
@@ -142,11 +147,38 @@ function rateLimited(ip){
   return false;
 }
 
+/* ---------- verified caller (server-side JWT check, fail closed) ---------- */
+async function verifiedAccount(req){
+  try {
+    const h = req.headers && (req.headers.authorization || req.headers.Authorization);
+    if (typeof h !== "string") return null;
+    const m = /^Bearer\s+(.+)$/.exec(h.trim());
+    if (!m) return null;
+    const base = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
+    const key = process.env.SUPABASE_PUBLISHABLE_KEY || "";
+    if (!base || !key) return null;
+    const ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(function(){ try { ctrl.abort(); } catch(_){} }, 8000) : null;
+    try {
+      const r = await fetch(base + "/auth/v1/user", {
+        headers: { apikey: key, Authorization: "Bearer " + m[1].trim() },
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!r.ok) return null;
+      const u = await r.json();
+      if (!u || !u.id) return null;
+      return { id: String(u.id) };
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  } catch(_) { return null; }
+}
+
 /* ---------- handler ---------- */
 module.exports = async (req, res) => {
   const configured = !!process.env.AI_API_KEY;
   if (req.method !== "POST"){
-    return res.status(405).json({ ok: false, code: "method", error: "POST only.", configured: configured });
+    return res.status(405).json({ ok: false, code: "method", error: "POST only." });
   }
   let body = req.body;
   if (typeof body === "string"){ try { body = JSON.parse(body); } catch (e) { body = null; } }
@@ -156,7 +188,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ ok: false, code: "bad_request", error: "message (1-2000 chars) required." });
   }
   const xff = req.headers && req.headers["x-forwarded-for"] ? String(req.headers["x-forwarded-for"]).split(",")[0].trim() : "";
-  const ip = xff || req.ip || "unknown";
+  const ip = req.ip || xff || "unknown";
   if (rateLimited(ip)){
     return res.status(429).json({ ok: false, code: "rate_limited", error: "Too many messages. Wait a moment and try again." });
   }
@@ -167,6 +199,13 @@ module.exports = async (req, res) => {
       error: "AI not configured (AI_API_KEY missing). The assistant falls back to labelled library matches.",
       links: FALLBACK_LINKS
     });
+  }
+  /* A configured key is only spendable by a signed-in caller. This check sits
+     AFTER the 501 above on purpose: the documented not-configured contract
+     (js/ai.js latches on 501 / code not_configured) must not change. */
+  const acct = await verifiedAccount(req);
+  if (!acct){
+    return res.status(401).json({ ok: false, code: "unauthorized", error: "Sign in required." });
   }
 
   const srcs = retrieve(message, kb());
@@ -190,7 +229,7 @@ module.exports = async (req, res) => {
       }),
       signal: ctrl ? ctrl.signal : undefined
     });
-    if (!r.ok) return res.status(502).json({ ok: false, code: "provider_error", error: "AI provider returned status " + r.status + ".", links: FALLBACK_LINKS });
+    if (!r.ok) return res.status(502).json({ ok: false, code: "provider_error", error: "AI provider error.", links: FALLBACK_LINKS });
     raw = await r.json();
   } catch (e) {
     return res.status(502).json({ ok: false, code: "provider_error", error: "AI provider unreachable.", links: FALLBACK_LINKS });
@@ -206,7 +245,6 @@ module.exports = async (req, res) => {
     text: String(text).trim(),
     links: srcs.slice(0, 3).map(function(s){ return { t: s.t, u: s.u }; }),
     sources: srcs.slice(0, 3).map(function(s){ return { t: s.t, u: s.u, kind: s.kind }; }),
-    disclaimer: DISCLAIMER,
-    model: model
+    disclaimer: DISCLAIMER
   });
 };
