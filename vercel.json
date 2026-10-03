@@ -5,6 +5,7 @@
   "buildCommand": "node tools/make-env.vercel.js",
   "outputDirectory": ".",
   "redirects": [
+    { "source": "/api/(.*)\\.js", "destination": "/api/$1" },
     { "source": "/index", "destination": "/", "permanent": true },
     { "source": "/about", "destination": "/about.html", "permanent": true },
     { "source": "/account", "destination": "/account.html", "permanent": true },
