@@ -56,8 +56,9 @@ it after the auth/verification phase.
 - `admin.html`: the administrator's workspace (queue, approve, reject, reopen,
   inbox). Approve/reject are admin-only (RLS + `ra_is_admin()` RPCs).
 
-### The gap versus the approved scope
-There are **no `professional.html` / `organization.html` pages**. A verified
+### The gap versus the approved scope (closed 2026-10-01 — both pages exist)
+At planning time there were **no `professional.html` / `organization.html`
+pages**. A verified
 professional today gets only: the `professional` role, a public directory
 listing, an ⚖️ label on their account page, and — per gap 1 of this phase —
 symmetric revocation. A verified organization gets only: its public listing

@@ -1,10 +1,12 @@
 # RightAware DATABASE.md — Supabase schema & swap-in guide
 
 ## Schema
-`supabase/schema.sql` creates **18 tables** (all RLS-enabled):
+`supabase/schema.sql` creates **19 tables** (all RLS-enabled — the same 19
+tables are re-issued in `supabase/supabase-final.sql`, the file the live
+project was built from):
 
 `profiles`, `user_roles`, `right_categories`, `rights`, `legal_documents`,
-`organization_contacts`(+`organizations`), `videos`, `professionals`,
+`organizations`, `organization_contacts`, `videos`, `professionals`,
 `professional_specializations`, `professional_reviews`, `consultations`,
 `saved_items`, `faqs`, `resources`, `contact_messages`, `notifications`,
 `payments`, `audit_logs`.
@@ -117,10 +119,10 @@ cache. `js/db.js` `remote.syncNow()` runs once per account per page load
   retrying forever.
 - **Race guard** — a pull that lands after a local save started is discarded,
   so it never wipes the edit or its retry flag.
-- The service worker cache (`rightaware-v10`) purges pre-multi-app `js/auth.js`
-  (the single-slot `ra_pending_app` writer) from devices — v10 forces the new
-  list-based flush code to run on the first load after its deploy; `RA_DB.v`
-  reports the running sync version.
+- The service worker cache (currently `rightaware-v11`) purges older cached
+  `js/auth.js` (e.g. the single-slot `ra_pending_app` writer) from devices —
+  every cache bump forces the newest flush code to run on the first load after
+  its deploy; `RA_DB.v` reports the running sync version.
 - **Version bump rule:** when the sync code changes, bump all of these
   together — `DB.v` in `js/db.js`, the `?v=` on **every** page that loads
   `js/auth.js`/`js/db.js` (account, admin, signup, login, lawyers, contact,
@@ -318,3 +320,24 @@ server authorization → the requester reads the status from Supabase:
   account, only the addressed verified professional can decide it (server-side
   re-checks), the requester sees the status live in My Account and is
   notified once through the existing notification architecture.
+
+## Pending migrations (committed, NOT yet applied)
+Two additive files for the professional workspace are committed in
+`supabase/` but have **no execution channel from the dev machine** — an
+operator must paste each into the Supabase SQL editor **once, in this order**:
+
+1. `supabase/professional-application-ref.sql` — adds the nullable
+   `application_ref` column to `professionals`. Until it runs,
+   `professional.html` reads it through a 42703-tolerant fast path (the
+   workspace still opens; the reference shows as unavailable).
+2. `supabase/fix-exec-grants.sql` — revokes PUBLIC/anon EXECUTE on the
+   admin helper functions (they currently answer an anonymous "admins only"
+   400, which leaks that they exist) and re-grants them to `authenticated`
+   only.
+
+Both files are additive (no table rebuilds, no data touched) and safe to run
+once each on the live project. **Verification afterwards:** the
+`application_ref` probe answers 200 instead of 42703; the admin RPCs answer
+**404 (PGRST202) or 42501 for anonymous callers** (either means EXECUTE is no
+longer anon-reachable — PostgREST hides revoked functions behind 404) instead
+of the current 400 "admins only"; `ra_is_admin` still answers 200 (control).

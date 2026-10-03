@@ -24,9 +24,9 @@ simplified explanations of difficult legal information.
 | Get Help / Contact | Triage, **validated + spam-protected contact form** (honeypot, time-trap, per-device throttle, link-spam check) delivering to `contact_messages`, an offline queue that flushes when the backend is reachable, Report-a-concern routed to the same admin inbox, and the official contact details (general + partnerships email, phone, Abuja, Open 24/7) |
 | Professionals | Live directory of **admin-approved** profiles (public SELECT is RLS-limited to `verified`) + clearly-marked demo profiles; on-site request flow posts to the queue when connected |
 | Search | Ranked site search incl. laws deep links + “search exact wording inside the supplied laws” promo |
-| Offline-first | Service worker **v5**: caches only same-origin public GETs; never caches Authorization headers, cross-origin responses, or private shells; `offline.html` staleness warning |
-| Payments | Paystack test-mode server stubs only; UI stays disabled until configured; no fees invented |
-| API stubs | `api/*` Vercel functions (health, Paystack initialize/verify, AI chat) — server-side keys only |
+| Offline-first | Service worker **v11**: caches only same-origin public GETs; never caches Authorization headers, cross-origin responses, or private shells (`account`/`admin`/`login`/`signup`/`professional`/`organization`); `offline.html` staleness warning |
+| Payments | Paystack endpoints exist (`api/paystack/*` — answers 501 until `PAYSTACK_SECRET_KEY` is set); no payment UI yet (`js/paystack.js` is ready but unwired, `paymentsEnabled:false`); no fees invented |
+| API | `api/*` Vercel functions: health is live; AI chat + Paystack initialize/verify answer 501 until their server keys are set — server-side keys only |
 
 **Content-safety rule:** nothing invented — no fabricated laws, sections, cases,
 lawyers, organizations, contacts, numbers or statistics. Unverified content is
@@ -42,7 +42,8 @@ labelled `AWAITING UPLOAD / OVERVIEW / DRAFT / DEMO / PLACEHOLDER`.
 - **App layer:** `js/config.js` (env/flags) → `js/supabase-client.js` (connector:
   `window.__ENV__` → localStorage `ra_env` → demo fallback) → `js/db.js`,
   `js/auth.js` (demo + Supabase Auth, role fetch via `ra_my_roles()`), `js/i18n.js`,
-  `js/reviews.js`, `js/ai.js`, `js/paystack.js`.
+  `js/reviews.js`, `js/ai.js`, `js/paystack.js` (client for the upcoming
+  payment flow — not wired to any page yet).
 - **Backend (schema already created; not re-run):** 19 tables + RLS in
   `supabase/supabase-final.sql`, grants in `supabase/fix-access.sql` (applied),
   **optional add-on** `supabase/applications-access.sql` (policies for direct
@@ -98,10 +99,11 @@ AI_API_KEY= AI_MODEL= AI_BASE_URL=       # SERVER ONLY (/api/ai/chat)
 
 ## Quality checks run for this build
 
-- Static link/asset checker: no missing local links (676 links; 19 flagged
-  strings are JS-concatenation false positives).
-- Headless-browser pass over all 19 pages in **both modes** (live backend and
-  demo): **zero console errors**, all key markers present, no
+- Static link/asset checker: no missing local links (880 refs checked, 0
+  missing; 37 JS-template refs skipped by design).
+- Headless-browser pass over the page set in **both modes** (live backend and
+  demo — 19 pages at the time of that check, 22 today): **zero console
+  errors**, all key markers present, no
   `[object Object]`/`undefined` leaks.
 - Functional tests: laws full-text search (11 extracts for “arrest” across 5
   documents after fixing text-index keys), doc viewer deep links, site search,
@@ -126,5 +128,7 @@ database — verified read-only). `supabase/applications-access.sql` has been
 **applied** on the project (probes confirm `ra_my_roles`,
 `ra_approve_professional`, `ra_approve_organization` exist); re-run it once to
 pick up the newly added `admin_msg_update` policy (inbox “Mark reviewed”
-otherwise reports an honest 0-rows error). Paystack/AI stay stubs. Pidgin
+otherwise reports an honest 0-rows error). The Paystack/AI endpoints are live
+but answer 501 until `PAYSTACK_SECRET_KEY` / `AI_API_KEY` are set in Vercel
+Production. Pidgin
 translations await qualified review.

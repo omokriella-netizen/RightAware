@@ -9,17 +9,20 @@
   silently skips it and still works.
 
 ## 2. Project map
-- Pages: `index, about, rights, laws, videos, organizations, resources, help, lawyers, ai, search, contact, login, signup, account, admin, offline` (+ `rights/arrest-rights`, `rights/topic`)
+- Pages: `index, about, rights, laws, videos, organizations, resources, help, lawyers, ai, search, contact, login, signup, account, admin, offline, printables, professional, organization` (+ `rights/arrest-rights`, `rights/topic`) — 22 total
 - Shared UI: `app.js` (nav, search redirect, newsletter, reveal, SW)
 - Content: `content/rights.js|laws.js|videos.js|organizations.js|professionals.js`, `data.js`
-- App logic: `js/config.js|db.js|auth.js|turnstile.js|reviews.js|ai.js|paystack.js`
+- App logic: `js/config.js|supabase-client.js|db.js|auth.js|turnstile.js|reviews.js|ai.js`, `js/paystack.js` (ready but not wired — no payment UI yet)
 - Backend-ready: `supabase/schema.sql`, `api/**`, `vercel.json`, `.env.example`
 
 ## 3. Go beyond demo (order matters)
-1. **Supabase:** create project → run `supabase/schema.sql` → create Storage buckets
+1. **Supabase:** create project → run `supabase/supabase-final.sql` then
+   `supabase/fix-access.sql` → create Storage buckets
    (`legal-docs` private; `videos`, `thumbs`, `org-logos`, `pro-photos` public-read)
-   → copy URL + publishable key → ENVIRONMENT.md. Then implement
-   `js/supabase-client.js` per DATABASE.md and flip `BACKEND`/`authMode`.
+   → copy URL + publishable key → ENVIRONMENT.md and re-run
+   `tools\make-env.ps1`. `js/supabase-client.js` is already implemented — it
+   always loads `env.local.js` and connects whenever the public URL + key are
+   present.
 2. **Auth & verification workflow:** keep Authentication → Settings → **Confirm
    email** ON (an address is never treated as verified until Supabase confirms
    it); run `supabase/applications-access.sql`, for the distinct **Rejected**
@@ -33,7 +36,10 @@
    the `ra_consult_respond` decision function)
    `supabase/consultations-access.sql` and then the requester notification on
    accept/decline `supabase/consultations-events.sql` — each once in the SQL
-   editor, in that order;
+   editor, in that order; for the professional workspace's applicant reference
+   and locked-down function grants (run **once each**, in this order, after
+   the rest): `supabase/professional-application-ref.sql` then
+   `supabase/fix-exec-grants.sql` (see DATABASE.md → Pending migrations);
    enable **CAPTCHA** (Cloudflare Turnstile) under Authentication → Settings →
    CAPTCHA: public site key in `.env.local` as `TURNSTILE_SITE_KEY`, the secret
    only in Supabase (ENVIRONMENT.md → “CAPTCHA”). No Microsoft/social login is

@@ -1,8 +1,9 @@
 # RightAware ENVIRONMENT.md — variables & secret safety
 
 ## Source of truth
-`.env.example` lists every variable. Copy to `.env` for local API work only —
-`.env` is git-ignored and must never be committed.
+`.env.example` lists every variable. Copy to `.env.local` (the file
+`tools\make-env.ps1` reads) for local work — `.env` and `.env.local` are both
+git-ignored and must never be committed.
 
 ## Rules
 1. **Frontend may only receive PUBLIC values** (`SUPABASE_URL`,
@@ -61,7 +62,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\make-env.ps1
 
 This writes `env.local.js` at the project root (git-ignored) with a **strict
 whitelist**: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PAYSTACK_PUBLIC_KEY`,
-`TURNSTILE_SITE_KEY` — nothing else. `SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_CK_SECRET_KEY` and
+`TURNSTILE_SITE_KEY` — nothing else. `SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_SECRET_KEY` and
 `AI_API_KEY` are never copied, even when present in `.env.local`.
 `js/supabase-client.js` loads it as the lowest-priority credential source
 (server-injected `window.__ENV__` and the `ra_env` localStorage override still

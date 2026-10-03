@@ -2,8 +2,11 @@
 
 ## What deploys
 Static pages + `api/*` serverless functions + `vercel.json` (security headers,
-no-cache for `sw.js`, extensionless-page redirects). No build command needed
-(framework: static).
+no-cache for `sw.js`, extensionless-page redirects, `/api/*.js` → `/api/*`
+source-code redirect). Build command (already set in `vercel.json`):
+`node tools/make-env.vercel.js` — generates `env.local.js` from the Vercel
+environment through a fixed public whitelist before static files are
+collected; no bundling, no framework.
 
 ## Routing: `cleanUrls` must stay OFF (do not re-enable)
 `cleanUrls: true` made Vercel 308-redirect every `*.html` URL to an
@@ -23,8 +26,9 @@ Instead of `cleanUrls`:
   in `vercel.json` (page -> `page.html`, the safe direction; regenerate the
   list whenever a new HTML page is added).
 - `sw.js` never stores redirect-followed bodies (`!res.redirected`) and its
-  cache name was bumped to `rightaware-v4` so existing visitors purge any
-  poisoned `rightaware-v3` entries on the next service-worker update.
+  cache name is versioned per release (the poisoned `rightaware-v3` entries
+  were purged by bumping to v4; the current release is `rightaware-v11`), so
+  existing visitors always drop old caches on the next service-worker update.
 
 If you ever add a redirect that can affect `*.html` URLs, re-run the local
 click test first (SW-controlled navigation + redirect = `ERR_FAILED`).
@@ -33,9 +37,12 @@ click test first (SW-controlled navigation + redirect = `ERR_FAILED`).
 1. `vercel` (preview) → confirm pages render; `vercel --prod` for production.
 2. Dashboard → Settings → Environment Variables: add Supabase / Paystack / AI
    values per environment (Production, Preview). Redeploy after changes.
-3. Inject public keys to the browser: add a tiny snippet before `js/config.js`
-   loads, e.g. `<script>window.__ENV__={SUPABASE_URL:"...",SUPABASE_PUBLISHABLE_KEY:"...",PAYSTACK_PUBLIC_KEY:"...",TURNSTILE_SITE_KEY:"...",AI_ENDPOINT:"/api/ai/chat"}</script>`
-   (template this in CI from env vars — never hard-code). `TURNSTILE_SITE_KEY`
+3. Public keys reach the browser through `env.local.js`, regenerated on every
+   build by `node tools/make-env.vercel.js` from the Vercel environment via a
+   fixed public whitelist (`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
+   `PAYSTACK_PUBLIC_KEY`, `TURNSTILE_SITE_KEY`) — secrets
+   (`SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_SECRET_KEY`, `AI_API_KEY`,
+   `TURNSTILE_SECRET_KEY`) are never copied, even when set. `TURNSTILE_SITE_KEY`
    is only the public Cloudflare site key; the Turnstile SECRET key belongs in
    the Supabase Auth CAPTCHA setting, never in a page (see ENVIRONMENT.md).
 4. Verify: `/api/health` → 200; `/api/paystack/*` + `/api/ai/chat` → 501 until
