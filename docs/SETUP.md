@@ -39,14 +39,14 @@
    editor, in that order; for the professional workspace's applicant reference
    and locked-down function grants (run **once each**, in this order, after
    the rest): `supabase/professional-application-ref.sql` then
-   `supabase/fix-exec-grants.sql` (see DATABASE.md → Pending migrations);
+   `supabase/fix-exec-grants.sql` (see DATABASE.md → Migrations status);
    enable **CAPTCHA** (Cloudflare Turnstile) under Authentication → Settings →
    CAPTCHA: public site key in `.env.local` as `TURNSTILE_SITE_KEY`, the secret
    only in Supabase (ENVIRONMENT.md → “CAPTCHA”). No Microsoft/social login is
    used.
 3. **Content:** verify + upload real documents/videos/orgs/professionals
    (CONTENT_UPLOAD_GUIDE.md). Nothing invented may be published.
-4. **AI:** `api/ai/chat.js` is implemented and `AI_ENDPOINT=/api/ai/chat` is set client-side. Remaining: add `AI_API_KEY` (+ optional `AI_MODEL`, `AI_BASE_URL`) as Vercel env vars and redeploy — until then the route answers 501 and the site shows labelled library matches.
+4. **AI:** `api/ai/chat.js` is implemented, `AI_ENDPOINT=/api/ai/chat` is set client-side, and `AI_API_KEY` is now configured in Vercel Production (verified 2026-10-04: the route answers **401 "Sign in required"** to anonymous callers — 501 not_configured only if the key is ever removed). Signed-out visitors get an honest sign-in prompt; the signed-in provider call is contract-tested but needs a real account to exercise end-to-end in production.
 5. **Paystack:** set keys, keep secret server-side, test initialize→verify in test mode.
 6. **Deploy:** Vercel (DEPLOYMENT.md), set env vars, smoke-test, submit sitemap.
 

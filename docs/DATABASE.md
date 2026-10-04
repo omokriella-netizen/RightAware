@@ -321,23 +321,22 @@ server authorization → the requester reads the status from Supabase:
   re-checks), the requester sees the status live in My Account and is
   notified once through the existing notification architecture.
 
-## Pending migrations (committed, NOT yet applied)
-Two additive files for the professional workspace are committed in
-`supabase/` but have **no execution channel from the dev machine** — an
-operator must paste each into the Supabase SQL editor **once, in this order**:
+## Migrations status: every committed file is applied
+The two formerly-pending additive files for the professional workspace are
+**applied on the live project** (verified read-only 2026-10-04: probe
+`ra-post-mig-probe.ps1` answered ALL PASS):
 
-1. `supabase/professional-application-ref.sql` — adds the nullable
-   `application_ref` column to `professionals`. Until it runs,
-   `professional.html` reads it through a 42703-tolerant fast path (the
-   workspace still opens; the reference shows as unavailable).
-2. `supabase/fix-exec-grants.sql` — revokes PUBLIC/anon EXECUTE on the
-   admin helper functions (they currently answer an anonymous "admins only"
-   400, which leaks that they exist) and re-grants them to `authenticated`
-   only.
+1. `supabase/professional-application-ref.sql` — the nullable
+   `application_ref` column exists on `professionals`: the probe reads it with
+   HTTP 200 (no 42703), so `professional.html` shows the real application
+   reference instead of the tolerant fast-path fallback.
+2. `supabase/fix-exec-grants.sql` — PUBLIC/anon EXECUTE is revoked on the
+   admin helper functions: `ra_my_roles`, `ra_approve_professional`,
+   `ra_approve_organization` and `ra_revoke_professional` answer **401/403,
+   404 (PGRST202) or 42501** to anonymous callers (any of those means EXECUTE
+   is no longer anon-reachable — never the old 400 "admins only", which
+   leaked that they exist), while `ra_is_admin` still answers 200 (control).
 
-Both files are additive (no table rebuilds, no data touched) and safe to run
-once each on the live project. **Verification afterwards:** the
-`application_ref` probe answers 200 instead of 42703; the admin RPCs answer
-**404 (PGRST202) or 42501 for anonymous callers** (either means EXECUTE is no
-longer anon-reachable — PostgREST hides revoked functions behind 404) instead
-of the current 400 "admins only"; `ra_is_admin` still answers 200 (control).
+Both files are additive (no table rebuilds, no data touched). A fresh
+environment runs them once each, in that order, after the files listed in
+SETUP.md.
