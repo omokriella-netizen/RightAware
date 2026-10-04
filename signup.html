@@ -4,20 +4,6 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Sign Up — RightAware</title>
 <meta name="description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
-<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
-<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-<link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
-<meta property="og:type" content="website"/>
-<meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Sign Up — RightAware"/>
-<meta property="og:description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
-<meta property="og:url" content="https://rightaware-three.vercel.app/signup.html"/>
-<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Sign Up — RightAware"/>
-<meta name="twitter:description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
-<link rel="canonical" href="https://rightaware-three.vercel.app/signup.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -37,12 +23,10 @@
   legend{font-weight:700;font-size:.85rem;padding:0 .4rem}
   #backBtn{margin-bottom:.8rem}
   .status-pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:800}
-  .page-hero-media img{background:#fff}
   @media(max-width:820px){.path-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="container header-inner">
   <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
   <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
@@ -50,7 +34,7 @@
   <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
 </div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="login.html">Log In</a><a href="contact.html">Contact Us</a></div></header>
 
-<main id="main">
+<main>
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
     <span class="eyebrow">Join RightAware</span>
@@ -532,17 +516,7 @@
       try{ RA_AUTH.dropPendingApplication({ table:opts.table, email:opts.account.email }); }catch(_){}
       if(opts.extraTable){
         var ex = (opts.extraRows || []).filter(function(r){ return r.professional_id; });
-        if(ex.length){
-          var exr = await client.from(opts.extraTable).insert(ex);
-          if(exr && exr.error){
-            // The application row exists but its specialisation rows did not
-            // attach — say so honestly instead of reporting full success.
-            if(window.console && console.warn) console.warn("RightAware: specialisation rows not attached:", exr.error.message);
-            finish({ title:"Application submitted for review", ref:ref,
-              detail: acctNote + "<br/><br/>Your application was stored in RightAware's application list — but your <strong>specialisation choices could not be saved</strong> (" + esc(exr.error.message) + "). An administrator will confirm them during your review. Nothing is public until approval." });
-            return;
-          }
-        }
+        if(ex.length){ try{ await client.from(opts.extraTable).insert(ex); }catch(_){} }
       }
       finish({ title:"Application submitted for review", ref:ref,
         detail: acctNote + "<br/><br/>Your application was stored in RightAware's application list. An administrator reviews it personally — <strong>your profile will not appear anywhere until it is approved</strong>." });
@@ -550,10 +524,7 @@
     }
 
     // 3. queue fallback: contact_messages (anon insert is allowed by the schema)
-    // The applicant reference rides along so the admin inbox can quote it back —
-    // it is otherwise only saved on this device (the professionals.application_ref
-    // column write lands with supabase/professional-application-ref.sql).
-    var q = await client.from("contact_messages").insert({ name:opts.account.name, email:opts.account.email, topic:opts.queue.topic, message:opts.queue.message + (ref ? ("\nApplicant reference (quote this): " + ref) : ""), status:"new" });
+    var q = await client.from("contact_messages").insert({ name:opts.account.name, email:opts.account.email, topic:opts.queue.topic, message:opts.queue.message, status:"new" });
     if(!q.error){
       finish({ title:"Application received", ref:ref,
         detail: acctNote + "<br/><br/>Your application was recorded in RightAware's review queue for an administrator. <strong>Nothing is public until approval.</strong> Your <strong>application record</strong> is created in the application list automatically the first time you confirm your email and sign in — until then an administrator can create it directly from this message copy." });
