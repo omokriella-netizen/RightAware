@@ -67,6 +67,31 @@
 <section class="section" id="organisations"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Rights-protection organisations</span><h2>Who does what</h2><p>Organisation types and how they generally help. Verify current contacts via official directories before reaching out.</p></div>
   <div class="cards-grid" id="helpOrgs"></div>
+
+  <div class="section-head rv" style="margin-top:2.6rem"><span class="eyebrow">Rights-protection agency directory</span><h2>Find an organisation <span class="pill" id="helpDirCount">36 LISTED</span></h2><p><strong>36 organisations</strong> — 18 Nigerian and 18 international — with the phone, e-mail, website or directory page each one publishes. Describe the problem in your own words ("police abuse", "free legal help", "rape", "refugee"), filter by type, focus or location, then open the full profile. Contacts are as published in the source directory — <strong>RightAware has not independently verified them.</strong></p></div>
+  <div style="display:grid;gap:.7rem;margin-bottom:1.1rem">
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+      <input id="helpDirQ" type="search" placeholder="Describe your problem… e.g. 'I need free legal help'" aria-label="Search rights-protection organisations" style="flex:1;min-width:240px;padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit"/>
+      <button class="btn btn-primary" type="button" id="helpDirGo">Search</button>
+    </div>
+    <div id="helpChips" style="display:flex;gap:.5rem;flex-wrap:wrap" aria-label="Quick searches">
+      <button class="btn btn-outline btn-sm" type="button" data-chip="police abuse">police abuse</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="free legal help">free legal help</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="GBV">GBV</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="rape">rape</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="torture">torture</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="refugee">refugee</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="digital rights">digital rights</button>
+      <button class="btn btn-outline btn-sm" type="button" data-chip="journalist">journalist</button>
+    </div>
+    <div style="display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <select id="helpFType" aria-label="Filter by organisation type" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+      <select id="helpFArea" aria-label="Filter by rights focus" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+      <select id="helpFLoc" aria-label="Filter by location" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+    </div>
+  </div>
+  <div class="cards-grid" id="helpDir"></div>
+  <p style="margin-top:1.1rem"><a class="link" href="organizations.html">Open the full directory on the Organizations page →</a></p>
 </div></section>
 
 <section class="section section-alt" id="emergency"><div class="container">
@@ -104,6 +129,7 @@
 </div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
+<script src="content/organizations.js"></script>
 <script src="js/config.js"></script>
 <script src="app.js"></script>
 <script>
@@ -114,6 +140,53 @@
   document.getElementById("helpOrgs").innerHTML=(window.RA_ORGS||[]).map(function(o){
     return '<article class="card"><h3>🏛 '+o.name+'</h3><p>'+o.help+'</p><p><small>'+o.contact+'</small></p></article>';
   }).join("");
+
+  /* ---- rights-protection agency directory finder (content/organizations.js).
+     Browse (empty search = all 36), search in natural language, quick chips,
+     and type/focus/location filters. Cards come from the shared renderer, so
+     every phone number is a tel: link, every e-mail a mailto: link, and the
+     website/directory page are opened exactly as stored. ---- */
+  var hdQ=document.getElementById("helpDirQ"), hd=document.getElementById("helpDir"),
+      hdCount=document.getElementById("helpDirCount"),
+      hdT=document.getElementById("helpFType"), hdA=document.getElementById("helpFArea"), hdL=document.getElementById("helpFLoc");
+  var hdEsc=window.RA_ORG_ESC||function(x){return String(x==null?"":x);};
+  function hdFacets(){
+    var F=(window.RA_ORG_FACETS||function(){return {types:[],areas:[],countries:[],states:[]};})();
+    function opt(v,t){return '<option value="'+hdEsc(v)+'">'+hdEsc(t)+'</option>';}
+    hdT.innerHTML=opt("","All types")+F.types.map(function(x){return opt(x,x);}).join("");
+    hdA.innerHTML=opt("","All focus areas")+F.areas.map(function(x){return opt(x,x);}).join("");
+    hdL.innerHTML=opt("","Anywhere")
+      +'<optgroup label="Countries">'+F.countries.map(function(c){return opt("c:"+c,c);}).join("")+'</optgroup>'
+      +'<optgroup label="Nigerian states">'+F.states.map(function(s){return opt("s:"+s,s);}).join("")+'</optgroup>';
+  }
+  function hdRender(){
+    var loc=hdL.value||"", country="", state="";
+    if(loc.indexOf("c:")===0){ country=loc.slice(2); }
+    if(loc.indexOf("s:")===0){ state=loc.slice(2); }
+    var f={q:hdQ.value||"",type:hdT.value||"",area:hdA.value||"",country:country,state:state};
+    var list=(window.RA_ORG_QUERY||function(){return [];})(f);
+    var active=!!(f.q||f.type||f.area||country||state);
+    if(hdCount){ hdCount.textContent=list.length+(active?" MATCH":" LISTED"); }
+    hd.innerHTML=list.length?list.map(function(o){return (window.RA_ORG_CARD_HTML||function(){return "";})(o);}).join("")
+      :'<div class="result" style="grid-column:1/-1">No organisation matched'+(f.q?' “<strong>'+hdEsc(f.q)+'</strong>”':' the current filters')+'. Try “police abuse”, “free legal help”, “rape” or “refugee”, clear a filter — or <a class="link" href="rights.html">read the rights library</a>.</div>';
+  }
+  if(hd&&window.RA_ORG_CARD_HTML){
+    hdFacets();
+    hdRender();
+    hdQ.addEventListener("input",hdRender);
+    document.getElementById("helpDirGo").addEventListener("click",hdRender);
+    hdQ.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); hdRender(); } });
+    [hdT,hdA,hdL].forEach(function(s){ s.addEventListener("change",hdRender); });
+    document.getElementById("helpChips").addEventListener("click",function(e){
+      var b=e.target&&e.target.closest?e.target.closest("button[data-chip]"):null;
+      if(!b){ return; }
+      var chip=b.getAttribute("data-chip");
+      hdQ.value=(hdQ.value===chip)?"":chip;
+      hdRender();
+    });
+  }else if(hd){
+    hd.innerHTML='<div class="result" style="grid-column:1/-1">The organisation directory could not load — <a class="link" href="organizations.html">open the Organizations page →</a></div>';
+  }
   var F=document.getElementById("reportForm");
   function summary(){
     return "RIGHTAWARE CONCERN SUMMARY ("+new Date().toLocaleString()+")\nCategory: "+document.getElementById("repCat").value+"\nState: "+document.getElementById("repState").value+"\nDate: "+document.getElementById("repDate").value+"\nWhat happened:\n"+document.getElementById("repText").value+"\nEvidence: "+document.getElementById("repEv").value+"\n---\nGeneral information only, not legal advice.";

@@ -45,7 +45,13 @@
    only in Supabase (ENVIRONMENT.md → “CAPTCHA”). No Microsoft/social login is
    used.
 3. **Content:** verify + upload real documents/videos/orgs/professionals
-   (CONTENT_UPLOAD_GUIDE.md). Nothing invented may be published.
+   (CONTENT_UPLOAD_GUIDE.md). Nothing invented may be published. For the
+   rights protection agency directory, run
+   `supabase/rights-protection-directory.sql` once in the SQL editor —
+   additive and idempotent (13 nullable columns + the 36 records from
+   `content/organizations.js`, inserted as `unverified` rows that enter the
+   normal admin review queue and are never publicly visible until approved;
+   see DATABASE.md → Rights protection agency directory).
 4. **AI:** `api/ai/chat.js` is implemented, `AI_ENDPOINT=/api/ai/chat` is set client-side, and `AI_API_KEY` is now configured in Vercel Production (verified 2026-10-04: the route answers **401 "Sign in required"** to anonymous callers — 501 not_configured only if the key is ever removed). Signed-out visitors get an honest sign-in prompt; the signed-in provider call is contract-tested but needs a real account to exercise end-to-end in production.
 5. **Paystack:** set keys, keep secret server-side, test initialize→verify in test mode.
 6. **Deploy:** Vercel (DEPLOYMENT.md), set env vars, smoke-test, submit sitemap.

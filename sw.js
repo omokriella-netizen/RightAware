@@ -1,4 +1,4 @@
-/* RightAware service worker (v11): offline-first public content + privacy rules.
+/* RightAware service worker (v12): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -8,7 +8,16 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v11: purge stale precaches of the files changed together in this build:
+/* v12: rights protection agency directory build — purge stale precaches of the
+       files changed together: content/organizations.js (36-organisation
+       dataset, ranking + shared card/contact renderers), data.js (organisation
+       entries added to the search index), search.html (shared organisation
+       boost + organisation tag), organizations.html (searchable directory:
+       filters, profiles, hubs), help.html (organisation finder with
+       tel:/mailto:/website/directory links) and resources.html (source
+       directory PDF card). admin.html is a PRIVATE network-first shell, so
+       its catalogue label change needs no cache move.
+     v11: purge stale precaches of the files changed together in this build:
        js/auth.js (specialisation rows now attach with an idempotent upsert and
        retry honestly instead of failing silently; dead isAdmin removed),
        js/ai.js (401 now surfaces an explicit "sign in required" answer instead
@@ -60,7 +69,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v11";
+const CACHE = "rightaware-v12";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Organizations Directory — RightAware</title>
-<meta name="description" content="Directory of rights-protection and legal-assistance organization types. Verified records arrive later."/>
+<meta name="description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide — legal aid, human rights, GBV, digital rights — with published official contacts."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,12 +11,12 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Organizations Directory — RightAware"/>
-<meta property="og:description" content="Directory of rights-protection and legal-assistance organization types. Verified records arrive later."/>
+<meta property="og:description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide — legal aid, human rights, GBV, digital rights — with published official contacts."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/organizations.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Organizations Directory — RightAware"/>
-<meta name="twitter:description" content="Directory of rights-protection and legal-assistance organization types. Verified records arrive later."/>
+<meta name="twitter:description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide — legal aid, human rights, GBV, digital rights — with published official contacts."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/organizations.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,12 +42,28 @@
 <main id="main">
 <section class="page-hero"><div class="container rv">
   <span class="eyebrow">Organizations</span><h1>Rights-protection directory</h1>
-  <p class="lead-dark">Types of bodies that can help — and, later, verified records with contacts. <strong>No contact details are published until verified from official sources.</strong></p>
-  <form id="orgSearch" class="search-form" role="search" style="margin:1.2rem 0 0"><input id="orgQ" type="search" placeholder="Search: try 'police', 'child', 'consumer'…" aria-label="Search organizations"/><button class="btn btn-primary" type="submit">Search</button></form>
+  <p class="lead-dark"><strong>36 organisations</strong> — 18 Nigerian and 18 international — searchable by the problem you are facing, with the phone, e-mail, website or directory page each one publishes. <strong>Contacts are as published in the source directory; RightAware has not independently verified them.</strong></p>
+  <form id="orgSearch" class="search-form" role="search" style="margin:1.2rem 0 0"><input id="orgQ" type="search" placeholder="Search: try 'police abuse', 'free lawyer', 'rape', 'refugee'…" aria-label="Search organizations"/><button class="btn btn-primary" type="submit">Search</button></form>
 </div></section>
 <section class="section"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Who does what</span><h2>Organization types</h2></div>
   <div id="orgTypes" class="cards-grid"></div>
+</div></section>
+<section class="section section-alt" id="directory"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">The directory</span><h2>Find an organisation <span class="pill" id="dirCount">36 LISTED</span></h2><p>Names, specialisations and contact points as published in the <em>RightAware Rights Protection Agencies Directory</em> (researched 4 October 2026). Search with the words you would use for your problem — "police abuse", "free lawyer", "rape", "refugee" — or filter by type, focus, country and Nigerian state.</p></div>
+  <div id="dirFilters" class="rv" style="display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:1.1rem">
+    <input id="dirQ" type="search" placeholder="Search the directory…" aria-label="Search the organisation directory" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit"/>
+    <select id="fType" aria-label="Filter by organisation type" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+    <select id="fArea" aria-label="Filter by rights focus" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+    <select id="fCountry" aria-label="Filter by country" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+    <select id="fState" aria-label="Filter by Nigerian state" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
+  </div>
+  <div id="orgDir" class="cards-grid"></div>
+  <div id="orgProfile"></div>
+</div></section>
+<section class="section" id="hubs"><div class="container">
+  <div class="section-head rv"><span class="eyebrow">Keep expanding</span><h2>Directory hubs</h2><p>Official hubs that maintain wider lists of protection bodies. These are external directories, not RightAware records — open them for the fullest coverage.</p></div>
+  <div id="orgHubs" class="cards-grid"></div>
 </div></section>
 <section class="section section-alt"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Verified records</span><h2>Verified organizations <span class="pill" id="orgPubPill">0 PUBLISHED</span></h2><p>Full records (logo, services, location, contacts, verification badge) appear here once confirmed. Pending applications are never shown publicly.</p></div>
@@ -67,6 +83,10 @@
 <script>
 (function(){
   const types=document.getElementById("orgTypes"), recs=document.getElementById("orgRecords"), q=document.getElementById("orgQ");
+  const dirBox=document.getElementById("orgDir"), profBox=document.getElementById("orgProfile"), dirCountPill=document.getElementById("dirCount");
+  const dirQ=document.getElementById("dirQ"), fType=document.getElementById("fType"), fArea=document.getElementById("fArea"),
+        fCountry=document.getElementById("fCountry"), fState=document.getElementById("fState");
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
   function render(f){
     f=(f||"").toLowerCase();
     const list=(window.RA_ORG_TYPES||[]).filter(o=>!f||(o.name+" "+o.help+" "+o.specializations.join(" ")).toLowerCase().includes(f));
@@ -76,16 +96,97 @@
     recs.innerHTML=full.length?full.map(o=>'<article class="card rv"><h3>'+o.name+'</h3><p>'+o.description+'</p><a class="btn btn-primary btn-sm" href="help.html#report">Contact →</a></article>').join("")
       :'<div class="card rv" style="grid-column:1/-1;text-align:center;padding:2.5rem"><div class="icon" style="font-size:2.2rem">🏛</div><h3>No verified records yet</h3><p>Records publish only after official-source verification (name, logo, services, location, contacts, verification badge). See CONTENT_UPLOAD_GUIDE.md.</p></div>';
   }
+
+  /* ---- rights-protection agency directory (content/organizations.js) ----
+     Faceted search + profile panel. Every contact link (tel:, mailto:,
+     website, directory page) is exactly as stored — nothing is invented. */
+  function fillFacet(sel, all, items){
+    sel.innerHTML='<option value="">'+all+'</option>'+items.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');
+  }
+  function loadFacets(){
+    const F=(window.RA_ORG_FACETS||function(){return {types:[],areas:[],countries:[],states:[]};})();
+    fillFacet(fType,"All types",F.types);
+    fillFacet(fArea,"All focus areas",F.areas);
+    fillFacet(fCountry,"All countries",F.countries);
+    fillFacet(fState,"All Nigerian states",F.states);
+  }
+  function placeLine(o){ return [o.location,o.coverage].filter(Boolean).join(" — "); }
+  /* Card + contact HTML come from the shared builders in content/organizations.js
+     (RA_ORG_CARD_HTML / RA_ORG_CONTACTS_HTML) so help.html renders identically. */
+  const orgCard = o => (window.RA_ORG_CARD_HTML ? window.RA_ORG_CARD_HTML(o) : "");
+  const contactLines = o => (window.RA_ORG_CONTACTS_HTML ? window.RA_ORG_CONTACTS_HTML(o) : "");
+  function renderDir(){
+    const f={q:dirQ.value||"",type:fType.value||"",area:fArea.value||"",country:fCountry.value||"",state:fState.value||""};
+    const list=(window.RA_ORG_QUERY||function(){return [];})(f);
+    const active=!!(f.q||f.type||f.area||f.country||f.state);
+    if(dirCountPill) dirCountPill.textContent=list.length+(active?" MATCH":" LISTED");
+    dirBox.innerHTML=list.length?list.map(orgCard).join("")
+      :'<div class="result" style="grid-column:1/-1">'+(f.q?'No organisation matched “<strong>'+esc(f.q)+'</strong>”. ':'No organisation matched the current filters. ')+'Try “police abuse”, “free lawyer”, “rape”, “torture” or “refugee”, clear a filter, or read the <a class="link" href="rights.html">rights library</a> guides.</div>';
+  }
+  function profileId(){
+    const m=/[?&]id=([^&]*)/.exec(location.search||"");
+    if(!m) return "";
+    try{ return decodeURIComponent(m[1]||""); }catch(e){ return ""; }
+  }
+  function renderProfile(id){
+    const o=(window.RA_ORG_BY_ID?window.RA_ORG_BY_ID(id):null);
+    if(!o){
+      profBox.innerHTML=id?'<div class="result">That organisation record was not found — <a class="link" href="organizations.html">back to the directory →</a></div>':"";
+      dirBox.style.display="";
+      return;
+    }
+    dirBox.style.display="none";
+    const areas=(o.rights_areas||[]).map(a=>'<span class="tag">'+esc(a)+'</span>').join(" ");
+    const svc=(o.services||[]).map(esc).join("; ");
+    const srcName=window.RA_ORG_SOURCE||"RightAware Rights Protection Agencies Directory";
+    const srcDate=window.RA_ORG_SOURCE_DATE||"4 October 2026";
+    profBox.innerHTML='<div class="cards-grid">'
+      +'<article class="card rv" style="grid-column:1/-1">'
+      +'<p><a class="link" href="organizations.html">← Back to the directory</a></p>'
+      +'<span class="pill">'+esc([o.country,o.state].filter(Boolean).join(" • ").toUpperCase())+'</span>'
+      +'<h3 style="margin-top:.5rem">'+esc(o.name)+(o.acronym?' <small>('+esc(o.acronym)+')</small>':'')+'</h3>'
+      +'<p><span class="tag">'+esc(o.type)+'</span></p>'
+      +(areas?'<p style="margin-top:.6rem">'+areas+'</p>':'')
+      +'<p><strong>Specialisation:</strong> '+esc(o.specialization)+'</p>'
+      +'<p><strong>Who they help:</strong> '+esc(o.who_they_help)+'</p>'
+      +'<p><strong>Services:</strong> '+esc(svc)+'</p>'
+      +'<p><strong>Location &amp; coverage:</strong> '+esc(placeLine(o))+'</p>'
+      +contactLines(o)
+      +(o.contactNote?'<p><small><strong>Contact note:</strong> '+esc(o.contactNote)+'</small></p>':'')
+      +'<p><small><strong>Source:</strong> '+esc(srcName)+' — researched '+esc(srcDate)+'. The details above are reproduced as published in the source (<a class="link" href="'+esc(o.source_url)+'" target="_blank" rel="noopener nofollow">'+esc(o.source_url)+' ↗</a>). Verification status: <strong>unverified</strong> — RightAware has not independently confirmed them, so please confirm before travelling or calling.</small></p>'
+      +'</article></div>';
+  }
+  function applyQuery(v){
+    v=v||"";
+    if(q.value!==v) q.value=v;
+    if(dirQ.value!==v) dirQ.value=v;
+    render(v);
+    renderDir();
+    if(profBox.innerHTML){
+      profBox.innerHTML="";
+      dirBox.style.display="";
+      try{ history.replaceState(null,"",location.pathname); }catch(e){}
+    }
+  }
+  loadFacets();
   render("");
-  document.getElementById("orgSearch").addEventListener("submit",e=>{e.preventDefault();render(q.value);});
-  q.addEventListener("input",()=>render(q.value));
+  renderDir();
+  renderProfile(profileId());
+  /* Directory hubs: external resources — never imported as org records. */
+  const hubBox=document.getElementById("orgHubs");
+  if(hubBox&&window.RA_ORG_HUBS) hubBox.innerHTML=window.RA_ORG_HUBS.map(h=>
+    '<article class="card rv"><h3>'+esc(h.name)+'</h3><p><small>'+esc(h.description)+'</small></p>'
+    +'<a class="link" href="'+esc(h.url)+'" target="_blank" rel="noopener nofollow">Open directory ↗</a></article>').join("");
+  document.getElementById("orgSearch").addEventListener("submit",e=>{e.preventDefault();applyQuery(q.value);});
+  q.addEventListener("input",()=>applyQuery(q.value));
+  dirQ.addEventListener("input",()=>applyQuery(dirQ.value));
+  [fType,fArea,fCountry,fState].forEach(s=>s.addEventListener("change",()=>renderDir()));
 
   /* ---- live verified records from the database ----
      Public SELECT is row-restricted by RLS to verification_status='verified';
      the column list is deliberately limited to safe public fields — internal
      verification data (verification_source, source_note) and account links are
      never requested. Pending/rejected applications cannot appear here. */
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
   function setCount(extra){
     var pill=document.getElementById("orgPubPill");
     var base=(window.RA_ORGANIZATIONS||[]).filter(o=>o.verification.status==="verified").length;

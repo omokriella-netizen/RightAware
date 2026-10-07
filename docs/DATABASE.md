@@ -321,9 +321,45 @@ server authorization → the requester reads the status from Supabase:
   re-checks), the requester sees the status live in My Account and is
   notified once through the existing notification architecture.
 
-## Migrations status: every committed file is applied
-The two formerly-pending additive files for the professional workspace are
-**applied on the live project** (verified read-only 2026-10-04: probe
+## Rights protection agency directory (`supabase/rights-protection-directory.sql`)
+
+**Status: committed, NOT yet applied — owner action (run once in the Supabase
+SQL editor).** Only the SQL editor (service role) can insert here: the anon
+key is refused by RLS, by design.
+
+The canonical directory copy is `content/organizations.js` — 36 records
+(18 Nigerian + 18 international) that power organizations.html, the Get Help
+finder, site search and the AI retrieval. This generated file (produced from
+that same data) mirrors those records into the `organizations` table:
+
+- **13 additive nullable columns:** `acronym`, `country`, `state`, `city`,
+  `org_type`, `rights_areas text[]`, `who_they_help`, `coverage_area`,
+  `directory_url`, `keywords`, `source_url`, `import_source`,
+  `last_verified_at date` — each `add column if not exists`; nothing dropped,
+  nothing retyped, no policy or trigger touched.
+- **36 idempotent inserts:** stable `org-<slug>` primary keys with
+  `on conflict (id) do nothing` — a re-run never duplicates a record, never
+  updates an existing row and never deletes one.
+- **Nothing is auto-approved:** every row is inserted as
+  `verification_status='unverified'` with `verification_source` NULL. The
+  public policy exposes only `verified` rows, so imported records stay
+  invisible to visitors until an administrator reviews them through the
+  normal Applications queue, and `ra_notif_on_organization` (which fires only
+  on `pending`) is never reached — the import notifies nobody. Attribution is
+  honest and explicit: `import_source`, `source_note` and `source_url` carry
+  `RightAware Rights Protection Agencies Directory` (research date
+  2026-10-04), and `last_verified_at` records the SOURCE's research date, not
+  a RightAware check.
+- **The 10 directory hubs stay out of the table:** they are exposed as
+  external resources (`RA_ORG_HUBS` on organizations.html), never as
+  organisation rows.
+
+**without the file** — nothing breaks: the public directory, search and AI
+all read the static content file. The 36 rows simply have no database copy
+yet, so the admin Applications queue never receives them for review.
+
+## Migrations status
+**Applied on the live project** (verified read-only 2026-10-04: probe
 `ra-post-mig-probe.ps1` answered ALL PASS):
 
 1. `supabase/professional-application-ref.sql` — the nullable
@@ -340,3 +376,12 @@ The two formerly-pending additive files for the professional workspace are
 Both files are additive (no table rebuilds, no data touched). A fresh
 environment runs them once each, in that order, after the files listed in
 SETUP.md.
+
+**Committed but not yet applied — owner action** (each additive and safe to
+re-run):
+
+1. `supabase/applications-access.sql` — re-run once to pick up the newer
+   `admin_msg_update` policy (see the Applications section above).
+2. `supabase/rights-protection-directory.sql` — 13 additive columns plus the
+   36 rights-protection directory records (see section above). Run after
+   `schema.sql`.

@@ -109,6 +109,12 @@ give practical safety guidance first.
 13. Do not overstate certainty.
 
 14. When a relevant RightAware guide exists, mention it naturally.
+When the context includes organisations from the rights-protection agency
+directory, you may refer the user to them for such questions — repeat only
+the phone, email, website and directory-page details supplied for that
+organisation, exactly as given, and never a contact detail that is not in
+the context. Their listing reproduces published details and is not
+verified by RightAware.
 
 15. Do not dump unrelated laws or resources into the answer.
 
@@ -221,6 +227,7 @@ function loadKnowledgeBase() {
 
     require("../../content/rights.js");
     require("../../content/laws.js");
+    require("../../content/organizations.js");
 
     KB = {
       rights: Array.isArray(global.window.RA_RIGHTS_DETAIL)
@@ -229,6 +236,10 @@ function loadKnowledgeBase() {
 
       laws: Array.isArray(global.window.RA_LAWS)
         ? global.window.RA_LAWS
+        : [],
+
+      orgs: Array.isArray(global.window.RA_ORGANIZATIONS)
+        ? global.window.RA_ORGANIZATIONS
         : []
     };
 
@@ -248,7 +259,8 @@ function loadKnowledgeBase() {
 
     KB = {
       rights: [],
-      laws: []
+      laws: [],
+      orgs: []
     };
 
     return KB;
@@ -553,9 +565,38 @@ function findKnowledge(message) {
   }
 
 
+  /* ---------------------------------------------------------
+     ORGANISATIONS (rights-protection agency directory)
+
+     Uses the shared ranker from content/organizations.js so the
+     AI sees the same organisations the site search ranks: exact
+     names, problem wording and location all score. Retrieval is
+     best-effort — a problem here must never break the endpoint.
+     --------------------------------------------------------- */
+
+  let orgs = [];
+
+  try {
+    if (
+      global.window &&
+      typeof global.window.RA_ORG_RANK === "function"
+    ) {
+      orgs = global.window
+        .RA_ORG_RANK(expandedMessage, kb.orgs)
+        .slice(0, 5)
+        .map(function (x) {
+          return x.org;
+        });
+    }
+  } catch (_) {
+    orgs = [];
+  }
+
+
   return {
     rights: rights,
-    laws: laws
+    laws: laws,
+    orgs: orgs
   };
 }
 
@@ -635,15 +676,48 @@ function makeContext(message) {
     });
 
 
+  const orgs =
+    (found.orgs || []).map(function (o) {
+      return {
+        id: o.id,
+        name: o.name,
+        acronym: o.acronym || null,
+        type: o.type,
+        country: o.country,
+        state: o.state || null,
+        location: o.location,
+        coverage: o.coverage,
+        specialization: o.specialization,
+        rights_areas: o.rights_areas || [],
+        services: o.services || [],
+        who_they_help: o.who_they_help,
+        phone: o.phone || null,
+        email: o.email || null,
+        website: o.website || null,
+        directory_url: o.directory_url || null,
+        source: o.source || null,
+        source_url: o.source_url || null,
+        last_verified_at: o.last_verified_at || null,
+        verification: o.verification || null
+      };
+    });
+
+
   return {
     rights: rights,
 
     laws: laws,
 
+    orgs: orgs,
+
     note:
       "Only use details supplied here. " +
       "Overview, partial, verify, or source-file-supplied " +
-      "information must not be presented as independently confirmed."
+      "information must not be presented as independently confirmed. " +
+      "Organisation contacts must be repeated exactly as supplied " +
+      "(including null when null); never invent or guess a phone, " +
+      "email, website or address. Organisation listings reproduce " +
+      "published directory details and are not verified by RightAware."
   };
 }
 
@@ -655,6 +729,25 @@ function makeContext(message) {
 function buildLinks(verifiedContext) {
   const links = [];
   const sources = [];
+
+
+  /*
+   * Organisation profiles first: for referral questions the record
+   * the user can open (contacts, hours, source) is the most useful
+   * link. Dedup and the slice(0, 6) cap below are unchanged.
+   */
+  for (
+    const o of verifiedContext.orgs || []
+  ) {
+    if (o && o.id) {
+      links.push({
+        t: "RightAware: " + (o.name || "Organisation profile"),
+        u:
+          "organizations.html?id=" +
+          encodeURIComponent(o.id)
+      });
+    }
+  }
 
 
   for (
@@ -947,7 +1040,8 @@ module.exports = async function (req, res) {
 
   let verifiedContext = {
     rights: [],
-    laws: []
+    laws: [],
+    orgs: []
   };
 
 

@@ -74,5 +74,16 @@ window.RA_SEARCH_INDEX = function(){
     text:(l.title+" "+(l.description||"")+" "+l.category+" "+(l.keywords||"")+" "+(l.sourceNote||l.sourceHint||"")).toLowerCase() }));
   const faqs = (window.RA_FAQS||[]).map(f=>({ title:"FAQ: "+f.q, url:"resources.html#faqs", text:(f.q+" "+f.a).toLowerCase() }));
   const videos = (window.RA_VIDEOS||[]).map(v=>({ title:"Video: "+v.title, url:"resources.html#videos", text:(v.title+" "+v.desc+" "+v.tag).toLowerCase() }));
-  return pages.concat(rights, laws, faqs, videos);
+  /* Rights-protection agency directory records (content/organizations.js).
+     kind/orgId let search.html apply the shared RA_ORG_BOOST ranking; profile
+     links open organizations.html?id=<org-slug>. Existing entries untouched. */
+  const orgs = (window.RA_ORGANIZATIONS||[]).map(o=>({
+    kind:"org", orgId:o.id,
+    title:"Organisation: "+o.name+(o.acronym?" ("+o.acronym+")":""),
+    url:"organizations.html?id="+encodeURIComponent(o.id),
+    text:([o.name,o.acronym,o.type,o.specialization,(o.rights_areas||[]).join(" "),
+      (o.services||[]).join(" "),o.who_they_help,o.keywords,o.country,o.state,o.city,
+      o.location,o.coverage].filter(Boolean).join(" ")).toLowerCase()
+  }));
+  return pages.concat(orgs, rights, laws, faqs, videos);
 };

@@ -54,6 +54,7 @@
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="content/laws.js"></script>
+<script src="content/organizations.js"></script>
 <script src="js/config.js"></script>
 <script src="app.js"></script>
 <script>
@@ -68,6 +69,12 @@
       if(e.title.toLowerCase().includes(q))score+=3;
       var words=q.split(/\s+/);
       words.forEach(function(w){if(w&&e.text.includes(w))score+=1;});
+      /* Rights-protection agency directory: shared topical boost (name, problem
+         intent, location, Nigeria tie-break) from content/organizations.js. */
+      if(e.kind==="org"&&window.RA_ORG_BOOST&&window.RA_ORG_BY_ID){
+        var org=window.RA_ORG_BY_ID(e.orgId);
+        if(org)score+=window.RA_ORG_BOOST(org,q);
+      }
       return {e:e,score:score};
     }).filter(function(x){return x.score>0;}).sort(function(a,b){return b.score-a.score;}).slice(0,12);
     var lawNote='<div class="result"><strong>🔎 Search the exact wording inside the supplied laws</strong><br/><a class="link" href="laws.html?q='+encodeURIComponent(raw)+'">Search “'+raw.replace(/</g,"&lt;")+'” inside every document →</a></div>';
@@ -78,7 +85,7 @@
           ? "laws.html?doc="+encodeURIComponent(x.e.lawId)+"&q="+encodeURIComponent(raw)
           : "laws.html?doc="+encodeURIComponent(x.e.lawId);
       }
-      var tag=x.e.title.indexOf("Law:")===0?'<span class="tag tag-soon">law document</span><br/>':"";
+      var tag=x.e.kind==="org"?'<span class="pill">organisation</span><br/>':x.e.title.indexOf("Law:")===0?'<span class="tag tag-soon">law document</span><br/>':"";
       return '<div class="result">'+tag+'<strong>'+x.e.title+'</strong><br/><a class="link" href="'+url+'">Open →</a></div>';
     }).join(""):'<div class="result">No match for "<strong>'+raw.replace(/</g,"&lt;")+'</strong>". Try "arrest", "rent", "salary", "vote" or "scam" — or <a class="link" href="help.html">get help →</a></div>')+lawNote;
   }
