@@ -84,7 +84,12 @@ const CORE = [
   "./offline.html"
 ];
 const PRIVATE = ["/account.html", "/admin.html", "/login.html", "/signup.html",
-                 "/professional.html", "/organization.html"];
+                 "/professional.html", "/organization.html",
+                 // Extensionless forms (308 today): matched explicitly so a
+                 // hosting change to clean-URL 200s can never cache an
+                 // authenticated shell through the navigation branch.
+                 "/account", "/admin", "/login", "/signup",
+                 "/professional", "/organization"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch((err) => {
@@ -110,7 +115,8 @@ self.addEventListener("fetch", (e) => {
   // Connection files: always fresh so regenerated keys / connector updates apply at once.
   if (url.pathname.endsWith("/env.local.js") || url.pathname.endsWith("/js/supabase-client.js")) { e.respondWith(fetch(req)); return; }
   if (!sameOrigin) { e.respondWith(fetch(req)); return; } // Supabase/fonts: network only
-  if (PRIVATE.includes(url.pathname)) {                   // auth shells: network-first, uncached
+  const privPath = url.pathname.replace(/\/+$/, "") || url.pathname;
+  if (PRIVATE.includes(privPath)) {                   // auth shells: network-first, uncached
     e.respondWith(fetch(req).catch(() => caches.match("./offline.html")));
     return;
   }
