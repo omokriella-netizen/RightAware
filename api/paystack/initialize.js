@@ -20,8 +20,30 @@ const PRICES = Object.create(null);
 const RATE_LIMIT = 10;           // requests per IP per 60s (best effort, per instance)
 const RATE_WINDOW = 60000;
 const buckets = Object.create(null);
+let rateSweepMark = 0;
+
+/* Trusted client IP: req.ip first (Vercel-populated), otherwise the RIGHTMOST
+   X-Forwarded-For entry (appended by the nearest proxy). Earlier entries are
+   client-asserted and must never key a limit. */
+function clientIp(req){
+  if (req && typeof req.ip === "string" && req.ip) return req.ip;
+  const h = req && req.headers && req.headers["x-forwarded-for"];
+  if (typeof h === "string" && h){
+    const parts = h.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+    if (parts.length) return parts[parts.length - 1];
+  }
+  return "unknown";
+}
 function rateLimited(ip){
   const now = Date.now();
+  // Periodic sweep: expired buckets are dropped so rotated/spoofed IP keys
+  // cannot grow instance memory without bound.
+  if ((++rateSweepMark % 200) === 0){
+    for (const k in buckets){
+      const a = buckets[k];
+      if (!a.length || now - a[a.length - 1] >= RATE_WINDOW) delete buckets[k];
+    }
+  }
   const arr = buckets[ip] || [];
   const keep = [];
   for (let i = 0; i < arr.length; i++) if (now - arr[i] < RATE_WINDOW) keep.push(arr[i]);
@@ -63,8 +85,7 @@ async function verifiedAccount(req){
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ ok: false, error: "POST only" });
   try {
-    const xff = req.headers && req.headers["x-forwarded-for"] ? String(req.headers["x-forwarded-for"]).split(",")[0].trim() : "";
-    const ip = req.ip || xff || "unknown";
+    const ip = clientIp(req);
     if (rateLimited(ip))
       return res.status(429).json({ ok: false, code: "rate_limited", error: "Too many requests. Wait a moment and try again." });
 
@@ -96,7 +117,9 @@ module.exports = async (req, res) => {
     const payload = JSON.stringify({
       email: acct.email,
       amount: PRICES[service],
-      metadata: Object.assign({ service: service, user: acct.id }, JSON.parse(metaJson))
+      // Server-set keys come LAST so client-supplied meta can never overwrite
+      // service or user (Object.assign: later wins).
+      metadata: Object.assign({}, JSON.parse(metaJson), { service: service, user: acct.id })
     });
     const options = { hostname: "api.paystack.co", path: "/transaction/initialize", method: "POST",
       headers: { Authorization: "Bearer " + process.env.PAYSTACK_SECRET_KEY, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } };
