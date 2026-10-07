@@ -174,13 +174,14 @@
   }).join("");
   // Home live search -> top matches inline + link to search page
   var input = document.getElementById("homeSearchInput"), out = document.getElementById("homeSearchResults");
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
   function run(q){
     q=(q||"").trim().toLowerCase();
     if(!q){ out.innerHTML=""; return; }
     var idx = window.RA_SEARCH_INDEX().filter(function(e){ return e.text.includes(q) || e.title.toLowerCase().includes(q); }).slice(0,4);
     out.innerHTML = idx.length
       ? idx.map(function(e){ return '<div class="result"><strong>'+e.title+'</strong><br/><a class="link" href="'+e.url+'">Open →</a></div>'; }).join("") + '<div style="text-align:center"><a class="link" href="search.html?q='+encodeURIComponent(q)+'">See all results →</a></div>'
-      : '<div class="result">No direct match for "<strong>'+q+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content →</a> or <a class="link" href="help.html">get help →</a></div>';
+      : '<div class="result">No direct match for "<strong>'+esc(q)+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content →</a> or <a class="link" href="help.html">get help →</a></div>';
   }
   document.getElementById("homeSearchForm").addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
   input.addEventListener("input", function(){ run(input.value); });

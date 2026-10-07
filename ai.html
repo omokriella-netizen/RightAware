@@ -89,11 +89,19 @@
     d.innerHTML="<strong>"+strong+"</strong> "+(html||esc(text).replace(/\n+/g,"<br/>"));
     box.appendChild(d); box.scrollTop=box.scrollHeight;
   }
+  function safeUrl(u){
+    u = String(u==null?"":u);
+    if(/^(https?:|mailto:|tel:)/i.test(u)) return u;          // allowed external schemes
+    if(/^[a-zA-Z][a-zA-Z0-9+.\-]*:/.test(u)) return "";       // javascript:, data:, vbscript: …
+    if(/^\s*\/\//.test(u)) return "";                         // protocol-relative
+    return u;                                                 // relative / internal link
+  }
   function linksHtml(links){
     var out="";
     (links||[]).forEach(function(l){
       if(!l || !l.u) return;
-      out += '<br/>👉 <a class="link" href="'+esc(String(l.u).replace(/[<>"']/g,""))+'">'+esc(l.t||"Open")+'</a>';
+      var u = safeUrl(l.u); if(!u) return;
+      out += '<br/>👉 <a class="link" href="'+esc(String(u).replace(/[<>"']/g,""))+'">'+esc(l.t||"Open")+'</a>';
     });
     return out;
   }

@@ -463,13 +463,13 @@
     }
     var acctNote;
     if(acctRes.ok && acctRes.needsConfirm){
-      acctNote = acctRes.note + " After confirming, sign in — this application attaches to your account automatically.";
+      acctNote = esc(acctRes.note) + " After confirming, sign in — this application attaches to your account automatically.";
     } else if(acctRes.ok){
-      acctNote = acctRes.note || "Account created.";
+      acctNote = esc(acctRes.note || "Account created.");
     } else if(acctRes.alreadyRegistered){
-      acctNote = "⚠ " + acctRes.error + " Sign in (or confirm your email first) and this application will attach to your account automatically.";
+      acctNote = "⚠ " + esc(acctRes.error) + " Sign in (or confirm your email first) and this application will attach to your account automatically.";
     } else {
-      acctNote = "⚠ Account step: " + (acctRes.error || "failed") + ". Your application will still be recorded for review.";
+      acctNote = "⚠ Account step: " + esc(acctRes.error || "failed") + ". Your application will still be recorded for review.";
     }
 
     // attach the account to the row where the schema supports it — from the
@@ -531,7 +531,7 @@
       return;
     }
     finish({ title:"Application saved on this device", ref:ref,
-      detail: acctNote + "<br/><br/>⚠ Delivery to RightAware failed (" + (q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
+      detail: acctNote + "<br/><br/>⚠ Delivery to RightAware failed (" + esc(q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
   }
 
   /* ---------- pathway: individual (general user) ---------- */
@@ -558,7 +558,7 @@
           if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
           RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
           finish({ title:"Account created", ref:null,
-            detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
+            detail:esc(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
         });
       } else {
         RA_AUTH.signup(n, em);

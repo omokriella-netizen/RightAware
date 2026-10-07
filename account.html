@@ -62,10 +62,10 @@
   document.getElementById("whoChip").textContent = u.email || u.name;
   document.getElementById("helloTitle").textContent = "Welcome, " + (u.name || "Member");
   document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logoutLive().then(function(){ location.href="index.html"; });});
-  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+s.ref : s.type==="video" ? "videos.html" : "laws.html";
+  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+encodeURIComponent(s.ref) : s.type==="video" ? "videos.html" : "laws.html";
   function renderSaved(){
     const l = RA_DB.savedList();
-    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+s.type+'</span><h3 style="margin-top:.4rem">'+s.title+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+s.type+"|"+s.ref+'">Remove</button></article>').join("")
+    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+esc(s.type)+'</span><h3 style="margin-top:.4rem">'+esc(s.title)+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+esc(s.type)+"|"+esc(s.ref)+'">Remove</button></article>').join("")
       : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap ☆ Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
     document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
   }

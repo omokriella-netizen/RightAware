@@ -96,14 +96,14 @@
         var areas=Array.isArray(p.consultation_options)?p.consultation_options.join(", "):(p.consultation_options||"");
         var langs=Array.isArray(p.languages)?p.languages.join(", "):(p.languages||"");
         var rating=(p.rating_avg&&p.ratings_count)?(' • ⭐ '+p.rating_avg+' ('+p.ratings_count+')'):'';
-        return '<article class="card lawyer" id="'+p.id+'"><span class="pill-green">✓ VERIFIED LEGAL PROFESSIONAL</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
+        return '<article class="card lawyer" id="'+esc(p.id)+'"><span class="pill-green">✓ VERIFIED LEGAL PROFESSIONAL</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
           +'<small>'+esc(p.location||"")+(p.qualification?' • '+esc(p.qualification):'')+(p.experience_yrs?' • '+esc(p.experience_yrs)+' yrs':'')+rating+'</small>'
           +(areas?'<p><small>Areas: '+esc(areas)+'</small></p>':'')
           +(langs?'<p><small>Languages: '+esc(langs)+'</small></p>':'')
           +(p.availability?'<p><small>Availability: '+esc(p.availability)+'</small></p>':'')
           +(p.bio?'<p>'+esc(p.bio)+'</p>':'')
           +(p.fee_note?'<p><small>'+esc(p.fee_note)+'</small></p>':'')
-          +'<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-livereq="'+p.id+'">Request help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
+          +'<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-livereq="'+esc(p.id)+'">Request help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
       }).join("")+'</div>';
     box.querySelectorAll("[data-livereq]").forEach(function(b){b.addEventListener("click",function(){openReq(b.dataset.livereq);});});
   }
@@ -139,7 +139,7 @@
     });
     grid.innerHTML=list.length?list.map(function(l){
       var revs = RA_REVIEWS.forProfessional(l.id).map(function(r){
-        return '<div class="rev-item"><strong>'+r.user+'</strong> <small>'+r.rating+'/5'+(r.verifiedInteraction?' • verified interaction':'')+' — '+r.text+'</small><br/><small>'+(r.date||"")+'</small> <button class="link" style="border:none;background:none;cursor:pointer;font-size:.78rem" data-flag="'+l.id+"|"+r.user+"|"+(r.date||"")+'">Report review</button></div>';
+        return '<div class="rev-item"><strong>'+esc(r.user)+'</strong> <small>'+esc(r.rating)+'/5'+(r.verifiedInteraction?' • verified interaction':'')+' — '+esc(r.text)+'</small><br/><small>'+esc(r.date||"")+'</small> <button class="link" style="border:none;background:none;cursor:pointer;font-size:.78rem" data-flag="'+esc(l.id)+"|"+esc(r.user)+"|"+esc(r.date||"")+'">Report review</button></div>';
       }).join("");
       return '<article class="card lawyer rv" id="'+l.id+'"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+' • '+l.exp+'</small><p>'+l.bio+'</p><p>⭐ '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><div class="rev">'+revs+'</div>'
       + '<form data-review="'+l.id+'" style="margin-top:.6rem"><div class="form-row"><select data-rate aria-label="Rating"><option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option></select><input data-text placeholder="Write a review (demo)…" aria-label="Review text"/></div><button class="btn btn-outline btn-sm" type="submit">Submit Review</button> <small class="form-note" data-rout></small></form>'

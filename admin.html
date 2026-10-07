@@ -73,7 +73,7 @@
     ["Rights agency directory","organizations.html","RA_ORGANIZATIONS"],["Professionals","lawyers.html","RA_PROFESSIONALS"],
     ["FAQs","resources.html#faqs","RA_FAQS"]
   ];
-  function count(key){ try{ var v = eval("(" + key + ")"); return Array.isArray(v) ? v.length : "—"; }catch(_){ return "—"; } }
+  function count(key){ try{ var v = window[key]; return Array.isArray(v) ? v.length : "—"; }catch(_){ return "—"; } }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
   function whenReady(cb){
     if(window.RA_SUPA && RA_SUPA.ready){ cb(true); return; }

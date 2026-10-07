@@ -455,7 +455,7 @@
       + '<div class="ws-grid" style="margin-top:1rem">'
       + stat("Location", esc(place || "Not set"), "address on your record")
       + stat("Phone", esc(row.phone || "Not set"), "shown to administrators, not on the public card")
-      + stat("Website", row.website ? '<small style="font-size:.95rem"><a class="link" href="' + esc(row.website) + '" target="_blank" rel="noopener">' + esc(row.website) + '</a></small>' : esc("Not set"), "published on your directory card when it is a full http(s) URL")
+      + stat("Website", row.website ? (/^https?:\/\//i.test(String(row.website)) ? '<small style="font-size:.95rem"><a class="link" href="' + esc(row.website) + '" target="_blank" rel="noopener">' + esc(row.website) + '</a></small>' : '<small style="font-size:.95rem">' + esc(row.website) + '</small>') : esc("Not set"), "published on your directory card when it is a full http(s) URL")
       + '</div>'
       + '<div class="notice" style="margin-top:.9rem"><strong>Inquiries:</strong> organization inquiries are routed through RightAware\'s contact channel — the schema has no organization-linked inquiry table yet, so this section deliberately shows nothing else. Help and resource information lives on <a class="link" href="resources.html">Resources</a> and <a class="link" href="help.html">Get Help</a>; inquiries reach the team via <a class="link" href="contact.html">Contact</a>. No fake inquiry entries are ever shown.</div>';
   }
