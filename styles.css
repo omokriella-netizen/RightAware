@@ -347,6 +347,11 @@ body{line-height:1.65;-webkit-text-size-adjust:100%}
 .disclaimer{font-size:.9rem;color:#cbd5e1}
 .footer a{font-size:1rem;color:#c2cdda}
 .footer-bottom small{font-size:.9rem;color:#cbd5e1}
+/* Social row inside footer-bottom: dark-surface footer tokens (var(--muted)/var(--green) are light-surface values and fail contrast on #0b1526). */
+.footer-social{display:flex;flex-wrap:wrap;gap:.2rem .9rem;margin:.35rem 0 .25rem;justify-content:center}
+.footer-social a{color:#c2cdda;text-decoration:none;font-size:.82rem;font-weight:600;margin:0}
+.footer-social a:hover,.footer-social a:focus-visible{color:#fff;text-decoration:underline}
+@media(prefers-reduced-motion:no-preference){.footer-social a{transition:color .15s}}
 
 /* Layout guards: equal card heights, safe wrapping, no stray overflow. */
 .cards-grid,.grid-3{grid-auto-rows:1fr}
