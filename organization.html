@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Organization workspace — RightAware</title>
-<meta name="description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
+<meta name="description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires your own verified organisation record, checked on every load. This page only ever shows your organisation's own data."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,12 +11,12 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Organization workspace — RightAware"/>
-<meta property="og:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
+<meta property="og:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires your own verified organisation record, checked on every load. This page only ever shows your organisation's own data."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/organization.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Organization workspace — RightAware"/>
-<meta name="twitter:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
+<meta name="twitter:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires your own verified organisation record, checked on every load. This page only ever shows your organisation's own data."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/organization.html"/>
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="stylesheet" href="styles.css"/>
@@ -63,7 +63,7 @@
 <p class="lead-dark" id="wsLine">Verifying your organization record against the database…</p></div></section>
 <section class="section"><div class="container" id="wsBody"></div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • This workspace only shows rows the database already allows you to read — ownership checks and row-level security decide access, never hidden buttons.</small></div></footer>
+<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • This workspace only shows your organisation's own data. Access is decided on the server, never by hidden buttons.</small></div></footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -106,7 +106,7 @@
   function renderLocked(){
     title.innerHTML = 'Organization workspace <span class="pill">LOCKED — NO BACKEND</span>';
     line.innerHTML = 'This device has no database connection, so ownership of an organization record cannot be verified — the workspace stays closed rather than guessing.';
-    body.innerHTML = '<div class="notice rv">🔒 <strong>Locked.</strong> Verification status, profile details and notifications live in Supabase behind row-level security. Nothing on this page is simulated, so there is no local preview with fake data. '
+    body.innerHTML = '<div class="notice rv">🔒 <strong>Locked.</strong> Verification status, profile details and notifications come from your organisation\u2019s own record, read securely on every load. Nothing on this page is simulated, so there is no local preview with fake data. '
       + 'Sign in on a connected device to open the workspace.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=organization.html">Sign in</a> <a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
       + stamp();
@@ -116,7 +116,7 @@
   function renderSignedOut(){
     title.textContent = "Sign in required";
     line.innerHTML = 'The organization workspace opens for the account that <strong>owns a verified organization record</strong> — nothing can be checked while signed out.';
-    body.innerHTML = '<div class="notice rv">🔐 The check runs against the database on every load: your account must own an <code>organizations</code> record (matched by your sign-in e-mail — the same binding <code>own_orgs</code> uses) and that record must say <code>verification_status = verified</code>. Hidden buttons are never how access is decided.</div>'
+    body.innerHTML = '<div class="notice rv">🔐 The check runs on the server on every load: your account must own an organisation record, matched to your sign-in e-mail, and that record must already be verified. Hidden buttons are never how access is decided.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=organization.html">Sign in</a> <a class="btn btn-secondary" href="signup.html">Register an organization</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
       + stamp();
   }
@@ -128,7 +128,7 @@
     if(o.readError){
       title.innerHTML = 'Organization workspace <span class="pill-gold">STATUS UNAVAILABLE</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong>. Your organization record could not be read, so no workspace is shown (access is never guessed).';
-      body.innerHTML = '<div class="notice rv">⚠ Could not read your organization record: <strong>' + esc(o.readError) + '</strong>. The own-row read comes from policy <code>own_orgs</code> (<code>supabase/verification-states.sql</code>) for unverified states and from public read for verified rows — if this persists, the page stays closed until the read works again.</div>'
+      body.innerHTML = '<div class="notice rv">⚠ Could not read your organization record: <strong>' + esc(o.readError) + '</strong>. The read for your own record is decided on the server. If this persists, the page stays closed until the read works again.</div>'
         + '<p><a class="btn btn-primary" href="account.html">My account</a> <a class="btn btn-secondary" href="contact.html">Contact support</a></p>' + stamp();
       return;
     }
@@ -260,7 +260,7 @@
     var hotlines = ws.contacts.rows.length;
     var errs = [];
     if(ws.contacts.error) errs.push("contacts: " + ws.contacts.error + " (published hotlines read through policy pub_read_contacts — base schema, verified rows only)");
-    if(ws.notifs.error) errs.push("notifications: " + ws.notifs.error + " (policy own_notif from the base schema)");
+    if(ws.notifs.error) errs.push("notifications: " + ws.notifs.error + " (own notifications only, read on the server)");
     byId("panelOv").innerHTML =
       '<div class="section-head"><span class="eyebrow">Overview</span><h2>Your organization at a glance</h2>'
       + '<p class="form-note">build: ' + BUILD + ' · every value below is read live from the database on this load.</p></div>'
@@ -337,7 +337,7 @@
   }
   function saveHint(err){
     return /does not exist|schema cache/i.test(String(err))
-      ? " — this edit needs supabase/dashboard-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
+      ? " (this edit needs a pending server-side update applied once by the site administrator; it does not re-run the schema)."
       : "";
   }
   function saveProfile(){
@@ -387,7 +387,7 @@
     outMsg("pfOut", "Uploading to the org-logos bucket…", false);
     RA_SUPA.client.storage.from("org-logos").upload(path, f, { upsert:true, cacheControl:"3600" }).then(function(r){
       if(r && r.error){
-        outMsg("pfOut", "⚠ Upload failed: " + (r.error.message || r.error) + " — the bucket and its own-folder write policy come from supabase/dashboard-access.sql (run once).", true);
+        outMsg("pfOut", "⚠ Upload failed: " + (r.error.message || r.error) + " Contact the site administrator if this keeps happening.", true);
         return;
       }
       var url = logoUrl(path);
@@ -466,7 +466,7 @@
     var box = byId("panelNt");
     if(res.error){
       box.innerHTML = '<div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div>'
-        + errBox("Could not read your notifications", res.error + " — your own notifications are read through policy own_notif (base schema)") + stamp();
+        + errBox("Could not read your notifications", res.error + " (only your own notifications are read, on the server)") + stamp();
       return;
     }
     var rows = res.rows;
@@ -474,7 +474,7 @@
     box.innerHTML =
       '<div class="section-head"><span class="eyebrow">Notifications</span><h2>' + rows.length + ' notification' + (rows.length === 1 ? "" : "s")
       + (unread ? " · " + unread + " unread" : "") + '</h2>'
-      + '<p>Stored in the notifications table for your account only — row-level security keeps other accounts\' notifications invisible.</p>'
+      + '<p>Stored for your account only. Other accounts\u2019 notifications are never visible to you, and yours are never visible to them.</p>'
       + (rows.length ? '<div class="ws-actions"><button class="btn btn-secondary btn-sm" id="ntMarkAll"' + (unread ? "" : " disabled") + '>Mark all read</button></div>' : '')
       + '<p class="ws-out" id="ntOut">' + esc(ntMsg) + '</p></div>'
       + (rows.length
@@ -532,7 +532,7 @@
       + '<label>Confirm new password<input type="password" id="pw2" autocomplete="new-password" minlength="8"/></label>'
       + '<div class="ws-actions"><button class="btn btn-primary btn-sm" type="button" id="pwBtn">Update password</button></div>'
       + '<p class="ws-out" id="pwOut"></p></form>'
-      + '<p class="form-note">Password changes go through Supabase Authentication on this signed-in session — the server applies them; this page only reports what the server answered.</p>'
+      + '<p class="form-note">Password changes are applied by the sign-in service on your current session; this page only reports what the server answered.</p>'
       + '<p><a class="link" href="account.html">My account — profile, saved items, sync →</a></p></article>'
       + '<article class="card"><span class="tag">Session</span><h3>🚪 Sign out</h3>'
       + '<p>Ends this session on this device. Your record and its status stay in the database — signing out changes nothing about them.</p>'

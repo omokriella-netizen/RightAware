@@ -78,7 +78,7 @@
   function renderConsult(){
     var signedIn = consultSignedIn(), c = consultRows();
     document.getElementById("consultMeta").textContent = signedIn
-      ? "From your account (Supabase) — real requests, database is the source of truth. Payments stay “none” until Paystack is configured."
+      ? "From your account: real requests synced from your own record. Payments stay \u201Cnone\u201D until payments are configured."
       : "Local copy on this device — sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
     document.getElementById("consultList").innerHTML = c.length ? c.map(function(x){
       var st = String(x.status || "requested");
@@ -99,7 +99,7 @@
     var signedIn = notifSignedIn(), n = notifRows();
     var unread = 0; n.forEach(function(x){ if(!x.read) unread++; });
     document.getElementById("notifMeta").textContent = signedIn
-      ? (unread ? unread + " unread · from your account (Supabase)" : "All read · from your account (Supabase)")
+      ? (unread ? unread + " unread · from your account" : "All read · from your account")
       : "Local copy on this device — sign in to sync notifications with your account.";
     var mb = document.getElementById("notifMarkAll");
     mb.style.display = unread > 0 ? "" : "none";
@@ -276,7 +276,7 @@
     var d = ev && ev.detail;
     if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
       notifMsg = "⚠ Could not refresh notifications from the server: " + d.notif.error
-        + " — your own notifications are read through policy own_notif (base schema)";
+        + " (only your own notifications are read, on the server)";
       renderNotif();
     } else if(d && d.notif && d.notif.ok !== false){
       notifMsg = "";
@@ -284,7 +284,7 @@
     }
     if(consultSignedIn() && d && d.consult && d.consult.ok === false && d.consult.error){
       consultMsg = "⚠ Could not refresh consultations from the server: " + d.consult.error
-        + " — your own rows are read through policy own_cons_sel (supabase/consultations-access.sql)";
+        + " (only your own consultations are read, on the server)";
       renderConsult();
     } else if(d && d.consult && d.consult.ok !== false){
       consultMsg = "";

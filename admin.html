@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin — RightAware</title>
-<meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
+<meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to administrator accounts, and every request is checked on the server before any data is returned."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,12 +11,12 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Admin — RightAware"/>
-<meta property="og:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
+<meta property="og:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to administrator accounts, and every request is checked on the server before any data is returned."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/admin.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Admin — RightAware"/>
-<meta name="twitter:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
+<meta name="twitter:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to administrator accounts, and every request is checked on the server before any data is returned."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/admin.html"/>
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="stylesheet" href="styles.css"/>
@@ -49,7 +49,7 @@
 <p class="lead-dark" id="adminLine">Verifying your account role against the database…</p></div></section>
 <section class="section"><div class="container" id="adminBody"></div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • Roles and every row are protected by database row-level security — this page only shows what the database already allows.</small></div></footer>
+<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • Roles and data are checked on the server. This page only ever shows what your own account is allowed to see.</small></div></footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -92,7 +92,7 @@
     var local = [];
     try{ local = JSON.parse(localStorage.getItem("ra_applications") || "[]"); }catch(_){}
     body.innerHTML =
-      '<div class="notice rv">🔒 <strong>Locked.</strong> Admin access requires a signed-in account whose role is <code>admin</code> in the database (row-level security enforces this server-side — hiding buttons is not enough). '
+      '<div class="notice rv">🔒 <strong>Locked.</strong> Admin access requires a signed-in administrator account. The role check runs on the server; hiding buttons is not enough. '
       + '<button class="btn btn-secondary btn-sm" id="prevBtn">Preview dashboard layout (read-only)</button></div>'
       + '<div id="prev"></div>'
       + '<div class="section-head" style="margin-top:1.5rem"><span class="eyebrow">Applications</span><h2>Registration applications on this device</h2></div>'
@@ -105,23 +105,23 @@
           : '<p class="empty">No applications have been made from this browser.</p>');
     document.getElementById("prevBtn").addEventListener("click", function(){
       document.getElementById("prev").innerHTML =
-        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to a Supabase table + admin API.</p></div>'
+        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to one area of administration.</p></div>'
         + '<div class="cards-grid">' + ENTITIES.map(function(e){
             return '<article class="card rv"><h3>' + e[0] + '</h3><p><strong>' + count("window." + e[2]) + '</strong> records in local catalog</p>'
               + '<a class="link" href="' + e[1] + '">Open public page →</a><br/><button class="btn btn-outline btn-sm" disabled title="Requires admin role + backend">Manage (locked)</button></article>';
           }).join("") + '</div>'
         + '<div class="two-col"><div class="card rv"><h3>🚩 Review moderation queue (this device)</h3><p>' + RA_REVIEWS.queue().length + ' flagged item(s).</p></div>'
         + '<div class="card rv"><h3>✉️ Contact messages (this device)</h3><p>' + RA_DB.messages().length + ' stored message(s).</p></div></div>'
-        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS — never by frontend code.</div>';
+        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced on the server, never by frontend code.</div>';
     });
   }
 
   /* ==================== SIGNED OUT: backend on, no session ==================== */
   function renderSignedOut(){
     title.textContent = "Sign in required";
-    line.innerHTML = 'You are not signed in. The administrator dashboard opens only for accounts that carry the <strong>admin</strong> role in the database.';
+    line.innerHTML = 'You are not signed in. The administrator dashboard opens only for accounts that carry the <strong>admin</strong> role.';
     body.innerHTML = '<div class="notice rv">🔐 Sign in with an administrator account to review registration applications, contact messages and content. '
-      + 'Roles live in the database (see <code>docs/DATABASE.md</code>) — row-level security enforces access server-side; hiding buttons is never how access is decided.</div>'
+      + 'Roles are assigned by administrators and enforced on the server. Hiding buttons is never how access is decided.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=admin.html">Sign in</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
   }
 
@@ -129,8 +129,8 @@
   function renderDenied(role){
     title.textContent = "Access denied";
     line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "?") + '</strong> — role: <strong>' + esc(role || "user") + '</strong>. Only administrators can open this dashboard.';
-    body.innerHTML = '<div class="notice rv">🚫 Your account does not have the <code>admin</code> role. The database would refuse every query here anyway (row-level security). '
-      + 'If you believe this is wrong, an existing administrator must grant the role — see <code>docs/DATABASE.md</code>.</div>'
+    body.innerHTML = '<div class="notice rv">🚫 Your account does not have administrator access. Every request from this page is checked on the server anyway, so it would be refused. '
+      + 'If you believe this is wrong, an existing administrator must grant the role.</div>'
       + '<p><a class="btn btn-primary" href="account.html">Back to my account</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
   }
 
@@ -138,7 +138,7 @@
   function renderAdmin(user){
     title.innerHTML = 'Admin dashboard <span class="pill">ADMIN</span>';
     line.innerHTML = 'Signed in as <strong>' + esc(user.email || "admin") + '</strong> — role: <strong>admin</strong>. '
-      + 'Everything below is read live from the database; row-level security blocks anyone else.';
+      + 'Everything below is read live for your account; no one else\u2019s data is reachable here.';
     body.innerHTML =
       '<div class="admin-tabs" role="tablist" aria-label="Admin sections">'
       + '<button role="tab" id="tabApps" aria-selected="true" aria-controls="panelApps">📋 Applications</button>'
