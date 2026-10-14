@@ -28,6 +28,7 @@
     { "source": "/rights/arrest-rights", "destination": "/rights/arrest-rights.html", "permanent": true },
     { "source": "/printables", "destination": "/printables.html", "permanent": true },
     { "source": "/professional", "destination": "/professional.html", "permanent": true },
+    { "source": "/blog", "destination": "/blog/index.html", "permanent": true },
     { "source": "/docs/(.*)", "destination": "/blocked", "permanent": false },
     { "source": "/supabase/(.*)", "destination": "/blocked", "permanent": false },
     { "source": "/tools/(.*)", "destination": "/blocked", "permanent": false }

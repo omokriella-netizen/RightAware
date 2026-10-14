@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blog — RightAware</title>
+<meta name="description" content="The RightAware blog: official announcements and updates from the RightAware team. Posts appear here as they are published."/>
+<link rel="icon" href="../assets/images/favicon-32.png" type="image/png"/>
+<link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
+<link rel="manifest" href="../site.webmanifest"/>
+<meta name="theme-color" content="#0b6b3a"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="RightAware"/>
+<meta property="og:title" content="Blog — RightAware"/>
+<meta property="og:description" content="The RightAware blog: official announcements and updates from the RightAware team. Posts appear here as they are published."/>
+<meta property="og:url" content="https://rightaware-three.vercel.app/blog/index.html"/>
+<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Blog — RightAware"/>
+<meta name="twitter:description" content="The RightAware blog: official announcements and updates from the RightAware team. Posts appear here as they are published."/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/blog/index.html"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="../index.html" class="logo"><span class="logo-brand"><img src="../assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary"><a href="../index.html">Home</a><a href="../about.html">About Us</a><a href="../rights.html">Explore Rights</a><a href="../laws.html">Laws Library</a><a href="../videos.html">Videos</a><a href="../organizations.html">Organizations</a><a href="../resources.html">Resources</a><a href="../help.html">Get Help</a><a href="../lawyers.html">Legal Professionals</a><a href="../ai.html">✨ RightAware AI</a><a href="../contact.html">Contact Us</a></nav>
+    <div class="header-actions">
+      <a class="btn btn-outline btn-sm" href="../login.html">Log In</a>
+      <a class="btn btn-primary btn-sm" href="../signup.html">Sign Up</a>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="page-hero"><div class="container rv">
+  <span class="eyebrow">Blog</span><h1>From the RightAware team</h1>
+  <p class="lead">Announcements, product updates and practical rights explainers. Every post published here is official and listed in this library as soon as it goes live.</p>
+</div></section>
+<section class="section" style="padding-top:0"><div class="container">
+  <div id="blogList" class="cards-grid" aria-live="polite"></div>
+</div></section>
+</main>
+<footer class="footer">
+<div class="footer-cols container">
+  <div class="footer-brand"><a href="../index.html" class="logo"><span class="logo-brand"><img src="../assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Know your rights. Stand your ground.</p></div>
+  <div><h4>Explore</h4><a href="../rights.html">Explore Rights</a><a href="../laws.html">Laws Library</a><a href="../videos.html">Videos</a><a href="../resources.html">Resources</a></div>
+  <div><h4>Platform</h4><a href="../organizations.html">Organizations</a><a href="../lawyers.html">Legal Professionals</a><a href="../ai.html">✨ RightAware AI</a><a href="../search.html">Search</a></div>
+  <div><h4>Support</h4><a href="../help.html">Get Help</a><a href="../resources.html#faqs">FAQs</a><a href="../about.html">About Us</a></div>
+  <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="../contact.html" style="margin-top:.6rem">Open contact page →</a></div>
+</div><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<script src="../js/config.js"></script>
+<script src="../js/auth.js?v=db6"></script>
+<script src="../js/db.js?v=db6"></script>
+<script src="../data.js"></script>
+<script src="../content/rights.js"></script>
+<script src="posts.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  var box = document.getElementById("blogList");
+  var posts = (window.RA_BLOG_POSTS||[]).filter(function(p){ return p && p.status === "PUBLISHED"; })
+    .slice().sort(function(a,b){ return String(b.date||"").localeCompare(String(a.date||"")); });
+  if(!posts.length){
+    box.innerHTML = '<div class="card rv" style="grid-column:1/-1;text-align:center;padding:3rem">'
+      + '<div class="icon" style="font-size:2.5rem">📝</div>'
+      + '<h3>No posts published yet</h3>'
+      + '<p>The blog is ready for its first post. Official announcements and updates will appear here as soon as they are published.</p>'
+      + '<a class="link" href="../rights.html">Browse the rights library instead →</a></div>';
+    return;
+  }
+  box.innerHTML = posts.map(function(p){
+    return '<article class="card rv"><span class="tag">' + esc(p.date) + '</span>'
+      + '<h3>' + esc(p.title) + '</h3>'
+      + '<p>' + esc(p.description) + '</p>'
+      + '<a class="link card-link" href="posts/' + encodeURIComponent(p.slug) + '.html">Read the post →</a></article>';
+  }).join("");
+})();
+</script>
+</body>
+</html>
