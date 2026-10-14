@@ -1,4 +1,4 @@
-/* RightAware service worker (v12): offline-first public content + privacy rules.
+/* RightAware service worker (v13): offline-first public content + privacy rules.
    CACHING POLICY (privacy):
    - Only same-origin GET requests for PUBLIC pages/assets are cached.
    - Never cached: authenticated/API traffic (Authorization header, /api/*),
@@ -8,7 +8,15 @@
    - localStorage data (sessions, saved items) is NEVER touched from here.
    - Cached legal content may be out of date; offline.html says so.
    Registers only on http(s) — skipped on file:// (see app.js). */
-/* v12: rights protection agency directory build — purge stale precaches of the
+/* v13: hardening build - purge precaches of the files changed together:
+        styles.css (.footer-social rules for the new accessible social links),
+        content/videos.js (first catalog entry, "What is RightAware?"), and the
+        public pages whose metas/footers/locked-notice copy changed (navigation
+        is network-first so HTML self-heals, but the precached offline copies
+        should not keep the old infrastructure wording). The blog framework
+        joins CORE (blog/index.html + blog/posts.js) so the precache matches
+        the published surface.
+   v12: rights protection agency directory build — purge stale precaches of the
        files changed together: content/organizations.js (36-organisation
        dataset, ranking + shared card/contact renderers), data.js (organisation
        entries added to the search index), search.html (shared organisation
@@ -69,12 +77,13 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v12";
+const CACHE = "rightaware-v13";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
   "./contact.html", "./search.html",
   "./rights/topic.html", "./rights/arrest-rights.html",
+  "./blog/index.html", "./blog/posts.js",
   "./styles.css", "./app.js", "./data.js",
   "./js/config.js", "./js/db.js", "./js/auth.js", "./js/ai.js",
   "./js/turnstile.js",
@@ -84,7 +93,12 @@ const CORE = [
   "./offline.html"
 ];
 const PRIVATE = ["/account.html", "/admin.html", "/login.html", "/signup.html",
-                 "/professional.html", "/organization.html"];
+                 "/professional.html", "/organization.html",
+                 // Extensionless forms (308 today): matched explicitly so a
+                 // hosting change to clean-URL 200s can never cache an
+                 // authenticated shell through the navigation branch.
+                 "/account", "/admin", "/login", "/signup",
+                 "/professional", "/organization"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch((err) => {
@@ -110,7 +124,8 @@ self.addEventListener("fetch", (e) => {
   // Connection files: always fresh so regenerated keys / connector updates apply at once.
   if (url.pathname.endsWith("/env.local.js") || url.pathname.endsWith("/js/supabase-client.js")) { e.respondWith(fetch(req)); return; }
   if (!sameOrigin) { e.respondWith(fetch(req)); return; } // Supabase/fonts: network only
-  if (PRIVATE.includes(url.pathname)) {                   // auth shells: network-first, uncached
+  const privPath = url.pathname.replace(/\/+$/, "") || url.pathname;
+  if (PRIVATE.includes(privPath)) {                   // auth shells: network-first, uncached
     e.respondWith(fetch(req).catch(() => caches.match("./offline.html")));
     return;
   }

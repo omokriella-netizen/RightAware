@@ -50,7 +50,7 @@
   <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a></div>
   <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
   <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
-</div><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+</div><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="content/laws.js"></script>
@@ -60,6 +60,7 @@
 <script>
 (function(){
   var input=document.getElementById("sInput"), out=document.getElementById("sOut");
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
   function run(q){
     var raw=(q||"").trim();
     q=raw.toLowerCase();
@@ -77,7 +78,7 @@
       }
       return {e:e,score:score};
     }).filter(function(x){return x.score>0;}).sort(function(a,b){return b.score-a.score;}).slice(0,12);
-    var lawNote='<div class="result"><strong>🔎 Search the exact wording inside the supplied laws</strong><br/><a class="link" href="laws.html?q='+encodeURIComponent(raw)+'">Search “'+raw.replace(/</g,"&lt;")+'” inside every document →</a></div>';
+    var lawNote='<div class="result"><strong>🔎 Search the exact wording inside the supplied laws</strong><br/><a class="link" href="laws.html?q='+encodeURIComponent(raw)+'">Search “'+esc(raw)+'” inside every document →</a></div>';
     out.innerHTML=(hits.length?hits.map(function(x){
       var url=x.e.url;
       if(x.e.lawId){
@@ -87,7 +88,7 @@
       }
       var tag=x.e.kind==="org"?'<span class="pill">organisation</span><br/>':x.e.title.indexOf("Law:")===0?'<span class="tag tag-soon">law document</span><br/>':"";
       return '<div class="result">'+tag+'<strong>'+x.e.title+'</strong><br/><a class="link" href="'+url+'">Open →</a></div>';
-    }).join(""):'<div class="result">No match for "<strong>'+raw.replace(/</g,"&lt;")+'</strong>". Try "arrest", "rent", "salary", "vote" or "scam" — or <a class="link" href="help.html">get help →</a></div>')+lawNote;
+    }).join(""):'<div class="result">No match for "<strong>'+esc(raw)+'</strong>". Try "arrest", "rent", "salary", "vote" or "scam" — or <a class="link" href="help.html">get help →</a></div>')+lawNote;
   }
   var init=new URLSearchParams(location.search).get("q")||"";
   input.value=init; run(init);

@@ -1,0 +1,11 @@
+# Files excluded from Vercel upload (CLI deploys; Git deploys rely on the
+# /docs, /supabase and /tools redirects in vercel.json, which run before the
+# filesystem and therefore block those paths for every deployment type).
+# tools/ is deliberately NOT listed here: it is the Build Command
+# (node tools/make-env.vercel.js) and must exist during build.
+.env
+.env.local
+AUDIT_REPORT.md
+docs/
+supabase/
+*.log

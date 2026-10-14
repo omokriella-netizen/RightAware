@@ -18,6 +18,7 @@
 <meta name="twitter:title" content="My Account — RightAware"/>
 <meta name="twitter:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/account.html"/>
+<meta name="robots" content="noindex, nofollow"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -51,7 +52,7 @@
     <button class="btn btn-secondary" type="submit">Save Settings</button><p class="form-note">Online-only features will always say so.</p></form>
 </div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -62,10 +63,10 @@
   document.getElementById("whoChip").textContent = u.email || u.name;
   document.getElementById("helloTitle").textContent = "Welcome, " + (u.name || "Member");
   document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logoutLive().then(function(){ location.href="index.html"; });});
-  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+s.ref : s.type==="video" ? "videos.html" : "laws.html";
+  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+encodeURIComponent(s.ref) : s.type==="video" ? "videos.html" : "laws.html";
   function renderSaved(){
     const l = RA_DB.savedList();
-    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+s.type+'</span><h3 style="margin-top:.4rem">'+s.title+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+s.type+"|"+s.ref+'">Remove</button></article>').join("")
+    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+esc(s.type)+'</span><h3 style="margin-top:.4rem">'+esc(s.title)+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+esc(s.type)+"|"+esc(s.ref)+'">Remove</button></article>').join("")
       : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap ☆ Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
     document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
   }
@@ -77,7 +78,7 @@
   function renderConsult(){
     var signedIn = consultSignedIn(), c = consultRows();
     document.getElementById("consultMeta").textContent = signedIn
-      ? "From your account (Supabase) — real requests, database is the source of truth. Payments stay “none” until Paystack is configured."
+      ? "From your account: real requests synced from your own record. Payments stay \u201Cnone\u201D until payments are configured."
       : "Local copy on this device — sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
     document.getElementById("consultList").innerHTML = c.length ? c.map(function(x){
       var st = String(x.status || "requested");
@@ -98,7 +99,7 @@
     var signedIn = notifSignedIn(), n = notifRows();
     var unread = 0; n.forEach(function(x){ if(!x.read) unread++; });
     document.getElementById("notifMeta").textContent = signedIn
-      ? (unread ? unread + " unread · from your account (Supabase)" : "All read · from your account (Supabase)")
+      ? (unread ? unread + " unread · from your account" : "All read · from your account")
       : "Local copy on this device — sign in to sync notifications with your account.";
     var mb = document.getElementById("notifMarkAll");
     mb.style.display = unread > 0 ? "" : "none";
@@ -275,7 +276,7 @@
     var d = ev && ev.detail;
     if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
       notifMsg = "⚠ Could not refresh notifications from the server: " + d.notif.error
-        + " — your own notifications are read through policy own_notif (base schema)";
+        + " (only your own notifications are read, on the server)";
       renderNotif();
     } else if(d && d.notif && d.notif.ok !== false){
       notifMsg = "";
@@ -283,7 +284,7 @@
     }
     if(consultSignedIn() && d && d.consult && d.consult.ok === false && d.consult.error){
       consultMsg = "⚠ Could not refresh consultations from the server: " + d.consult.error
-        + " — your own rows are read through policy own_cons_sel (supabase/consultations-access.sql)";
+        + " (only your own consultations are read, on the server)";
       renderConsult();
     } else if(d && d.consult && d.consult.ok !== false){
       consultMsg = "";

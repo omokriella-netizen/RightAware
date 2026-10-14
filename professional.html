@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Professional workspace — RightAware</title>
-<meta name="description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires the professional role AND a verified professionals record — both checked against the database on every load; row-level security decides what is readable."/>
+<meta name="description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires administrator approval of your own professional record, checked on every load. This workspace only ever shows your own record's data."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,13 +11,14 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Professional workspace — RightAware"/>
-<meta property="og:description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires the professional role AND a verified professionals record — both checked against the database on every load; row-level security decides what is readable."/>
+<meta property="og:description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires administrator approval of your own professional record, checked on every load. This workspace only ever shows your own record's data."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/professional.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Professional workspace — RightAware"/>
-<meta name="twitter:description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires the professional role AND a verified professionals record — both checked against the database on every load; row-level security decides what is readable."/>
+<meta name="twitter:description" content="RightAware workspace for verified legal professionals: profile, public directory preview, consultation requests, reviews, notifications and account security. Access requires administrator approval of your own professional record, checked on every load. This workspace only ever shows your own record's data."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/professional.html"/>
+<meta name="robots" content="noindex, nofollow"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -62,7 +63,7 @@
 <p class="lead-dark" id="wsLine">Verifying your professional record against the database…</p></div></section>
 <section class="section"><div class="container" id="wsBody"></div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 • This workspace only shows rows the database already allows you to read — ownership checks and row-level security decide access, never hidden buttons.</small></div></footer>
+<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • This workspace only shows your own professional record. Access is decided on the server, never by hidden buttons.</small></div></footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -115,7 +116,7 @@
   function renderLocked(){
     title.innerHTML = 'Professional workspace <span class="pill">LOCKED — NO BACKEND</span>';
     line.innerHTML = 'This device has no database connection, so ownership of a professional record cannot be verified — the workspace stays closed rather than guessing.';
-    body.innerHTML = '<div class="notice rv">🔒 <strong>Locked.</strong> Verification status, your profile, consultation requests and reviews all live in Supabase behind row-level security. Nothing on this page is simulated, so there is no local preview with fake data. '
+    body.innerHTML = '<div class="notice rv">🔒 <strong>Locked.</strong> Verification status, your profile, consultation requests and reviews all come from your own approved record, read securely on every load. Nothing on this page is simulated, so there is no local preview with fake data. '
       + 'Sign in on a connected device to open the workspace.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=professional.html">Sign in</a> <a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
       + stamp();
@@ -125,7 +126,7 @@
   function renderSignedOut(){
     title.textContent = "Sign in required";
     line.innerHTML = 'The professional workspace opens for the account that <strong>owns a verified professional record</strong> — nothing can be checked while signed out.';
-    body.innerHTML = '<div class="notice rv">🔐 Two conditions, both read from the database on every load: your account carries the <strong>professional</strong> role (granted only by an administrator\'s approval, removed only by revocation), and the professionals row linked to your account says <code>verification_status = verified</code>. Hidden buttons are never how access is decided.</div>'
+    body.innerHTML = '<div class="notice rv">🔐 Two conditions, both checked on the server on every load: your account carries the <strong>professional</strong> role (granted only by an administrator\'s approval, removed only by revocation), and your own professional record is already verified. Hidden buttons are never how access is decided.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=professional.html">Sign in</a> <a class="btn btn-secondary" href="signup.html">Apply as a professional</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
       + stamp();
   }
@@ -139,7 +140,7 @@
     if(o.readError){
       title.innerHTML = 'Professional workspace <span class="pill-gold">STATUS UNAVAILABLE</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — role: <strong>' + esc(roleName) + '</strong>. Your record could not be read, so no workspace is shown (access is never guessed).';
-      body.innerHTML = '<div class="notice rv">⚠ Could not read your professional record: <strong>' + esc(o.readError) + '</strong>. The own-row read comes from policy <code>own_profs</code> (<code>supabase/applications-access.sql</code>, already applied for the verification workflow) — if this persists, the page will stay closed until the read works again.</div>'
+      body.innerHTML = '<div class="notice rv">⚠ Could not read your professional record: <strong>' + esc(o.readError) + '</strong>. The read for your own record is decided on the server. If this persists, the page stays closed until the read works again.</div>'
         + '<p><a class="btn btn-primary" href="account.html">My account</a> <a class="btn btn-secondary" href="contact.html">Contact support</a></p>' + stamp();
       return;
     }
@@ -306,9 +307,9 @@
 
   function dataErrors(){
     var e = [];
-    if(ws.cons.error) e.push("consultations: " + ws.cons.error + " (needs policy pro_read_consultations from supabase/dashboard-access.sql)");
+    if(ws.cons.error) e.push("consultations: " + ws.cons.error + " (consultation requests could not be read)");
     if(ws.revs.error) e.push("reviews: " + ws.revs.error + " (policy pub_read_reviews from the base schema)");
-    if(ws.notifs.error) e.push("notifications: " + ws.notifs.error + " (policy own_notif from the base schema)");
+    if(ws.notifs.error) e.push("notifications: " + ws.notifs.error + " (own notifications only, read on the server)");
     if(ws.specs.error) e.push("specializations: " + ws.specs.error + " (policy pub_read_specs from the base schema)");
     return e;
   }
@@ -401,12 +402,12 @@
   }
   function saveHint(err){
     return /does not exist|schema cache/i.test(String(err))
-      ? " — this edit needs supabase/dashboard-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
+      ? " (this edit needs a pending server-side update applied once by the site administrator; it does not re-run the schema)."
       : "";
   }
   function respondHint(err){
     return /does not exist|schema cache/i.test(String(err))
-      ? " — a decision needs supabase/consultations-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
+      ? " (a decision needs a pending server-side update applied once by the site administrator; it does not re-run the schema)."
       : "";
   }
   function saveProfile(){
@@ -461,7 +462,7 @@
     outMsg("pfOut", "Uploading to the pro-photos bucket…", false);
     RA_SUPA.client.storage.from("pro-photos").upload(path, f, { upsert:true, cacheControl:"3600" }).then(function(r){
       if(r && r.error){
-        outMsg("pfOut", "⚠ Upload failed: " + (r.error.message || r.error) + " — the bucket and its own-folder write policy come from supabase/dashboard-access.sql (run once).", true);
+        outMsg("pfOut", "⚠ Upload failed: " + (r.error.message || r.error) + " Contact the site administrator if this keeps happening.", true);
         return;
       }
       var url = photoUrl(path);
@@ -513,7 +514,7 @@
   function renderConsults(){
     var res = ws.cons;
     var errs = res.error
-      ? errBox("Could not read your consultation requests", res.error + " — the professional-side read comes from policy pro_read_consultations (supabase/dashboard-access.sql, run once)")
+      ? errBox("Could not read your consultation requests", res.error + " (the read for your own record is decided on the server)")
       : "";
     var rows = res.rows;
     var open = rows.filter(function(c){ return String(c.status) === "requested"; }).length;
@@ -539,7 +540,7 @@
               + acts
               + '<div class="ws-meta">status in database: <code>' + esc(c.status || "unset") + '</code></div></div>';
           }).join("") + '</div>'
-          + '<div class="notice" style="margin-top:.9rem">V1 lifecycle: <code>requested → accepted</code> or <code>requested → declined</code> — each decision goes through the database function <code>ra_consult_respond</code> (supabase/consultations-access.sql), which re-checks that the row is addressed to YOUR verified record and is still open. The requesting individual is notified through the notifications table. Nothing here is ever generated for display.</div>'
+          + '<div class="notice" style="margin-top:.9rem">V1 lifecycle: <code>requested → accepted</code> or <code>requested → declined</code>. Each decision runs on the server, which re-checks that the row is addressed to YOUR verified record and is still open. The requesting individual is notified through their own notifications. Nothing here is ever generated for display.</div>'
         : '<p class="empty">No consultation requests are directed at your record yet. Real requests appear here with their status; this page never invents sample entries.</p>');
     byId("panelCo").innerHTML = head + list;
     Array.prototype.forEach.call(byId("panelCo").querySelectorAll("[data-accept]"), function(b){
@@ -620,7 +621,7 @@
     var box = byId("panelNt");
     if(res.error){
       box.innerHTML = '<div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div>'
-        + errBox("Could not read your notifications", res.error + " — your own notifications are read through policy own_notif (base schema)") + stamp();
+        + errBox("Could not read your notifications", res.error + " (only your own notifications are read, on the server)") + stamp();
       return;
     }
     var rows = res.rows;
@@ -628,7 +629,7 @@
     box.innerHTML =
       '<div class="section-head"><span class="eyebrow">Notifications</span><h2>' + rows.length + ' notification' + (rows.length === 1 ? "" : "s")
       + (unread ? " · " + unread + " unread" : "") + '</h2>'
-      + '<p>Stored in the notifications table for your account only — row-level security keeps other accounts\' notifications invisible.</p>'
+      + '<p>Stored for your account only. Other accounts\u2019 notifications are never visible to you, and yours are never visible to them.</p>'
       + (rows.length ? '<div class="ws-actions"><button class="btn btn-secondary btn-sm" id="ntMarkAll"' + (unread ? "" : " disabled") + '>Mark all read</button></div>' : '')
       + '<p class="ws-out" id="ntOut">' + esc(ntMsg) + '</p></div>'
       + (rows.length
@@ -686,7 +687,7 @@
       + '<label>Confirm new password<input type="password" id="pw2" autocomplete="new-password" minlength="8"/></label>'
       + '<div class="ws-actions"><button class="btn btn-primary btn-sm" type="button" id="pwBtn">Update password</button></div>'
       + '<p class="ws-out" id="pwOut"></p></form>'
-      + '<p class="form-note">Password changes go through Supabase Authentication on this signed-in session — the server applies them; this page only reports what the server answered.</p>'
+      + '<p class="form-note">Password changes are applied by the sign-in service on your current session; this page only reports what the server answered.</p>'
       + '<p><a class="link" href="account.html">My account — profile, saved items, sync →</a></p></article>'
       + '<article class="card"><span class="tag">Session</span><h3>🚪 Sign out</h3>'
       + '<p>Ends this session on this device. Your record, decisions and messages stay in the database — signing out changes nothing about them.</p>'

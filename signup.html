@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Sign Up — RightAware</title>
 <meta name="description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="canonical" href="https://rightaware-three.vercel.app/signup.html"/>
 <link rel="stylesheet" href="styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -24,6 +26,69 @@
   #backBtn{margin-bottom:.8rem}
   .status-pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:800}
   @media(max-width:820px){.path-grid{grid-template-columns:1fr}}
+
+  /* =========================================================
+     GET STARTED HERO - RIGHTAWARE LOGO
+     This changes ONLY the large logo card on signup.html.
+     It does NOT affect the footer logo.
+     Carried verbatim from commit 280efd1 (visual change only).
+     ========================================================= */
+
+  .page-hero-media{
+    margin:0;
+    background:#ffffff;
+    border-radius:20px;
+    padding:2.5rem;
+    min-height:320px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:0 18px 50px rgba(0,0,0,.18);
+    overflow:hidden;
+  }
+
+  .page-hero-media img{
+    display:block;
+    width:100%;
+    max-width:360px;
+    height:auto;
+
+    border-radius:0;
+    box-shadow:none;
+    object-fit:contain;
+  }
+
+
+  /* Mobile */
+  @media(max-width:900px){
+
+    .path-grid{
+      grid-template-columns:1fr;
+    }
+
+    .page-hero-media{
+      min-height:240px;
+      padding:2rem;
+      border-radius:18px;
+    }
+
+    .page-hero-media img{
+      max-width:280px;
+    }
+  }
+
+  @media(max-width:520px){
+    .page-hero-media{
+      min-height:210px;
+      padding:1.5rem;
+    }
+
+    .page-hero-media img{
+      max-width:240px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -222,7 +287,7 @@
 </section>
 </main>
 
-<footer class="footer"><div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware 🇳🇬 — General legal information only, not legal advice.</small></div></footer>
+<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 — General legal information only, not legal advice.</small></div></footer>
 
 <script src="js/config.js"></script>
 <script src="js/turnstile.js"></script>
@@ -463,13 +528,13 @@
     }
     var acctNote;
     if(acctRes.ok && acctRes.needsConfirm){
-      acctNote = acctRes.note + " After confirming, sign in — this application attaches to your account automatically.";
+      acctNote = esc(acctRes.note) + " After confirming, sign in — this application attaches to your account automatically.";
     } else if(acctRes.ok){
-      acctNote = acctRes.note || "Account created.";
+      acctNote = esc(acctRes.note || "Account created.");
     } else if(acctRes.alreadyRegistered){
-      acctNote = "⚠ " + acctRes.error + " Sign in (or confirm your email first) and this application will attach to your account automatically.";
+      acctNote = "⚠ " + esc(acctRes.error) + " Sign in (or confirm your email first) and this application will attach to your account automatically.";
     } else {
-      acctNote = "⚠ Account step: " + (acctRes.error || "failed") + ". Your application will still be recorded for review.";
+      acctNote = "⚠ Account step: " + esc(acctRes.error || "failed") + ". Your application will still be recorded for review.";
     }
 
     // attach the account to the row where the schema supports it — from the
@@ -531,7 +596,7 @@
       return;
     }
     finish({ title:"Application saved on this device", ref:ref,
-      detail: acctNote + "<br/><br/>⚠ Delivery to RightAware failed (" + (q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
+      detail: acctNote + "<br/><br/>⚠ Delivery to RightAware failed (" + esc(q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
   }
 
   /* ---------- pathway: individual (general user) ---------- */
@@ -558,7 +623,7 @@
           if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
           RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
           finish({ title:"Account created", ref:null,
-            detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
+            detail:esc(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
         });
       } else {
         RA_AUTH.signup(n, em);
