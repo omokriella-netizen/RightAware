@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RightAware — Understand your Rights. Know your power.</title>
-<meta name="description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<title>RightAware | Know Your Legal Rights in Nigeria</title>
+<meta name="description" content="RightAware is a Nigerian legal awareness platform helping citizens understand their rights, stop unlawful arrests, handle landlord disputes, and get legal aid."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="RightAware — Understand your Rights. Know your power."/>
-<meta property="og:description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<meta property="og:title" content="RightAware | Know Your Legal Rights in Nigeria"/>
+<meta property="og:description" content="RightAware is a Nigerian legal awareness platform helping citizens understand their rights, stop unlawful arrests, handle landlord disputes, and get legal aid."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="RightAware — Understand your Rights. Know your power."/>
-<meta name="twitter:description" content="RightAware is a Nigerian Civil Tech and Legal Awareness Platform helping citizens understand their rights, civic responsibilities, and the laws that protect them."/>
+<meta name="twitter:title" content="RightAware | Know Your Legal Rights in Nigeria"/>
+<meta name="twitter:description" content="RightAware is a Nigerian legal awareness platform helping citizens understand their rights, stop unlawful arrests, handle landlord disputes, and get legal aid."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -28,18 +29,20 @@
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
     <nav class="nav" aria-label="Primary">
-      <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a>
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
-      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search RightAware"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
+      <a class="btn btn-urgent btn-sm" href="#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
     <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
-    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
 
@@ -47,102 +50,296 @@
 <section class="hero" id="get-started">
   <div class="container hero-grid">
     <div class="hero-copy rv">
-      <span class="badge"><span class="pulse"></span> Nigerian Civil Tech & Legal Awareness</span>
-      <h1>Understand your Rights.<br/><span class="highlight">Know your power.</span></h1>
-      <p class="lead">RightAware helps every Nigerian understand their fundamental rights, civic responsibilities, and the laws that protect them — in simple, clear language. No legal jargon. Just knowledge you can act on.</p>
-      <div class="hero-cta">
-        <a href="signup.html" class="btn btn-primary btn-lg">Get Started</a>
-        <a href="rights.html" class="btn btn-secondary btn-lg">Explore Rights →</a>
-        <a href="ai.html" class="btn btn-ghost btn-lg">✨ Ask RightAware AI</a>
+      <span class="badge"><span class="pulse"></span> Nigerian Civic Legal Awareness</span>
+      <h1>Know your rights.<br/><span class="highlight">Defend yourself.</span></h1>
+      <p class="lead">Clear, statute-backed legal guidance for everyday situations across Nigeria. Learn your constitutional protections against unlawful arrest, stop illegal evictions, and connect with verified legal aid.</p>
+
+      <!-- Unified Universal Command Center -->
+      <div class="hero-search-wrap">
+        <form id="homeSearchForm" class="hero-search-form" role="search">
+          <input id="homeSearchInput" aria-label="Search rights, laws and resources" type="search" placeholder="Search police stops, bail, eviction notice, unpaid wages…" autocomplete="off"/>
+          <button class="btn btn-primary" type="submit">
+            <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Search
+          </button>
+        </form>
+        <div class="quick-tags">
+          <button type="button" data-q="arrest">Police stop</button>
+          <button type="button" data-q="bail">Bail is free</button>
+          <button type="button" data-q="rent">Landlord eviction</button>
+          <button type="button" data-q="employment">Unpaid salary</button>
+          <button type="button" data-q="vote">Voting rights</button>
+          <button type="button" data-q="scam">Online scam</button>
+        </div>
+        <div id="homeSearchResults" class="hero-search-results" aria-live="polite"></div>
       </div>
+
       <div class="hero-stats">
-        <div><strong data-rights-count>12</strong><span>Rights categories</span></div>
-        <div><strong data-laws-count>11</strong><span>Law documents readable</span></div>
-        <div><strong>100%</strong><span>Free awareness</span></div>
+        <div><strong data-laws-count>9</strong><span>Verified Statutes</span></div>
+        <div><strong>24/7</strong><span>Emergency Hotlines</span></div>
+        <div><strong>100%</strong><span>Free &amp; Statute-Backed</span></div>
       </div>
     </div>
-    <div class="hero-media rv">
-      <img src="assets/images/hero-citizens.jpg" alt="A group of young Nigerians smiling together while looking at a phone" width="2000" height="2000"/>
-      <div class="hero-chip"><strong>🇳🇬 Built for Nigeria</strong><p>Plain-language guides with links to the original source documents.</p></div>
+
+    <!-- Right Rail: Platform Bento Preview -->
+    <div class="rv">
+      <div class="hero-bento-grid" aria-label="RightAware Platform Core Systems">
+        <a class="bento-card" href="rights.html">
+          <div class="bento-head">
+            <span class="bento-eyebrow">Rights Library</span>
+            <span class="bento-icon">
+              <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </span>
+          </div>
+          <strong class="bento-num"><span data-rights-count>28</span></strong>
+          <h3>Civic Rights Topics</h3>
+          <p>Police bail, tenancy lockouts, unpaid wages, voting, and digital safety decoded in plain language.</p>
+          <span class="bento-cta">Explore Topics →</span>
+        </a>
+
+        <a class="bento-card" href="laws.html">
+          <div class="bento-head">
+            <span class="bento-eyebrow">Statutory Archive</span>
+            <span class="bento-icon">
+              <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </span>
+          </div>
+          <strong class="bento-num"><span data-laws-count>9</span></strong>
+          <h3>Decoded Statutes</h3>
+          <p>1999 Constitution, Electoral Act 2022, ACJA 2015, and state tenancy laws in searchable text.</p>
+          <span class="bento-cta">Browse Laws →</span>
+        </a>
+
+        <a class="bento-card" href="ai.html">
+          <div class="bento-head">
+            <span class="bento-eyebrow">Plain-Language AI</span>
+            <span class="bento-icon">
+              <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </span>
+          </div>
+          <strong class="bento-num">24/7</strong>
+          <h3>Legal AI Assistant</h3>
+          <p>Ask legal questions in plain English or Naijá Pidgin with direct statutory section citations.</p>
+          <span class="bento-cta">Ask Legal AI →</span>
+        </a>
+
+        <a class="bento-card" href="resources.html#organizations">
+          <div class="bento-head">
+            <span class="bento-eyebrow">Support Network</span>
+            <span class="bento-icon">
+              <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </span>
+          </div>
+          <strong class="bento-num">50+</strong>
+          <h3>Verified Directory</h3>
+          <p>Direct contacts for Legal Aid Council (LACON), NHRC, Police CRU, and vetted pro-bono clinics.</p>
+          <span class="bento-cta">Find Legal Aid →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Docked Tactile Hotline Strip (Base of Hero) -->
+  <div class="container">
+    <div class="hero-hotline-strip" aria-label="Immediate 24/7 Crisis Dispatch Hotlines">
+      <div class="hotline-strip-label">
+        <span class="pulse" style="background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.25)"></span>
+        <strong>Urgent Situation?</strong>
+        <span>Direct 24/7 Hotlines:</span>
+      </div>
+      <div class="hotline-pills">
+        <a class="hotline-pill hotline-danger" href="tel:112" aria-label="Call National Emergency 112">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <div class="hotline-pill-info">
+            <span class="pill-number">112</span>
+            <span class="pill-desc">National Emergency</span>
+          </div>
+        </a>
+        <a class="hotline-pill hotline-police" href="tel:08057000001" aria-label="Call Police CRU 0805 700 0001">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <div class="hotline-pill-info">
+            <span class="pill-number">0805 700 0001</span>
+            <span class="pill-desc">Police CRU (Extortion)</span>
+          </div>
+        </a>
+        <a class="hotline-pill hotline-legalaid" href="tel:08005342524" aria-label="Call Legal Aid Council 0800 534 2524">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <div class="hotline-pill-info">
+            <span class="pill-number">0800 534 2524</span>
+            <span class="pill-desc">Legal Aid Council</span>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="search-section"><div class="container search-box rv">
-  <h2>Find rights and legal information</h2>
-  <p>Search in plain English or Pidgin. Example: “police arrest me”, “landlord lock my shop”, “work sack me”.</p>
-  <form id="homeSearchForm" class="search-form" role="search"><input id="homeSearchInput" aria-label="Search rights, laws and resources" type="search" placeholder="Search rights, laws, topics…" autocomplete="off"/><button class="btn btn-primary" type="submit">Search</button></form>
-  <div class="quick-tags">
-    <button type="button" data-q="arrest">Arrest</button><button type="button" data-q="bail">Bail</button><button type="button" data-q="rent">Rent & Tenancy</button><button type="button" data-q="employment">Employment</button><button type="button" data-q="vote">Voting</button><button type="button" data-q="scam">Online scam</button>
-  </div>
-  <div id="homeSearchResults" class="search-results" aria-live="polite"></div>
-</div></section>
-
+<!-- Section 2: Everyday Civic Rights (6 Diverse Pillars) -->
 <section class="section" id="popular"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Popular rights & topics</span><h2>Start with what Nigerians ask about most</h2><p><span data-rights-count>12</span> categories in the library. Full guides are researched and verified one at a time (currently <span data-guide-count>1</span>); everything else opens as a structured overview with source hints.</p></div>
+  <div class="section-head rv">
+    <span class="eyebrow">Everyday Civic Rights</span>
+    <h2>Statute-backed protections across Nigeria</h2>
+    <p>Comprehensive guides covering criminal justice, housing, workplace protections, voting rights, and digital privacy.</p>
+  </div>
   <div class="cards-grid" id="homeRights"></div>
-  <div class="section-cta"><a class="btn btn-primary btn-lg" href="rights.html">Explore Rights</a></div>
+  <div class="section-cta"><a class="btn btn-secondary btn-lg" href="rights.html">Browse All 28 Rights Topics →</a></div>
 </div></section>
 
-<section class="section section-alt" id="libraries"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Libraries</span><h2>Browse every collection</h2><p>Laws, videos, organizations and FAQs — each with search, filters and room to grow.</p></div>
-  <div class="cards-grid">
-    <article class="card rv"><div class="icon">📜</div><h3>Laws & Legal Documents Library</h3><p>Read and search the actual supplied documents — Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law and more — with page-accurate results and downloads.</p><a class="link" href="laws.html">Open library →</a></article>
-    <article class="card rv"><div class="icon">🎬</div><h3>Video Library</h3><p>Explainers with search, filters, featured rail and save-for-offline. Ready for your uploads.</p><a class="link" href="videos.html">Open library →</a></article>
-    <article class="card rv"><div class="icon">🏛</div><h3>Organizations Directory</h3><p>Support-body types today; verified records with contacts publish after confirmation.</p><a class="link" href="organizations.html">Open directory →</a></article>
+<!-- Section 3: Action Toolkits & Situation Triage -->
+<section class="section section-alt" id="toolkits">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Action Toolkits &amp; Situation Triage</span>
+      <h2>Immediate steps and printable references</h2>
+      <p>Select your urgent legal situation for step-by-step statutory protocols, or save offline printable guides directly to your phone.</p>
+    </div>
+
+    <div class="triage-section-grid">
+      <!-- Left Column: Printable Action Checklists & FAQs -->
+      <div class="checklist-card-stack rv">
+        <article class="card doc-card">
+          <div class="doc-badge">
+            <svg class="ra-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            PDF / WhatsApp Ready
+          </div>
+          <div class="card-icon-badge">
+            <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <h3>Police Encounter Printable Checklist</h3>
+          <p>What to say, what not to sign, bail rules, and how to record officer details. One-page reference to save or share on WhatsApp.</p>
+          <a class="link" href="rights/arrest-rights.html">Open printable guide →</a>
+        </article>
+
+        <article class="card doc-card">
+          <div class="doc-badge">
+            <svg class="ra-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Statutory Protocol
+          </div>
+          <div class="card-icon-badge">
+            <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+          <h3>Tenant Defense &amp; Eviction Rules</h3>
+          <p>Statutory quit notice requirements, stopping unlawful lockouts, and filing urgent complaints against illegal demolition.</p>
+          <a class="link" href="rights/topic.html?id=tenancy">Open tenancy rules →</a>
+        </article>
+
+        <article class="card doc-card">
+          <div class="doc-badge">
+            <svg class="ra-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Verified Civic Answers
+          </div>
+          <div class="card-icon-badge">
+            <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <h3>Clear Answers to Common FAQs</h3>
+          <p>Is bail free? Can police search my phone without a warrant? What should I do within 1 hour of a digital bank scam?</p>
+          <a class="link" href="resources.html#faqs">Read all FAQs →</a>
+        </article>
+      </div>
+
+      <!-- Right Column: Interactive Situation Triage Console with Anchor -->
+      <div class="rv">
+        <aside class="hero-crisis-card" id="emergencyConsole" aria-labelledby="crisisTitle">
+          <div class="crisis-head">
+            <span class="crisis-badge">
+              <svg class="ra-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              Interactive Tool
+            </span>
+            <h2 id="crisisTitle">Urgent Situation Triage</h2>
+          </div>
+          <p class="crisis-subhead">Facing an active dispute or threat? Select your issue to reveal immediate statutory steps and official desk contacts:</p>
+
+          <form class="crisis-form" onsubmit="return false">
+            <div class="crisis-field">
+              <label for="triageIssue">1. What best describes your situation?</label>
+              <select id="triageIssue" class="crisis-select">
+                <option value="police">Police stop, arrest, or bail demand</option>
+                <option value="tenancy">Landlord eviction, lockout, or rent dispute</option>
+                <option value="employment">Unpaid salary or sudden dismissal</option>
+                <option value="women">Domestic abuse or personal safety</option>
+                <option value="digital">Online scam or bank fraud</option>
+                <option value="other">Other urgent legal dispute</option>
+              </select>
+            </div>
+            <div class="crisis-field">
+              <label>2. Is anyone in immediate physical danger?</label>
+              <div class="crisis-danger-toggle">
+                <label class="crisis-radio-label">
+                  <input type="radio" name="danger" id="dangerNo" value="No" checked/>
+                  No, detained/extorted
+                </label>
+                <label class="crisis-radio-label">
+                  <input type="radio" name="danger" id="dangerYes" value="Yes"/>
+                  Yes, immediate danger
+                </label>
+              </div>
+            </div>
+            <button class="btn btn-urgent" id="triageBtn" type="button" style="width:100%;margin-top:.4rem">
+              Show Immediate Protocol &amp; Steps
+            </button>
+            <div class="crisis-output" id="triageOut" aria-live="polite">
+              <h4>
+                <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Instant Guidance
+              </h4>
+              <p style="margin:0 0 .3rem;color:#cbd5e1">Select your situation and click above to reveal statute-backed steps and emergency responder phone desks.</p>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </div>
   </div>
-</div></section>
-
-<section class="section" id="videos"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Learn visually</span><h2>Educational videos</h2><p>Short explainers (placeholders in v1 — full production list on the Resources page).</p></div>
-  <div class="cards-grid" id="homeVideos"></div>
-  <div class="section-cta"><a class="btn btn-outline" href="videos.html">Learn More</a></div>
-</div></section>
-
-<section class="section section-alt" id="featured-resources"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Featured resources</span><h2>Free guides & downloads</h2><p>Printable checklists you can save or share on WhatsApp.</p></div>
-  <div class="cards-grid">
-    <article class="card rv"><h3>✅ Police Encounter Checklist</h3><p>What to say, what not to sign, what to record. One-page printable.</p><a class="link" href="rights/arrest-rights.html">Open guide →</a></article>
-    <article class="card rv"><h3>📄 Fundamental Rights Overview</h3><p>Plain-language overview with a verify-against-Constitution note.</p><a class="link" href="rights/topic.html?id=fundamental">Open overview →</a></article>
-    <article class="card rv"><h3>❓ FAQs answered simply</h3><p>Is RightAware a law firm? Is bail free? Can police check my phone?</p><a class="link" href="resources.html#faqs">Read FAQs →</a></article>
-  </div>
-</div></section>
-
-<section class="section section-dark" id="help"><div class="container help-grid">
-  <div class="rv"><span class="eyebrow eyebrow-light">Get help</span><h2>In trouble right now? Get help fast.</h2>
-    <p>First: if anyone is in danger, contact emergency services or move somewhere safe. Then document what happened and choose a path below.</p>
-    <ul class="help-list"><li><strong>Emergency?</strong> Use official emergency channels (verify current numbers locally).</li><li><strong>Police issue?</strong> See the Police & Arrest guide, then report via Get Help.</li><li><strong>Can't afford a lawyer?</strong> Ask about free legal-aid options on the Get Help page.</li></ul>
-    <div class="hero-cta"><a href="help.html" class="btn btn-primary btn-lg">Get Help</a><a href="lawyers.html" class="btn btn-ghost btn-lg">Find a Professional</a></div>
-  </div>
-  <div class="rv"><div class="help-form"><h3>Quick triage (demo)</h3><p style="color:var(--muted);font-size:.9rem">Answer 2 questions — we point you to the right page. Saved on this device only.</p>
-    <label>What best describes your issue?<select id="triageIssue"><option value="police">Police / arrest / bail</option><option value="tenancy">Rent / landlord / eviction</option><option value="employment">Work / salary / dismissal</option><option value="women">Safety / domestic issue</option><option value="digital">Online scam / fraud</option><option value="other">Something else</option></select></label>
-    <label>Is anyone in immediate danger?<select id="triageDanger"><option>No</option><option>Yes</option></select></label>
-    <button class="btn btn-primary" id="triageBtn" type="button">Where do I go?</button>
-    <p class="form-note" id="triageOut">General information only — not legal advice.</p>
-  </div></div>
-</div></section>
-
-<section class="section"><div class="container cta-banner rv">
-  <div><h3>✨ Try the RightAware AI (demo placeholder)</h3><p>It points you to library pages. Clearly marked demo — not a lawyer, not a live legal service.</p></div>
-  <a href="ai.html" class="btn btn-primary">Open AI Demo</a>
-</div></section>
+</section>
 </main>
 
 <footer class="footer" id="contact">
   <div class="container footer-grid">
     <div class="footer-brand">
       <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-      <p>A Nigerian Civil Tech and Legal Awareness Platform. Knowledge is power — we make the law understandable for everyone.</p>
-      <p class="disclaimer">General legal information only — not legal advice. v1 uses demo/placeholder content where marked.</p>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
     </div>
-    <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources & Guides</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
-    <div><h4>Support</h4><a href="help.html">Get Help</a><a href="help.html#report">Report a Concern</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-    <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p>
-      <form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form>
-      <a href="contact.html" style="margin-top:.6rem">Open contact page →</a>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • <a href="about.html">About</a> • <a href="contact.html">Contact</a> • <a href="resources.html#faqs">FAQs</a></small></div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
 </footer>
 
 <script src="data.js"></script>
@@ -157,41 +354,188 @@
     var det = ((window.RA_RIGHTS_DETAIL||[]).find(function(x){ return x.title===r.title; })||{});
     var direct = r.fullGuide || r.slug || det.fullGuide;
     var url = direct ? direct : (det.id ? ("rights/topic.html?id="+det.id) : "rights.html");
-    var badge = r.fullGuide ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
-    return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+url+'">Open →</a></article>';
+    var badge = r.fullGuide ? '<span class="tag">Full Guide</span>' : '<span class="tag tag-soon">Quick Summary</span>';
+    var iconMap = {
+      police: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>',
+      tenancy: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>',
+      employment: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>',
+      civic: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10"></path><path d="M7 12h6"></path><path d="M12 16l2 2 4-4"></path></svg>',
+      digital: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>',
+      fundamental: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
+    };
+    var iconSvg = iconMap[r.id] || '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>';
+    return '<article class="card rv"><div class="card-icon-badge">'+iconSvg+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<div style="margin-top:auto;padding-top:1.1rem"><a class="link" href="'+url+'">Open →</a></div></article>';
   }
-  /* ONE clean row of three featured directions (spec §12): police, tenancy and
-     employment are the questions Nigerians ask most. Falls back to the primary
-     ordering in content/rights.js if an id is ever renamed or removed. */
-  var FEATURED_IDS = ["police", "tenancy", "employment"];
+  /* Six diverse civic directions across Nigerian civic life */
+  var FEATURED_IDS = ["police", "tenancy", "employment", "civic", "digital", "fundamental"];
   var feat = FEATURED_IDS.map(function(id){
     return R.filter(function(r){ return r.id === id; })[0];
   }).filter(Boolean);
-  R.forEach(function(r){ if(feat.length < 3 && feat.indexOf(r) < 0) feat.push(r); });
-  document.getElementById("homeRights").innerHTML = feat.slice(0,3).map(card).join("");
-  document.getElementById("homeVideos").innerHTML = (window.RA_VIDEOS||[]).slice(0,3).map(function(v){
-    return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+v.meta+'</small></div><h3>'+v.title+'</h3><p>'+v.desc+'</p><span class="tag">'+v.tag+'</span><a class="link card-link" href="videos.html">Watch →</a></article>';
-  }).join("");
+  R.forEach(function(r){ if(feat.length < 6 && feat.indexOf(r) < 0) feat.push(r); });
+  var hr = document.getElementById("homeRights");
+  if(hr) hr.innerHTML = feat.slice(0,6).map(card).join("");
+
   // Home live search -> top matches inline + link to search page
   var input = document.getElementById("homeSearchInput"), out = document.getElementById("homeSearchResults");
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
   function run(q){
     q=(q||"").trim().toLowerCase();
     if(!q){ out.innerHTML=""; return; }
     var idx = window.RA_SEARCH_INDEX().filter(function(e){ return e.text.includes(q) || e.title.toLowerCase().includes(q); }).slice(0,4);
     out.innerHTML = idx.length
       ? idx.map(function(e){ return '<div class="result"><strong>'+e.title+'</strong><br/><a class="link" href="'+e.url+'">Open →</a></div>'; }).join("") + '<div style="text-align:center"><a class="link" href="search.html?q='+encodeURIComponent(q)+'">See all results →</a></div>'
-      : '<div class="result">No direct match for "<strong>'+esc(q)+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content →</a> or <a class="link" href="help.html">get help →</a></div>';
+      : '<div class="result">No direct match for "<strong>'+q+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content →</a> or <a class="link" href="help.html">get help →</a></div>';
   }
-  document.getElementById("homeSearchForm").addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
-  input.addEventListener("input", function(){ run(input.value); });
+  var sf = document.getElementById("homeSearchForm");
+  if(sf) sf.addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
+  if(input) input.addEventListener("input", function(){ run(input.value); });
   document.querySelectorAll(".quick-tags button").forEach(function(b){ b.addEventListener("click", function(){ input.value=b.dataset.q; run(b.dataset.q); }); });
-  // Triage
-  document.getElementById("triageBtn").addEventListener("click", function(){
-    var i=document.getElementById("triageIssue").value, d=document.getElementById("triageDanger").value, o=document.getElementById("triageOut");
-    var map={police:"rights/arrest-rights.html",tenancy:"rights/topic.html?id=tenancy",employment:"rights/topic.html?id=employment",women:"rights/topic.html?id=women",digital:"rights/topic.html?id=digital",other:"help.html#report"};
-    o.innerHTML=(d==="Yes"?"<strong>Prioritise safety / emergency services first.</strong> Then open: ":"Recommended next page: ")+'<a class="link" href="'+map[i]+'">'+map[i]+'</a>';
-  });
+
+  // Emergency Crisis Triage Dispatcher
+  function runTriage(i, d){
+    var o = document.getElementById("triageOut");
+    if(!o) return;
+    var protocols = {
+      police: {
+        title: "Police Encounter & Bail Protocol",
+        statute: "1999 Constitution §35, ACJA 2015 §30, Police Act 2020 §32",
+        steps: [
+          "You have the right to remain silent until legal counsel or family is present.",
+          "Bail is strictly free by law. Demanding payment for bail is an offence under ACJA §30.",
+          "Officers cannot search your phone or device without an explicit judicial search warrant.",
+          "Civil debts or loan disputes are not crimes: police cannot arbitrate civil matters."
+        ],
+        guide: "rights/arrest-rights.html",
+        guideLabel: "Police Encounter Guide",
+        hotline: "08057000001",
+        hotlineLabel: "Police CRU: 0805 700 0001"
+      },
+      tenancy: {
+        title: "Tenancy Lockout & Notice Protocol",
+        statute: "Lagos Tenancy Law 2011 & State Rent Control Statutes",
+        steps: [
+          "Self-help eviction is illegal. Changing locks or removing roofs is a punishable offence.",
+          "Landlord must serve a statutory Notice to Quit followed by 7-day Owner's Intention.",
+          "Physical eviction can only be executed by court bailiffs with a court judgement.",
+          "Recourse: Citizens' Mediation Centre (CMC) or local magistrate registry."
+        ],
+        guide: "rights/topic.html?id=tenancy",
+        guideLabel: "Tenancy Rights Guide",
+        hotline: "08005342524",
+        hotlineLabel: "Legal Aid Council: 0800 534 2524"
+      },
+      employment: {
+        title: "Unpaid Salary & Dismissal Protocol",
+        statute: "Nigerian Labour Act (Cap L1 LFN 2004)",
+        steps: [
+          "Wages must be paid in legal tender without unauthorized deductions or withholding.",
+          "Preserve contracts, offer letters, timesheets, and all correspondence immediately.",
+          "Employers cannot seize certificates or personal property over employment disputes.",
+          "Recourse: Trade union desk, Ministry of Labour, or National Industrial Court."
+        ],
+        guide: "rights/topic.html?id=employment",
+        guideLabel: "Employment Rights Guide",
+        hotline: "08006472428",
+        hotlineLabel: "NHRC Desk: 0800 647 2428"
+      },
+      women: {
+        title: "Safety & Gender-Based Violence Protocol",
+        statute: "Violence Against Persons Prohibition (VAPP) Act 2015",
+        steps: [
+          "Prioritize immediate physical safety. Move to a public venue or trusted shelter.",
+          "Obtain an official medical examination report promptly to preserve evidence.",
+          "Emergency protection orders can be issued by the court to restrain the perpetrator.",
+          "Toll-free emergency aid is available nationwide through dedicated desks."
+        ],
+        guide: "rights/topic.html?id=women",
+        guideLabel: "Protection Protocols",
+        hotline: "08000333333",
+        hotlineLabel: "DSVA Helpline: 0800 033 3333"
+      },
+      digital: {
+        title: "Online Fraud & Account Freeze Protocol",
+        statute: "Cybercrimes (Prohibition, Prevention) Act 2015 & NDPC Rules",
+        steps: [
+          "Contact your bank fraud desk immediately to flag accounts and trace transaction IDs.",
+          "Never disclose OTPs, PINs, or BVN details under phone coercion.",
+          "Police cannot hold you liable solely because funds entered your account without proof of conspiracy.",
+          "File an official fraud report with the FCCPC and Police Cybercrime Unit."
+        ],
+        guide: "rights/topic.html?id=digital",
+        guideLabel: "Cyber Rights Guide",
+        hotline: "08057000001",
+        hotlineLabel: "Cyber Desk: 0805 700 0001"
+      },
+      other: {
+        title: "General Civic Legal Assistance",
+        statute: "1999 Constitution Chapter IV & Legal Aid Act 2011",
+        steps: [
+          "Document every detail: badge numbers, dates, locations, and witness contacts.",
+          "Indigent citizens are entitled to free criminal defense via the Legal Aid Council.",
+          "Submit formal complaints to the National Human Rights Commission (NHRC)."
+        ],
+        guide: "help.html",
+        guideLabel: "Get Help Directory",
+        hotline: "08005342524",
+        hotlineLabel: "Legal Aid: 0800 534 2524"
+      }
+    };
+
+    var p = protocols[i] || protocols.other;
+    var isDanger = (d === "Yes");
+    if(isDanger) { o.classList.add("danger-active"); } else { o.classList.remove("danger-active"); }
+
+    var dangerBanner = isDanger
+      ? '<div style="background:#7f1d1d;color:#fff;padding:.55rem .75rem;border-radius:8px;font-weight:700;margin-bottom:.6rem;font-size:.84rem;display:flex;align-items:center;gap:.4rem">'
+        + '<svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+        + '<span>Immediate Physical Danger: Get to safety immediately. Call 112 or Police CRU before reading.</span>'
+        + '</div>'
+      : '';
+
+    var phoneSvg = '<svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>';
+
+    var html = dangerBanner
+      + '<h4>' + p.title + '</h4>'
+      + '<p style="margin:0 0 .35rem;font-size:.76rem;color:var(--gold);font-weight:700">Authority: ' + p.statute + '</p>'
+      + '<ul>' + p.steps.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul>'
+      + '<div class="crisis-cta-row">'
+      + '<a class="btn btn-sm btn-primary" href="' + p.guide + '">' + p.guideLabel + ' →</a>'
+      + '<a class="btn btn-sm btn-urgent" href="tel:' + p.hotline + '">' + phoneSvg + ' ' + p.hotlineLabel + '</a>'
+      + (isDanger ? '<a class="btn btn-sm btn-outline" style="color:#fff;border-color:#fff" href="tel:112">' + phoneSvg + ' Call 112</a>' : '')
+      + '</div>';
+
+    o.innerHTML = html;
+  }
+
+  var triageBtn = document.getElementById("triageBtn");
+  if(triageBtn){
+    triageBtn.addEventListener("click", function(){
+      var i = document.getElementById("triageIssue").value;
+      var d = document.querySelector('input[name="danger"]:checked') ? document.querySelector('input[name="danger"]:checked').value : "No";
+      runTriage(i, d);
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set("triage", i);
+        u.searchParams.set("danger", d.toLowerCase());
+        history.replaceState(null, "", u.toString());
+      } catch(_) {}
+    });
+  }
+
+  // Auto-init triage from URL query parameters if present
+  try {
+    var up = new URLSearchParams(location.search);
+    var urlT = up.get("triage");
+    var urlD = up.get("danger");
+    if(urlT) {
+      var sel = document.getElementById("triageIssue");
+      if(sel) sel.value = urlT;
+      if(urlD === "yes") {
+        var rY = document.getElementById("dangerYes");
+        if(rY) rY.checked = true;
+      }
+      runTriage(urlT, urlD === "yes" ? "Yes" : "No");
+    }
+  } catch(_) {}
 
   /* ---- Right of the Day ----
      Highlights one existing right from content/rights.js (no invented content):
@@ -215,11 +559,12 @@
       el.className = "rot-d";
       el.id = "rotOfTheDay";
       el.setAttribute("aria-label", "Right of the Day");
-      el.innerHTML = '<div class="rot-d-head"><span class="rot-d-eyebrow">✦ Right of the Day</span>'
-        + '<button class="rot-d-close" type="button" aria-label="Dismiss Right of the Day">✕</button></div>'
-        + '<h3>' + pick.icon + ' ' + pick.title + '</h3>'
-        + '<p>' + pick.summary + '</p>'
-        + tag + ' <a class="btn btn-primary btn-sm" style="margin-left:.4rem" href="' + href + '">Explore this right</a>';
+      var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(m){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[m]; }); };
+      el.innerHTML = '<div class="rot-d-head"><span class="rot-d-eyebrow"><svg class="ra-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:4px;vertical-align:-1px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Right of the Day</span>'
+        + '<button class="rot-d-close" type="button" aria-label="Dismiss Right of the Day"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>'
+        + '<h3>' + esc(pick.title) + '</h3>'
+        + '<p>' + esc(pick.summary) + '</p>'
+        + tag + ' <a class="btn btn-primary btn-sm" style="margin-left:.4rem" href="' + esc(href) + '">Explore this right</a>';
       document.body.appendChild(el);
       setTimeout(function(){ el.classList.add("in"); }, 700);
       el.querySelector(".rot-d-close").addEventListener("click", function(){

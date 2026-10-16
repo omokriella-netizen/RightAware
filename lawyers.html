@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Legal Professionals (Demo) — RightAware"/>
@@ -18,25 +18,29 @@
 <meta name="twitter:title" content="Legal Professionals (Demo) — RightAware"/>
 <meta name="twitter:description" content="Demo directory of legal professionals: fictional placeholder profiles with practice area, location, rating, reviews and request-help."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/lawyers.html"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
     <div class="header-actions">
-      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
     <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
-    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
 <main id="main">
@@ -66,12 +70,55 @@
   <div style="display:flex;gap:.6rem"><button class="btn btn-primary" id="reqSend">Send Request (demo)</button><button class="btn btn-secondary" id="reqClose">Close</button></div>
   <p class="form-note" id="reqOut"></p>
 </div></div>
-<footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">Demo profiles only — not real lawyers. General information, not legal advice.</p></div>
-  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
-  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-  <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
-</div><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="content/professionals.js"></script>
@@ -95,15 +142,15 @@
       +'<div class="cards-grid">'+live.map(function(p){
         var areas=Array.isArray(p.consultation_options)?p.consultation_options.join(", "):(p.consultation_options||"");
         var langs=Array.isArray(p.languages)?p.languages.join(", "):(p.languages||"");
-        var rating=(p.rating_avg&&p.ratings_count)?(' • ⭐ '+p.rating_avg+' ('+p.ratings_count+')'):'';
-        return '<article class="card lawyer" id="'+esc(p.id)+'"><span class="pill-green">✓ VERIFIED LEGAL PROFESSIONAL</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
+        var rating=(p.rating_avg&&p.ratings_count)?(' • Rating: '+p.rating_avg+' ('+p.ratings_count+')'):'';
+        return '<article class="card lawyer" id="'+p.id+'"><span class="pill-green">VERIFIED LEGAL PROFESSIONAL</span><div class="avatar">'+esc(p.name).charAt(0)+'</div><h3>'+esc(p.name)+'</h3>'
           +'<small>'+esc(p.location||"")+(p.qualification?' • '+esc(p.qualification):'')+(p.experience_yrs?' • '+esc(p.experience_yrs)+' yrs':'')+rating+'</small>'
           +(areas?'<p><small>Areas: '+esc(areas)+'</small></p>':'')
           +(langs?'<p><small>Languages: '+esc(langs)+'</small></p>':'')
           +(p.availability?'<p><small>Availability: '+esc(p.availability)+'</small></p>':'')
           +(p.bio?'<p>'+esc(p.bio)+'</p>':'')
           +(p.fee_note?'<p><small>'+esc(p.fee_note)+'</small></p>':'')
-          +'<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-livereq="'+esc(p.id)+'">Request help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
+          +'<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-livereq="'+p.id+'">Request help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
       }).join("")+'</div>';
     box.querySelectorAll("[data-livereq]").forEach(function(b){b.addEventListener("click",function(){openReq(b.dataset.livereq);});});
   }
@@ -121,11 +168,11 @@
       .then(function(r){
         if(r&&!r.error&&r.data&&r.data.length){ live=r.data; renderLive(); return; }
         if(r&&r.error){
-          document.getElementById("liveBox").innerHTML='<p class="form-note">⚠ The live list of approved professionals could not be loaded right now ('
+          document.getElementById("liveBox").innerHTML='<p class="form-note">The live list of approved professionals could not be loaded right now ('
             +esc(r.error.message||"database error")+'). The demo profiles below are shown instead.</p>';
         }
       }).catch(function(e){
-        document.getElementById("liveBox").innerHTML='<p class="form-note">⚠ The live list of approved professionals could not be loaded right now ('
+        document.getElementById("liveBox").innerHTML='<p class="form-note">The live list of approved professionals could not be loaded right now ('
           +esc((e&&(e.message||String(e)))||"network problem")+'). The demo profiles below are shown instead.</p>';
       });
   }
@@ -139,10 +186,10 @@
     });
     grid.innerHTML=list.length?list.map(function(l){
       var revs = RA_REVIEWS.forProfessional(l.id).map(function(r){
-        return '<div class="rev-item"><strong>'+esc(r.user)+'</strong> <small>'+esc(r.rating)+'/5'+(r.verifiedInteraction?' • verified interaction':'')+' — '+esc(r.text)+'</small><br/><small>'+esc(r.date||"")+'</small> <button class="link" style="border:none;background:none;cursor:pointer;font-size:.78rem" data-flag="'+esc(l.id)+"|"+esc(r.user)+"|"+esc(r.date||"")+'">Report review</button></div>';
+        return '<div class="rev-item"><strong>'+r.user+'</strong> <small>'+r.rating+'/5'+(r.verifiedInteraction?' • verified interaction':'')+' — '+r.text+'</small><br/><small>'+(r.date||"")+'</small> <button class="link" style="border:none;background:none;cursor:pointer;font-size:.78rem" data-flag="'+l.id+"|"+r.user+"|"+(r.date||"")+'">Report review</button></div>';
       }).join("");
-      return '<article class="card lawyer rv" id="'+l.id+'"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+' • '+l.exp+'</small><p>'+l.bio+'</p><p>⭐ '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><div class="rev">'+revs+'</div>'
-      + '<form data-review="'+l.id+'" style="margin-top:.6rem"><div class="form-row"><select data-rate aria-label="Rating"><option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option></select><input data-text placeholder="Write a review (demo)…" aria-label="Review text"/></div><button class="btn btn-outline btn-sm" type="submit">Submit Review</button> <small class="form-note" data-rout></small></form>'
+      return '<article class="card lawyer rv" id="'+l.id+'"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+' • '+l.exp+'</small><p>'+l.bio+'</p><p>Rating: '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><div class="rev">'+revs+'</div>'
+      + '<form data-review="'+l.id+'" style="margin-top:.6rem"><div class="form-row"><select data-rate aria-label="Rating"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select><input data-text placeholder="Write a review (demo)…" aria-label="Review text"/></div><button class="btn btn-outline btn-sm" type="submit">Submit Review</button> <small class="form-note" data-rout></small></form>'
       + '<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-req="'+l.id+'">Contact / Request Help</button><a class="btn btn-outline btn-sm" href="help.html#report">Report Instead</a></div></article>';
     }).join(""):'<div class="result">No demo profiles match. Clear filters and try again.</div>';
     grid.querySelectorAll("[data-req]").forEach(function(b){b.addEventListener("click",function(){openReq(b.dataset.req);});});
@@ -188,11 +235,11 @@
       RA_DB.remote.pushConsultation({ professionalId:(current&&current.id)||null, msg:(n+": "+m) }).then(function(r){
         if(r && r.ok){
           try{ RA_DB.remote.pullConsultations(); }catch(_){}
-          out.textContent="✅ Consultation request sent — a real row is now on your account, addressed to "+((current&&current.name)||"this professional")+". Track its status in My Account → Consultations; the professional accepts or declines from their workspace. Payments remain disabled until Paystack is configured.";
+          out.textContent="Consultation request sent — a real row is now on your account, addressed to "+((current&&current.name)||"this professional")+". Track its status in My Account → Consultations; the professional accepts or declines from their workspace. Payments remain disabled until Paystack is configured.";
         } else {
-          out.textContent="⚠ Could not send ("+((r&&r.error)||"network")+"). Your copy is saved on this device — please retry, or use the contact page.";
+          out.textContent="Could not send ("+((r&&r.error)||"network")+"). Your copy is saved on this device — please retry, or use the contact page.";
         }
-      }).catch(function(){ out.textContent="⚠ Delivery failed (network). Saved on this device only."; });
+      }).catch(function(){ out.textContent="Delivery failed (network). Saved on this device only."; });
       return;
     }
     if(liveNow){
@@ -205,9 +252,9 @@
         message:"Request for help directed to "+((current&&current.name)||"a verified professional")+" ("+(current&&current.id)+"):\n"+m, status:"new"
       }).then(function(r){
         out.textContent = (r&&!r.error)
-          ? "✅ Request sent to RightAware for follow-up with this professional. Sign in to send it as a real consultation request the professional can accept or decline. Payments remain disabled until Paystack is configured."
-          : "⚠ Could not deliver ("+((r&&r.error&&r.error.message)||"network")+"). Your copy is saved on this device — please retry or use the contact page.";
-      }).catch(function(){ out.textContent="⚠ Delivery failed (network). Saved on this device only."; });
+          ? "Request sent to RightAware for follow-up with this professional. Sign in to send it as a real consultation request the professional can accept or decline. Payments remain disabled until Paystack is configured."
+          : "Could not deliver ("+((r&&r.error&&r.error.message)||"network")+"). Your copy is saved on this device — please retry or use the contact page.";
+      }).catch(function(){ out.textContent="Delivery failed (network). Saved on this device only."; });
       return;
     }
     document.getElementById("reqOut").textContent="Demo request saved on this device (also in My Account → Consultations). A real directory would notify the professional here. Payments stay disabled until Paystack is configured.";

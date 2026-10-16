@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="About Us — RightAware"/>
@@ -18,79 +18,465 @@
 <meta name="twitter:title" content="About Us — RightAware"/>
 <meta name="twitter:description" content="Who RightAware is: mission, vision, objectives, how it works, who it serves, disclaimer and partnerships."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/about.html"/>
-<link rel="stylesheet" href="styles.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=2.3"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
     <div class="header-actions">
-      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
     <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
-    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
 <main id="main">
-<section class="page-hero"><div class="container page-hero-grid rv">
-  <div>
-  <span class="eyebrow">About Us</span>
-  <h1>Why RightAware exists</h1>
-  <p class="lead-dark">Millions of Nigerians face police stops, evictions, dismissals and scams without knowing the protections and duties the law already gives them. RightAware turns legal knowledge into plain, usable power.</p>
+<!-- Zone 1: Hero & Civic Context -->
+<section class="page-hero">
+  <div class="container page-hero-grid rv">
+    <div>
+      <span class="eyebrow eyebrow-light">About RightAware</span>
+      <h1>Why RightAware exists</h1>
+      <p class="lead-dark">Millions of Nigerians face police stops, unlawful evictions, workplace exploitation, and consumer extortion without knowing the protections and statutory duties the law already provides. RightAware translates Nigerian constitutional and statutory law into plain, accessible, usable civic power.</p>
+      <div class="about-hero-pills">
+        <span class="about-hero-pill">
+          <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          28 Civic Rights Topics
+        </span>
+        <span class="about-hero-pill">
+          <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          100% Free Public Access
+        </span>
+        <span class="about-hero-pill">
+          <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          NDPR Privacy Compliant
+        </span>
+        <span class="about-hero-pill">
+          <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Verified Primary Sources
+        </span>
+      </div>
+    </div>
+    <figure class="page-hero-media">
+      <img src="assets/images/about-everyone-has-a-story.jpg" alt="An orange sticky note reading “Everyone has a story”, held in a hand" loading="lazy"/>
+    </figure>
   </div>
-  <figure class="page-hero-media"><img src="assets/images/about-everyone-has-a-story.jpg" alt="An orange sticky note reading “Everyone has a story”, held in a hand" loading="lazy"/></figure>
-</div></section>
-<section class="section"><div class="container grid-3">
-  <article class="card rv"><div class="icon">🎯</div><h2>Mission</h2><p>Publish free, plain-language rights guides, connect people to real help, and build trustworthy civic-tech tools (library, directory, demo AI) with verified sources.</p></article>
-  <article class="card rv"><div class="icon">🔭</div><h2>Vision</h2><p>A Nigeria where every person — regardless of income, location or schooling — can understand the law well enough to act on it.</p></article>
-  <article class="card rv"><div class="icon">🧭</div><h2>Who we are</h2><p>A Nigerian civic-tech initiative combining legal-awareness content, referral pathways and open technology — not a law firm, not a government agency.</p></article>
-</div>
-<figure class="figure rv" style="max-width:760px;margin-left:auto;margin-right:auto"><img src="assets/images/about-team-rightaware.jpg" alt="Three people wearing RightAware t-shirts" loading="lazy"/><figcaption>The RightAware team in project shirts.</figcaption></figure>
 </section>
-<section class="section section-alt"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Objectives</span><h2>What we set out to do</h2></div>
-  <div class="cards-grid">
-    <article class="card rv"><h3>📚 Simplify the law</h3><p>Explain rights, duties and procedures in English, Pidgin and major Nigerian languages over time.</p></article>
-    <article class="card rv"><h3>🤝 Bridge to help</h3><p>Refer users to verified lawyers, clinics, support services and complaint channels.</p></article>
-    <article class="card rv"><h3>🗳 Strengthen citizenship</h3><p>Promote voting, accountability and peaceful civic participation.</p></article>
-    <article class="card rv"><h3>🔎 Protect accuracy</h3><p>Mark every item verified, draft, or placeholder — never fabricate laws, people or numbers.</p></article>
-    <article class="card rv"><h3>📴 Stay reachable</h3><p>Keep core guides readable offline and usable on low-end phones and poor networks.</p></article>
-    <article class="card rv"><h3>🌍 Grow openly</h3><p>Build content, tools and partnerships in the open with clear documentation.</p></article>
+
+<!-- Zone 2: Platform Pillars (Mission, Vision, Identity) -->
+<section class="section">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Institutional Foundation</span>
+      <h2>Our Core Platform Pillars</h2>
+      <p>RightAware operates at the intersection of open civic data, legal literacy, and public accountability.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+        </div>
+        <h2>Mission</h2>
+        <p>Publish free, plain-language rights guides, connect citizens directly to verified legal aid and public ombudsmen, and engineer trustworthy civic-tech tools with verifiable statutory citations.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+        </div>
+        <h2>Vision</h2>
+        <p>A Nigeria where every person — regardless of income, geography, or formal schooling — can understand the law, assert their constitutional protections, and seek lawful redress without fear.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <h2>Who We Are</h2>
+        <p>An independent Nigerian civic-tech initiative combining legal awareness content, verified referral channels, and open-source civic tools — not a law firm, not a government agency.</p>
+      </article>
+    </div>
   </div>
-</div></section>
-<section class="section"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">How it works</span><h2>Learn → Act → Get help</h2></div>
-  <div class="two-col">
-    <div class="do-dont do rv"><h4>✅ For citizens</h4><ul><li><strong>Learn:</strong> search or browse 22 rights guides, laws, videos and FAQs.</li><li><strong>Act:</strong> follow checklists — document, keep evidence, write formal complaints.</li><li><strong>Get help:</strong> report concerns, browse professionals, contact support bodies.</li><li><strong>Stay:</strong> save guides offline, subscribe for tips, ask the AI demo.</li></ul></div>
-    <div class="do-dont do rv"><h4>✅ Who it serves</h4><ul><li>Everyday citizens — workers, tenants, students, traders, drivers.</li><li>Vulnerable groups — women, children, persons with disabilities.</li><li>Communities facing environmental or land pressures.</li><li>Lawyers, clinics and NGOs reaching people who need them.</li></ul></div>
+</section>
+
+<!-- Zone 3: Core Civic Objectives -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Strategic Objectives</span>
+      <h2>What we set out to accomplish</h2>
+      <p>Six measurable commitments guiding our engineering, editorial standards, and community outreach.</p>
+    </div>
+    <div class="cards-grid">
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        </div>
+        <h3>Simplify the law</h3>
+        <p>Translate complex constitutional provisions and statutory acts into clear, accessible English and Naijá Pidgin, expanding into major Nigerian languages over time.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <h3>Bridge to verified help</h3>
+        <p>Maintain direct referral pathways to accredited legal practitioners, university law clinics, human rights desks, and statutory complaints channels.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        </div>
+        <h3>Strengthen citizenship</h3>
+        <p>Empower citizens to participate actively in democratic processes, demand institutional accountability, and navigate administrative procedures lawfully.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        </div>
+        <h3>Protect factual accuracy</h3>
+        <p>Enforce strict editorial verification across every guide and law summary. Clearly badge verification status — never fabricate statutes, citations, or legal outcomes.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+        </div>
+        <h3>Stay reachable offline</h3>
+        <p>Optimize our core platform for low-bandwidth 2G/3G connections and budget smartphones, providing offline caching and lightweight printable checklists.</p>
+      </article>
+
+      <article class="card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </div>
+        <h3>Grow in the open</h3>
+        <p>Develop content frameworks, platform architecture, and community partnerships in the open with auditable version control and transparent documentation.</p>
+      </article>
+    </div>
   </div>
-  <div class="two-col">
-    <div class="do-dont do rv"><h4>✅ RightAware IS</h4><ul><li>A free awareness library with source hints to verify</li><li>A referral bridge to lawyers, clinics and support bodies</li><li>A civic-tech platform: search, directory UI, AI placeholder</li><li>Built mobile-first for phone, tablet and desktop</li></ul></div>
-    <div class="do-dont dont rv"><h4>⛔ RightAware IS NOT</h4><ul><li>A law firm — it does not represent anyone</li><li>Legal advice — content is general information only</li><li>A replacement for emergency services</li><li>A source of verified lawyer credentials (yet)</li></ul></div>
+</section>
+
+<!-- Zone 4: The Civic Action Cycle -->
+<section class="section">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Operating Model</span>
+      <h2>The Civic Action Cycle</h2>
+      <p>How RightAware guides citizens from initial legal confusion to lawful resolution.</p>
+    </div>
+    <div class="process-grid">
+      <article class="process-card rv">
+        <span class="process-step-num">01</span>
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <h3>Learn &amp; Verify</h3>
+        <p>Search 28 plain-language statutory rights guides, constitutional clauses, and legal FAQs to understand exact statutory protections before confronting an issue.</p>
+      </article>
+
+      <article class="process-card rv">
+        <span class="process-step-num">02</span>
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <h3>Document &amp; Record</h3>
+        <p>Use structured evidentiary checklists to record officer badge numbers, preserve tenancy agreements, secure payment receipts, and draft formal complaint letters.</p>
+      </article>
+
+      <article class="process-card rv">
+        <span class="process-step-num">03</span>
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <h3>Escalate &amp; Bridge</h3>
+        <p>Directly contact verified institutional oversight bodies — including the Police CRU, Legal Aid Council, and NHRC — or request consultation with vetted legal practitioners.</p>
+      </article>
+    </div>
   </div>
-</div></section>
-<section class="section section-alt"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Trust & responsibility</span><h2>Legal-information disclaimer</h2></div>
-  <div class="notice rv">⚖️ <strong>RightAware provides general legal information, not legal advice and not representation.</strong> Laws differ by state and change over time. Content marked <span class="pill">AWAITING VERIFICATION</span>, <span class="pill">DRAFT</span>, <span class="pill">DEMO</span> or <span class="pill">PLACEHOLDER</span> must be confirmed against official sources or a qualified legal practitioner before reliance. In emergencies, contact official emergency services first.</div>
-  <div class="section-head rv" id="privacy" style="margin-top:2.5rem"><span class="eyebrow">Privacy</span><h2>How your data is handled</h2><p>RightAware stores only what the service needs to work: your account details, the applications administrators review, messages you send us, and consultation requests you choose to make. During review, applications are visible only to administrators — your contact details, documents and messages are never shown on public pages or to other users. A consultation request is shared with the professional you selected. Public directory listings show only the profile fields a professional fills in themselves. Nothing is sold or shared for advertising.</p></div>
-  <div class="section-head rv" style="margin-top:2.5rem"><span class="eyebrow">Partnerships</span><h2>Work with RightAware</h2><p>We welcome law clinics, NGOs, professional bodies, media and community groups — onboarding with verification opens after backend setup.</p></div>
-  <div class="cta-banner rv"><div><h3>Partner, contribute or correct us</h3><p>Corrections from qualified reviewers are especially welcome.</p></div><a href="contact.html" class="btn btn-primary">Contact Us</a></div>
-</div></section>
+</section>
+
+<!-- Zone 5: Institutional Charter: Mandate vs Statutory Boundaries -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Institutional Boundaries</span>
+      <h2>Civic Mandate vs. Statutory Non-Scope</h2>
+      <p>Clarity regarding our platform capabilities and legal boundaries is essential for public trust.</p>
+    </div>
+    <div class="charter-grid">
+      <!-- Platform Scope -->
+      <article class="charter-card scope rv">
+        <div class="charter-head">
+          <div class="card-icon-badge" style="margin:0;width:38px;height:38px">
+            <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+          </div>
+          <div>
+            <h3 class="charter-title">RightAware Platform Scope</h3>
+            <span class="charter-subtitle">What we actively build, publish, and maintain</span>
+          </div>
+        </div>
+        <ul class="charter-list">
+          <li class="charter-item">
+            <span class="charter-badge check">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <strong>Free Public Awareness Library</strong>
+              <p>Curated legal rights guides with direct references to the 1999 Constitution, ACJA 2015, and the Police Act 2020.</p>
+            </div>
+          </li>
+          <li class="charter-item">
+            <span class="charter-badge check">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <strong>Verified Referral Infrastructure</strong>
+              <p>A structured directory linking citizens to accredited pro-bono clinics, public defenders, and statutory complaint desks.</p>
+            </div>
+          </li>
+          <li class="charter-item">
+            <span class="charter-badge check">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <strong>Mobile-First &amp; Low-Bandwidth Tools</strong>
+              <p>Offline-capable search, downloadable evidentiary printables, and emergency hotline dispatch cards built for any device.</p>
+            </div>
+          </li>
+          <li class="charter-item">
+            <span class="charter-badge check">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <strong>Transparent Source Integrity</strong>
+              <p>Every piece of content carries a transparent editorial badge (Verified, Draft, or Awaiting Review) to prevent misinformation.</p>
+            </div>
+          </li>
+        </ul>
+      </article>
+
+      <!-- Statutory Non-Scope -->
+      <article class="charter-card non-scope rv">
+        <div class="charter-head">
+          <div class="card-icon-badge" style="margin:0;width:38px;height:38px;background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.28);color:var(--ra-emergency-red)">
+            <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+          </div>
+          <div>
+            <h3 class="charter-title">Statutory Non-Scope</h3>
+            <span class="charter-subtitle">Strict legal boundaries and what we cannot do</span>
+          </div>
+        </div>
+        <ul class="charter-list">
+          <li class="charter-item">
+            <span class="charter-badge cross">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </span>
+            <div>
+              <strong>Not a Law Firm</strong>
+              <p>RightAware does not practice law, solicit clients, or provide individualized legal representation in court.</p>
+            </div>
+          </li>
+          <li class="charter-item">
+            <span class="charter-badge cross">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </span>
+            <div>
+              <strong>Not Legal Advice</strong>
+              <p>Guides are for general civic education only. Specific legal disputes require formal consultation with a licensed legal practitioner.</p>
+            </div>
+          </li>
+          <li class="charter-item">
+            <span class="charter-badge cross">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </span>
+            <div>
+              <strong>Not an Emergency Dispatch Service</strong>
+              <p>In life-threatening situations, active violent crimes, or immediate physical emergencies, citizens must call 112 directly.</p>
+            </div>
+          </li>
+          <li class="charter-item">
+            <span class="charter-badge cross">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </span>
+            <div>
+              <strong>No Unverified Legal Claims</strong>
+              <p>We do not certify lawyer qualifications without secondary confirmation against the Supreme Court of Nigeria roll.</p>
+            </div>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Zone 6: Who RightAware Serves -->
+<section class="section">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Demographic &amp; Civic Reach</span>
+      <h2>Who We Serve</h2>
+      <p>RightAware is engineered to meet diverse communities across the Nigerian socioeconomic spectrum.</p>
+    </div>
+    <div class="audience-grid">
+      <article class="audience-card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <h3>Everyday Citizens</h3>
+        <p>Tenants facing arbitrary rent hikes, motorists navigating checkpoints, employees fighting wrongful termination, and consumers disputing bank debits.</p>
+      </article>
+
+      <article class="audience-card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <h3>Vulnerable Groups</h3>
+        <p>Survivors of domestic violence, persons with disabilities seeking equal access, and youths disproportionately targeted for unlawful phone searches.</p>
+      </article>
+
+      <article class="audience-card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <h3>Civic Advocates</h3>
+        <p>Community organizers, investigative journalists, and grassroots NGOs requiring fast, reliable statutory citations for field documentation.</p>
+      </article>
+
+      <article class="audience-card rv">
+        <div class="card-icon-badge">
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>
+        </div>
+        <h3>Legal Practitioners</h3>
+        <p>Pro-bono counsel, public defenders, and law clinics looking to expand access to justice and connect with clients in genuine need.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Zone 7: Governance, Data Sovereignty & Statutory Disclaimer -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head rv">
+      <span class="eyebrow">Trust &amp; Governance</span>
+      <h2>Statutory Integrity &amp; Data Privacy</h2>
+      <p>Institutional accountability protocols governing legal educational content and citizen information.</p>
+    </div>
+    <div class="trust-grid">
+      <!-- Legal Disclaimer -->
+      <article class="trust-card rv">
+        <h3>
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ra-brand-leaf)"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>
+          Legal Information Disclaimer
+        </h3>
+        <p><strong>RightAware provides public legal information for civic education, not private legal counsel or representation.</strong> Nigerian laws, state tenancy regulations, and criminal procedure codes vary across jurisdictions and evolve over time.</p>
+        <p>Guides marked <span class="pill">AWAITING VERIFICATION</span>, <span class="pill">DRAFT</span>, or <span class="pill">DEMO</span> are shared for public review and must be verified against official gazettes or certified legal counsel before reliance in formal litigation. In immediate emergencies, contact official emergency dispatchers at <strong>112</strong>.</p>
+      </article>
+
+      <!-- NDPR Privacy Compliance -->
+      <article class="trust-card rv" id="privacy">
+        <h3>
+          <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ra-brand-leaf)"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          NDPR Privacy &amp; Data Sovereignty
+        </h3>
+        <p>RightAware adheres strictly to the Nigeria Data Protection Act (NDPA) and NDPR regulations. We collect only what is strictly necessary to deliver civic services: account authentication, submitted incident reports, and direct consultation requests you choose to initiate.</p>
+        <p>Submitted consultation requests and verification records are stored securely and never exposed publicly or monetized for advertising. Directory listings display only information explicitly submitted by practitioners for public civic outreach.</p>
+      </article>
+    </div>
+
+    <!-- Zone 8: Open Civic Initiative -->
+    <div class="team-editorial rv">
+      <div class="team-editorial-content">
+        <div class="card-icon-badge" style="margin-bottom:1.2rem">
+          <svg class="ra-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <span class="eyebrow">Open Civic Initiative</span>
+        <h3>Built by Nigerians, for all Nigerians</h3>
+        <p>RightAware is maintained by a dedicated collective of civic-tech engineers, legal researchers, and community advocates passionate about expanding access to justice across Nigeria.</p>
+        <p>We believe statutory knowledge should not be gated behind expensive legal fees or buried in inaccessible law reports. We welcome peer reviews, statutory corrections, and open civic collaboration from legal practitioners nationwide.</p>
+        <div style="margin-top:1.4rem">
+          <a href="contact.html" class="btn btn-outline btn-sm">Connect with the Team</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone 9: Institutional Partnerships CTA -->
+    <div class="cta-banner rv" style="margin-top:2.5rem">
+      <div>
+        <h3>Partner, contribute, or correct a statute</h3>
+        <p>We actively collaborate with Nigerian Bar Association (NBA) branches, university law clinics, and civil society organizations.</p>
+      </div>
+      <a href="contact.html" class="btn btn-primary">Partner with RightAware</a>
+    </div>
+  </div>
+</section>
 </main>
-<footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power — we make the law understandable for everyone.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
-  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="videos.html">Videos</a><a href="organizations.html">Organizations</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
-  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-  <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
-</div><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="js/config.js"></script>
 <script src="app.js"></script>
 </body>

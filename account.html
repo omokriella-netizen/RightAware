@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="My Account — RightAware"/>
@@ -18,18 +18,32 @@
 <meta name="twitter:title" content="My Account — RightAware"/>
 <meta name="twitter:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/account.html"/>
-<meta name="robots" content="noindex, nofollow"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-  <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
-  <div class="header-actions"><span id="whoChip" class="tag"></span><button class="btn btn-outline btn-sm" id="logoutBtn">Log Out</button>
-  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="account.html">My Account</a><a href="contact.html">Contact Us</a></div></header>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
+    <div class="header-actions">
+      <span id="whoChip" class="tag"></span>
+      <button class="btn btn-outline btn-sm" id="logoutBtn">Log Out</button>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="account.html">My Account</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a>
+  </div>
+</header>
 <main id="main">
 <section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Your profile, saved items, account role and application status sync with your account when you are signed in — and everything stays available on this device.</p>
 <div class="chip-row"><a href="#mystatus">My status</a><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
@@ -52,7 +66,55 @@
     <button class="btn btn-secondary" type="submit">Save Settings</button><p class="form-note">Online-only features will always say so.</p></form>
 </div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -63,11 +125,11 @@
   document.getElementById("whoChip").textContent = u.email || u.name;
   document.getElementById("helloTitle").textContent = "Welcome, " + (u.name || "Member");
   document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logoutLive().then(function(){ location.href="index.html"; });});
-  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+encodeURIComponent(s.ref) : s.type==="video" ? "videos.html" : "laws.html";
+  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+s.ref : s.type==="video" ? "videos.html" : "laws.html";
   function renderSaved(){
     const l = RA_DB.savedList();
-    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+esc(s.type)+'</span><h3 style="margin-top:.4rem">'+esc(s.title)+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+esc(s.type)+"|"+esc(s.ref)+'">Remove</button></article>').join("")
-      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap ☆ Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
+    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+s.type+'</span><h3 style="margin-top:.4rem">'+s.title+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+s.type+"|"+s.ref+'">Remove</button></article>').join("")
+      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
     document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
   }
   var consultMsg = "";
@@ -78,11 +140,11 @@
   function renderConsult(){
     var signedIn = consultSignedIn(), c = consultRows();
     document.getElementById("consultMeta").textContent = signedIn
-      ? "From your account: real requests synced from your own record. Payments stay \u201Cnone\u201D until payments are configured."
+      ? "From your account (Supabase) — real requests, database is the source of truth. Payments stay “none” until Paystack is configured."
       : "Local copy on this device — sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
     document.getElementById("consultList").innerHTML = c.length ? c.map(function(x){
       var st = String(x.status || "requested");
-      var stLabel = st === "accepted" ? "✓ accepted" : st === "declined" ? "✗ declined" : st;
+      var stLabel = st === "accepted" ? "Accepted" : st === "declined" ? "Declined" : st;
       return '<article class="card rv"><span class="tag">'+esc(stLabel)+'</span><h3 style="margin-top:.4rem">'+esc(x.to || (x.live ? "Consultation request" : "Professional"))+'</h3>'
         + '<p>'+esc(x.msg || "")+'</p>'
         + '<p><small>Payment: '+esc((x.payment && x.payment.status) || "none")+' • '+esc(String(x.at || ""))+'</small></p></article>';
@@ -99,7 +161,7 @@
     var signedIn = notifSignedIn(), n = notifRows();
     var unread = 0; n.forEach(function(x){ if(!x.read) unread++; });
     document.getElementById("notifMeta").textContent = signedIn
-      ? (unread ? unread + " unread · from your account" : "All read · from your account")
+      ? (unread ? unread + " unread · from your account (Supabase)" : "All read · from your account (Supabase)")
       : "Local copy on this device — sign in to sync notifications with your account.";
     var mb = document.getElementById("notifMarkAll");
     mb.style.display = unread > 0 ? "" : "none";
@@ -126,8 +188,8 @@
   /* Every action reports ONLY after the server re-read that proves it stuck
      (remote) or honestly labels the device-local copy (offline/demo). */
   function notifDone(r){
-    notifMsg = r.ok ? "✓ Saved — re-read from the database just now."
-      : "⚠ Could not save: " + (r.error || "unknown error");
+    notifMsg = r.ok ? "Saved — re-read from the database just now."
+      : "Could not save: " + (r.error || "unknown error");
     renderNotif();
   }
   function notifAct(id, action){
@@ -135,7 +197,7 @@
       if(action === "read") RA_DB.markRead(id);
       else if(action === "unread") RA_DB.markUnread(id);
       else RA_DB.removeNotification(id);
-      notifMsg = "✓ Saved on this device (sign in to sync notifications with your account).";
+      notifMsg = "Saved on this device (sign in to sync notifications with your account).";
       renderNotif(); return;
     }
     notifMsg = "…"; renderNotif();
@@ -143,7 +205,7 @@
     p.then(notifDone, function(e){ notifDone({ ok:false, error:(e && e.message) || "network error" }); });
   }
   function notifMarkAll(){
-    if(!notifSignedIn()){ RA_DB.markAllRead(); notifMsg = "✓ All marked read on this device (sign in to sync)."; renderNotif(); return; }
+    if(!notifSignedIn()){ RA_DB.markAllRead(); notifMsg = "All marked read on this device (sign in to sync)."; renderNotif(); return; }
     notifMsg = "…"; renderNotif();
     RA_DB.remote.markAllNotifsRead().then(notifDone, function(e){ notifDone({ ok:false, error:(e && e.message) || "network error" }); });
   }
@@ -195,8 +257,12 @@
     var box = document.getElementById("statusBox");
     var me = RA_AUTH.current() || u;           // fresh (role may arrive after backend-ready)
     var role = me.role || "user";
-    var icon = role==="admin" ? "👑" : role==="professional" ? "⚖️" : "🙋";
-    var html = '<article class="card"><span class="tag">Account</span><h3>'+icon+' '+esc(ROLE_LABEL[role]||"General user")+'</h3>'
+    var iconSvg = role==="admin"
+      ? '<svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"></path></svg>'
+      : role==="professional"
+      ? '<svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>'
+      : '<svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+    var html = '<article class="card"><span class="tag">Account</span><h3 style="display:flex;align-items:center;gap:.5rem">'+iconSvg+' '+esc(ROLE_LABEL[role]||"General user")+'</h3>'
       + '<p>Signed in as <strong>'+esc(me.email||me.name||"member")+'</strong>'
       + (RA_AUTH.mode==="demo" ? ' <span class="pill">DEMO SESSION</span>' : '')+'</p>'
       + (role==="admin" ? '<a class="btn btn-primary btn-sm" href="admin.html">Open admin dashboard</a>' : '')
@@ -207,7 +273,7 @@
     if(local.length){
       var a = local[0];
       html += '<article class="card"><span class="tag">Application (this device)</span><h3>'
-        + (a.path==="professional" ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
+        + (a.path==="professional" ? "Professional application" : "Organisation application") + '</h3>'
         + '<p>Reference <strong>'+esc(a.ref)+'</strong> — '+esc(a.status)+' — '+esc(String(a.at).slice(0,10))+'</p>'
         + '<p><small>' + (window.RA_SUPA && RA_SUPA.ready
             ? "Reference receipt saved locally — status is shown in the “Application (live)” card above when available."
@@ -223,7 +289,7 @@
         if(app && app.error){
           var errCard = document.createElement("article");
           errCard.className = "card";
-          errCard.innerHTML = '<span class="tag">Application (live)</span><h3>⚠ Live status unavailable</h3>'
+          errCard.innerHTML = '<span class="tag">Application (live)</span><h3>Live status unavailable</h3>'
             + '<p><small>Your application could not be read from the server right now: '
             + esc(app.error) + ' — try again in a moment.</small></p>';
           box.appendChild(errCard);
@@ -234,7 +300,7 @@
         var isPro = app.path === "professional";
         var label, pill, hint;
         if(st === "verified"){
-          label = isPro ? "✓ VERIFIED LEGAL PROFESSIONAL" : "✓ VERIFIED ORGANIZATION";
+          label = isPro ? "VERIFIED LEGAL PROFESSIONAL" : "VERIFIED ORGANIZATION";
           pill = "pill-green";
           hint = "Approved by an administrator — shown publicly as verified.";
         } else if(st === "pending"){
@@ -253,7 +319,7 @@
         var extra = document.createElement("article");
         extra.className = "card";
         extra.innerHTML = '<span class="tag">Application (live)</span><h3>'
-          + (isPro ? "⚖️ Professional application" : "🏛 Organisation application") + '</h3>'
+          + (isPro ? "Professional application" : "Organisation application") + '</h3>'
           + '<p>'+esc(app.row.name)+' — <span class="'+pill+'">'+label+'</span></p>'
           + '<p><small>'+hint+'</small></p>'
           + (st === "verified" ? '<p><a class="btn btn-primary btn-sm" href="' + (isPro ? "professional.html" : "organization.html") + '">Open workspace</a></p>' : '');
@@ -275,16 +341,16 @@
     renderSaved(); renderNotif(); renderConsult();
     var d = ev && ev.detail;
     if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
-      notifMsg = "⚠ Could not refresh notifications from the server: " + d.notif.error
-        + " (only your own notifications are read, on the server)";
+      notifMsg = "Could not refresh notifications from the server: " + d.notif.error
+        + " — your own notifications are read through policy own_notif (base schema)";
       renderNotif();
     } else if(d && d.notif && d.notif.ok !== false){
       notifMsg = "";
       renderNotif();
     }
     if(consultSignedIn() && d && d.consult && d.consult.ok === false && d.consult.error){
-      consultMsg = "⚠ Could not refresh consultations from the server: " + d.consult.error
-        + " (only your own consultations are read, on the server)";
+      consultMsg = "Could not refresh consultations from the server: " + d.consult.error
+        + " — your own rows are read through policy own_cons_sel (supabase/consultations-access.sql)";
       renderConsult();
     } else if(d && d.consult && d.consult.ok !== false){
       consultMsg = "";
@@ -303,7 +369,7 @@
       var box = document.getElementById("statusBox");
       var note = document.createElement("article");
       note.className = "card";
-      note.innerHTML = '<span class="tag">Application</span><h3>📎 Application attached</h3>'
+      note.innerHTML = '<span class="tag">Application</span><h3>Application attached</h3>'
         + '<p>Your earlier application was attached to this account — status: <span class="pill-gold">PENDING VERIFICATION</span>.</p>';
       box.prepend(note);
     });

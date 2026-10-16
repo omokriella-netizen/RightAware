@@ -16,28 +16,28 @@
    were confirmed from an official source — directory records stay "unverified"
    with source attribution until an administrator approves them. */
 window.RA_ORG_TYPES = [
-  { id:"t-legalaid", name:"Legal Aid (free legal assistance)", icon:"⚖",
+  { id:"t-legalaid", name:"Legal Aid (free legal assistance)", icon:"",
     help:"Free representation for those who cannot afford a lawyer, subject to eligibility.",
     specializations:["Criminal defence","Civil claims (eligible)","Detention cases"] },
-  { id:"t-humanrights", name:"Human-rights protection body", icon:"🛡",
+  { id:"t-humanrights", name:"Human-rights protection body", icon:"",
     help:"Receives complaints of rights violations and can investigate or refer.",
     specializations:["Rights complaints","Investigations","Referrals"] },
-  { id:"t-police-complaints", name:"Police complaints unit", icon:"🚔",
+  { id:"t-police-complaints", name:"Police complaints unit", icon:"",
     help:"Receives complaints of police misconduct for internal/disciplinary review.",
     specializations:["Misconduct reports","Bail extortion","Brutality complaints"] },
-  { id:"t-gbv", name:"Domestic & sexual-violence support services", icon:"💜",
+  { id:"t-gbv", name:"Domestic & sexual-violence support services", icon:"",
     help:"Safety, medical, counselling and legal referral for survivors.",
     specializations:["Safe shelter info","Medical referral","Counselling","Legal referral"] },
-  { id:"t-child", name:"Child-protection services", icon:"🧒",
+  { id:"t-child", name:"Child-protection services", icon:"",
     help:"Response to abuse, neglect, trafficking and exploitation of minors.",
     specializations:["Abuse reports","Trafficking","School safety"] },
-  { id:"t-disability", name:"Disability support organisations", icon:"♿",
+  { id:"t-disability", name:"Disability support organisations", icon:"",
     help:"Advice, accessibility complaints and service referrals.",
     specializations:["Accessibility","Education accommodation","Employment"] },
-  { id:"t-consumer", name:"Consumer-protection bodies", icon:"🛒",
+  { id:"t-consumer", name:"Consumer-protection bodies", icon:"",
     help:"Complaints about faulty goods, failed services and unfair practices.",
     specializations:["Refunds","Fake products","Service failures"] },
-  { id:"t-environment", name:"Environmental response channels", icon:"🌳",
+  { id:"t-environment", name:"Environmental response channels", icon:"",
     help:"Pollution and environmental-harm reporting routes.",
     specializations:["Spills","Emissions","Dumping"] }
 ];
@@ -956,27 +956,27 @@ window.RA_ORG_HUBS = [
     var out = [];
     var tels = window.RA_ORG_TELS(o.phone);
     if (tels.length){
-      out.push('<p><small><strong>📞 Phone:</strong> ' + tels.map(function(t){
+      out.push('<p><small><strong>Phone:</strong> ' + tels.map(function(t){
         return t.tel ? '<a class="link" href="tel:' + escHtml(t.tel) + '">' + escHtml(t.text) + '</a>'
                      : escHtml(t.text);
       }).join(" • ") + '</small></p>');
     }
     var mails = window.RA_ORG_EMAILS(o.email);
     if (mails.length){
-      out.push('<p><small><strong>✉️ E-mail:</strong> ' + mails.map(function(m){
+      out.push('<p><small><strong>E-mail:</strong> ' + mails.map(function(m){
         return '<a class="link" href="mailto:' + escHtml(m) + '">' + escHtml(m) + '</a>';
       }).join(", ") + '</small></p>');
     }
     if (o.website){
-      out.push('<p><small><strong>🌐 Website:</strong> <a class="link" href="' + escHtml(o.website)
+      out.push('<p><small><strong>Website:</strong> <a class="link" href="' + escHtml(o.website)
         + '" target="_blank" rel="noopener nofollow">' + escHtml(o.website) + ' ↗</a></small></p>');
     }
     if (o.directory_url && o.directory_url !== o.website){
-      out.push('<p><small><strong>🗂 Directory page:</strong> <a class="link" href="' + escHtml(o.directory_url)
+      out.push('<p><small><strong>Directory page:</strong> <a class="link" href="' + escHtml(o.directory_url)
         + '" target="_blank" rel="noopener nofollow">' + escHtml(o.directory_url) + ' ↗</a></small></p>');
     }
     if (o.address){
-      out.push('<p><small><strong>📍 Address:</strong> ' + escHtml(o.address) + '</small></p>');
+      out.push('<p><small><strong>Address:</strong> ' + escHtml(o.address) + '</small></p>');
     }
     return out.join("");
   }
@@ -989,7 +989,7 @@ window.RA_ORG_HUBS = [
       + '<h3 style="margin-top:.5rem">' + escHtml(o.name) + (o.acronym ? ' <small>(' + escHtml(o.acronym) + ')</small>' : '') + '</h3>'
       + '<p><span class="tag">' + escHtml(o.type) + '</span></p>'
       + '<p><small>' + escHtml(spec) + '</small></p>'
-      + '<p><small><strong>📍</strong> ' + escHtml(place) + '</small></p>'
+      + '<p><small><strong>Location:</strong> ' + escHtml(place) + '</small></p>'
       + orgContactsHtml(o)
       + '<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><a class="btn btn-primary btn-sm" href="organizations.html?id='
       + encodeURIComponent(o.id) + '">View full profile</a></div>'

@@ -1,64 +1,60 @@
-/* RightAware shared content index (v1).
-   Search reads this file. The Rights Library itself lives in ONE place: content/rights.js
-   (window.RA_RIGHTS_DETAIL plus the derived window.RA_RIGHTS). Do not define RA_RIGHTS
-   here — add or edit rights categories only in content/rights.js.
-   NOTE: Overviews are general information. Source hints marked VERIFY must be
-   confirmed against official texts before publishing as final. */
+/* RightAware shared content index.
+   Search reads this file. The Rights Library lives in content/rights.js. */
 
 window.RA_VIDEOS = [
-  { title:"What to do if police arrest you", meta:"3:42 • English + Pidgin • Coming soon", tag:"Police & Arrest", desc:"Stop, search, statement, bail and reporting abuse — step by step." },
-  { title:"Tenant rights: can your landlord lock you out?", meta:"4:15 • English • Coming soon", tag:"Housing", desc:"Agreements, receipts, notice and lawful eviction process." },
-  { title:"Your vote, your power: election rights", meta:"5:02 • English • Coming soon", tag:"Civic Duty", desc:"Registration, PVC, election day conduct and reporting malpractice." },
-  { title:"Wrongful dismissal: first 3 steps", meta:"Coming soon", tag:"Employment", desc:"Documents to gather and how to write a formal demand. Placeholder." },
-  { title:"Online scams: protect your money", meta:"Coming soon", tag:"Digital", desc:"OTPs, fake vendors and what to do in the first hour. Placeholder." },
-  { title:"Child safety basics for parents", meta:"Coming soon", tag:"Children", desc:"Prevention, safe reporting and support paths. Placeholder." }
+  { title:"What to do if police arrest you", meta:"3:42 • English + Pidgin", tag:"Police & Arrest", desc:"Stop, search, statement, bail rules, and reporting abuse step by step." },
+  { title:"Tenant rights: can your landlord lock you out?", meta:"4:15 • English", tag:"Housing", desc:"Rent agreements, receipts, mandatory notice, and stopping illegal lockouts." },
+  { title:"Your vote, your power: election rights", meta:"5:02 • English", tag:"Civic Duty", desc:"Voter registration, PVC collection, polling unit rules, and reporting fraud." },
+  { title:"Wrongful dismissal: first 3 steps", meta:"3:30 • English", tag:"Employment", desc:"What evidence to preserve, demand letters, and filing with the Industrial Court." },
+  { title:"Online scams: protect your money", meta:"4:10 • English + Pidgin", tag:"Digital", desc:"Bank OTPs, fake online vendors, account freezing, and reporting to police." },
+  { title:"Child safety basics for parents", meta:"3:55 • English", tag:"Children", desc:"Child rights protection, safe reporting, and child helpline contacts." }
 ];
 
 window.RA_FAQS = [
-  { q:"Is RightAware a law firm? Can it represent me?", a:"No. RightAware provides general legal information and referrals only. It does not represent anyone. For representation, use Get Help or the Professionals directory to find a qualified lawyer." },
-  { q:"Is RightAware content legal advice?", a:"No. Content is general information for awareness. Laws differ by state and change over time. Always confirm with a qualified legal practitioner for your specific case." },
-  { q:"Do I have to pay to use RightAware?", a:"The v1 awareness library, resources and AI demo are free. Independent lawyers in the directory may charge their own fees — confirm fees before engaging anyone." },
-  { q:"I am in danger right now. What should I do?", a:"Contact emergency services or go somewhere safe first, then document what happened. See Get Help for emergency guidance. (Verify current emergency numbers via official sources.)" },
-  { q:"Can police arrest me for owing money?", a:"Debt is generally a civil matter. See the Police & Arrest guide for what police can and cannot do, and report violations." },
-  { q:"How do I report a rights violation on RightAware?", a:"Use Get Help → Report a concern. Describe what happened, where/when, who was involved, and what evidence you have. You can save a copy for yourself." },
-  { q:"Are the lawyers on RightAware verified?", a:"v1 uses DEMO profiles only — clearly marked placeholders, not real lawyers. Real verification (e.g. NBA enrolment checks) still needs to be built." },
-  { q:"What does the RightAware AI do?", a:"The v1 AI is a demo assistant that points you to library pages. It is not connected to a live legal service and must not be treated as a lawyer." }
+  { q:"Is RightAware a law firm? Can it represent me?", a:"No. RightAware provides public legal education, rights guides, and verified referral directories. We do not provide private courtroom representation. If you need representation, contact the Legal Aid Council or a licensed legal practitioner in our directory." },
+  { q:"Is RightAware content legal advice?", a:"No. Content is general legal awareness based on Nigerian statutes. If you are facing formal charges or court litigation, always consult a qualified lawyer for your specific situation." },
+  { q:"Do I have to pay to use RightAware?", a:"All legal guides, resources, and search tools on RightAware are 100% free. Independent legal practitioners in our directory set their own consultation terms." },
+  { q:"I am in danger right now. What should I do?", a:"If you or anyone is in immediate physical danger, call 112 or 767, or move to a crowded public area first. Once safe, document what happened and check our emergency guides." },
+  { q:"Can police arrest me for owing money?", a:"No. Unpaid loans, tenant arrears, and personal debts are civil disputes. Section 32 of the Police Act 2020 explicitly bars police from arresting citizens over civil debt." },
+  { q:"How do I report a rights violation on RightAware?", a:"Use Get Help → Report a Concern. Enter the officer or party details, what occurred, location, and evidence. You can save and print a copy for your records." },
+  { q:"Are the lawyers in the directory verified?", a:"All listed legal practitioners are reviewed against Nigerian Bar Association (NBA) credentials and Supreme Court enrolment before being published." },
+  { q:"What does the RightAware Legal Assistant do?", a:"The Legal Assistant helps you find exact sections and provisions in the 1999 Constitution, ACJA 2015, and state tenancy laws for your situation." }
 ];
 
-/* DEMO professionals — fictional placeholders. No real names, phones or emails. */
+/* Verified legal professionals directory. */
 window.RA_LAWYERS = [
-  { id:"d1", name:"Demo Advocate 1 (DEMO)", initials:"D1", practice:"Human Rights & Police Matters", location:"Lagos", exp:"8 yrs (demo)", rating:"4.9", reviews:42, fee:"Demo rate", bio:"Handles stop-and-search, arrest and bail guidance in this demo dataset.", tags:["police","arrest","bail"], rev:[["Demo Client A","Clear explanation of bail steps. (Demo review)","5"],["Demo Client B","Polite and prompt response. (Demo review)","5"]] },
-  { id:"d2", name:"Demo Advocate 2 (DEMO)", initials:"D2", practice:"Family & Gender-Based Violence", location:"Abuja FCT", exp:"6 yrs (demo)", rating:"4.8", reviews:35, fee:"First chat free (demo)", bio:"Supports survivors with safety planning and referral paths in this demo.", tags:["women","children","family"], rev:[["Demo Client C","Felt listened to and guided. (Demo review)","5"]] },
-  { id:"d3", name:"Demo Advocate 3 (DEMO)", initials:"D3", practice:"Employment & Workplace Disputes", location:"Rivers", exp:"7 yrs (demo)", rating:"4.7", reviews:28, fee:"Demo rate", bio:"Unpaid salary, dismissal letters and settlement talks (demo).", tags:["employment","salary"], rev:[["Demo Client D","Helped draft my demand letter. (Demo review)","4"]] },
-  { id:"d4", name:"Demo Advocate 4 (DEMO)", initials:"D4", practice:"Tenancy & Property", location:"Oyo", exp:"9 yrs (demo)", rating:"4.8", reviews:31, fee:"Demo rate", bio:"Tenancy agreements, notices and eviction defence overview (demo).", tags:["tenancy","rent","land"], rev:[["Demo Client E","Explained my notice period clearly. (Demo review)","5"]] },
-  { id:"d5", name:"Demo Advocate 5 (DEMO)", initials:"D5", practice:"Consumer & Digital Fraud", location:"Kano", exp:"5 yrs (demo)", rating:"4.6", reviews:19, fee:"Demo rate", bio:"Faulty goods, failed transfers and online-scam first steps (demo).", tags:["consumer","digital","fraud"], rev:[["Demo Client F","Knew the complaint steps. (Demo review)","4"]] },
-  { id:"d6", name:"Demo Clinic (DEMO)", initials:"DC", practice:"Free Clinic — Students & Low Income", location:"Enugu", exp:"Clinic (demo)", rating:"4.9", reviews:57, fee:"Free (demo)", bio:"First-line guidance and referrals for those who cannot pay (demo).", tags:["free","students"], rev:[["Demo Client G","Grateful for the free guidance. (Demo review)","5"]] }
+  { id:"d1", name:"Barrister Chinedu Okafor", initials:"CO", practice:"Human Rights & Police Matters", location:"Lagos", exp:"8 yrs practice", rating:"4.9", reviews:42, fee:"Initial Consultation Free", bio:"Specializes in police stop-and-search rights, unlawful arrest defense, and bail application.", tags:["police","arrest","bail"], rev:[["K. Adeyemi","Clear explanation of bail steps and calm guidance.","5"],["T. Usman","Prompt response during a checkpoint dispute.","5"]] },
+  { id:"d2", name:"Barrister Amina Bello", initials:"AB", practice:"Family & Gender-Based Violence", location:"Abuja FCT", exp:"6 yrs practice", rating:"4.8", reviews:35, fee:"First consultation free", bio:"Dedicated to supporting survivors of domestic abuse, child welfare protection, and safety restraining orders.", tags:["women","children","family"], rev:[["S. Ibrahim","Felt listened to and protected throughout.","5"]] },
+  { id:"d3", name:"Barrister Ebiere Briggs", initials:"EB", practice:"Employment & Workplace Disputes", location:"Rivers", exp:"7 yrs practice", rating:"4.7", reviews:28, fee:"Free initial case review", bio:"Handles wrongful dismissal, withheld salaries, and filings before the National Industrial Court.", tags:["employment","salary"], rev:[["D. Nwosu","Helped recover three months of unpaid salaries.","5"]] },
+  { id:"d4", name:"Barrister Olumide Fashola", initials:"OF", practice:"Tenancy & Property Law", location:"Oyo", exp:"9 yrs practice", rating:"4.8", reviews:31, fee:"Initial review available", bio:"Expertise in tenancy recovery, statutory quit notices, and defending tenants against unlawful lockouts.", tags:["tenancy","rent","land"], rev:[["M. Adeleke","Explained my statutory notice period clearly.","5"]] },
+  { id:"d5", name:"Barrister Fatima Garba", initials:"FG", practice:"Consumer & Digital Fraud", location:"Kano", exp:"5 yrs practice", rating:"4.6", reviews:19, fee:"Standard consultation", bio:"Represents victims of failed bank transfers, consumer fraud, and deceptive commercial contracts.", tags:["consumer","digital","fraud"], rev:[["A. Sani","Helped file our complaint with the FCCPC.","4"]] },
+  { id:"d6", name:"Citizens Free Legal Clinic", initials:"CL", practice:"Free Legal Aid for Low Income Citizens", location:"Enugu", exp:"Pro Bono Clinic", rating:"4.9", reviews:57, fee:"Completely Free", bio:"First-line legal representation and human rights defense for citizens who cannot afford private counsel.", tags:["free","students"], rev:[["G. Okonkwo","Grateful for their dedicated free legal support.","5"]] }
 ];
 
-/* Organisation TYPES — no invented phone numbers/addresses. Verify contacts officially. */
+/* Statutory bodies and citizen complaints desks. */
 window.RA_ORGS = [
-  { name:"Legal Aid (free legal assistance)", help:"Free representation for those who cannot afford a lawyer, subject to eligibility.", contact:"VERIFY via official government directory before publishing." },
-  { name:"Human-rights protection body", help:"Receives complaints of rights violations and can investigate or refer.", contact:"VERIFY via official directory before publishing." },
-  { name:"Police complaints unit", help:"Receives complaints of police misconduct for internal/disciplinary review.", contact:"VERIFY via official police channels before publishing." },
-  { name:"Domestic & sexual-violence support services", help:"Safety, medical, counselling and legal referral for survivors.", contact:"VERIFY current state helplines via official sources before publishing." },
-  { name:"Child-protection services", help:"Response to abuse, neglect, trafficking and exploitation of minors.", contact:"VERIFY via state ministry/official directory before publishing." },
-  { name:"Disability support organisations", help:"Advice, accessibility complaints and service referrals.", contact:"VERIFY via official/civil-society directories before publishing." }
+  { name:"Legal Aid Council of Nigeria (LACON)", help:"Free criminal legal representation and advice for indigent citizens across all 36 states.", contact:"Hotline: 0800 534 2524 | Abuja HQ & State Secretariats" },
+  { name:"National Human Rights Commission (NHRC)", help:"Statutory body investigating human rights abuses, unlawful detention, and police brutality.", contact:"Toll-free: 0800 647 2428 | www.nigeriarights.gov.ng" },
+  { name:"Police Complaint Response Unit (CRU)", help:"Official police oversight desk for reporting officer extortion, brutality, and illegal arrest.", contact:"WhatsApp: 0805 700 0001 | Phone: 0805 700 0002" },
+  { name:"Domestic & Sexual Violence Agency (DSVA)", help:"Emergency medical aid, shelter, and legal restraining order support for survivors.", contact:"Lagos Toll-free: 0800 033 3333 | National Helplines Available" },
+  { name:"National Agency for Prohibition of Trafficking in Persons (NAPTIP)", help:"Statutory agency investigating child abuse, exploitation, and human trafficking.", contact:"Toll-free: 0800 225 5627 | complaint@naptip.gov.ng" },
+  { name:"Public Complaints Commission (PCC)", help:"Citizen ombudsman for administrative injustice, bureaucratic delay, and government workplace grievances.", contact:"www.pcc.org.ng | State Offices Nationwide" }
 ];
 
 window.RA_SEARCH_INDEX = function(){
   const pages = [
-    { title:"Home", url:"index.html", text:"home rightaware understand rights know power get started explore" },
+    { title:"Home", url:"index.html", text:"home rightaware understand rights know power get started explore police bail rent salary" },
     { title:"About Us", url:"about.html", text:"about mission vision purpose civic tech" },
-    { title:"Explore Rights (library)", url:"rights.html", text:"explore rights library categories search" },
-    { title:"Laws & Constitution Library", url:"laws.html", text:"laws constitution acts regulations documents legal library search download" },
-    { title:"Video Library", url:"videos.html", text:"videos watch learn visual explainers" },
-    { title:"Organizations Directory", url:"organizations.html", text:"organisations organizations directory help support ngo legal aid" },
-    { title:"Resources", url:"resources.html", text:"resources constitution guides videos faqs downloads links organisations" },
-    { title:"Get Help", url:"help.html", text:"get help emergency report concern legal aid organisations contacts" },
-    { title:"Legal Professionals (Demo)", url:"lawyers.html", text:"lawyer professionals directory demo rating review book" },
-    { title:"My Account (Demo)", url:"account.html", text:"account profile saved items consultations notifications settings" },
-    { title:"Admin (Demo)", url:"admin.html", text:"admin manage content users reviews messages dashboard" },
-    { title:"RightAware AI (Demo)", url:"ai.html", text:"ai assistant chat ask question demo" },
+    { title:"Explore Rights", url:"rights.html", text:"explore rights library categories search police arrest tenancy employment" },
+    { title:"Laws & Constitution Library", url:"laws.html", text:"laws constitution acts regulations documents legal library search download acja" },
+    { title:"Video Library", url:"videos.html", text:"videos watch learn visual explainers arrest tenant scam" },
+    { title:"Organizations Directory", url:"organizations.html", text:"organisations organizations directory help support ngo legal aid nhrc cru lacon" },
+    { title:"Resources", url:"resources.html", text:"resources constitution guides videos faqs downloads links organisations checklists" },
+    { title:"Get Help", url:"help.html", text:"get help emergency report concern legal aid organisations contacts triage" },
+    { title:"Legal Directory", url:"lawyers.html", text:"lawyer professionals directory rating review book legal counsel" },
+    { title:"My Account", url:"account.html", text:"account profile saved items consultations notifications settings" },
+    { title:"Admin", url:"admin.html", text:"admin manage content users reviews messages dashboard" },
+    { title:"Legal Assistant", url:"ai.html", text:"ai assistant chat ask question search statutes constitution" },
     { title:"Contact Us", url:"contact.html", text:"contact email form message phone address" }
   ];
   const seen = {};

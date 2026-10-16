@@ -2,7 +2,6 @@
 .env
 .env.local
 env.local.js
-AUDIT_REPORT.md
 *.log
 .DS_Store
 Thumbs.db

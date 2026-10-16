@@ -3,33 +3,46 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Log In — RightAware</title>
-<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset, protected by CAPTCHA."/>
+<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Log In — RightAware"/>
-<meta property="og:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset, protected by CAPTCHA."/>
+<meta property="og:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/login.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Log In — RightAware"/>
-<meta name="twitter:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset, protected by CAPTCHA."/>
+<meta name="twitter:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/login.html"/>
-<meta name="robots" content="noindex, nofollow"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-  <nav class="nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
-  <div class="header-actions"><a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
-  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></div></header>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-outline btn-sm" href="signup.html">Sign Up</a>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">RightAware AI</a><a href="contact.html">Contact Us</a><a href="signup.html">Sign Up</a>
+  </div>
+</header>
 <main id="main"><section class="section"><div class="container" style="max-width:480px">
   <div class="form-card rv">
     <div class="auth-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" loading="lazy"/></div>
@@ -81,7 +94,55 @@
     <p><a class="link" href="index.html">← Back home</a></p>
   </div>
 </div></section></main>
-<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="js/config.js"></script>
 <script src="js/turnstile.js"></script>
 <script src="js/auth.js?v=db6"></script>
@@ -187,19 +248,19 @@
     if(err || errCode){
       var blob = (errCode + " " + err + " " + errDesc);
       if(/recovery|password/i.test(blob)){
-        out.innerHTML = "⚠ That password-reset link has expired or was already used. Send yourself a fresh one below.";
+        out.innerHTML = "That password-reset link has expired or was already used. Send yourself a fresh one below.";
         document.getElementById("resetBox").hidden = false;
         return "error";
       }
       if(/otp|expired|invalid/i.test(blob)){
-        out.innerHTML = "⚠ That confirmation link has expired or is no longer valid. Enter your email below and resend the confirmation email (or sign up again).";
+        out.innerHTML = "That confirmation link has expired or is no longer valid. Enter your email below and resend the confirmation email (or sign up again).";
         unverifiedBox.hidden = false;
         return "error";
       }
       // error/error_description come straight from the link URL (attacker-
       // controllable): render them as text — an <img onerror> in the query
       // string must never become live HTML on this page.
-      out.textContent = "⚠ " + (errDesc || err || "This link is not valid.");
+      out.textContent = (errDesc || err || "This link is not valid.");
       return "error";
     }
     if(type === "recovery" || recoveryParam){
@@ -210,7 +271,7 @@
       return "recovery";
     }
     if(type === "signup" || type === "email" || confirmed || hasCode){
-      out.innerHTML = "✅ Email confirmed! You can now sign in with your email and password.";
+      out.innerHTML = "Email confirmed! You can now sign in with your email and password.";
       return "confirmed";
     }
     return null;
@@ -228,14 +289,14 @@
         else {
           recoveryForm.hidden = true; loginForm.hidden = false;
           mountCaptcha(loginForm);
-          out.innerHTML = "⚠ That reset link is invalid or has expired. Send yourself a fresh one below.";
+          out.innerHTML = "That reset link is invalid or has expired. Send yourself a fresh one below.";
           document.getElementById("resetBox").hidden = false;
           mountCaptcha(document.getElementById("resetBox"));
         }
       });
     } else if(linkState === "confirmed"){
       RA_AUTH.supabaseReady() && RA_SUPA.client.auth.getSession().then(function(r){
-        if(r && r.data && r.data.session){ out.innerHTML = "✅ Email confirmed — signing you in…"; setTimeout(afterSignIn, 600); }
+        if(r && r.data && r.data.session){ out.innerHTML = "Email confirmed — signing you in…"; setTimeout(afterSignIn, 600); }
       });
     }
   });
@@ -257,12 +318,12 @@
       out.textContent = "Signing in securely…";
       orgLookup(em);   // pre-start: overlaps captcha + sign-in + redirect delay
       gateCaptcha(loginForm).then(function(cap){
-        if(cap.error){ out.textContent = "⚠ " + cap.error; return; }
+        if(cap.error){ out.textContent = cap.error; return; }
         RA_AUTH.loginLive(em, pw, { captchaToken: cap.token || undefined }).then(function(r){
           if(!r.ok){
             if(r.needsConfirm){
               pendingEmail = em;
-              out.textContent = "⚠ " + r.error + " — open the confirmation link first, or resend it below.";
+              out.textContent = r.error + " — open the confirmation link first, or resend it below.";
               unverifiedBox.hidden = false;
               return;
             }
@@ -292,7 +353,7 @@
     gateCaptcha(loginForm).then(function(cap){
       return RA_AUTH.resendConfirmation(em, { captchaToken: cap.token || undefined });
     }).then(function(msg){ ro.textContent = msg; })
-      .catch(function(){ ro.textContent = "⚠ Could not resend — try again shortly."; });
+      .catch(function(){ ro.textContent = "Could not resend — try again shortly."; });
   });
 
   /* ---- forgot password: send reset link ---- */
@@ -309,9 +370,9 @@
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ ro.textContent = "Please enter a valid email address."; return; }
     ro.textContent = "Sending…";
     gateCaptcha(document.getElementById("resetBox")).then(function(cap){
-      if(cap.error){ ro.textContent = "⚠ " + cap.error; return; }
+      if(cap.error){ ro.textContent = cap.error; return; }
       return RA_AUTH.recoverLive(em, { captchaToken: cap.token || undefined }).then(function(msg){ ro.textContent = msg; });
-    }).catch(function(){ ro.textContent = "⚠ Could not send — try again shortly."; });
+    }).catch(function(){ ro.textContent = "Could not send — try again shortly."; });
   });
 
   /* ---- set new password (recovery landing) ---- */
@@ -323,8 +384,8 @@
     if(p1 !== p2){ ro.textContent = "Passwords do not match."; return; }
     ro.textContent = "Saving…";
     RA_AUTH.completeRecovery(p1).then(function(r){
-      if(!r.ok){ ro.textContent = "⚠ " + r.error; return; }
-      ro.textContent = "✅ Password updated — redirecting to your account…";
+      if(!r.ok){ ro.textContent = r.error; return; }
+      ro.textContent = "Password updated — redirecting to your account…";
       setTimeout(afterSignIn, 700);
     });
   });

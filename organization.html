@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Organization workspace — RightAware</title>
-<meta name="description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires your own verified organisation record, checked on every load. This page only ever shows your organisation's own data."/>
+<meta name="description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Organization workspace — RightAware"/>
-<meta property="og:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires your own verified organisation record, checked on every load. This page only ever shows your organisation's own data."/>
+<meta property="og:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/organization.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Organization workspace — RightAware"/>
-<meta name="twitter:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires your own verified organisation record, checked on every load. This page only ever shows your organisation's own data."/>
+<meta name="twitter:description" content="RightAware workspace for verified organizations: profile, public directory preview, published contacts and help links, notifications and account security. Access requires an owned organizations record with verification_status = verified — checked against the database on every load; row-level security decides what is readable."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/organization.html"/>
-<meta name="robots" content="noindex, nofollow"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   .ws-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
@@ -52,18 +51,80 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-  <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
-  <div class="header-actions"><a class="btn btn-outline btn-sm" href="account.html">My account</a>
-  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="contact.html">Contact</a></div></header>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-outline btn-sm" href="account.html">My Account</a>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="account.html">My Account</a><a href="contact.html">Contact Us</a>
+  </div>
+</header>
 <main id="main">
 <section class="page-hero"><div class="container rv"><span class="eyebrow">Organization</span><h1 id="wsTitle">Checking access…</h1>
 <p class="lead-dark" id="wsLine">Verifying your organization record against the database…</p></div></section>
 <section class="section"><div class="container" id="wsBody"></div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • This workspace only shows your organisation's own data. Access is decided on the server, never by hidden buttons.</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -85,7 +146,7 @@
   function fmtDate(s){ if(!s) return "—"; var d = new Date(s); return isNaN(d.getTime()) ? String(s) : d.toISOString().slice(0,10); }
   function splitList(v){ return String(v||"").split(/[,;\n]/g).map(function(s){ return s.trim(); }).filter(function(s,i,a){ return s && a.indexOf(s) === i; }); }
   function stamp(){ return '<p class="form-note">build: ' + BUILD + ' · every state on this page is read from the database on each load — never cached, never simulated.</p>'; }
-  function errBox(what, err){ return '<p class="empty">⚠ ' + esc(what) + ': ' + esc(err) + '</p>'; }
+  function errBox(what, err){ return '<p class="empty">' + esc(what) + ': ' + esc(err) + '</p>'; }
   function stat(label, big, small){ return '<div class="ws-stat"><h3>' + esc(label) + '</h3><p>' + big + '</p><small>' + esc(small || "") + '</small></div>'; }
   function pill(v){
     var s = String(v == null ? "" : v).toLowerCase(), up = esc(String(v == null || v === "" ? "unset" : v).toUpperCase());
@@ -106,7 +167,7 @@
   function renderLocked(){
     title.innerHTML = 'Organization workspace <span class="pill">LOCKED — NO BACKEND</span>';
     line.innerHTML = 'This device has no database connection, so ownership of an organization record cannot be verified — the workspace stays closed rather than guessing.';
-    body.innerHTML = '<div class="notice rv">🔒 <strong>Locked.</strong> Verification status, profile details and notifications come from your organisation\u2019s own record, read securely on every load. Nothing on this page is simulated, so there is no local preview with fake data. '
+    body.innerHTML = '<div class="notice rv"><strong>Locked.</strong> Verification status, profile details and notifications live in Supabase behind row-level security. Nothing on this page is simulated, so there is no local preview with fake data. '
       + 'Sign in on a connected device to open the workspace.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=organization.html">Sign in</a> <a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
       + stamp();
@@ -116,7 +177,7 @@
   function renderSignedOut(){
     title.textContent = "Sign in required";
     line.innerHTML = 'The organization workspace opens for the account that <strong>owns a verified organization record</strong> — nothing can be checked while signed out.';
-    body.innerHTML = '<div class="notice rv">🔐 The check runs on the server on every load: your account must own an organisation record, matched to your sign-in e-mail, and that record must already be verified. Hidden buttons are never how access is decided.</div>'
+    body.innerHTML = '<div class="notice rv">The check runs against the database on every load: your account must own an <code>organizations</code> record (matched by your sign-in e-mail — the same binding <code>own_orgs</code> uses) and that record must say <code>verification_status = verified</code>. Hidden buttons are never how access is decided.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=organization.html">Sign in</a> <a class="btn btn-secondary" href="signup.html">Register an organization</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
       + stamp();
   }
@@ -128,14 +189,14 @@
     if(o.readError){
       title.innerHTML = 'Organization workspace <span class="pill-gold">STATUS UNAVAILABLE</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong>. Your organization record could not be read, so no workspace is shown (access is never guessed).';
-      body.innerHTML = '<div class="notice rv">⚠ Could not read your organization record: <strong>' + esc(o.readError) + '</strong>. The read for your own record is decided on the server. If this persists, the page stays closed until the read works again.</div>'
+      body.innerHTML = '<div class="notice rv">Could not read your organization record: <strong>' + esc(o.readError) + '</strong>. The own-row read comes from policy <code>own_orgs</code> (<code>supabase/verification-states.sql</code>) for unverified states and from public read for verified rows — if this persists, the page stays closed until the read works again.</div>'
         + '<p><a class="btn btn-primary" href="account.html">My account</a> <a class="btn btn-secondary" href="contact.html">Contact support</a></p>' + stamp();
       return;
     }
     if(!row){
       title.innerHTML = 'Organization workspace <span class="pill-gold">NO RECORD</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong>. No organization record is linked to this account.';
-      body.innerHTML = '<div class="notice rv">🗂 <strong>No organization on this account.</strong> Organizations are linked by the e-mail address used when applying, so if you registered with a different address, sign in with it. To register, use <a class="link" href="signup.html">Sign Up</a> (organisation pathway) — after an administrator verifies the record, this page opens the workspace.</div>'
+      body.innerHTML = '<div class="notice rv"><strong>No organization on this account.</strong> Organizations are linked by the e-mail address used when applying, so if you registered with a different address, sign in with it. To register, use <a class="link" href="signup.html">Sign Up</a> (organisation pathway) — after an administrator verifies the record, this page opens the workspace.</div>'
         + '<article class="card rv"><span class="tag">Database record</span><h3>Nothing linked yet</h3><p>The organizations table holds no record matching your sign-in e-mail, so there is nothing to show or edit here.</p></article>'
         + '<p><a class="btn btn-primary" href="signup.html">Register an organization</a> <a class="btn btn-secondary" href="account.html">My account</a></p>' + stamp();
       return;
@@ -151,27 +212,27 @@
       // the page-level load failed after the status was known (defensive).
       title.innerHTML = 'Organization workspace <span class="pill-gold">LOAD ERROR</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — your record is verified, but the workspace data did not load.';
-      body.innerHTML = '<div class="notice rv">⚠ Your organization record is verified, but loading the workspace data failed. Reload the page; if it persists, <a class="link" href="contact.html">contact support</a>.</div>'
+      body.innerHTML = '<div class="notice rv">Your organization record is verified, but loading the workspace data failed. Reload the page; if it persists, <a class="link" href="contact.html">contact support</a>.</div>'
         + shared + '<p><a class="btn btn-secondary" href="account.html">My account</a></p>' + stamp();
       return;
     }
     if(st === "pending"){
       title.innerHTML = 'Organization workspace <span class="pill-gold">PENDING VERIFICATION</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — your organization record is awaiting an administrator\'s review.';
-      body.innerHTML = '<div class="notice rv">⏳ <strong>Under review.</strong> Your details stay private and the workspace opens on this page automatically once an administrator sets the record to <code>verified</code>. Decisions are made from the application in the admin dashboard — this page never approves anything.</div>'
+      body.innerHTML = '<div class="notice rv"><strong>Under review.</strong> Your details stay private and the workspace opens on this page automatically once an administrator sets the record to <code>verified</code>. Decisions are made from the application in the admin dashboard — this page never approves anything.</div>'
         + shared + '<p><a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="contact.html">Contact</a></p>' + stamp();
       return;
     }
     if(st === "rejected"){
       title.innerHTML = 'Organization workspace <span class="pill-red">APPLICATION REJECTED</span>';
       line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — an administrator reviewed this record and did not approve it.';
-      body.innerHTML = '<div class="notice rv">🚫 <strong>Rejected — and private.</strong> The record stays out of the public directory and this workspace stays closed. If you need clarification, contact RightAware — decisions are made by an administrator from the record, never from this page.</div>'
+      body.innerHTML = '<div class="notice rv"><strong>Rejected — and private.</strong> The record stays out of the public directory and this workspace stays closed. If you need clarification, contact RightAware — decisions are made by an administrator from the record, never from this page.</div>'
         + shared + '<p><a class="btn btn-primary" href="contact.html">Contact RightAware</a> <a class="btn btn-secondary" href="account.html">My account</a></p>' + stamp();
       return;
     }
     title.innerHTML = 'Organization workspace <span class="pill-gold">NOT VERIFIED</span>';
     line.innerHTML = 'Signed in as <strong>' + esc(o.u.email || "?") + '</strong> — this record has never been verified (status: <strong>' + esc(String(st || "unset")) + '</strong>).';
-    body.innerHTML = '<div class="notice rv">🔒 The record linked to this account is <strong>' + esc(String(st || "unset")) + '</strong>. Unverified organizations never receive verified-organization privileges: the public directory reads only <code>verified</code> rows, and this page shows no workspace either.</div>'
+    body.innerHTML = '<div class="notice rv">The record linked to this account is <strong>' + esc(String(st || "unset")) + '</strong>. Unverified organizations never receive verified-organization privileges: the public directory reads only <code>verified</code> rows, and this page shows no workspace either.</div>'
       + shared + '<p><a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="signup.html">Sign Up</a></p>' + stamp();
   }
 
@@ -260,7 +321,7 @@
     var hotlines = ws.contacts.rows.length;
     var errs = [];
     if(ws.contacts.error) errs.push("contacts: " + ws.contacts.error + " (published hotlines read through policy pub_read_contacts — base schema, verified rows only)");
-    if(ws.notifs.error) errs.push("notifications: " + ws.notifs.error + " (own notifications only, read on the server)");
+    if(ws.notifs.error) errs.push("notifications: " + ws.notifs.error + " (policy own_notif from the base schema)");
     byId("panelOv").innerHTML =
       '<div class="section-head"><span class="eyebrow">Overview</span><h2>Your organization at a glance</h2>'
       + '<p class="form-note">build: ' + BUILD + ' · every value below is read live from the database on this load.</p></div>'
@@ -273,7 +334,7 @@
       + stat("Location", esc(row.location || row.address || "Not set"), row.location && row.address ? "address on file" : "from your profile")
       + stat("Activity", esc(String(unread)), "unread notification" + (unread === 1 ? "" : "s") + " · " + hotlines + " published hotline" + (hotlines === 1 ? "" : "s"))
       + '</div>'
-      + (errs.length ? '<div class="notice" style="margin-top:.9rem">⚠ Some database reads did not succeed: <strong>' + esc(errs.join(" · ")) + '</strong>. The sections above show what could be read; nothing is filled in to hide the gap.</div>' : '');
+      + (errs.length ? '<div class="notice" style="margin-top:.9rem">Some database reads did not succeed: <strong>' + esc(errs.join(" · ")) + '</strong>. The sections above show what could be read; nothing is filled in to hide the gap.</div>' : '');
   }
 
   function logoUrl(path){
@@ -337,7 +398,7 @@
   }
   function saveHint(err){
     return /does not exist|schema cache/i.test(String(err))
-      ? " (this edit needs a pending server-side update applied once by the site administrator; it does not re-run the schema)."
+      ? " — this edit needs supabase/dashboard-access.sql applied once in the Supabase SQL editor (additive; it does not re-run the schema)."
       : "";
   }
   function saveProfile(){
@@ -357,21 +418,21 @@
     if(!args.p_name){ outMsg("pfOut", "Organization name is required — the database rejects an empty name too.", true); return; }
     outMsg("pfOut", "Saving to the database…", false);
     rpcCall("ra_update_own_organization", args).then(function(r){
-      if(r && r.error){ outMsg("pfOut", "⚠ Save failed: " + (r.error.message || r.error) + saveHint(r.error.message || r.error), true); return; }
+      if(r && r.error){ outMsg("pfOut", "Save failed: " + (r.error.message || r.error) + saveHint(r.error.message || r.error), true); return; }
       // Never trust the write alone: re-read the row, then re-render from it.
       return loadOwnOrg(uRef).then(function(back){
         if(back.error || !back.row){
-          outMsg("pfOut", "⚠ Saved, but re-reading your record failed (" + (back.error || "no row returned") + ") — reload the page to confirm.", true);
+          outMsg("pfOut", "Saved, but re-reading your record failed (" + (back.error || "no row returned") + ") — reload the page to confirm.", true);
           return;
         }
         ws.row = back.row;
-        outMsg("pfOut", "✓ Saved — re-read from the database just now: " + (ws.row.name || "") + " · " + completeness(ws.row).pct + "% complete.", false);
+        outMsg("pfOut", "Saved — re-read from the database just now: " + (ws.row.name || "") + " · " + completeness(ws.row).pct + "% complete.", false);
         renderOverview(); renderPreview();
         var im = byId("pfPhoto"), url = logoUrl(ws.row.logo_path);
         if(im && url && im.tagName === "IMG"){ im.src = url; }
       });
     }).catch(function(e){
-      outMsg("pfOut", "⚠ Save failed: " + ((e && e.message) || e) + saveHint((e && e.message) || e), true);
+      outMsg("pfOut", "Save failed: " + ((e && e.message) || e) + saveHint((e && e.message) || e), true);
     });
   }
   function uploadLogo(){
@@ -387,11 +448,11 @@
     outMsg("pfOut", "Uploading to the org-logos bucket…", false);
     RA_SUPA.client.storage.from("org-logos").upload(path, f, { upsert:true, cacheControl:"3600" }).then(function(r){
       if(r && r.error){
-        outMsg("pfOut", "⚠ Upload failed: " + (r.error.message || r.error) + " Contact the site administrator if this keeps happening.", true);
+        outMsg("pfOut", "Upload failed: " + (r.error.message || r.error) + " — the bucket and its own-folder write policy come from supabase/dashboard-access.sql (run once).", true);
         return;
       }
       var url = logoUrl(path);
-      if(!url){ outMsg("pfOut", "⚠ Upload stored, but no public URL was returned — check that the org-logos bucket is public (docs/SETUP.md).", true); return; }
+      if(!url){ outMsg("pfOut", "Upload stored, but no public URL was returned — check that the org-logos bucket is public (docs/SETUP.md).", true); return; }
       byId("pfPhotoPath").value = path;
       var im = byId("pfPhoto");
       if(im){
@@ -405,7 +466,7 @@
       }
       outMsg("pfOut", "Logo uploaded to " + path + " — press Save profile to store this path on your record.", false);
     }).catch(function(e){
-      outMsg("pfOut", "⚠ Upload failed: " + ((e && e.message) || e), true);
+      outMsg("pfOut", "Upload failed: " + ((e && e.message) || e), true);
     });
   }
 
@@ -415,7 +476,7 @@
     var site = (row.website && /^https?:\/\//i.test(row.website)) ? row.website : "";
     var place = [row.location, row.address].filter(Boolean).join(" — ");
     var card = '<article class="card rv">'
-      + '<span class="pill-green">✓ VERIFIED ORGANIZATION</span>'
+      + '<span class="pill-green">VERIFIED ORGANIZATION</span>'
       + '<h3 style="margin-top:.5rem">' + esc(row.name || "") + '</h3>'
       + (row.specialization ? '<p><small>' + esc(row.specialization) + '</small></p>' : '')
       + (row.description ? '<p>' + esc(row.description) + '</p>' : '')
@@ -456,7 +517,7 @@
       + '<div class="ws-grid" style="margin-top:1rem">'
       + stat("Location", esc(place || "Not set"), "address on your record")
       + stat("Phone", esc(row.phone || "Not set"), "shown to administrators, not on the public card")
-      + stat("Website", row.website ? (/^https?:\/\//i.test(String(row.website)) ? '<small style="font-size:.95rem"><a class="link" href="' + esc(row.website) + '" target="_blank" rel="noopener">' + esc(row.website) + '</a></small>' : '<small style="font-size:.95rem">' + esc(row.website) + '</small>') : esc("Not set"), "published on your directory card when it is a full http(s) URL")
+      + stat("Website", row.website ? '<small style="font-size:.95rem"><a class="link" href="' + esc(row.website) + '" target="_blank" rel="noopener">' + esc(row.website) + '</a></small>' : esc("Not set"), "published on your directory card when it is a full http(s) URL")
       + '</div>'
       + '<div class="notice" style="margin-top:.9rem"><strong>Inquiries:</strong> organization inquiries are routed through RightAware\'s contact channel — the schema has no organization-linked inquiry table yet, so this section deliberately shows nothing else. Help and resource information lives on <a class="link" href="resources.html">Resources</a> and <a class="link" href="help.html">Get Help</a>; inquiries reach the team via <a class="link" href="contact.html">Contact</a>. No fake inquiry entries are ever shown.</div>';
   }
@@ -466,7 +527,7 @@
     var box = byId("panelNt");
     if(res.error){
       box.innerHTML = '<div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2></div>'
-        + errBox("Could not read your notifications", res.error + " (only your own notifications are read, on the server)") + stamp();
+        + errBox("Could not read your notifications", res.error + " — your own notifications are read through policy own_notif (base schema)") + stamp();
       return;
     }
     var rows = res.rows;
@@ -474,7 +535,7 @@
     box.innerHTML =
       '<div class="section-head"><span class="eyebrow">Notifications</span><h2>' + rows.length + ' notification' + (rows.length === 1 ? "" : "s")
       + (unread ? " · " + unread + " unread" : "") + '</h2>'
-      + '<p>Stored for your account only. Other accounts\u2019 notifications are never visible to you, and yours are never visible to them.</p>'
+      + '<p>Stored in the notifications table for your account only — row-level security keeps other accounts\' notifications invisible.</p>'
       + (rows.length ? '<div class="ws-actions"><button class="btn btn-secondary btn-sm" id="ntMarkAll"' + (unread ? "" : " disabled") + '>Mark all read</button></div>' : '')
       + '<p class="ws-out" id="ntOut">' + esc(ntMsg) + '</p></div>'
       + (rows.length
@@ -495,12 +556,12 @@
     });
   }
   function reloadNotifs(errMsg){
-    if(errMsg){ ntMsg = "⚠ " + errMsg; renderNotifs(); return Promise.resolve(); }
+    if(errMsg){ ntMsg = errMsg; renderNotifs(); return Promise.resolve(); }
     return qNotifs((uRef || {}).supabaseId).then(function(res){
       ws.notifs = res;
       ntMsg = res.error
-        ? "⚠ Saved, but re-reading notifications failed: " + res.error
-        : "✓ Marked read — re-read from the database just now.";
+        ? "Saved, but re-reading notifications failed: " + res.error
+        : "Marked read — re-read from the database just now.";
       renderNotifs(); renderOverview();
     });
   }
@@ -525,16 +586,16 @@
     byId("panelAc").innerHTML =
       '<div class="section-head"><span class="eyebrow">Account & security</span><h2>Account, password, session</h2></div>'
       + '<div class="cards-grid">'
-      + '<article class="card"><span class="tag">Account</span><h3>🔐 Security</h3>'
+      + '<article class="card"><span class="tag">Account</span><h3>Security</h3>'
       + '<p>Signed in as <strong>' + esc((uRef || {}).email || "?") + '</strong></p>'
       + '<p><small>Organization record: <strong>' + esc(row.name || "?") + '</strong> · verification: ' + pill(row.verification_status || "unset") + '</small></p>'
       + '<form id="pwForm"><label>New password<input type="password" id="pw1" autocomplete="new-password" minlength="8"/></label>'
       + '<label>Confirm new password<input type="password" id="pw2" autocomplete="new-password" minlength="8"/></label>'
       + '<div class="ws-actions"><button class="btn btn-primary btn-sm" type="button" id="pwBtn">Update password</button></div>'
       + '<p class="ws-out" id="pwOut"></p></form>'
-      + '<p class="form-note">Password changes are applied by the sign-in service on your current session; this page only reports what the server answered.</p>'
+      + '<p class="form-note">Password changes go through Supabase Authentication on this signed-in session — the server applies them; this page only reports what the server answered.</p>'
       + '<p><a class="link" href="account.html">My account — profile, saved items, sync →</a></p></article>'
-      + '<article class="card"><span class="tag">Session</span><h3>🚪 Sign out</h3>'
+      + '<article class="card"><span class="tag">Session</span><h3>Sign out</h3>'
       + '<p>Ends this session on this device. Your record and its status stay in the database — signing out changes nothing about them.</p>'
       + '<div class="ws-actions"><button class="btn btn-secondary" type="button" id="acLogout">Log out</button>'
       + '<a class="btn btn-outline btn-sm" href="index.html">Home</a></div></article>'
@@ -552,14 +613,14 @@
     outMsg("pwOut", "Updating your password with the authentication server…", false);
     try{
       RA_SUPA.client.auth.updateUser({ password: p1 }).then(function(r){
-        if(r && r.error){ outMsg("pwOut", "⚠ Password update failed: " + (r.error.message || r.error), true); return; }
+        if(r && r.error){ outMsg("pwOut", "Password update failed: " + (r.error.message || r.error), true); return; }
         byId("pw1").value = ""; byId("pw2").value = "";
-        outMsg("pwOut", "✓ Password updated for this account.", false);
+        outMsg("pwOut", "Password updated for this account.", false);
       }, function(e){
-        outMsg("pwOut", "⚠ Password update failed: " + ((e && e.message) || e), true);
+        outMsg("pwOut", "Password update failed: " + ((e && e.message) || e), true);
       });
     }catch(e){
-      outMsg("pwOut", "⚠ Password update failed: " + ((e && e.message) || e), true);
+      outMsg("pwOut", "Password update failed: " + ((e && e.message) || e), true);
     }
   }
 
@@ -569,12 +630,12 @@
       + (row.verified_at ? ' · verified ' + esc(fmtDate(row.verified_at)) : '')
       + '. Every value below is read live from the database on this load; other organizations\' records stay invisible to you (and yours to them).';
     var tabs = [
-      ["tabOv", "panelOv", "📊 Overview"],
-      ["tabPf", "panelPf", "✏️ Profile"],
-      ["tabPv", "panelPv", "🪪 Public preview"],
-      ["tabCt", "panelCt", "📇 Contacts & inquiries"],
-      ["tabNt", "panelNt", "🔔 Notifications"],
-      ["tabAc", "panelAc", "🔐 Account"]
+      ["tabOv", "panelOv", "Overview"],
+      ["tabPf", "panelPf", "Profile"],
+      ["tabPv", "panelPv", "Public preview"],
+      ["tabCt", "panelCt", "Contacts & inquiries"],
+      ["tabNt", "panelNt", "Notifications"],
+      ["tabAc", "panelAc", "Account"]
     ];
     body.innerHTML = tabsHtml(tabs, "organization workspace sections");
     wireTabs(tabs);

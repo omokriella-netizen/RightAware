@@ -50,7 +50,7 @@
           const needAuth = function(){
             return {
               needsAuth:true,
-              text:(data && (data.text || data.error)) || "The AI assistant is available to signed-in RightAware accounts. Sign in to continue where you left off.",
+              text:(data && data.error) || "The AI assistant is available to signed-in RightAware accounts. Sign in to continue where you left off.",
               links:[{t:"Sign in", u:"login.html?next=ai.html"}, {t:"Create an account", u:"signup.html"}],
               disclaimer:DISCLAIMER, demo:true
             };
@@ -58,43 +58,23 @@
           /* 401-latched and still no session: answer honestly without another
              guaranteed-failing call. (ra:session-ready also clears the latch.) */
           if(this._authNeeded && !tok) return needAuth();
-          /* 25s client timeout: a hung request must still produce a visible
-             labelled reply instead of leaving the user staring at their own
-             message with no answer. */
-          const ctrl = typeof AbortController === "function" ? new AbortController() : null;
-          const timer = ctrl ? setTimeout(function(){ try{ ctrl.abort(); }catch(_){} }, 25000) : null;
-          try{
-            const res = await fetch(RA_CONFIG.AI_ENDPOINT, { method:"POST", headers:headers, body:JSON.stringify({ message:m }), signal: ctrl ? ctrl.signal : undefined });
-            try{ data = await res.json(); }catch(_){ data = null; }
-            /* A 200 with diagnostic:true is a provider/connection fault, not an
-               answer — never present it as a LIVE response. */
-            if(res.ok && data && data.text && !data.diagnostic){
-              return { text:String(data.text), links:data.links||[], sources:data.sources||[], disclaimer:data.disclaimer||DISCLAIMER };
-            }
-            /* 401 = the server requires a signed-in account. Surface that
-               explicitly instead of pretending the service is offline: the UI
-               shows a sign-in prompt and the latch clears once a session token
-               exists. */
-            if(res.status===401 || (data && data.code==="unauthorized")){
-              this._authNeeded = true;
-              return needAuth();
-            }
-            /* 429/400 get their own honest wording: waiting or shortening the
-               message is a different action than "the service is down". */
-            if(res.status===429 || (data && data.code==="rate_limited")){
-              return { text:(data && data.text) || "You have sent several messages very quickly. Please wait a moment, then ask again — your question will still be here.",
-                links:[{t:"Browse rights library", u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
-            }
-            if(res.status===400 || (data && data.code==="bad_request")){
-              return { text:(data && data.text) || "That message could not be sent. Please keep it under 2,000 characters and try again.",
-                links:[], disclaimer:DISCLAIMER, demo:true };
-            }
-            /* 501 = the key is not configured server-side. Stop calling for this
-               session and fall back. 429/502 are transient: fall back without
-               disabling the server for later questions. */
-            if(res.status===501 || (data && data.code==="not_configured")) this._down = true;
-          }catch(_){ /* network/provider trouble — fall back below */ }
-          finally{ if(timer) clearTimeout(timer); }
+          const res = await fetch(RA_CONFIG.AI_ENDPOINT, { method:"POST", headers:headers, body:JSON.stringify({ message:m }) });
+          try{ data = await res.json(); }catch(_){ data = null; }
+          if(res.ok && data && data.text){
+            return { text:String(data.text), links:data.links||[], sources:data.sources||[], disclaimer:data.disclaimer||DISCLAIMER };
+          }
+          /* 401 = the server requires a signed-in account. Surface that
+             explicitly instead of pretending the service is offline: the UI
+             shows a sign-in prompt and the latch clears once a session token
+             exists. */
+          if(res.status===401 || (data && data.code==="unauthorized")){
+            this._authNeeded = true;
+            return needAuth();
+          }
+          /* 501 = the key is not configured server-side. Stop calling for this
+             session and fall back. 429/502 are transient: fall back without
+             disabling the server for later questions. */
+          if(res.status===501 || (data && data.code==="not_configured")) this._down = true;
         }catch(_){ /* network/provider trouble — fall back below */ }
         return serverFallback(m);
       }

@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin — RightAware</title>
-<meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to administrator accounts, and every request is checked on the server before any data is returned."/>
+<meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Admin — RightAware"/>
-<meta property="og:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to administrator accounts, and every request is checked on the server before any data is returned."/>
+<meta property="og:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/admin.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Admin — RightAware"/>
-<meta name="twitter:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to administrator accounts, and every request is checked on the server before any data is returned."/>
+<meta name="twitter:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/admin.html"/>
-<meta name="robots" content="noindex, nofollow"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   .app-item{border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:.8rem;background:#fff;box-shadow:var(--shadow)}
@@ -38,18 +37,80 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="container header-inner">
-  <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-  <nav class="nav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="help.html">Get Help</a><a href="contact.html">Contact</a></nav>
-  <div class="header-actions"><a class="btn btn-outline btn-sm" href="index.html">← Site</a>
-  <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
-</div><div class="mobile-nav" id="mobileNav"><a href="index.html">Home</a><a href="rights.html">Rights</a><a href="laws.html">Laws</a><a href="contact.html">Contact</a></div></header>
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-outline btn-sm" href="index.html">← Site</a>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="admin.html">Admin Dashboard</a><a href="contact.html">Contact Us</a>
+  </div>
+</header>
 <main id="main">
 <section class="page-hero"><div class="container rv"><span class="eyebrow">Admin</span><h1 id="adminTitle">Checking access…</h1>
 <p class="lead-dark" id="adminLine">Verifying your account role against the database…</p></div></section>
 <section class="section"><div class="container" id="adminBody"></div></section>
 </main>
-<footer class="footer"><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬 • Roles and data are checked on the server. This page only ever shows what your own account is allowed to see.</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
@@ -74,7 +135,7 @@
     ["Rights agency directory","organizations.html","RA_ORGANIZATIONS"],["Professionals","lawyers.html","RA_PROFESSIONALS"],
     ["FAQs","resources.html#faqs","RA_FAQS"]
   ];
-  function count(key){ try{ var v = window[key]; return Array.isArray(v) ? v.length : "—"; }catch(_){ return "—"; } }
+  function count(key){ try{ var v = eval("(" + key + ")"); return Array.isArray(v) ? v.length : "—"; }catch(_){ return "—"; } }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
   function whenReady(cb){
     if(window.RA_SUPA && RA_SUPA.ready){ cb(true); return; }
@@ -92,36 +153,36 @@
     var local = [];
     try{ local = JSON.parse(localStorage.getItem("ra_applications") || "[]"); }catch(_){}
     body.innerHTML =
-      '<div class="notice rv">🔒 <strong>Locked.</strong> Admin access requires a signed-in administrator account. The role check runs on the server; hiding buttons is not enough. '
+      '<div class="notice rv"><strong>Locked.</strong> Admin access requires a signed-in account whose role is <code>admin</code> in the database (row-level security enforces this server-side — hiding buttons is not enough). '
       + '<button class="btn btn-secondary btn-sm" id="prevBtn">Preview dashboard layout (read-only)</button></div>'
       + '<div id="prev"></div>'
       + '<div class="section-head" style="margin-top:1.5rem"><span class="eyebrow">Applications</span><h2>Registration applications on this device</h2></div>'
       + (local.length
           ? local.map(function(a){
-              return '<div class="app-item"><strong>' + (a.path==="professional" ? "⚖️ Professional" : "🏛 Organisation") + '</strong> — ' + esc(a.name)
+              return '<div class="app-item"><strong>' + (a.path==="professional" ? "Professional" : "Organisation") + '</strong> — ' + esc(a.name)
                 + ' &lt;' + esc(a.email) + '&gt;<div class="app-meta">Ref ' + esc(a.ref) + ' · ' + esc(a.status) + ' · ' + esc(String(a.at).slice(0,19).replace("T"," ")) + '</div>'
                 + '<div class="empty">Not submitted anywhere (backend never connected). Re-submit from signup when the site is live.</div></div>';
             }).join("")
           : '<p class="empty">No applications have been made from this browser.</p>');
     document.getElementById("prevBtn").addEventListener("click", function(){
       document.getElementById("prev").innerHTML =
-        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to one area of administration.</p></div>'
+        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to a Supabase table + admin API.</p></div>'
         + '<div class="cards-grid">' + ENTITIES.map(function(e){
             return '<article class="card rv"><h3>' + e[0] + '</h3><p><strong>' + count("window." + e[2]) + '</strong> records in local catalog</p>'
               + '<a class="link" href="' + e[1] + '">Open public page →</a><br/><button class="btn btn-outline btn-sm" disabled title="Requires admin role + backend">Manage (locked)</button></article>';
           }).join("") + '</div>'
-        + '<div class="two-col"><div class="card rv"><h3>🚩 Review moderation queue (this device)</h3><p>' + RA_REVIEWS.queue().length + ' flagged item(s).</p></div>'
-        + '<div class="card rv"><h3>✉️ Contact messages (this device)</h3><p>' + RA_DB.messages().length + ' stored message(s).</p></div></div>'
-        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced on the server, never by frontend code.</div>';
+        + '<div class="two-col"><div class="card rv"><h3>Review moderation queue (this device)</h3><p>' + RA_REVIEWS.queue().length + ' flagged item(s).</p></div>'
+        + '<div class="card rv"><h3>Contact messages (this device)</h3><p>' + RA_DB.messages().length + ' stored message(s).</p></div></div>'
+        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS — never by frontend code.</div>';
     });
   }
 
   /* ==================== SIGNED OUT: backend on, no session ==================== */
   function renderSignedOut(){
     title.textContent = "Sign in required";
-    line.innerHTML = 'You are not signed in. The administrator dashboard opens only for accounts that carry the <strong>admin</strong> role.';
-    body.innerHTML = '<div class="notice rv">🔐 Sign in with an administrator account to review registration applications, contact messages and content. '
-      + 'Roles are assigned by administrators and enforced on the server. Hiding buttons is never how access is decided.</div>'
+    line.innerHTML = 'You are not signed in. The administrator dashboard opens only for accounts that carry the <strong>admin</strong> role in the database.';
+    body.innerHTML = '<div class="notice rv">Sign in with an administrator account to review registration applications, contact messages and content. '
+      + 'Roles live in the database (see <code>docs/DATABASE.md</code>) — row-level security enforces access server-side; hiding buttons is never how access is decided.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=admin.html">Sign in</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
   }
 
@@ -129,8 +190,8 @@
   function renderDenied(role){
     title.textContent = "Access denied";
     line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "?") + '</strong> — role: <strong>' + esc(role || "user") + '</strong>. Only administrators can open this dashboard.';
-    body.innerHTML = '<div class="notice rv">🚫 Your account does not have administrator access. Every request from this page is checked on the server anyway, so it would be refused. '
-      + 'If you believe this is wrong, an existing administrator must grant the role.</div>'
+    body.innerHTML = '<div class="notice rv">Your account does not have the <code>admin</code> role. The database would refuse every query here anyway (row-level security). '
+      + 'If you believe this is wrong, an existing administrator must grant the role — see <code>docs/DATABASE.md</code>.</div>'
       + '<p><a class="btn btn-primary" href="account.html">Back to my account</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
   }
 
@@ -138,19 +199,19 @@
   function renderAdmin(user){
     title.innerHTML = 'Admin dashboard <span class="pill">ADMIN</span>';
     line.innerHTML = 'Signed in as <strong>' + esc(user.email || "admin") + '</strong> — role: <strong>admin</strong>. '
-      + 'Everything below is read live for your account; no one else\u2019s data is reachable here.';
+      + 'Everything below is read live from the database; row-level security blocks anyone else.';
     body.innerHTML =
       '<div class="admin-tabs" role="tablist" aria-label="Admin sections">'
-      + '<button role="tab" id="tabApps" aria-selected="true" aria-controls="panelApps">📋 Applications</button>'
-      + '<button role="tab" id="tabContent" aria-selected="false" aria-controls="panelContent">📚 Content overview</button>'
-      + '<button role="tab" id="tabMsgs" aria-selected="false" aria-controls="panelMsgs">✉️ Contact messages</button>'
+      + '<button role="tab" id="tabApps" aria-selected="true" aria-controls="panelApps">Applications</button>'
+      + '<button role="tab" id="tabContent" aria-selected="false" aria-controls="panelContent">Content overview</button>'
+      + '<button role="tab" id="tabMsgs" aria-selected="false" aria-controls="panelMsgs">Contact messages</button>'
       + '</div>'
       + '<div id="panelApps" role="tabpanel" aria-labelledby="tabApps">'
         + '<div class="section-head"><span class="eyebrow">Registration applications</span><h2>Awaiting your decision</h2>'
         + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p>'
         + '<p class="app-meta" id="raBuild">build: admin-20261001-3 · every card, status and control below renders live from the database.</p></div>'
         + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
-        + '<div class="notice" style="margin-top:.6rem">💡 Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. A message copy is never the application record: each copy states whether its record exists, and when the record is missing (the applicant has not signed in yet) the copy offers <strong>Create application record</strong> from the applicant\'s own submitted data. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
+        + '<div class="notice" style="margin-top:.6rem">Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. A message copy is never the application record: each copy states whether its record exists, and when the record is missing (the applicant has not signed in yet) the copy offers <strong>Create application record</strong> from the applicant\'s own submitted data. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
       + '</div>'
       + '<div id="panelContent" role="tabpanel" aria-labelledby="tabContent" hidden>'
         + '<div class="section-head"><span class="eyebrow">Content</span><h2>Catalogues</h2></div>'
@@ -204,14 +265,14 @@
      visible error card instead of vanishing into a swallowed exception. */
   function safe(fn, row, what){
     try{ return fn(row); }
-    catch(err){ return '<div class="app-item">⚠ Could not render this ' + esc(what) + ' record (' + esc(err && err.message ? err.message : err) + ').</div>'; }
+    catch(err){ return '<div class="app-item">Could not render this ' + esc(what) + ' record (' + esc(err && err.message ? err.message : err) + ').</div>'; }
   }
   function proItem(p){
     var em = appCtx.emailFor("pro", p.name);
     var areas = arr(p.consultation_options);
     var langs = arr(p.languages);
     var sp = (appCtx.specByPro[p.id] || []).join(", ");
-    return '<div class="app-item"><details open><summary>⚖️ ' + esc(p.name) + ' — ' + esc(p.qualification || "professional") + '</summary>'
+    return '<div class="app-item"><details open><summary>' + esc(p.name) + ' — ' + esc(p.qualification || "professional") + '</summary>'
       + '<div class="app-meta">' + statusPill(p.verification_status) + ' ' + esc(p.location || "")
       + (p.experience_yrs ? " · " + esc(p.experience_yrs) + " yrs" : "")
       + ' · applied ' + esc(String(p.created_at || "").slice(0,10)) + (p.id ? ' · <code>' + esc(p.id) + '</code>' : '') + '</div>'
@@ -235,7 +296,7 @@
   }
   function orgItem(o){
     var svc = arr(o.services);
-    return '<div class="app-item"><details open><summary>🏛 ' + esc(o.name) + ' — ' + esc(o.specialization || "organisation") + '</summary>'
+    return '<div class="app-item"><details open><summary>' + esc(o.name) + ' — ' + esc(o.specialization || "organisation") + '</summary>'
       + '<div class="app-meta">' + statusPill(o.verification_status) + ' ' + esc(o.location || "")
       + ' · applied ' + esc(String(o.created_at || "").slice(0,10)) + (o.id ? ' · <code>' + esc(o.id) + '</code>' : '') + '</div>'
       + '<dl class="app-dl"><dt>Contact</dt><dd>' + esc(o.email || "—") + ' · ' + esc(o.phone || "—") + '</dd>'
@@ -257,19 +318,19 @@
     var recLine = "";
     if(isApp && ci){
       if(ci.matched){
-        recLine = '<div class="app-meta">🗂 Application record: <strong>exists</strong> — Approve / Reject act on the card above; this copy stays read-only.</div>';
+        recLine = '<div class="app-meta">Application record: <strong>exists</strong> — Approve / Reject act on the card above; this copy stays read-only.</div>';
       } else if(ci.kind === "pro" || ci.kind === "org"){
-        recLine = '<div class="app-meta">⚠ Application record: <strong>missing</strong> — no ' + (ci.kind === "pro" ? "professional" : "organization")
+        recLine = '<div class="app-meta">Application record: <strong>missing</strong> — no ' + (ci.kind === "pro" ? "professional" : "organization")
           + ' row matches this copy. The record is created automatically when the applicant first signs in after email confirmation; until that happens, create it here from the applicant\'s own submitted data (it will be stored as PENDING — never auto-approved): '
           + '<button class="btn btn-secondary btn-sm" data-act="create-record" data-id="' + esc(m.id) + '">Create application record from this copy</button></div>';
       } else {
-        recLine = '<div class="app-meta">⚠ This copy could not be matched to an application kind — no record action is offered.</div>';
+        recLine = '<div class="app-meta">This copy could not be matched to an application kind — no record action is offered.</div>';
       }
     }
-    return '<div class="app-item"><details><summary>📨 ' + esc(m.topic || "Application") + ' — ' + esc(m.name || "") + '</summary>'
+    return '<div class="app-item"><details><summary>' + esc(m.topic || "Application") + ' — ' + esc(m.name || "") + '</summary>'
       + '<div class="app-meta">from ' + esc(m.email || "?") + ' · ' + esc(String(m.created_at || m.at || "").slice(0,19).replace("T"," "))
       + ' · status ' + esc(m.status || "new") + '</div>'
-      + (isApp ? '<div class="app-meta">✉ Message copy of a signup application — <strong>approval happens on the application records above, not on this message.</strong></div>' : '')
+      + (isApp ? '<div class="app-meta">Message copy of a signup application — <strong>approval happens on the application records above, not on this message.</strong></div>' : '')
       + '<dl class="app-dl"><dt>Message</dt><dd>' + esc(m.message || "") + '</dd></dl>'
       + '<div class="app-actions"><a class="btn btn-outline btn-sm" href="mailto:' + esc(m.email || "") + '">Reply by email</a>'
       + '<button class="btn btn-secondary btn-sm" data-act="mark-read" data-id="' + esc(m.id) + '">Mark reviewed</button></div>'
@@ -327,7 +388,7 @@
   }
   function decidedItem(d){
     var x = d.row;
-    return '<div class="app-item"><details><summary>' + (d.kind === "pro" ? "⚖️ " : "🏛 ") + esc(x.name) + '</summary>'
+    return '<div class="app-item"><details><summary>' + esc(x.name) + ' (' + (d.kind === "pro" ? "Professional" : "Organisation") + ')</summary>'
       + '<div class="app-meta">' + statusPill(x.verification_status) + ' '
       + (d.kind === "pro" ? "professional" : "organisation")
       + ' · applied ' + esc(String(x.created_at || "").slice(0,10))
@@ -459,7 +520,7 @@
       if(q.error) throw q.error;
       queue = q.data || [];
     }catch(err){
-      notes.push("⚠ Application message copies could not be read: " + esc(err && err.message ? err.message : err));
+      notes.push("Application message copies could not be read: " + esc(err && err.message ? err.message : err));
     }
     var emailByName = {};
     queue.forEach(function(m){
@@ -486,7 +547,7 @@
       if(p.error) throw p.error;
       pros = p.data || [];
     }catch(err){
-      notes.push("⚠ Professional applications could not be read: " + esc(err && err.message ? err.message : err));
+      notes.push("Professional applications could not be read: " + esc(err && err.message ? err.message : err));
     }
     stash(pros);
     var proPending = [], proDecided = [];
@@ -524,7 +585,7 @@
       if(o.error) throw o.error;
       orgs = o.data || [];
     }catch(err){
-      notes.push("⚠ Organisation applications could not be read: " + esc(err && err.message ? err.message : err));
+      notes.push("Organisation applications could not be read: " + esc(err && err.message ? err.message : err));
     }
     var orgPending = [], orgDecided = [];
     orgs.forEach(function(x){
@@ -554,12 +615,12 @@
     /* ---- render: DECISION RECORDS FIRST, message copies LAST ---- */
     if(proPending.length){
       any = true;
-      out += '<div class="section-head"><h3>⚖️ Legal Professional applications — Approve / Reject</h3></div>'
+      out += '<div class="section-head"><h3>Legal Professional applications — Approve / Reject</h3></div>'
         + proPending.map(function(x){ return safe(proItem, x, "professional"); }).join("");
     }
     if(orgPending.length){
       any = true;
-      out += '<div class="section-head"><h3>🏛 Organization applications — Approve / Reject</h3></div>'
+      out += '<div class="section-head"><h3>Organization applications — Approve / Reject</h3></div>'
         + orgPending.map(function(x){ return safe(orgItem, x, "organisation"); }).join("");
     }
     var decided = proDecided.map(function(x){ return { row:x, kind:"pro" }; })
@@ -567,12 +628,12 @@
     decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
     if(decided.length){
       any = true;
-      out += '<div class="section-head"><h3>🗂 Recently decided — Verified / Rejected (Reopen here)</h3></div>'
+      out += '<div class="section-head"><h3>Recently decided — Verified / Rejected (Reopen here)</h3></div>'
         + decided.map(function(d){ return safe(decidedItem, d, d.kind === "pro" ? "professional" : "organisation"); }).join("");
     }
     if(queue.length){
       any = true;
-      out += '<div class="section-head"><h3>📨 Contact-message copies — read only, no approval here</h3></div>'
+      out += '<div class="section-head"><h3>Contact-message copies — read only, no approval here</h3></div>'
         + queue.map(function(m){ return safe(queueItem, m, "message"); }).join("");
     }
 
@@ -661,7 +722,7 @@
         });
       });
     }catch(err){
-      box.innerHTML = '<p class="empty">⚠ Could not load messages: ' + esc(err && err.message ? err.message : err) + '</p>';
+      box.innerHTML = '<p class="empty">Could not load messages: ' + esc(err && err.message ? err.message : err) + '</p>';
     }
   }
 

@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Printable Resources — RightAware"/>
@@ -18,25 +18,29 @@
 <meta name="twitter:title" content="Printable Resources — RightAware"/>
 <meta name="twitter:description" content="Printable RightAware checklists and guides: police encounter, tenancy evidence, salary-claim file, every rights guide, plus official documents to download."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/printables.html"/>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
     <div class="header-actions">
-      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
+      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </a>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
     <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
-    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
 <main id="main">
@@ -52,9 +56,30 @@
 <section class="section" id="checklists"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Checklists</span><h2>The three keep-forever checklists</h2><p>Open one, then use your browser's Print → Save as PDF. Share on WhatsApp as a PDF or a screenshot.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><div class="icon">✅</div><h3>Police encounter checklist</h3><p>6 steps plus exact scripts: what to say, what not to sign, what to record.</p><button class="btn btn-outline btn-sm" onclick="location.href='rights/arrest-rights.html'">Open & print →</button></article>
-    <article class="card rv"><div class="icon">🏠</div><h3>Tenancy evidence checklist</h3><p>Agreement, receipts, photos, messages and notice dates — in the order a case needs them.</p><button class="btn btn-outline btn-sm" onclick="location.href='rights/topic.html?id=tenancy'">Open & print →</button></article>
-    <article class="card rv"><div class="icon">💼</div><h3>Salary-claim file checklist</h3><p>Offer letter, payslips, written demands and the deadlines that matter.</p><button class="btn btn-outline btn-sm" onclick="location.href='rights/topic.html?id=employment'">Open & print →</button></article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      </div>
+      <h3>Police encounter checklist</h3>
+      <p>6 steps plus exact scripts: what to say, what not to sign, what to record.</p>
+      <button class="btn btn-outline btn-sm" onclick="location.href='rights/arrest-rights.html'">Open &amp; print →</button>
+    </article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </div>
+      <h3>Tenancy evidence checklist</h3>
+      <p>Agreement, receipts, photos, messages and notice dates — in the order a case needs them.</p>
+      <button class="btn btn-outline btn-sm" onclick="location.href='rights/topic.html?id=tenancy'">Open &amp; print →</button>
+    </article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+      </div>
+      <h3>Salary-claim file checklist</h3>
+      <p>Offer letter, payslips, written demands and the deadlines that matter.</p>
+      <button class="btn btn-outline btn-sm" onclick="location.href='rights/topic.html?id=employment'">Open &amp; print →</button>
+    </article>
   </div>
 </div></section>
 
@@ -67,18 +92,82 @@
 <section class="section" id="printdocs"><div class="container">
   <div class="section-head rv"><span class="eyebrow">Official documents</span><h2>Download the original texts</h2><p>The supplied laws library keeps the original files: read them in the browser, search inside the text, then download the source document as-is.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><div class="icon">📜</div><h3>Constitution of Nigeria 1999</h3><p>The supplied official text, with page-accurate search inside the document.</p><a class="link card-link" href="laws.html?doc=constitution-1999">Open in the laws library →</a></article>
-    <article class="card rv"><div class="icon">⚖️</div><h3>Acts, laws & regulations</h3><p>Electoral Act 2022, Marriage Act, Lagos Tenancy Law and the rest of the supplied collection.</p><a class="link card-link" href="laws.html">Browse the library →</a></article>
-    <article class="card rv"><div class="icon">⬇️</div><h3>Download instead of printing</h3><p>Every document page offers “Download original” so you keep the unmodified file offline.</p><a class="link card-link" href="laws.html">Go to downloads →</a></article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <h3>Constitution of Nigeria 1999</h3>
+      <p>The supplied official text, with page-accurate search inside the document.</p>
+      <a class="link card-link" href="laws.html?doc=constitution-1999">Open in the laws library →</a>
+    </article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>
+      </div>
+      <h3>Acts, laws &amp; regulations</h3>
+      <p>Electoral Act 2022, Marriage Act, Lagos Tenancy Law and the rest of the supplied collection.</p>
+      <a class="link card-link" href="laws.html">Browse the library →</a>
+    </article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </div>
+      <h3>Download instead of printing</h3>
+      <p>Every document page offers “Download original” so you keep the unmodified file offline.</p>
+      <a class="link card-link" href="laws.html">Go to downloads →</a>
+    </article>
   </div>
 </div></section>
 </main>
-<footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
-  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="laws.html">Laws Library</a><a href="printables.html">Printables</a></div>
-  <div><h4>Support</h4><a href="help.html">Get Help</a><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-  <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
-</div><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="js/config.js"></script>
@@ -93,8 +182,8 @@
     var direct = r.fullGuide || r.slug;
     var m = direct ? null : det.filter(function(x){ return x.title===r.title && !x.fullGuide; })[0];
     var url = direct || (m ? ("rights/topic.html?id="+m.id) : (r.id ? ("rights/topic.html?id="+r.id) : "rights.html"));
-    var badge = direct ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
-    return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+esc(r.title)+'</h3><p>'+esc(r.summary)+'</p>'+badge+'<a class="link card-link" href="'+esc(url)+'">Open & print →</a></article>';
+    var iconBadge = '<div class="card-icon-badge"><svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>';
+    return '<article class="card rv">'+iconBadge+'<h3>'+esc(r.title)+'</h3><p>'+esc(r.summary)+'</p>'+badge+'<a class="link card-link" href="'+esc(url)+'">Open & print →</a></article>';
   }).join("");
   document.getElementById("printAll").addEventListener("click", function(){ window.print(); });
 })();

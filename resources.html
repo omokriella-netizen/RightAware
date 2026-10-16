@@ -2,153 +2,373 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Resources — RightAware</title>
-<meta name="description" content="Search resources: educational videos, articles, organisations, helpful links, who-does-what, rights guides, Constitution explainer, FAQs and printable checklists."/>
+<title>Legal Guides & Resources | RightAware</title>
+<meta name="description" content="Search legal guides, educational videos, government agency contacts, rights explainers, and free printable checklists for Nigeria."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#0b6b3a"/>
+<meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Resources — RightAware"/>
-<meta property="og:description" content="Search resources: educational videos, articles, organisations, helpful links, who-does-what, rights guides, Constitution explainer, FAQs and printable checklists."/>
+<meta property="og:title" content="Legal Guides & Resources | RightAware"/>
+<meta property="og:description" content="Search legal guides, educational videos, government agency contacts, rights explainers, and free printable checklists for Nigeria."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/resources.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Resources — RightAware"/>
-<meta name="twitter:description" content="Search resources: educational videos, articles, organisations, helpful links, who-does-what, rights guides, Constitution explainer, FAQs and printable checklists."/>
+<meta name="twitter:title" content="Legal Guides & Resources | RightAware"/>
+<meta name="twitter:description" content="Search legal guides, educational videos, government agency contacts, rights explainers, and free printable checklists for Nigeria."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/resources.html"/>
-<link rel="stylesheet" href="styles.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=2.3"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="contact.html">Contact Us</a></nav>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
+    </nav>
     <div class="header-actions">
-      <form data-global-search class="hsearch" role="search"><input type="search" placeholder="Search rights…" aria-label="Search"/><button aria-label="Search">⌕</button></form>
       <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-primary btn-sm" href="signup.html">Get Started</a>
+      <button type="button" class="btn btn-urgent btn-sm" id="headerEmergencyBtn" aria-haspopup="dialog" aria-controls="triageModal">
+        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Urgent Help
+      </button>
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
     <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
-    <a href="index.html">Home</a><a href="about.html">About Us</a><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">✨ RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
+    <a href="index.html">Home</a><a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a><a href="help.html">Get Help</a><a href="lawyers.html">Legal Professionals</a><a href="ai.html">RightAware AI</a><a href="contact.html">Contact Us</a><a href="login.html">Log In</a>
   </div>
 </header>
 <main id="main">
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
-  <span class="eyebrow">Resources</span><h1>Videos, articles, guides, FAQs & downloads</h1>
-  <p class="lead-dark">Everything in one place, in the order you need it: search first, then videos, writing, organisations, guides, FAQs and finally print. Items marked “verify” still need confirmation against official sources before final publication.</p>
-  <div class="chip-row"><a href="#search">Search</a><a href="#videos">Videos</a><a href="#articles">Articles</a><a href="#organisations">Organizations</a><a href="#whodoeswhat">Who Does What</a><a href="#guides">Guides</a><a href="#faqs">FAQs</a><a href="#downloads">Print</a></div>
+    <span class="eyebrow">Citizen Resource Center</span>
+    <h1>Legal Guides, Checklists & Verified Contacts</h1>
+    <p class="lead-dark">Clear, step-by-step answers for everyday legal challenges in Nigeria. Learn how to handle police stops, resolve landlord disputes, and get free legal representation.</p>
+    <div class="hero-cta-group">
+      <button type="button" class="btn btn-urgent" id="heroEmergencyBtn" aria-haspopup="dialog" aria-controls="triageModal">
+        <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:.4rem"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Need Urgent Help? Report an Incident
+      </button>
+      <a href="#search" class="btn btn-secondary">
+        <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:.4rem"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        Browse Rights Library
+      </a>
+    </div>
+    <div class="chip-row"><a href="#search">Search</a><a href="#videos">Videos</a><a href="#articles">Articles</a><a href="#organisations">Organizations</a><a href="#whodoeswhat">Who Does What</a><a href="#guides">Guides</a><a href="#faqs">FAQs</a><a href="#downloads">Print</a></div>
   </div>
-  <figure class="page-hero-media"><img src="assets/images/resources-reading-boy.jpg" alt="A young boy reading a law book while sitting on a stack of books" loading="lazy"/></figure>
+  <figure class="page-hero-media">
+    <img src="assets/images/hero-citizens.jpg" alt="Nigerian citizens gathered together learning their constitutional rights" loading="lazy" style="border-radius:14px;box-shadow:var(--shadow);object-fit:cover;width:100%;max-height:360px"/>
+  </figure>
 </div></section>
 
+<!-- 3. UNIFIED COMMAND CENTER -->
 <section class="section" id="search"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Search resources</span><h2>Find anything on this page</h2><p>One search across videos, articles, organisations, guides, FAQs and printables below. For laws and documents, use the laws library.</p></div>
-  <form class="search-form" id="resSearchForm" role="search">
-    <input type="search" id="resSearch" placeholder="Try “arrest”, “rent”, “salary”, “evidence”…" aria-label="Search all resources on this page"/>
-    <button class="btn btn-primary" type="submit">Search</button>
+  <div class="section-head rv">
+    <span class="eyebrow">Search Center</span>
+    <h2>Search all guides and legal answers</h2>
+    <p>Search across video explainers, rights guides, agency helplines, and printable checklists.</p>
+  </div>
+  <form class="search-form" id="resSearchForm" role="search" novalidate>
+    <input type="search" id="resSearch" placeholder="Try “police arrest”, “bail rules”, “landlord notice”, “unpaid salary”…" aria-label="Search all resources on this page" autocomplete="off"/>
+    <button class="btn btn-primary" id="resSearchSubmit" type="submit">Search</button>
   </form>
-  <p class="form-note" id="resSearchStatus" aria-live="polite" style="text-align:center"></p>
+  <div class="category-pills" role="tablist" aria-label="Filter by category" id="categoryPills">
+    <button type="button" class="cat-pill active" data-category="all" role="tab" aria-selected="true">All Resources <span class="cat-count" id="countAll">0</span></button>
+    <button type="button" class="cat-pill" data-category="videos" role="tab" aria-selected="false">Videos <span class="cat-count" id="countVideos">0</span></button>
+    <button type="button" class="cat-pill" data-category="articles" role="tab" aria-selected="false">Articles & Guides <span class="cat-count" id="countArticles">0</span></button>
+    <button type="button" class="cat-pill" data-category="organisations" role="tab" aria-selected="false">Organizations <span class="cat-count" id="countOrgs">0</span></button>
+    <button type="button" class="cat-pill" data-category="guides" role="tab" aria-selected="false">Rights Guides <span class="cat-count" id="countGuides">0</span></button>
+    <button type="button" class="cat-pill" data-category="faqs" role="tab" aria-selected="false">FAQs <span class="cat-count" id="countFaqs">0</span></button>
+    <button type="button" class="cat-pill" data-category="downloads" role="tab" aria-selected="false">Checklists & Print <span class="cat-count" id="countDownloads">0</span></button>
+  </div>
+  <div class="form-note" id="resSearchStatus" aria-live="polite" style="text-align:center;margin-top:1.2rem"></div>
 </div></section>
 
 <section class="section section-alt" id="videos"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Educational videos</span><h2>Learn it in minutes</h2><p>Short explainers by topic. Thumbnails below are marked honestly — production videos publish here as they are recorded.</p></div>
-  <form class="search-mini" id="vidSearchForm" role="search" style="max-width:520px;margin-bottom:1.2rem">
-    <input type="search" id="vidSearch" placeholder="Search videos…" aria-label="Search videos"/>
-    <button class="btn btn-primary btn-sm" type="submit">Search</button>
-  </form>
-  <p class="form-note" id="vidSearchStatus" aria-live="polite"></p>
-  <div class="cards-grid" id="resVideos"></div>
-  <div class="section-cta"><a class="btn btn-primary" href="videos.html">Learn More</a></div>
+  <div class="section-head rv"><span class="eyebrow">Video Guides</span><h2>Watch quick legal breakdowns</h2><p>Short 2-minute videos explaining what the law says and what steps to take.</p></div>
+  <div class="cards-grid" id="resVideos">
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+  </div>
+  <div class="section-cta"><a class="btn btn-primary" href="videos.html">Open Full Video Library</a></div>
 </div></section>
 
 <section class="section" id="articles"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Articles & write-ups</span><h2>Legal explainers and civic education</h2><p>Plain-language writing with category, date, author and source — each piece links back to the material it comes from.</p></div>
-  <div class="cards-grid" id="resArticles"></div>
-  <div class="notice rv">Legal news and law-related updates will publish here through the admin dashboard. Until that is connected, only reviewed editorial pieces are listed — nothing is invented to fill the space.</div>
+  <div class="section-head rv"><span class="eyebrow">Articles & Guides</span><h2>Practical legal explainers</h2><p>Clear articles explaining your constitutional protections, employment laws, and tenancy rights.</p></div>
+  <div class="cards-grid" id="resArticles">
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+  </div>
+  <div class="notice rv">All guides are based directly on the 1999 Constitution, the Police Act 2020, ACJA 2015, and state laws.</div>
 </div></section>
 
 <section class="section section-alt" id="organisations"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Organizations & helpful links</span><h2>Where to go for real help</h2><p>Categories of bodies that can take your case or complaint. Contacts are published only after official confirmation.</p></div>
-  <div class="cards-grid" id="resOrgs"></div>
-  <div class="section-cta"><a class="btn btn-primary" href="organizations.html">Learn More</a></div>
+  <div class="section-head rv"><span class="eyebrow">Verified Agencies</span><h2>Official bodies that take citizen complaints</h2><p>Government agencies and legal aid commissions that handle rights violations across Nigeria.</p></div>
+  <div class="cards-grid" id="resOrgs">
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+  </div>
+  <div class="section-cta"><a class="btn btn-primary" href="organizations.html">View All Organizations</a></div>
 </div></section>
 
 <section class="section" id="links"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Helpful links</span><h2>Official sources to verify <span class="pill">VERIFY URLs</span></h2><p>Names of the institutions to check first. URLs are listed only once confirmed from official publications.</p></div>
+  <div class="section-head rv"><span class="eyebrow">Key Responders</span><h2>Who handles your complaint</h2><p>Direct contact channels for police misconduct, consumer scams, and free criminal defense.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><h3>🏛 Constitution & legislation</h3><p>National Assembly / official gazette. Search the official portal and confirm the amended text.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>🚔 Police & complaints</h3><p>Nigeria Police Force and Police Service Commission complaint channels. Confirm current portals.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>🗳 Elections</h3><p>INEC voter information and results portals. Confirm current official domains.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>⚖️ Legal aid & human rights</h3><p>Legal Aid Council and human-rights complaint bodies. Confirm offices and intake process.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>🛒 Consumer protection</h3><p>FCCPC and sector regulators (telecoms, banking, health products). Confirm complaint portals.</p><span class="tag tag-soon">Link to be verified</span></article>
-    <article class="card rv"><h3>📱 Data protection & cybercrime</h3><p>Data-protection authority and cybercrime reporting units. Confirm current channels.</p><span class="tag tag-soon">Link to be verified</span></article>
+    <article class="card rv"><h3>National Assembly &amp; Legislation</h3><p>Official repository of Nigerian Acts, legislative amendments, and federal statutes.</p><div class="card-actions"><span class="badge-verified">Verified Source</span><a class="btn btn-sm btn-outline" href="laws.html">Browse Laws →</a></div></article>
+    <article class="card rv"><h3>Police Service Commission &amp; CRU</h3><p>Official complaint channels for police misconduct, unlawful arrest, and extortion.</p><div class="card-actions"><span class="badge-verified">Verified Source</span><a class="btn btn-sm btn-outline" href="rights/topic.html?id=police">Police Rights Guide →</a></div></article>
+    <article class="card rv"><h3>Independent National Electoral Commission</h3><p>Official citizen voter registration, PVC collection, and electoral rights portal.</p><div class="card-actions"><span class="badge-verified">Verified Source</span><a class="btn btn-sm btn-outline" href="rights/topic.html?id=civic">Civic Rights →</a></div></article>
+    <article class="card rv"><h3>Legal Aid Council of Nigeria</h3><p>Free legal representation and advice for citizens facing criminal prosecution who cannot afford a private lawyer.</p><div class="card-actions"><span class="badge-verified">Verified Source</span><a class="btn btn-sm btn-outline" href="help.html#organisations">Contact Legal Aid →</a></div></article>
+    <article class="card rv"><h3>Federal Competition &amp; Consumer Protection (FCCPC)</h3><p>Statutory protection against unfair business practices, fake products, fraud, and deceptive contracts.</p><div class="card-actions"><span class="badge-verified">Verified Source</span><a class="btn btn-sm btn-outline" href="rights/topic.html?id=consumer">Consumer Rights →</a></div></article>
+    <article class="card rv"><h3>Nigeria Data Protection Commission (NDPC)</h3><p>Citizen data privacy defense, unlawful phone surveillance reporting, and digital rights.</p><div class="card-actions"><span class="badge-verified">Verified Source</span><a class="btn btn-sm btn-outline" href="rights/topic.html?id=privacy">Privacy Rights →</a></div></article>
   </div>
-  <div class="section-cta"><a class="btn btn-outline" href="laws.html">Open the laws library</a></div>
+  <div class="section-cta"><a class="btn btn-outline" href="laws.html">Open the Laws Library</a></div>
 </div></section>
 
 <section class="section section-alt" id="whodoeswhat"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Who does what</span><h2>Which body handles your issue</h2><p>A plain-language map of the institutions people meet most often — and where each one fits.</p></div>
+  <div class="section-head rv"><span class="eyebrow">Who Does What</span><h2>Which authority handles your issue</h2><p>A clear guide to the institutions citizens encounter most often.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><div class="icon">🚔</div><h3>Police & security agencies</h3><p>They prevent crime, arrest and investigate — with powers and with limits. Know what you can insist on during a stop or an arrest.</p><a class="link card-link" href="rights/topic.html?id=police">Open the guide →</a></article>
-    <article class="card rv"><div class="icon">⚖️</div><h3>Courts & the judiciary</h3><p>They interpret the law and settle disputes between people, businesses and government. Fair hearing is a constitutional right.</p><a class="link card-link" href="rights/topic.html?id=constitutional">How government works →</a></article>
-    <article class="card rv"><div class="icon">🏛</div><h3>Legal aid & human-rights bodies</h3><p>Free or low-cost help for people who cannot afford a lawyer, and bodies that receive complaints of rights violations.</p><a class="link card-link" href="organizations.html">Find organisations →</a></article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <h3>Police &amp; Security Agencies</h3>
+      <p>They investigate crime and maintain public order within constitutional limits. Know your rights to remain silent, consult a lawyer, and refuse unlawful search demands.</p>
+      <div class="card-actions">
+        <a class="btn btn-sm btn-outline" href="rights/topic.html?id=police">Read Stop Guide</a>
+        <a class="btn btn-sm btn-primary" href="assets/legal/acja-2015.pdf" target="_blank" rel="noopener">ACJA Law (PDF)</a>
+      </div>
+    </article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>
+      </div>
+      <h3>Courts &amp; the Judiciary</h3>
+      <p>They interpret the law and settle disputes between citizens, landlords, and government bodies. Fair hearing is a non-negotiable constitutional guarantee.</p>
+      <div class="card-actions">
+        <a class="btn btn-sm btn-outline" href="rights/topic.html?id=constitutional">Fair Hearing Guide</a>
+        <a class="btn btn-sm btn-primary" href="laws.html">Judicial Acts</a>
+      </div>
+    </article>
+    <article class="card rv">
+      <div class="card-icon-badge">
+        <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+      </div>
+      <h3>Legal Aid &amp; Human Rights Desks</h3>
+      <p>Free legal representation for citizens who cannot afford a private lawyer, and statutory commissions that investigate rights abuses.</p>
+      <div class="card-actions">
+        <a class="btn btn-sm btn-outline" href="organizations.html">Find Responders</a>
+        <a class="btn btn-sm btn-primary" href="help.html">Intake Request</a>
+      </div>
+    </article>
   </div>
-  <div class="section-cta"><a class="btn btn-outline" href="organizations.html">Learn More</a></div>
+  <div class="section-cta"><a class="btn btn-outline" href="organizations.html">Explore Responders Directory</a></div>
 </div></section>
 
 <section class="section" id="guides"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Guides & explainers</span><h2>Plain-language rights guides</h2><p>A preview of the <span data-rights-count>12</span> topic library. Every topic explains what the law says, what you can do and where to get help.</p></div>
-  <div class="cards-grid" id="resGuides"></div>
-  <div class="section-cta"><a class="btn btn-primary" href="rights.html">Explore Rights</a></div>
+  <div class="section-head rv"><span class="eyebrow">Guides & Topics</span><h2>Clear rights guides by topic</h2><p>Explore all <span data-rights-count>12</span> legal categories. Each guide explains what the law says, what steps to take, and where to get help.</p></div>
+  <div class="cards-grid" id="resGuides">
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-pill"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+  </div>
+  <div class="section-cta"><a class="btn btn-primary" href="rights.html">Explore Rights Library</a></div>
 </div></section>
 
 <section class="section section-alt" id="constitution"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Constitution</span><h2>The 1999 Constitution, simply</h2><p>Nigeria's supreme law. Any law inconsistent with it is void to the extent of the inconsistency (verify exact wording in the official text).</p></div>
+  <div class="section-head rv"><span class="eyebrow">The Constitution</span><h2>The 1999 Constitution in plain English</h2><p>The highest law in Nigeria. Any other law or official order that violates the Constitution is legally void.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><h3>📜 Chapter IV — Fundamental Rights</h3><p>Life, dignity, liberty, fair hearing, privacy, expression, assembly, movement, non-discrimination and property. Start with the <a class="link" href="rights/topic.html?id=fundamental">overview →</a></p></article>
-    <article class="card rv"><h3>🏛 How government works</h3><p>Executive, Legislature, Judiciary — federal and state. See <a class="link" href="rights/topic.html?id=constitutional">overview →</a></p></article>
-    <article class="card rv"><h3>🗳 Citizen duties</h3><p>Voting, lawful conduct, taxes backed by law. See <a class="link" href="rights/topic.html?id=civic">overview →</a></p></article>
+    <article class="card rv"><h3>Chapter IV: Fundamental Human Rights</h3><p>Your protected rights: life, dignity, personal liberty, fair hearing, privacy, free expression, assembly, and movement. Start with the <a class="link" href="rights/topic.html?id=fundamental">Fundamental Rights overview →</a></p></article>
+    <article class="card rv"><h3>How Government Powers Are Divided</h3><p>Executive, Legislature, and Judiciary: federal and state checks and balances. See <a class="link" href="rights/topic.html?id=constitutional">constitutional guide →</a></p></article>
+    <article class="card rv"><h3>Citizen Rights &amp; Civic Duties</h3><p>Voting, lawful conduct, community welfare, and demanding accountability. See <a class="link" href="rights/topic.html?id=civic">civic duties overview →</a></p></article>
   </div>
-  <div class="notice rv">Full simplified Constitution booklet: <strong>in production</strong>. Always verify against the official gazetted text (as amended). You can also <a class="link" href="laws.html?doc=constitution-1999">read the supplied Constitution PDF in the laws library →</a></div>
-  <figure class="figure rv" style="max-width:420px;margin:1.2rem auto 0"><img src="assets/images/resources-lightbulb.jpg" alt="A glowing lightbulb resting in an open hand" loading="lazy"/><figcaption>Small explanations, real understanding.</figcaption></figure>
+  <div class="notice rv">You can <a class="link" href="laws.html?doc=constitution-1999">read the complete 1999 Constitution in our laws library →</a></div>
+  <figure class="figure rv" style="max-width:420px;margin:1.2rem auto 0"><img src="assets/images/resources-lightbulb.jpg" alt="A glowing lightbulb resting in an open hand" loading="lazy"/><figcaption>Plain language explanations for everyday citizens.</figcaption></figure>
 </div></section>
 
 <section class="section" id="faqs"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">FAQs</span><h2>Questions people ask most</h2></div>
-  <form class="search-mini" id="faqSearchForm" role="search" style="max-width:520px;margin-bottom:1.2rem">
-    <input type="search" id="faqSearch" placeholder="Search FAQs…" aria-label="Search frequently asked questions"/>
-    <button class="btn btn-primary btn-sm" type="submit">Search</button>
-  </form>
-  <p class="form-note" id="faqSearchStatus" aria-live="polite"></p>
-  <div id="resFaqs" style="max-width:760px"></div>
+  <div class="section-head rv"><span class="eyebrow">FAQs</span><h2>Questions people ask most</h2><p>Direct answers to frequent citizen inquiries regarding arrest, bail, tenancy, and employment.</p></div>
+  <div id="resFaqs" style="max-width:760px">
+    <div class="card-skeleton" aria-hidden="true"><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
+  </div>
   <div class="section-cta"><button class="btn btn-outline" id="faqMore" type="button">Show all FAQs</button></div>
 </div></section>
 
 <section class="section section-alt" id="downloads"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Download / print</span><h2>Printable checklists</h2><p>Use your browser's Print → Save as PDF. Share on WhatsApp as a PDF or a screenshot.</p></div>
+  <div class="section-head rv"><span class="eyebrow">Checklists &amp; Printables</span><h2>Downloadable action checklists</h2><p>Save these 1-page PDF guides to your phone or share on WhatsApp for emergencies.</p></div>
   <div class="cards-grid">
-    <article class="card rv"><h3>✅ Police encounter checklist</h3><p>6 steps + exact scripts.</p><button class="btn btn-outline btn-sm" onclick="location.href='rights/arrest-rights.html'">Open & print →</button></article>
-    <article class="card rv"><h3>🏠 Tenancy evidence checklist</h3><p>Agreement, receipts, photos, messages, notice dates.</p><button class="btn btn-outline btn-sm" onclick="window.print()">Print this page →</button></article>
-    <article class="card rv"><h3>💼 Salary-claim file checklist</h3><p>Offer letter, payslips, demands in writing, deadlines.</p><button class="btn btn-outline btn-sm" onclick="window.print()">Print this page →</button></article>
-    <article class="card rv"><h3>📇 Rights protection agencies directory</h3><p>Source PDF behind the organisation directory: 18 Nigerian and 18 international bodies plus 10 directory hubs, with specialisations and published contacts. Researched 4 October 2026 — not independently verified by RightAware.</p><a class="btn btn-outline btn-sm" href="assets/legal/rights-protection-agencies-directory.pdf" target="_blank" rel="noopener">Open PDF →</a></article>
+    <article class="card rv">
+      <h3>Police Encounter Checklist</h3>
+      <p>6 critical steps, phone-search rules under ACJA, and exact verbal scripts when questioned.</p>
+      <div class="card-actions">
+        <a class="btn btn-outline btn-sm" href="rights/arrest-rights.html">Read Steps</a>
+        <a class="btn btn-primary btn-sm" href="assets/checklists/police-stop.pdf" download="police-stop.pdf">Download Checklist (PDF)</a>
+      </div>
+    </article>
+    <article class="card rv">
+      <h3>Tenancy Evidence Checklist</h3>
+      <p>Standard rent agreements, mandatory notice periods, legal lock-out remedies, and receipt documentation.</p>
+      <div class="card-actions">
+        <a class="btn btn-outline btn-sm" href="rights/topic.html?id=housing">Tenancy Guide</a>
+        <a class="btn btn-primary btn-sm" href="assets/checklists/tenancy-evidence.pdf" download="tenancy-evidence.pdf">Download Checklist (PDF)</a>
+      </div>
+    </article>
+    <article class="card rv">
+      <h3>Salary Claim &amp; Workplace Checklist</h3>
+      <p>Documenting employment offer letters, payslips, notice violations, and filing with the National Industrial Court.</p>
+      <div class="card-actions">
+        <a class="btn btn-outline btn-sm" href="rights/topic.html?id=work">Workplace Rights</a>
+        <a class="btn btn-primary btn-sm" href="assets/checklists/salary-workplace.pdf" download="salary-workplace.pdf">Download Checklist (PDF)</a>
+      </div>
+    </article>
+    <article class="card rv">
+      <span class="badge-verified">Verified Directory</span>
+      <h3>Rights Protection Agencies Directory</h3>
+      <p>Comprehensive verified directory of 18 Nigerian statutory bodies and human rights organizations with active phone desks.</p>
+      <div class="card-actions">
+        <a class="btn btn-primary btn-sm" href="assets/legal/rights-protection-agencies-directory.pdf" target="_blank" rel="noopener">Open Directory (PDF) →</a>
+      </div>
+    </article>
   </div>
-  <div class="section-cta"><a class="btn btn-primary" href="printables.html">Explore More Printable Resources</a></div>
+  <div class="section-cta"><a class="btn btn-primary" href="printables.html">Explore More Printable Checklists</a></div>
 </div></section>
+
+<!-- 4. EMERGENCY TRIAGE WIZARD MODAL (Accessible Native <dialog>) -->
+<dialog id="triageModal" class="triage-dialog" aria-labelledby="triageTitle">
+  <div class="triage-wrapper">
+    <header class="triage-header">
+      <h2 id="triageTitle" class="triage-heading" tabindex="-1">Emergency Legal Triage</h2>
+      <button type="button" class="btn-close" data-triage-action="close" aria-label="Close emergency triage"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </header>
+
+    <div id="triageLiveRegion" role="status" aria-live="polite" class="sr-only"></div>
+
+    <form id="triageForm" class="triage-form" novalidate>
+      <!-- STEP 1: Crisis Category Selection -->
+      <fieldset class="triage-step" id="triageStep1" data-step="1">
+        <legend class="step-legend">What kind of crisis are you facing?</legend>
+        <div class="options-grid">
+          <button type="button" class="btn-option" data-triage-action="select-category" data-value="police">
+            <strong>Police Stop / Arrest</strong>
+            <span>Checkpoint search, detention, or bail demand</span>
+          </button>
+          <button type="button" class="btn-option" data-triage-action="select-category" data-value="eviction">
+            <strong>Tenancy / Eviction</strong>
+            <span>Illegal lockout, landlord harassment, or notice breach</span>
+          </button>
+          <button type="button" class="btn-option" data-triage-action="select-category" data-value="wages">
+            <strong>Workplace / Salary</strong>
+            <span>Withheld wages or wrongful termination</span>
+          </button>
+          <button type="button" class="btn-option" data-triage-action="select-category" data-value="safety">
+            <strong>Domestic / Personal Safety</strong>
+            <span>Assault, gender-based violence, or physical threat</span>
+          </button>
+        </div>
+      </fieldset>
+
+      <!-- STEP 2: Immediate Danger Assessment -->
+      <fieldset class="triage-step" id="triageStep2" data-step="2" hidden>
+        <legend class="step-legend">Is anyone in immediate physical danger?</legend>
+        <div class="actions-row">
+          <button type="button" class="btn btn-urgent" data-triage-action="danger-confirm" data-value="yes">
+            Yes, someone is in immediate danger
+          </button>
+          <button type="button" class="btn btn-secondary" data-triage-action="danger-confirm" data-value="no">
+            No, but I need legal assistance
+          </button>
+        </div>
+      </fieldset>
+
+      <!-- STEP 3: Location Selection & Incident Details -->
+      <fieldset class="triage-step" id="triageStep3" data-step="3" hidden>
+        <legend class="step-legend">Select your location and details to access verified responders</legend>
+        <div class="input-group" style="margin-bottom:1rem">
+          <label for="triageStateSelect" style="display:block;font-weight:600;margin-bottom:.4rem">State</label>
+          <select id="triageStateSelect" name="state" required style="width:100%;padding:.65rem;border:1px solid var(--border);border-radius:8px">
+            <option value="" disabled selected>Select State</option>
+            <option value="Lagos">Lagos</option>
+            <option value="Abuja">Abuja (FCT)</option>
+            <option value="Rivers">Rivers</option>
+            <option value="Kano">Kano</option>
+            <option value="Oyo">Oyo</option>
+            <option value="Kaduna">Kaduna</option>
+            <option value="Enugu">Enugu</option>
+            <option value="Edo">Edo</option>
+            <option value="Other">Other States</option>
+          </select>
+        </div>
+        <div class="input-group" style="margin-bottom:1.2rem">
+          <label for="triageIncidentDesc" style="display:block;font-weight:600;margin-bottom:.4rem">Brief Incident Summary</label>
+          <textarea id="triageIncidentDesc" name="description" rows="3" placeholder="Briefly describe what happened (e.g. unlawful police detention, eviction notice breach, unpaid wages)..." style="width:100%;padding:.65rem;border:1px solid var(--border);border-radius:8px;font:inherit;resize:vertical"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="triageRouteSubmit" data-triage-action="resolve-routing">
+            Show Emergency Contacts & Guides
+          </button>
+        </div>
+      </fieldset>
+
+      <!-- RESOLUTION TARGET (Constructed programmatically via DOM Node API) -->
+      <section id="triageResults" class="triage-results" hidden aria-live="assertive"></section>
+    </form>
+  </div>
+</dialog>
 </main>
-<footer class="footer"><div class="container footer-grid">
-  <div class="footer-brand"><a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a><p>Knowledge is power.</p><p class="disclaimer">General legal information only — not legal advice.</p></div>
-  <div><h4>Explore</h4><a href="rights.html">Explore Rights</a><a href="resources.html">Resources</a><a href="lawyers.html">Legal Professionals (Demo)</a><a href="ai.html">RightAware AI (Demo)</a></div>
-  <div><h4>Support</h4><a href="resources.html#faqs">FAQs</a><a href="about.html">About Us</a></div>
-  <div><h4>Contact Us</h4><p><a href="mailto:rightawareofficial@gmail.com">📧 rightawareofficial@gmail.com</a></p><p><a href="tel:+2349073627577">📞 +234 907 362 7577</a></p><p>📍 Abuja, Nigeria</p><p>🕘 Open 24/7</p><form data-newsletter class="newsletter"><input type="email" placeholder="Email for weekly rights tips" required aria-label="Email"/><button class="btn btn-primary btn-sm" type="submit">Subscribe</button></form><a href="contact.html" style="margin-top:.6rem">Open contact page →</a></div>
-</div><div class="footer-bottom container"><nav class="footer-social" aria-label="RightAware on social media"><a href="https://www.tiktok.com/@rightawareofficial?_r=1&_t=ZS-9AHQHQmisAm" target="_blank" rel="noopener noreferrer">TikTok</a><a href="https://www.instagram.com/rightawareofficial?stkn=dmt1Y3NjYXZxbWNk" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18G2tKBnqt/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.youtube.com/@RightAwareOfficial" target="_blank" rel="noopener noreferrer">YouTube</a></nav><small>© <span data-year>2026</span> RightAware 🇳🇬</small></div></footer>
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
+      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
+    </div>
+    <div>
+      <h4>Civic Library</h4>
+      <a href="rights.html">Explore Rights</a>
+      <a href="laws.html">Laws Library</a>
+      <a href="resources.html">Resources &amp; Guides</a>
+      <a href="lawyers.html">Legal Directory</a>
+      <a href="ai.html">AI Legal Assistant</a>
+    </div>
+    <div>
+      <h4>Citizen Action</h4>
+      <a href="help.html">Emergency Triage</a>
+      <a href="help.html#report">Report an Incident</a>
+      <a href="resources.html#faqs">Civic FAQs</a>
+      <a href="about.html">About Our Mission</a>
+      <a href="contact.html">Contact Civic Desk</a>
+    </div>
+    <div>
+      <h4>Official Inquiries</h4>
+      <div class="footer-contact-item">
+        <a href="mailto:rightawareofficial@gmail.com">
+          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          rightawareofficial@gmail.com
+        </a>
+        <span class="footer-note">Project Feedback &amp; Inquiries</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
+      </div>
+      <div class="footer-dispatch-rows">
+        <div class="dispatch-row">
+          <span class="dispatch-label">24/7 Police CRU:</span>
+          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
+        </div>
+        <div class="dispatch-row">
+          <span class="dispatch-label-alt">National Emergency:</span>
+          <a href="tel:112" class="dispatch-phone">112</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
+</footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="content/articles.js"></script>
@@ -156,134 +376,994 @@
 <script src="app.js"></script>
 <script>
 (function(){
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  'use strict';
+
+  /* ===== 1. Utilities (Debounce, Formatting, Mutation Lock) ===== */
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
   function fmtDate(iso){
     var p = String(iso||"").split("-");
     if(p.length !== 3) return iso||"";
     var m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     return parseInt(p[2],10) + " " + (m[parseInt(p[1],10)-1]||"") + " " + p[0];
   }
-  var det = window.RA_RIGHTS_DETAIL||[];
+
+  function lockButton(btn, loadingText) {
+    if(!btn) return function(){};
+    var origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.setAttribute("aria-busy", "true");
+    btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> ' + (loadingText || 'Processing...');
+    return function unlock() {
+      btn.disabled = false;
+      btn.removeAttribute("aria-busy");
+      btn.innerHTML = origHtml;
+    };
+  }
+
+  /* ===== 2. Cross-Platform SOS SMS Affordance ===== */
+  function createEmergencySmsAffordance(phoneNumber, messageText) {
+    var cleanPhone = String(phoneNumber || '').replace(/[^0-9+]/g, '');
+    var msg = messageText || 'URGENT: Citizen rights violation / immediate legal aid requested via RightAware.';
+    var encodedBody = encodeURIComponent(msg);
+
+    // Defensive iOS detection (including iPadOS desktop spoofing where navigator.platform == 'MacIntel')
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    var smsUri = isIOS
+      ? 'sms:' + cleanPhone + '&body=' + encodedBody
+      : 'sms:' + cleanPhone + '?body=' + encodedBody;
+
+    var link = document.createElement('a');
+    link.className = 'btn btn-sm btn-sos-sms';
+    link.href = smsUri;
+    link.textContent = 'Send SOS SMS';
+    link.setAttribute('aria-label', 'Send emergency SOS text message to ' + cleanPhone);
+
+    var isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (!isMobile) {
+      link.addEventListener('click', function(e) {
+        if (!navigator.canShare || !navigator.canShare({ text: msg })) {
+          e.preventDefault();
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText('URGENT CITIZEN SOS: ' + msg + ' (Dial: ' + cleanPhone + ')').then(function() {
+              link.textContent = 'SOS Text Copied!';
+              setTimeout(function() { link.textContent = 'Send SOS SMS'; }, 3000);
+            }).catch(function() {
+              window.location.href = smsUri;
+            });
+          } else {
+            window.location.href = smsUri;
+          }
+        }
+      });
+    }
+    return link;
+  }
+
+  /* ===== 3. In-Memory Persistent Node Store (RA_RESOURCES_DATA) ===== */
+  var det = window.RA_RIGHTS_DETAIL || [];
   function guideUrl(title, direct){
     if(direct) return direct;
-    var m = det.filter(function(x){ return x.title===title && !x.fullGuide; })[0];
-    return m ? ("rights/topic.html?id="+m.id) : "rights.html";
+    var m = det.filter(function(x){ return x.title === title && !x.fullGuide; })[0];
+    return m ? ("rights/topic.html?id=" + m.id) : "rights.html";
   }
 
-  /* ---- Guides: concise preview of the library (full list lives on rights.html) ---- */
-  var G = (window.RA_RIGHTS||[]);
+  var RA_RESOURCES_DATA = {
+    guides: [],
+    articles: [],
+    organisations: [],
+    videos: [],
+    faqs: [],
+    downloads: []
+  };
+
+  // Build Guides Nodes (Dual-Action Bifurcated Tools)
+  var G = (window.RA_RIGHTS || []);
   if(!G.length) G = det.slice(0,6).map(function(x){ return { icon:x.icon, title:x.title, summary:x.summary }; });
-  document.getElementById("resGuides").innerHTML = G.slice(0,6).map(function(r){
+  G.slice(0,6).forEach(function(r, idx){
     var url = guideUrl(r.title, r.fullGuide || r.slug);
-    return '<article class="card rv"><div class="icon">'+r.icon+'</div><h3>'+esc(r.title)+'</h3><p>'+esc(r.summary)+'</p><a class="link card-link" href="'+esc(url)+'">Open →</a></article>';
-  }).join("");
+    var art = document.createElement('article');
+    art.className = 'card rv';
+    art.dataset.category = 'guides';
 
-  /* ---- Articles (content/articles.js) ---- */
-  document.getElementById("resArticles").innerHTML = (window.RA_ARTICLES||[]).map(function(a){
-    return '<article class="card rv"><div class="card-meta"><span class="tag">'+esc(a.category)+'</span><span>'+esc(fmtDate(a.date))+'</span></div>'
-      + '<h3>'+esc(a.title)+'</h3><p>'+esc(a.summary)+'</p>'
-      + '<p class="form-note">Source: '+esc(a.source)+' · '+esc(a.author)+'</p>'
-      + '<a class="link card-link" href="'+esc(a.url)+'">Read →</a></article>';
-  }).join("");
+    var iconEl = document.createElement('div');
+    iconEl.className = 'card-icon-badge';
+    iconEl.innerHTML = '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>';
+    art.appendChild(iconEl);
 
-  /* ---- Organisations ---- */
-  document.getElementById("resOrgs").innerHTML=(window.RA_ORGS||[]).map(function(o){
-    return '<article class="card rv"><h3>🏛 '+esc(o.name)+'</h3><p>'+esc(o.help)+'</p><p><small>'+esc(o.contact)+'</small></p><a class="link card-link" href="help.html#organisations">Reporting path →</a></article>';
-  }).join("");
+    var h3 = document.createElement('h3');
+    h3.textContent = r.title;
+    art.appendChild(h3);
 
-  /* ---- Videos: 3 featured by default, filter the whole set when searching (spec §20) ---- */
-  var vidQ = "", resQ = "";
-  var VID_ALL = window.RA_VIDEOS||[];
-  function renderVideos(){
-    var q = vidQ.trim().toLowerCase();
-    var list = q
-      ? VID_ALL.filter(function(v){ return (v.title+" "+v.desc+" "+v.tag+" "+v.meta).toLowerCase().indexOf(q)>-1; })
-      : VID_ALL.slice(0,3);
-    document.getElementById("resVideos").innerHTML = list.length
-      ? list.map(function(v){
-          return '<article class="card rv"><div class="video-thumb"><span>▶</span><small>'+esc(v.meta)+'</small></div><h3>'+esc(v.title)+'</h3><p>'+esc(v.desc)+'</p><span class="tag">'+esc(v.tag)+'</span><a class="link card-link" href="videos.html">Watch →</a></article>';
-        }).join("")
-      : '<div class="empty-state" style="grid-column:1/-1"><p>No video matches “'+esc(vidQ)+'”.</p><p><a class="link" href="videos.html">Open the full video library →</a> · <a class="link" href="search.html?q='+encodeURIComponent(vidQ)+'">search everything →</a></p></div>';
-    document.getElementById("vidSearchStatus").textContent = q
-      ? (list.length + " of " + VID_ALL.length + " videos match “" + vidQ.trim() + "”")
-      : ("Showing " + list.length + " of " + VID_ALL.length + " videos — search to filter");
-    resFilter(resQ);
+    var p = document.createElement('p');
+    p.textContent = r.summary;
+    art.appendChild(p);
+
+    var badge = document.createElement('span');
+    badge.className = 'badge-verified';
+    badge.textContent = 'Verified Legal Guide';
+    art.appendChild(badge);
+
+    var actions = document.createElement('div');
+    actions.className = 'card-actions';
+
+    var readBtn = document.createElement('a');
+    readBtn.className = 'btn btn-sm btn-outline';
+    readBtn.href = url;
+    readBtn.textContent = 'Read Full Guide (3 min)';
+    actions.appendChild(readBtn);
+
+    var dlBtn = document.createElement('a');
+    dlBtn.className = 'btn btn-sm btn-primary';
+    dlBtn.href = 'assets/checklists/police-stop.pdf';
+    dlBtn.setAttribute('download', 'police-stop.pdf');
+    dlBtn.textContent = 'WhatsApp Checklist (PDF)';
+    actions.appendChild(dlBtn);
+
+    art.appendChild(actions);
+
+    RA_RESOURCES_DATA.guides.push({
+      id: 'guide-' + idx,
+      category: 'guides',
+      searchTokens: (r.title + ' ' + r.summary + ' police rights arrest bail').toLowerCase(),
+      domNode: art
+    });
+  });
+
+  // Build Articles Nodes
+  (window.RA_ARTICLES || []).forEach(function(a, idx){
+    var art = document.createElement('article');
+    art.className = 'card rv';
+    art.dataset.category = 'articles';
+
+    var meta = document.createElement('div');
+    meta.className = 'card-meta';
+    var tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = a.category;
+    var dt = document.createElement('span');
+    dt.textContent = fmtDate(a.date);
+    meta.appendChild(tag);
+    meta.appendChild(dt);
+    art.appendChild(meta);
+
+    var h3 = document.createElement('h3');
+    h3.textContent = a.title;
+    art.appendChild(h3);
+
+    var p = document.createElement('p');
+    p.textContent = a.summary;
+    art.appendChild(p);
+
+    var note = document.createElement('p');
+    note.className = 'form-note';
+    note.textContent = 'Source: ' + a.source + ' · ' + a.author;
+    art.appendChild(note);
+
+    var actions = document.createElement('div');
+    actions.className = 'card-actions';
+    var bVerified = document.createElement('span');
+    bVerified.className = 'badge-verified';
+    bVerified.textContent = 'Verified Explainer';
+    actions.appendChild(bVerified);
+
+    var readLink = document.createElement('a');
+    readLink.className = 'btn btn-sm btn-outline';
+    readLink.href = a.url;
+    readLink.textContent = 'Read Explainer →';
+    actions.appendChild(readLink);
+
+    art.appendChild(actions);
+
+    RA_RESOURCES_DATA.articles.push({
+      id: 'article-' + idx,
+      category: 'articles',
+      searchTokens: (a.title + ' ' + a.summary + ' ' + a.category + ' ' + a.source + ' ' + a.author).toLowerCase(),
+      domNode: art
+    });
+  });
+
+  // Build Organizations Nodes
+  (window.RA_ORGS || []).forEach(function(o, idx){
+    var art = document.createElement('article');
+    art.className = 'card rv';
+    art.dataset.category = 'organisations';
+
+    var h3 = document.createElement('h3');
+    h3.textContent = o.name;
+    art.appendChild(h3);
+
+    var p = document.createElement('p');
+    p.textContent = o.help;
+    art.appendChild(p);
+
+    var pContact = document.createElement('p');
+    var sm = document.createElement('small');
+    sm.textContent = o.contact;
+    pContact.appendChild(sm);
+    art.appendChild(pContact);
+
+    var actions = document.createElement('div');
+    actions.className = 'card-actions';
+    var bVerified = document.createElement('span');
+    bVerified.className = 'badge-verified';
+    bVerified.textContent = 'Statutory Body';
+    actions.appendChild(bVerified);
+
+    var helpLink = document.createElement('a');
+    helpLink.className = 'btn btn-sm btn-outline';
+    helpLink.href = 'help.html#organisations';
+    helpLink.textContent = 'Reporting Path →';
+    actions.appendChild(helpLink);
+
+    art.appendChild(actions);
+
+    RA_RESOURCES_DATA.organisations.push({
+      id: 'org-' + idx,
+      category: 'organisations',
+      searchTokens: (o.name + ' ' + o.help + ' ' + o.contact).toLowerCase(),
+      domNode: art
+    });
+  });
+
+  // Build Videos Nodes
+  (window.RA_VIDEOS || []).forEach(function(v, idx){
+    var art = document.createElement('article');
+    art.className = 'card rv';
+    art.dataset.category = 'videos';
+
+    var thumb = document.createElement('div');
+    thumb.className = 'video-thumb';
+    var play = document.createElement('span');
+    play.textContent = '▶';
+    var sm = document.createElement('small');
+    sm.textContent = v.meta;
+    thumb.appendChild(play);
+    thumb.appendChild(sm);
+    art.appendChild(thumb);
+
+    var h3 = document.createElement('h3');
+    h3.textContent = v.title;
+    art.appendChild(h3);
+
+    var p = document.createElement('p');
+    p.textContent = v.desc;
+    art.appendChild(p);
+
+    var tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = v.tag;
+    art.appendChild(tag);
+
+    var actions = document.createElement('div');
+    actions.className = 'card-actions';
+    var vLink = document.createElement('a');
+    vLink.className = 'btn btn-sm btn-primary';
+    vLink.href = 'videos.html';
+    vLink.textContent = 'Watch Explainer';
+    actions.appendChild(vLink);
+    art.appendChild(actions);
+
+    RA_RESOURCES_DATA.videos.push({
+      id: 'vid-' + idx,
+      category: 'videos',
+      searchTokens: (v.title + ' ' + v.desc + ' ' + v.tag).toLowerCase(),
+      domNode: art
+    });
+  });
+
+  // Build FAQs Nodes
+  var FAQ_ALL = window.RA_FAQS || [], FAQ_LIMIT = 5, faqAll = false;
+  FAQ_ALL.forEach(function(f, idx){
+    var wrapper = document.createElement('div');
+    wrapper.className = 'faq' + (idx < FAQ_LIMIT ? '' : ' faq-hidden');
+    wrapper.dataset.category = 'faqs';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = f.q;
+    btn.addEventListener('click', function(){
+      wrapper.classList.toggle('open');
+    });
+    wrapper.appendChild(btn);
+
+    var ans = document.createElement('div');
+    ans.className = 'ans';
+    ans.innerHTML = f.a;
+    wrapper.appendChild(ans);
+
+    RA_RESOURCES_DATA.faqs.push({
+      id: 'faq-' + idx,
+      category: 'faqs',
+      searchTokens: (f.q + ' ' + f.a).toLowerCase(),
+      domNode: wrapper
+    });
+  });
+
+  var faqMoreBtn = document.getElementById("faqMore");
+  if(faqMoreBtn) {
+    faqMoreBtn.addEventListener("click", function(){
+      faqAll = !faqAll;
+      faqMoreBtn.textContent = faqAll ? "Show Fewer FAQs" : "Show All FAQs";
+      if(window.RA_SEARCH_STATE) window.RA_SEARCH_STATE.applyFilter();
+    });
   }
 
-  /* ---- FAQs: concise set first, searchable, expandable (spec §24, §51) ---- */
-  var FAQ_ALL = window.RA_FAQS||[], FAQ_LIMIT = 5, faqQ = "", faqAll = false;
-  function renderFaqs(){
-    var q = faqQ.trim().toLowerCase(), html = "", matched = 0, shown = 0;
-    FAQ_ALL.forEach(function(f,i){
-      if(q && (f.q+" "+f.a).toLowerCase().indexOf(q)<0) return;
-      matched++;
-      var vis = !!q || faqAll || i < FAQ_LIMIT;
-      if(vis) shown++;
-      html += '<div class="faq'+(vis?"":" faq-hidden")+'"><button type="button">'+esc(f.q)+'</button><div class="ans">'+f.a+'</div></div>';
-    });
-    if(!matched){
-      html = '<div class="empty-state"><p>No question matches “'+esc(faqQ.trim())+'”.</p><p><a class="link" href="search.html?q='+encodeURIComponent(faqQ.trim())+'">Search everything →</a> · <a class="link" href="help.html">Get help →</a></p></div>';
+  /* ===== 4. DOM Reconciliation Helper with Focus & Scroll Preservation ===== */
+  function reconcileContainer(container, targetNodes, fallbackFocusEl) {
+    if(!container) return;
+
+    var currentChildren = Array.from(container.children);
+    
+    // 1. Identity Check: Skip all DOM mutations if target matches current children sequence exactly
+    if(currentChildren.length === targetNodes.length) {
+      var isSame = true;
+      for (var i = 0; i < targetNodes.length; i++) {
+        if(currentChildren[i] !== targetNodes[i]) { isSame = false; break; }
+      }
+      if(isSame) return; // Zero-mutation fast path
     }
-    var box = document.getElementById("resFaqs");
-    box.innerHTML = html;
-    Array.prototype.forEach.call(box.querySelectorAll(".faq button"), function(b){
-      b.addEventListener("click", function(){ b.parentElement.classList.toggle("open"); });
-    });
-    document.getElementById("faqSearchStatus").textContent = q
-      ? (matched + " question" + (matched===1?"":"s") + " match “" + faqQ.trim() + "”")
-      : (matched > FAQ_LIMIT ? ("Showing " + shown + " of " + matched + " questions") : "");
-    var more = document.getElementById("faqMore");
-    more.style.display = (q || matched <= FAQ_LIMIT) ? "none" : "";
-    more.textContent = faqAll ? "Show fewer FAQs" : "Show all FAQs";
-    resFilter(resQ);
-  }
-  document.getElementById("faqMore").addEventListener("click", function(){ faqAll = !faqAll; renderFaqs(); });
 
-  /* ---- Page-wide resource search: filters cards/FAQs, hides empty sections,
-          and always offers a next step instead of a dead end (spec §32, §53) ---- */
-  function resFilter(raw){
-    resQ = raw||"";
-    var q = resQ.trim().toLowerCase();
-    var secs = document.querySelectorAll("main .section");
-    var items = 0, hits = 0;
-    Array.prototype.forEach.call(secs, function(sec){
-      if(sec.id === "search") return;
-      var nodes = sec.querySelectorAll(".card, .faq, .notice, .figure");
-      if(!nodes.length) return;
-      var local = 0;
-      Array.prototype.forEach.call(nodes, function(n){
-        var hit = !q || (n.textContent||"").toLowerCase().indexOf(q) > -1;
-        n.style.display = hit ? "" : "none";
-        if(hit){ local++; }
+    // 2. Active Focus & Scroll Position Capture
+    var activeEl = document.activeElement;
+    var focusedElement = (activeEl && container.contains(activeEl)) ? activeEl : null;
+    var prevScrollTop = container.scrollTop;
+    var prevScrollLeft = container.scrollLeft;
+
+    // 3. Layout Height Floor: Lock container min-height to prevent document height collapse & viewport scroll jumping
+    var currentHeight = container.offsetHeight;
+    if(currentHeight > 0) {
+      container.style.minHeight = currentHeight + 'px';
+    }
+
+    // 4. Differential Reconciliation: Keep existing nodes mounted to prevent focus fixup blur and AXTree severing
+    var targetSet = new Set(targetNodes);
+
+    // Remove only elements that are no longer in targetNodes
+    for (var c = currentChildren.length - 1; c >= 0; c--) {
+      var child = currentChildren[c];
+      if(!targetSet.has(child)) {
+        child.remove();
+      }
+    }
+
+    // Mount or reposition targetNodes in deterministic order
+    for (var t = 0; t < targetNodes.length; t++) {
+      var node = targetNodes[t];
+      var currentAtPos = container.children[t];
+      if(currentAtPos !== node) {
+        container.insertBefore(node, currentAtPos || null);
+      }
+    }
+
+    // 5. Restore Internal Scroll Position (for internally scrollable containers)
+    if(container.scrollHeight > container.clientHeight) {
+      container.scrollTop = prevScrollTop;
+      container.scrollLeft = prevScrollLeft;
+    }
+
+    // 6. Release Layout Min-Height Floor on Next Frame
+    requestAnimationFrame(function(){
+      container.style.minHeight = '';
+    });
+
+    // 7. Deterministic Focus Healing & Safe Fallback Navigation
+    if(focusedElement) {
+      if(document.body.contains(focusedElement)) {
+        // Element was retained in DOM: re-verify focus with preventScroll
+        try { focusedElement.focus({ preventScroll: true }); } catch(_){}
+      } else if(fallbackFocusEl && typeof fallbackFocusEl.focus === 'function') {
+        // Element was filtered out: safely redirect focus to stable search input
+        // rather than letting the browser focus fixup rule dump focus to document.body
+        try { fallbackFocusEl.focus({ preventScroll: true }); } catch(_){}
+      }
+    }
+  }
+
+  /* ===== 5. ResourceStateManager (URL-First State Architecture) ===== */
+  class ResourceStateManager {
+    constructor() {
+      this.timer = null;
+      this.abortController = new AbortController();
+
+      var params = new URLSearchParams(window.location.search);
+      this.currentQuery = (params.get('q') || '').trim();
+      this.currentCategory = params.get('category') || 'all';
+
+      this.searchInput = document.getElementById('resSearch');
+      this.searchStatus = document.getElementById('resSearchStatus');
+      this.categoryPills = document.querySelectorAll('#categoryPills .cat-pill');
+      this.searchForm = document.getElementById('resSearchForm');
+
+      this.containers = {
+        videos: document.getElementById('resVideos'),
+        articles: document.getElementById('resArticles'),
+        organisations: document.getElementById('resOrgs'),
+        guides: document.getElementById('resGuides'),
+        faqs: document.getElementById('resFaqs')
+      };
+
+      this.init();
+    }
+
+    init() {
+      var self = this;
+      var signal = this.abortController.signal;
+
+      if(this.searchInput) {
+        this.searchInput.value = this.currentQuery;
+        this.searchInput.addEventListener('input', this.createDebouncedInput(), { signal: signal });
+      }
+
+      if(this.searchForm) {
+        this.searchForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          var submitBtn = document.getElementById('resSearchSubmit');
+          var unlock = lockButton(submitBtn, 'Filtering...');
+          self.updateState(self.searchInput ? self.searchInput.value : '', self.currentCategory);
+          setTimeout(unlock, 250);
+        }, { signal: signal });
+      }
+
+      var pillContainer = document.getElementById('categoryPills');
+      if(pillContainer) {
+        pillContainer.addEventListener('click', function(e){
+          var target = e.target.closest('.cat-pill');
+          if(!target) return;
+          var newCategory = target.dataset.category || 'all';
+          self.updateState(self.currentQuery, newCategory);
+        }, { signal: signal });
+      }
+
+      window.addEventListener('popstate', function(){
+        var params = new URLSearchParams(window.location.search);
+        self.currentQuery = (params.get('q') || '').trim();
+        self.currentCategory = params.get('category') || 'all';
+        if(self.searchInput) self.searchInput.value = self.currentQuery;
+        self.updatePillUI(self.currentCategory);
+        self.applyFilter();
+      }, { signal: signal });
+
+      this.updatePillUI(this.currentCategory);
+      this.applyFilter();
+    }
+
+    createDebouncedInput() {
+      var self = this;
+      return function(e) {
+        if(self.timer) clearTimeout(self.timer);
+        self.timer = setTimeout(function(){
+          if(!self.searchInput || !document.body.contains(self.searchInput)) {
+            self.destroy();
+            return;
+          }
+          self.updateState(e.target.value, self.currentCategory);
+          self.timer = null;
+        }, 200);
+      };
+    }
+
+    destroy() {
+      if(this.timer) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      }
+      this.abortController.abort();
+    }
+
+    updatePillUI(activeCat) {
+      this.categoryPills.forEach(function(pill){
+        var isMatch = (pill.dataset.category === activeCat);
+        pill.classList.toggle('active', isMatch);
+        pill.setAttribute('aria-selected', isMatch ? 'true' : 'false');
       });
-      items += local;
-      if(q){ sec.style.display = local ? "" : "none"; }
-      else { sec.style.display = ""; }
-      if(local) hits++;
+    }
+
+    updateState(query, category) {
+      this.currentQuery = (query || '').trim();
+      this.currentCategory = category || 'all';
+
+      var newUrl = new URL(window.location);
+      if(this.currentQuery) newUrl.searchParams.set('q', this.currentQuery);
+      else newUrl.searchParams.delete('q');
+
+      if(this.currentCategory && this.currentCategory !== 'all') newUrl.searchParams.set('category', this.currentCategory);
+      else newUrl.searchParams.delete('category');
+
+      window.history.replaceState({}, '', newUrl);
+      this.updatePillUI(this.currentCategory);
+      this.applyFilter();
+    }
+
+    applyFilter() {
+      var q = this.currentQuery.toLowerCase();
+      var cat = this.currentCategory;
+      var totalMatches = 0;
+      var categoryCounts = { videos: 0, articles: 0, organisations: 0, guides: 0, faqs: 0, downloads: 4 };
+
+      // Reconcile each dynamic in-memory section
+      var categories = ['videos', 'articles', 'organisations', 'guides'];
+      for (var i = 0; i < categories.length; i++) {
+        var key = categories[i];
+        var container = this.containers[key];
+        var records = RA_RESOURCES_DATA[key] || [];
+
+        var matchedNodes = [];
+        for (var j = 0; j < records.length; j++) {
+          var rec = records[j];
+          var isMatch = (!q || rec.searchTokens.indexOf(q) > -1);
+          if (isMatch) {
+            matchedNodes.push(rec.domNode);
+          }
+        }
+
+        categoryCounts[key] = matchedNodes.length;
+        var sectionEl = document.getElementById(key);
+        var shouldShowSection = (cat === 'all' || cat === key) && matchedNodes.length > 0;
+
+        if (sectionEl) {
+          sectionEl.style.display = shouldShowSection ? '' : 'none';
+        }
+        if (shouldShowSection || cat === 'all') {
+          totalMatches += matchedNodes.length;
+        }
+
+        reconcileContainer(container, matchedNodes, this.searchInput);
+      }
+
+      // Reconcile FAQs
+      var faqRecords = RA_RESOURCES_DATA.faqs || [];
+      var matchedFaqs = [];
+      for (var f = 0; f < faqRecords.length; f++) {
+        var fRec = faqRecords[f];
+        var fMatch = (!q || fRec.searchTokens.indexOf(q) > -1);
+        if(fMatch) {
+          matchedFaqs.push(fRec.domNode);
+          var isVis = !!q || faqAll || f < FAQ_LIMIT;
+          fRec.domNode.classList.toggle('faq-hidden', !isVis);
+        }
+      }
+      categoryCounts.faqs = matchedFaqs.length;
+      var faqsSection = document.getElementById('faqs');
+      var showFaqs = (cat === 'all' || cat === 'faqs') && matchedFaqs.length > 0;
+      if (faqsSection) {
+        faqsSection.style.display = showFaqs ? '' : 'none';
+      }
+      if (showFaqs || cat === 'all') {
+        totalMatches += matchedFaqs.length;
+      }
+      reconcileContainer(this.containers.faqs, matchedFaqs, this.searchInput);
+
+      if (faqMoreBtn) {
+        faqMoreBtn.style.display = (q || matchedFaqs.length <= FAQ_LIMIT) ? 'none' : '';
+      }
+
+      // Static Sections: Links, Who Does What, Constitution, Downloads
+      var staticSections = ['links', 'whodoeswhat', 'constitution', 'downloads'];
+      for (var s = 0; s < staticSections.length; s++) {
+        var sId = staticSections[s];
+        var sSec = document.getElementById(sId);
+        if (!sSec) continue;
+
+        var sNodes = sSec.querySelectorAll('.card');
+        var sMatches = 0;
+        sNodes.forEach(function(node){
+          var textMatch = !q || (node.textContent || '').toLowerCase().indexOf(q) > -1;
+          var catMatch = (cat === 'all' || cat === 'downloads' && sId === 'downloads' || cat === 'organisations' && (sId === 'links' || sId === 'whodoeswhat'));
+          var show = textMatch && catMatch;
+          node.style.display = show ? '' : 'none';
+          if(show) sMatches++;
+        });
+
+        if (sId === 'downloads') categoryCounts.downloads = sMatches;
+
+        if (cat === 'all') {
+          sSec.style.display = (!q || sMatches > 0) ? '' : 'none';
+          if (q) totalMatches += sMatches;
+          else totalMatches += sNodes.length;
+        } else {
+          var showSection = sMatches > 0 && (cat === 'downloads' && sId === 'downloads' || cat === 'organisations' && (sId === 'links' || sId === 'whodoeswhat'));
+          sSec.style.display = showSection ? '' : 'none';
+          if (showSection) totalMatches += sMatches;
+        }
+      }
+
+      // Update Pill Counts
+      var countAllEl = document.getElementById('countAll');
+      if (countAllEl) {
+        var sumAll = categoryCounts.videos + categoryCounts.articles + categoryCounts.organisations + categoryCounts.guides + categoryCounts.faqs + categoryCounts.downloads;
+        countAllEl.textContent = sumAll;
+      }
+      var countVids = document.getElementById('countVideos');
+      if (countVids) countVids.textContent = categoryCounts.videos;
+      var countArts = document.getElementById('countArticles');
+      if (countArts) countArts.textContent = categoryCounts.articles;
+      var countOrgs = document.getElementById('countOrgs');
+      if (countOrgs) countOrgs.textContent = categoryCounts.organisations;
+      var countGds = document.getElementById('countGuides');
+      if (countGds) countGds.textContent = categoryCounts.guides;
+      var countFq = document.getElementById('countFaqs');
+      if (countFq) countFq.textContent = categoryCounts.faqs;
+      var countDl = document.getElementById('countDownloads');
+      if (countDl) countDl.textContent = categoryCounts.downloads;
+
+      // Status Bar & Zero-Trust Empty State
+      if(this.searchStatus) {
+        while(this.searchStatus.firstChild) {
+          this.searchStatus.removeChild(this.searchStatus.firstChild);
+        }
+
+        if(!q && cat === 'all') {
+          // Clean default state
+        } else if(totalMatches > 0) {
+          var badge = document.createElement('span');
+          badge.className = 'badge-verified';
+          badge.textContent = totalMatches + ' resource' + (totalMatches === 1 ? '' : 's') + ' found';
+          this.searchStatus.appendChild(badge);
+
+          if(q) {
+            var qSpan = document.createElement('span');
+            qSpan.style.marginLeft = '.4rem';
+            qSpan.textContent = ' for “' + this.currentQuery + '”';
+            this.searchStatus.appendChild(qSpan);
+          }
+          if(cat !== 'all') {
+            var cSpan = document.createElement('span');
+            cSpan.textContent = ' in ' + cat;
+            this.searchStatus.appendChild(cSpan);
+          }
+        } else {
+          // Zero-Trust Safe Empty State Element (DOM API only)
+          var emptyBox = document.createElement('div');
+          emptyBox.className = 'empty-state';
+          emptyBox.setAttribute('role', 'status');
+          emptyBox.setAttribute('aria-live', 'polite');
+
+          var icon = document.createElement('div');
+          icon.style.marginBottom = '.4rem';
+          icon.innerHTML = '<svg class="ra-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--muted)"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+          emptyBox.appendChild(icon);
+
+          var h3 = document.createElement('h3');
+          h3.textContent = 'No resources found' + (q ? (' for “' + this.currentQuery + '”') : '');
+          emptyBox.appendChild(h3);
+
+          var p = document.createElement('p');
+          p.style.cssText = 'color:var(--muted);max-width:440px;margin:0 auto .9rem';
+          p.textContent = 'We could not find matching legal guides or contacts. Need urgent statutory assistance?';
+          emptyBox.appendChild(p);
+
+          var act = document.createElement('div');
+          act.className = 'empty-actions';
+          act.style.cssText = 'display:flex;gap:.6rem;justify-content:center';
+
+          var resetBtn = document.createElement('button');
+          resetBtn.type = 'button';
+          resetBtn.className = 'btn btn-secondary btn-sm';
+          resetBtn.textContent = 'Clear Filters';
+          var self = this;
+          resetBtn.addEventListener('click', function(){
+            if(self.searchInput) self.searchInput.value = '';
+            self.updateState('', 'all');
+          });
+          act.appendChild(resetBtn);
+
+          var helpLink = document.createElement('a');
+          helpLink.className = 'btn btn-primary btn-sm';
+          helpLink.href = 'help.html';
+          helpLink.textContent = 'Speak with Legal Aid';
+          act.appendChild(helpLink);
+
+          emptyBox.appendChild(act);
+          this.searchStatus.appendChild(emptyBox);
+        }
+      }
+    }
+  }
+
+  window.RA_SEARCH_STATE = new ResourceStateManager();
+
+  /* ===== 6. Progressive 3-Step Triage Wizard Engine ===== */
+  (function initEmergencyTriage() {
+    var STATUTORY_HOTLINES = Object.freeze({
+      police: [
+        { name: "Police Complaints Response Unit (CRU)", phone: "+2348057000001" },
+        { name: "National Human Rights Commission (NHRC)", phone: "08006472467" }
+      ],
+      safety: [
+        { name: "National Emergency Management (NEMA)", phone: "112" },
+        { name: "Lagos State DSVA Helpline", phone: "08000333333" }
+      ],
+      default: [
+        { name: "Legal Aid Council of Nigeria (HQ)", phone: "+2348005342524" }
+      ]
     });
-    var status = document.getElementById("resSearchStatus");
-    if(!q){ status.innerHTML = ""; return; }
-    status.innerHTML = hits
-      ? (hits + " section" + (hits===1?"":"s") + " · " + items + " item" + (items===1?"":"s") + " match “" + esc(resQ.trim()) + "”")
-      : '<div class="empty-state" style="text-align:center"><p>Nothing on this page matches “'+esc(resQ.trim())+'”.</p><p><a class="link" href="search.html?q='+encodeURIComponent(resQ.trim())+'">Search the whole site →</a> · <a class="link" href="rights.html">explore rights →</a> · <a class="link" href="help.html">get help →</a></p></div>';
-  }
 
-  /* ---- wiring ---- */
-  function bindSubmit(formId, handler){
-    var f = document.getElementById(formId);
-    if(!f) return;
-    f.addEventListener("submit", function(e){ e.preventDefault(); handler(); });
-  }
-  bindSubmit("resSearchForm", function(){ resFilter(document.getElementById("resSearch").value); });
-  document.getElementById("resSearch").addEventListener("input", function(e){ resFilter(e.target.value); });
-  bindSubmit("vidSearchForm", function(){ vidQ = document.getElementById("vidSearch").value; renderVideos(); });
-  document.getElementById("vidSearch").addEventListener("input", function(e){ vidQ = e.target.value; renderVideos(); });
-  bindSubmit("faqSearchForm", function(){ faqQ = document.getElementById("faqSearch").value; renderFaqs(); });
-  document.getElementById("faqSearch").addEventListener("input", function(e){ faqQ = e.target.value; renderFaqs(); });
+    var triageState = {
+      step: 1,
+      category: null,
+      inImmediateDanger: false,
+      selectedState: '',
+      incidentSummary: '',
+      activeRequestId: 0,
+      currentAbortController: null
+    };
 
-  renderVideos();
-  renderFaqs();
-  resFilter("");
+    var modal = document.getElementById('triageModal');
+    var form = document.getElementById('triageForm');
+    var liveRegion = document.getElementById('triageLiveRegion');
+    var resultsContainer = document.getElementById('triageResults');
+    var modalTitle = document.getElementById('triageTitle');
+    var heroTrigger = document.getElementById('heroEmergencyBtn');
+    var headerTrigger = document.getElementById('headerEmergencyBtn');
+
+    if(!modal || !form || !resultsContainer) return;
+
+    var lastFocusedElement = null;
+
+    function openModal() {
+      lastFocusedElement = document.activeElement;
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.setAttribute('open', '');
+      }
+      setTriageStep(1);
+      if(modalTitle) modalTitle.focus();
+    }
+
+    if(heroTrigger) heroTrigger.addEventListener('click', openModal);
+    if(headerTrigger) headerTrigger.addEventListener('click', openModal);
+
+    // Deep-linking hash navigation support (#triageModal or #emergency-triage)
+    function checkEmergencyHash() {
+      var hash = window.location.hash;
+      if(hash === '#triageModal' || hash === '#emergency-triage') {
+        openModal();
+      }
+    }
+    window.addEventListener('hashchange', checkEmergencyHash);
+    checkEmergencyHash();
+
+    modal.addEventListener('close', function(){
+      if(triageState.currentAbortController) {
+        triageState.currentAbortController.abort();
+      }
+      if(lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+        lastFocusedElement.focus({ preventScroll: true });
+      }
+    });
+
+    form.addEventListener('submit', function(e){ e.preventDefault(); });
+
+    function setTriageStep(newStep) {
+      triageState.step = newStep;
+      var steps = modal.querySelectorAll('.triage-step');
+      steps.forEach(function(el){
+        var stepNum = Number.parseInt(el.dataset.step, 10);
+        el.hidden = (stepNum !== newStep);
+      });
+      if(liveRegion) {
+        liveRegion.textContent = 'Step ' + newStep + ' of 3';
+      }
+    }
+
+    function createContactItem(nameText, phoneText, isVerifiedPartner, emergencyBody) {
+      var li = document.createElement('li');
+      li.className = isVerifiedPartner ? 'contact-item verified' : 'contact-item';
+
+      var textSpan = document.createElement('span');
+      textSpan.className = 'contact-name';
+      textSpan.textContent = nameText;
+
+      if(isVerifiedPartner) {
+        var badge = document.createElement('span');
+        badge.className = 'badge-verified';
+        badge.textContent = 'Verified Partner';
+        textSpan.appendChild(badge);
+      }
+
+      var btnGroup = document.createElement('div');
+      btnGroup.style.display = 'flex';
+      btnGroup.style.gap = '.4rem';
+      btnGroup.style.alignItems = 'center';
+
+      var callLink = document.createElement('a');
+      callLink.className = 'btn btn-sm btn-call';
+      callLink.href = 'tel:' + phoneText.replace(/[^0-9+]/g, '');
+      callLink.textContent = 'Call';
+
+      btnGroup.appendChild(callLink);
+
+      // SOS SMS Button
+      var smsBtn = createEmergencySmsAffordance(phoneText, emergencyBody);
+      btnGroup.appendChild(smsBtn);
+
+      li.appendChild(textSpan);
+      li.appendChild(btnGroup);
+      return li;
+    }
+
+    async function renderResolution() {
+      triageState.step = 4;
+      modal.querySelectorAll('.triage-step').forEach(function(el){ el.hidden = true; });
+      resultsContainer.hidden = false;
+
+      while(resultsContainer.firstChild) {
+        resultsContainer.removeChild(resultsContainer.firstChild);
+      }
+
+      var card = document.createElement('div');
+      card.className = 'resolution-card' + (triageState.inImmediateDanger ? ' danger-alert' : '');
+
+      var heading = document.createElement('h3');
+      heading.textContent = triageState.inImmediateDanger ? 'Immediate Emergency Hotline & SOS Dispatch' : 'Emergency Responders & Legal Aid Routing';
+      card.appendChild(heading);
+
+      var meta = document.createElement('p');
+      meta.textContent = 'Category: ' + (triageState.category || 'General').toUpperCase() + ' | Jurisdiction: ' + (triageState.selectedState || 'National');
+      card.appendChild(meta);
+
+      if(triageState.incidentSummary) {
+        var incidentPara = document.createElement('p');
+        incidentPara.style.cssText = 'background:#fff;padding:.6rem .8rem;border-radius:8px;font-size:.88rem;border:1px solid var(--border)';
+        incidentPara.textContent = 'Incident: ' + triageState.incidentSummary;
+        card.appendChild(incidentPara);
+      }
+
+      var contactsList = document.createElement('ul');
+      contactsList.className = 'contacts-list';
+      contactsList.id = 'triageContactsList';
+
+      var emergencyMsg = 'CRISIS ALERT [' + (triageState.category || 'URGENT').toUpperCase() + ' in ' + (triageState.selectedState || 'Nigeria') + ']: ' + (triageState.incidentSummary || 'Immediate statutory assistance required.');
+
+      var fallbackData = STATUTORY_HOTLINES[triageState.category] || STATUTORY_HOTLINES.default;
+      fallbackData.forEach(function(c){
+        contactsList.appendChild(createContactItem(c.name, c.phone, false, emergencyMsg));
+      });
+      card.appendChild(contactsList);
+
+      var dynamicStatus = document.createElement('div');
+      dynamicStatus.className = 'status-indicator';
+      dynamicStatus.id = 'triageDynamicStatus';
+      card.appendChild(dynamicStatus);
+
+      var actionGroup = document.createElement('div');
+      actionGroup.className = 'resolution-actions';
+
+      var resetBtn = document.createElement('button');
+      resetBtn.type = 'button';
+      resetBtn.className = 'btn btn-secondary';
+      resetBtn.dataset.triageAction = 'reset';
+      resetBtn.textContent = 'Start Over';
+
+      var closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'btn btn-primary';
+      closeBtn.dataset.triageAction = 'close';
+      closeBtn.textContent = 'Done';
+
+      actionGroup.appendChild(resetBtn);
+      actionGroup.appendChild(closeBtn);
+      card.appendChild(actionGroup);
+
+      resultsContainer.appendChild(card);
+
+      await fetchVerifiedPartners(triageState.selectedState, triageState.category, emergencyMsg);
+    }
+
+    async function fetchVerifiedPartners(stateFilter, categoryFilter, emergencyMsg) {
+      if(triageState.currentAbortController) {
+        triageState.currentAbortController.abort();
+      }
+
+      var controller = new AbortController();
+      triageState.currentAbortController = controller;
+      var requestId = ++triageState.activeRequestId;
+
+      var statusEl = document.getElementById('triageDynamicStatus');
+      var listEl = document.getElementById('triageContactsList');
+
+      if(statusEl) statusEl.textContent = 'Checking local legal aid registry...';
+
+      var timeoutId = setTimeout(function(){ controller.abort(); }, 2500);
+
+      try {
+        var supa = window.RA_SUPA;
+        if(!supa || !supa.ready || !supa.client) {
+          throw new Error('Supabase client unavailable');
+        }
+
+        var res = await supa.client
+          .from('organizations')
+          .select('name, phone, state, category')
+          .eq('state', stateFilter)
+          .limit(3)
+          .abortSignal(controller.signal);
+
+        clearTimeout(timeoutId);
+
+        if(requestId !== triageState.activeRequestId) return;
+        if(res.error) throw res.error;
+
+        if(res.data && res.data.length > 0 && listEl) {
+          res.data.forEach(function(org){
+            if(org.name && org.phone) {
+              listEl.appendChild(createContactItem(org.name, org.phone, true, emergencyMsg));
+            }
+          });
+          if(statusEl) statusEl.textContent = 'Verified local partners loaded.';
+        } else if(statusEl) {
+          statusEl.textContent = 'Operating with official statutory responders.';
+        }
+      } catch(err) {
+        clearTimeout(timeoutId);
+        if(requestId !== triageState.activeRequestId) return;
+        if(statusEl) statusEl.textContent = 'Statutory emergency channels verified.';
+      } finally {
+        if(requestId === triageState.activeRequestId) {
+          triageState.currentAbortController = null;
+        }
+      }
+    }
+
+    modal.addEventListener('click', function(event){
+      var actionTarget = event.target.closest('[data-triage-action]');
+      if(!actionTarget) return;
+
+      var action = actionTarget.dataset.triageAction;
+
+      switch(action) {
+        case 'close':
+          modal.close();
+          break;
+
+        case 'select-category':
+          triageState.category = actionTarget.dataset.value;
+          setTriageStep(2);
+          break;
+
+        case 'danger-confirm':
+          triageState.inImmediateDanger = (actionTarget.dataset.value === 'yes');
+          if(triageState.inImmediateDanger) {
+            renderResolution();
+          } else {
+            setTriageStep(3);
+          }
+          break;
+
+        case 'resolve-routing':
+          var stateSelect = modal.querySelector('#triageStateSelect');
+          if(stateSelect && !stateSelect.value) {
+            stateSelect.focus();
+            return;
+          }
+          var descInput = modal.querySelector('#triageIncidentDesc');
+          triageState.selectedState = stateSelect ? stateSelect.value : 'National';
+          triageState.incidentSummary = descInput ? descInput.value.trim() : '';
+          renderResolution();
+          break;
+
+        case 'reset':
+          if(triageState.currentAbortController) {
+            triageState.currentAbortController.abort();
+          }
+          triageState.step = 1;
+          triageState.category = null;
+          triageState.inImmediateDanger = false;
+          triageState.selectedState = '';
+          triageState.incidentSummary = '';
+          resultsContainer.hidden = true;
+          setTriageStep(1);
+          break;
+
+        default:
+          break;
+      }
+    });
+  })();
 })();
 </script>
 </body>

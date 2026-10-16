@@ -86,14 +86,12 @@
     if(!mount || document.querySelector(".ra-lang")) return;
     var wrap = document.createElement("span");
     wrap.className = "ra-lang";
-    wrap.style.cssText = "display:inline-flex;align-items:center;gap:.3rem";
     var sel = document.createElement("select");
     sel.className = "ra-lang-select";
     sel.setAttribute("aria-label", "Language / Language selection");
-    sel.style.cssText = "border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:inherit;border-radius:999px;padding:.4rem .6rem;font-size:.82rem;font-weight:600;cursor:pointer";
     (window.RA_I18N.meta.languages||[]).forEach(function(l){
       var o = document.createElement("option");
-      o.value = l.id; o.textContent = "🌐 " + (l.nativeLabel || l.label);
+      o.value = l.id; o.textContent = (l.nativeLabel || l.label);
       sel.appendChild(o);
     });
     sel.value = lang;

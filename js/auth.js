@@ -18,22 +18,7 @@
     // NOTE: in demo mode ANY @admin flag is ignored — admin.html enforces this.
     signup(name, email){ const u = { name, email, role:"user", at:new Date().toISOString(), demo:true }; try{localStorage.setItem(KEY, JSON.stringify(u));}catch(_){} return u; },
     login(email){ const u = { name:(email||"").split("@")[0]||"Member", email, role:"user", at:new Date().toISOString(), demo:true }; try{localStorage.setItem(KEY, JSON.stringify(u));}catch(_){} return u; },
-    logout(){
-      try{localStorage.removeItem(KEY);}catch(_){}
-      /* Privacy sweep on sign-out: a shared device must keep NOTHING personal
-         (application payloads, contact messages, reports, requests, reviews,
-         consultation copies, profile, notifications, newsletter e-mail).
-         Sync state (ra_saved*), settings, language and anti-spam timestamps
-         stay so re-signing in merges cleanly instead of losing data; the
-         Supabase session itself is removed by signOut() in logoutLive(). */
-      try{
-        ["ra_recovery","ra_pending_apps","ra_pending_app","ra_applications",
-         "ra_messages","ra_reports","ra_requests","ra_local_reviews",
-         "ra_review_queue","ra_consultations","ra_consultations_remote",
-         "ra_notifications","ra_profile","ra_profile_dirty","ra_profile_base",
-         "ra_newsletter"].forEach(function(k){ localStorage.removeItem(k); });
-      }catch(_){}
-    },
+    logout(){ try{localStorage.removeItem(KEY);}catch(_){} },
     requestRecovery(email){ // demo: just records the request; real reset email needs Supabase
       try{ const a = JSON.parse(localStorage.getItem("ra_recovery")||"[]"); a.push({email, at:new Date().toISOString()}); localStorage.setItem("ra_recovery", JSON.stringify(a)); }catch(_){}
       return "Demo: password recovery email is not sent. Supabase Auth is required for real resets (see SETUP.md).";
@@ -202,14 +187,14 @@
   Auth.resendConfirmation = async function(email, o){
     o = o || {};
     if(!this.supabaseReady()) return "Backend not connected — confirmation emails are not sent in demo mode.";
-    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return "⚠ Enter the email address you signed up with.";
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return "Enter the email address you signed up with.";
     try{
       var opts = { emailRedirectTo: this.signupRedirect() };
       if(o.captchaToken) opts.captchaToken = o.captchaToken;
       var r = await RA_SUPA.client.auth.resend({ type:"signup", email:email, options:opts });
-      if(r.error) return "⚠ " + (r.error.message || "Could not resend — try again shortly.");
-      return "✅ Confirmation email resent — open the link in your inbox (check spam too).";
-    }catch(_){ return "⚠ Could not resend — try again shortly."; }
+      if(r.error) return (r.error.message || "Could not resend — try again shortly.");
+      return "Confirmation email resent — open the link in your inbox (check spam too).";
+    }catch(_){ return "Could not resend — try again shortly."; }
   };
   /* Password reset: request a recovery link … */
   Auth.recoverLive = async function(email, o){
@@ -219,8 +204,8 @@
       var opts = { redirectTo: this.recoveryRedirect() };
       if(o.captchaToken) opts.captchaToken = o.captchaToken;
       var r = await RA_SUPA.client.auth.resetPasswordForEmail(email, opts);
-      return r.error ? ("⚠ " + r.error.message)
-        : "✅ Reset link sent — check your inbox (and spam). Open it to choose a new password.";
+      return r.error ? (r.error.message)
+        : "Reset link sent — check your inbox (and spam). Open it to choose a new password.";
     }catch(_){ return this.requestRecovery(email); }
   };
   /* … and apply the new password once the recovery link has opened a session. */

@@ -26,19 +26,6 @@
         location.href = base + "search.html?q=" + encodeURIComponent(q);
       });
     });
-    // Newsletter demo
-    document.querySelectorAll("form[data-newsletter]").forEach(function(f){
-      f.addEventListener("submit", function(e){
-        e.preventDefault();
-        var email = f.querySelector("input[type=email]").value.trim();
-        try{ var list = JSON.parse(localStorage.getItem("ra_newsletter")||"[]"); list.push({email:email, at:new Date().toISOString()}); localStorage.setItem("ra_newsletter", JSON.stringify(list)); }catch(_){}
-        f.reset();
-        var n = f.parentElement.querySelector(".newsletter-ok") || document.createElement("p");
-        n.className = "newsletter-ok"; n.style.cssText = "color:#4ade80;font-size:.85rem";
-        n.textContent = "Subscribed (saved on this device demo).";
-        f.after(n);
-      });
-    });
     // Footer year
     document.querySelectorAll("[data-year]").forEach(function(el){ el.textContent = new Date().getFullYear(); });
     // Dynamic library counts — source: content/rights.js (RA_RIGHTS) + content/laws.js (RA_LAWS).
@@ -71,7 +58,7 @@
           bar = document.createElement("div");
           bar.setAttribute("role", "status");
           bar.style.cssText = "position:sticky;top:0;z-index:999;background:#7c2d12;color:#fff;text-align:center;padding:.45rem .8rem;font-size:.85rem;font-weight:600";
-          bar.textContent = "📴 You are offline — reading cached content (may be out of date). Search, AI, account sync and payments are paused.";
+          bar.textContent = "You are offline — reading cached content (may be out of date). Search, AI, account sync and payments are paused.";
           document.body.insertBefore(bar, document.body.firstChild);
         } else if(!off && bar){ bar.remove(); bar = null; }
       }
@@ -179,7 +166,7 @@
         var ico = document.createElement("span");
         ico.className = "ra-ai-fab-ico";
         ico.setAttribute("aria-hidden", "true");
-        ico.textContent = "\u2728";
+        ico.innerHTML = '<svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>';
         var txt = document.createElement("span");
         txt.textContent = "Ask AI";
         fab.appendChild(ico);
