@@ -84,6 +84,16 @@
         return { text:"Based on your words, start here: “"+hit.title+"” — "+(hit.summary||""), links:[{t:"Open: "+hit.title, u:url},{t:"Get Help", u:"help.html"}], disclaimer:DISCLAIMER, demo:true };
       }
       return { text:"I couldn't match that to a guide. Try keywords like arrest, rent, salary, vote, scam — or browse the library.", links:[{t:"Search all content",u:"search.html?q="+encodeURIComponent(m)},{t:"Browse rights library",u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
+    },
+    async previewAsk(message){
+      const m = (message||"").trim();
+      if(!m) return { text:"Please describe your issue in a few words.", links:[], disclaimer:DISCLAIMER };
+      const hit = localKB(m);
+      if(hit){
+        const url = hit.fullGuide || ("rights/topic.html?id="+hit.id);
+        return { text:"Based on verified Nigerian legal guides: “"+hit.title+"” — "+(hit.summary||""), links:[{t:"Open: "+hit.title, u:url},{t:"Get Help", u:"help.html"}], disclaimer:DISCLAIMER, demo:true };
+      }
+      return { text:"I couldn’t match that to a guide. Try keywords like arrest, rent, salary, vote, scam — or browse the library.", links:[{t:"Search all content",u:"search.html?q="+encodeURIComponent(m)},{t:"Browse rights library",u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
     }
   };
   /* Signing in clears the 401 latch: the next question goes to the server again

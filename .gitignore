@@ -7,3 +7,4 @@ env.local.js
 Thumbs.db
 node_modules/
 .vercel/
+.*-profile/

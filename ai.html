@@ -119,6 +119,7 @@
 <script src="content/rights.js"></script>
 <script src="js/config.js"></script>
 <script src="js/ai.js"></script>
+<script src="js/chat-state.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
@@ -189,6 +190,29 @@
     },350);
   });
   document.querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(){input.value=b.dataset.p;form.dispatchEvent(new Event("submit"))});});
+
+  // Hydrate transit thread from homepage widget if available
+  try {
+    if(window.RA_CHAT_STATE){
+      var transit = window.RA_CHAT_STATE.consumeTransitThread();
+      if(transit && transit.length){
+        var notice = document.createElement("div");
+        notice.className = "msg ai";
+        notice.style.background = "#f0fdf4";
+        notice.style.borderColor = "#bbf7d0";
+        notice.innerHTML = "<strong>RightAware AI:</strong> <em>Restored your conversation from the home page. You can now continue asking questions with full access.</em>";
+        box.appendChild(notice);
+        transit.forEach(function(m){
+          if(m.role === "user"){
+            add("you", m.text);
+          } else if(m.role === "ai"){
+            add("ai", "", esc(m.text).replace(/\n+/g, "<br/>") + linksHtml(m.links), "RightAware AI (restored):");
+          }
+        });
+      }
+    }
+  } catch(_) {}
+
   setPill();
 })();
 </script>

@@ -368,6 +368,34 @@ window.RA_I18N = {
     "login.h1":      { en: "Log in", pcm: "Enter Account" },
     "login.noacct":  { en: "No account? Choose a signup pathway →", pcm: "You never get account? Choose signup pathway →" },
     "login.forgot":  { en: "Forgot password? Reset from signup →", pcm: "You forget password? Reset from signup →" },
-    "login.back":    { en: "← Back home", pcm: "← Go Back Home" }
+    "login.back":    { en: "← Back home", pcm: "← Go Back Home" },
+
+    /* ---------- AI quick widget & drawer ---------- */
+    "ai.widget.fab":        { en: "Ask AI", pcm: "Ask AI" },
+    "ai.widget.fab3":       { en: "3 Free", pcm: "3 Free" },
+    "ai.widget.fab2":       { en: "2 Free", pcm: "2 Free" },
+    "ai.widget.fab1":       { en: "1 Free", pcm: "1 Free" },
+    "ai.widget.fablogin":   { en: "Sign In", pcm: "Enter Account" },
+    "ai.widget.title":      { en: "RightAware AI", pcm: "RightAware AI" },
+    "ai.widget.active":     { en: "AI ASSISTANT • ACTIVE", pcm: "AI ASSISTANT • ACTIVE" },
+    "ai.widget.prev0":      { en: "Preview: 0/3 Free", pcm: "Preview: 0/3 Free" },
+    "ai.widget.prev1":      { en: "Preview: 1/3 Free", pcm: "Preview: 1/3 Free" },
+    "ai.widget.prev2":      { en: "Preview: 2/3 Free", pcm: "Preview: 2/3 Free" },
+    "ai.widget.prev3":      { en: "Preview: 3/3 Free", pcm: "Preview: 3/3 Free" },
+    "ai.widget.fullpage":   { en: "Full Page", pcm: "Full Page" },
+    "ai.widget.emergency":  { en: "Stopped by police or in danger?", pcm: "Police stop you or you dey inside danger?" },
+    "ai.widget.urgentlink": { en: "Get Urgent Help", pcm: "Get Quick Help" },
+    "ai.widget.greeting":   { en: "Hello! I can explain your legal rights under Nigerian law (police stops, tenancy, salary disputes, online scams). What would you like to know?", pcm: "Hello! I fit explain your legal rights under Nigerian law (police stop, rent wahala, salary weh dem no pay, online scam). Wetin you go like know?" },
+    "ai.widget.chip1":      { en: "Police search phone", pcm: "Police search phone" },
+    "ai.widget.chip2":      { en: "Landlord lockout", pcm: "Landlord lock house" },
+    "ai.widget.chip3":      { en: "Unpaid wages", pcm: "Salary weh dem no pay" },
+    "ai.widget.ph":         { en: "Ask a quick legal question…", pcm: "Ask quick legal question…" },
+    "ai.widget.phdisabled": { en: "Sign in to continue asking questions…", pcm: "Sign in make you continue ask questions…" },
+    "ai.widget.disclaimer": { en: "General civic information grounded in Nigerian law, not legal advice.", pcm: "General legal information backed by Nigerian law, not be lawyer advice." },
+    "ai.widget.limith4":    { en: "Free Preview Limit Reached (3/3)", pcm: "Free Preview Don Finish (3/3)" },
+    "ai.widget.limitp":     { en: "Sign in with a free RightAware account to continue where you left off with unlimited AI answers.", pcm: "Sign in with free RightAware account make you continue where you stop with unlimited AI answers." },
+    "ai.widget.signin":     { en: "Sign In & Continue", pcm: "Sign In & Continue" },
+    "ai.widget.createacct": { en: "Create Free Account", pcm: "Open Free Account" },
+    "ai.widget.restored":   { en: "Restored your conversation from the home page. You can now continue asking questions with full access.", pcm: "We don restore your talk from home page. You fit continue ask questions now with full access." }
   }
 };

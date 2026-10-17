@@ -63,17 +63,34 @@
             Search
           </button>
         </form>
-        <div class="quick-tags">
+        <div class="quick-tags" id="quickTags">
           <button type="button" data-q="arrest">Police stop</button>
           <button type="button" data-q="bail">Bail is free</button>
           <button type="button" data-q="rent">Landlord eviction</button>
-          <button type="button" data-q="employment">Unpaid salary</button>
-          <button type="button" data-q="vote">Voting rights</button>
-          <button type="button" data-q="scam">Online scam</button>
+          <button type="button" class="tag-expand" id="tagExpandBtn" aria-expanded="false" aria-label="Show more search topics">+3 more</button>
+          <span class="tags-extra" id="tagsExtra" hidden>
+            <button type="button" data-q="employment">Unpaid salary</button>
+            <button type="button" data-q="vote">Voting rights</button>
+            <button type="button" data-q="scam">Online scam</button>
+          </span>
         </div>
         <div id="homeSearchResults" class="hero-search-results" aria-live="polite"></div>
       </div>
     </div>
+
+    <!-- Strategic Visual Anchor: Everyday Nigerian Citizens -->
+    <figure class="hero-media rv">
+      <div class="hero-media-frame">
+        <img src="assets/images/hero-citizens.jpg" alt="Nigerian citizens standing together empowered with legal awareness" width="480" height="340" loading="eager"/>
+        <div class="hero-media-overlay">
+          <div class="hero-media-tag">
+            <span class="pulse"></span>
+            <span>Civic Empowerment</span>
+          </div>
+          <p class="hero-media-note">Empowering over 150,000 citizens with real legal protections.</p>
+        </div>
+      </div>
+    </figure>
   </div>
 
   <!-- Docked Tactile Hotline Strip (Base of Hero) -->
@@ -168,6 +185,35 @@
           </div>
         </form>
       </aside>
+
+      <!-- Strategic Visual Anchor: Citizen Legal Guidance -->
+      <aside class="triage-visual-card rv">
+        <div class="triage-visual-img-wrap">
+          <img src="assets/images/help-thinking-man.jpg" alt="Nigerian citizen seeking legal clarity" width="480" height="240" loading="lazy"/>
+          <div class="triage-visual-badge">
+            <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Instant Official Recourse
+          </div>
+        </div>
+        <div class="triage-visual-content">
+          <h3>Do Not Panic. Know Your Law.</h3>
+          <p>Arbitrary arrests and unlawful lockouts rely on citizen fear. Having the verified legal section in hand immediately shifts the power dynamic.</p>
+          <div class="triage-quick-rules">
+            <div class="triage-rule-item">
+              <span class="triage-rule-dot"></span>
+              <div><strong>Free Bail:</strong> ACJA 2015 §30 strictly criminalizes demanding money for bail.</div>
+            </div>
+            <div class="triage-rule-item">
+              <span class="triage-rule-dot"></span>
+              <div><strong>Search Warrant:</strong> Officers cannot search your phone without a signed court warrant.</div>
+            </div>
+            <div class="triage-rule-item">
+              <span class="triage-rule-dot"></span>
+              <div><strong>Notice to Quit:</strong> Self-help evictions and changing locks violate state tenancy laws.</div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 </section>
@@ -179,8 +225,14 @@
     <h2>Official rights and legal protections across Nigeria</h2>
     <p>Comprehensive guides covering criminal justice, housing, workplace protections, voting rights, and digital privacy.</p>
   </div>
-  <div class="cards-grid" id="homeRights"></div>
-  <div class="section-cta"><a class="btn btn-secondary btn-lg" href="rights.html">Browse All 28 Rights Topics →</a></div>
+  <div class="cards-grid is-collapsed" id="homeRights"></div>
+  <div class="section-cta">
+    <button class="btn-toggle-rights" id="toggleMoreRightsBtn" type="button" aria-expanded="false" aria-controls="homeRights">
+      <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      <span id="toggleMoreRightsText">Explore More Rights (+3)</span>
+    </button>
+    <a class="btn btn-secondary btn-lg" href="rights.html">Browse All 28 Rights Topics →</a>
+  </div>
 </div></section>
 
 <!-- Tier 3: Platform Core Systems (Bento Grid) -->
@@ -303,11 +355,21 @@
 <script src="content/rights.js"></script>
 <script src="content/laws.js"></script>
 <script src="js/config.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/chat-state.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
   var R = window.RA_RIGHTS || [];
-  function card(r){
+  var thumbMap = {
+    police: { img: "assets/images/laws-scales-gavel.jpg", alt: "Scales of justice representing criminal procedure and bail rights" },
+    tenancy: { img: "assets/images/about-everyone-has-a-story.jpg", alt: "Nigerian home and tenancy protections" },
+    employment: { img: "assets/images/lawyers-professional-tablet.jpg", alt: "Workplace contracts and employee protections" },
+    civic: { img: "assets/images/hero-citizens.jpg", alt: "Citizens participating in civic life and voting" },
+    digital: { img: "assets/images/resources-lightbulb.jpg", alt: "Digital security and online rights protection" },
+    fundamental: { img: "assets/images/justice-lady.jpg", alt: "Lady Justice representing fundamental human rights" }
+  };
+  function card(r, idx){
     var det = ((window.RA_RIGHTS_DETAIL||[]).find(function(x){ return x.title===r.title; })||{});
     var direct = r.fullGuide || r.slug || det.fullGuide;
     var url = direct ? direct : (det.id ? ("rights/topic.html?id="+det.id) : "rights.html");
@@ -321,7 +383,20 @@
       fundamental: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
     };
     var iconSvg = iconMap[r.id] || '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>';
-    return '<article class="card rv"><div class="card-icon-badge">'+iconSvg+'</div><h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<div style="margin-top:auto;padding-top:1.1rem"><a class="link" href="'+url+'">Open →</a></div></article>';
+    var thumb = thumbMap[r.id] || { img: "assets/images/laws-scales-gavel.jpg", alt: r.title };
+    var extraClass = (idx >= 3) ? " card-extra" : "";
+    return '<article class="card rv has-thumb' + extraClass + '">' +
+      '<div class="card-thumb">' +
+        '<img src="' + thumb.img + '" alt="' + thumb.alt + '" width="360" height="140" loading="lazy"/>' +
+      '</div>' +
+      '<div class="card-body">' +
+        '<div class="card-icon-badge">' + iconSvg + '</div>' +
+        '<h3>' + r.title + '</h3>' +
+        '<p>' + r.summary + '</p>' +
+        badge +
+        '<div style="margin-top:auto;padding-top:1.1rem"><a class="link" href="' + url + '">Open →</a></div>' +
+      '</div>' +
+    '</article>';
   }
   /* Six diverse civic directions across Nigerian civic life */
   var FEATURED_IDS = ["police", "tenancy", "employment", "civic", "digital", "fundamental"];
@@ -330,7 +405,22 @@
   }).filter(Boolean);
   R.forEach(function(r){ if(feat.length < 6 && feat.indexOf(r) < 0) feat.push(r); });
   var hr = document.getElementById("homeRights");
-  if(hr) hr.innerHTML = feat.slice(0,6).map(card).join("");
+  if(hr) hr.innerHTML = feat.slice(0,6).map(function(r, idx){ return card(r, idx); }).join("");
+
+  // Toggle explore more rights (+3 / fewer)
+  var toggleMoreRightsBtn = document.getElementById("toggleMoreRightsBtn");
+  var toggleMoreRightsText = document.getElementById("toggleMoreRightsText");
+  if(toggleMoreRightsBtn && hr){
+    toggleMoreRightsBtn.addEventListener("click", function(){
+      var isCollapsed = hr.classList.toggle("is-collapsed");
+      var isExpanded = !isCollapsed;
+      toggleMoreRightsBtn.setAttribute("aria-expanded", String(isExpanded));
+      toggleMoreRightsBtn.classList.toggle("expanded", isExpanded);
+      if(toggleMoreRightsText){
+        toggleMoreRightsText.textContent = isExpanded ? "Show Fewer Rights" : "Explore More Rights (+3)";
+      }
+    });
+  }
 
   // Home live search -> top matches inline + link to search page
   var input = document.getElementById("homeSearchInput"), out = document.getElementById("homeSearchResults");
@@ -345,7 +435,30 @@
   var sf = document.getElementById("homeSearchForm");
   if(sf) sf.addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
   if(input) input.addEventListener("input", function(){ run(input.value); });
-  document.querySelectorAll(".quick-tags button").forEach(function(b){ b.addEventListener("click", function(){ input.value=b.dataset.q; run(b.dataset.q); }); });
+  document.querySelectorAll(".quick-tags button").forEach(function(b){
+    if(b.dataset.q){
+      b.addEventListener("click", function(){ input.value=b.dataset.q; run(b.dataset.q); });
+    }
+  });
+
+  // Expand quick tags (+3 more / less)
+  var tagExpandBtn = document.getElementById("tagExpandBtn");
+  var tagsExtra = document.getElementById("tagsExtra");
+  if(tagExpandBtn && tagsExtra){
+    tagExpandBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      var isHidden = tagsExtra.hasAttribute("hidden");
+      if(isHidden){
+        tagsExtra.removeAttribute("hidden");
+        tagExpandBtn.setAttribute("aria-expanded", "true");
+        tagExpandBtn.textContent = "less";
+      } else {
+        tagsExtra.setAttribute("hidden", "");
+        tagExpandBtn.setAttribute("aria-expanded", "false");
+        tagExpandBtn.textContent = "+3 more";
+      }
+    });
+  }
 
   // Emergency Crisis Action Dispatcher
   function runTriage(i, d){
@@ -530,6 +643,341 @@
       });
     }catch(_){}
   })();
+})();
+</script>
+
+<!-- Floating Legal AI Assistant Widget -->
+<button class="ra-ai-fab" id="raAiFab" type="button" aria-label="Open RightAware Legal AI assistant" aria-expanded="false" aria-controls="raAiDrawer">
+  <span class="ra-ai-fab-icon" aria-hidden="true">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+    </svg>
+  </span>
+  <span>Ask AI</span>
+  <span class="ra-ai-fab-badge" id="raAiFabBadge">3 Free</span>
+</button>
+
+<aside class="ra-ai-drawer" id="raAiDrawer" role="dialog" aria-label="RightAware Legal AI Quick Assistant" aria-hidden="true">
+  <div class="ra-ai-drawer-header">
+    <div class="ra-ai-drawer-title-wrap">
+      <h3 class="ra-ai-drawer-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        RightAware AI
+      </h3>
+      <span class="ra-ai-drawer-status" id="raAiDrawerStatus">Preview: 0/3 Free</span>
+    </div>
+    <div class="ra-ai-drawer-actions">
+      <a class="ra-ai-btn-ghost" id="raAiFullViewLink" href="ai.html" title="Open Full AI Page">
+        <span>Full Page</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+      <button class="ra-ai-close-btn" id="raAiCloseBtn" type="button" aria-label="Close AI chat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="ra-ai-crisis-banner">
+    <span>Stopped by police or in danger?</span>
+    <a href="#emergencyConsole" id="raAiEmergencyLink">Get Urgent Help</a>
+  </div>
+
+  <div class="ra-ai-messages" id="raAiMessages" aria-live="polite">
+    <div class="ra-ai-msg assistant">
+      <span class="ra-ai-label">RightAware AI</span>
+      <div class="ra-ai-bubble">
+        Hello! I can explain your legal rights under Nigerian law (police stops, tenancy, salary disputes, online scams). What would you like to know?
+      </div>
+    </div>
+  </div>
+
+  <div class="ra-ai-chips" id="raAiChips">
+    <button type="button" class="ra-ai-chip" data-prompt="Can police search my phone without a warrant?">Police search phone</button>
+    <button type="button" class="ra-ai-chip" data-prompt="My landlord locked my apartment without notice.">Landlord lockout</button>
+    <button type="button" class="ra-ai-chip" data-prompt="My boss has refused to pay my salary.">Unpaid wages</button>
+  </div>
+
+  <div class="ra-ai-footer">
+    <form class="ra-ai-form" id="raAiForm">
+      <input class="ra-ai-input" id="raAiInput" type="text" placeholder="Ask a quick legal question…" autocomplete="off" aria-label="Ask RightAware AI"/>
+      <button class="ra-ai-send-btn" id="raAiSendBtn" type="submit" aria-label="Send question">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </form>
+    <p class="ra-ai-form-note">General civic information grounded in Nigerian law, not legal advice.</p>
+  </div>
+</aside>
+
+<script>
+(function(){
+  var fab = document.getElementById("raAiFab");
+  var drawer = document.getElementById("raAiDrawer");
+  if(!fab || !drawer) return;
+
+  var closeBtn = document.getElementById("raAiCloseBtn");
+  var emergencyLink = document.getElementById("raAiEmergencyLink");
+  var fullViewLink = document.getElementById("raAiFullViewLink");
+  var form = document.getElementById("raAiForm");
+  var input = document.getElementById("raAiInput");
+  var sendBtn = document.getElementById("raAiSendBtn");
+  var messagesBox = document.getElementById("raAiMessages");
+  var statusBadge = document.getElementById("raAiDrawerStatus");
+  var fabBadge = document.getElementById("raAiFabBadge");
+  var chipsWrap = document.getElementById("raAiChips");
+
+  var thread = [];
+  var isSubmitting = false;
+  var isAuthed = false;
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(m){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[m];
+    });
+  }
+
+  function checkAuth(){
+    try {
+      if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client && RA_SUPA.client.auth){
+        RA_SUPA.client.auth.getSession().then(function(s){
+          var tok = s && s.data && s.data.session && s.data.session.access_token;
+          isAuthed = !!tok;
+          updateAuthUI();
+        }).catch(function(){ isAuthed = false; updateAuthUI(); });
+      } else {
+        isAuthed = false;
+        updateAuthUI();
+      }
+    } catch(_) {
+      isAuthed = false;
+      updateAuthUI();
+    }
+  }
+
+  function updateAuthUI(){
+    if(!statusBadge) return;
+    if(isAuthed){
+      statusBadge.textContent = "AI ASSISTANT • ACTIVE";
+      statusBadge.classList.add("auth");
+      if(fabBadge) fabBadge.style.display = "none";
+    } else {
+      statusBadge.classList.remove("auth");
+      var count = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : 0;
+      var max = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.MAX_PREVIEWS : 3;
+      statusBadge.textContent = "Preview: " + count + "/" + max + " Free";
+      if(fabBadge){
+        fabBadge.style.display = "inline-block";
+        var remaining = Math.max(0, max - count);
+        fabBadge.textContent = remaining > 0 ? (remaining + " Free") : "Sign In";
+      }
+    }
+  }
+
+  function syncVisualViewport(){
+    if(window.visualViewport && drawer.classList.contains("open")){
+      if(window.innerWidth <= 600){
+        drawer.style.height = window.visualViewport.height + "px";
+        drawer.style.top = window.visualViewport.offsetTop + "px";
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+      } else {
+        drawer.style.height = "";
+        drawer.style.top = "";
+      }
+    }
+  }
+
+  function openDrawer(){
+    drawer.classList.add("open");
+    drawer.setAttribute("aria-hidden", "false");
+    fab.setAttribute("aria-expanded", "true");
+    syncVisualViewport();
+    setTimeout(function(){
+      if(input && !input.disabled) input.focus();
+    }, 150);
+  }
+
+  function closeDrawer(){
+    drawer.classList.remove("open");
+    drawer.setAttribute("aria-hidden", "true");
+    fab.setAttribute("aria-expanded", "false");
+    if(window.innerWidth <= 600){
+      drawer.style.height = "";
+      drawer.style.top = "";
+    }
+    fab.focus();
+  }
+
+  fab.addEventListener("click", function(){
+    if(drawer.classList.contains("open")) closeDrawer();
+    else openDrawer();
+  });
+
+  if(closeBtn) closeBtn.addEventListener("click", closeDrawer);
+
+  if(emergencyLink) emergencyLink.addEventListener("click", function(){
+    closeDrawer();
+  });
+
+  if(fullViewLink) fullViewLink.addEventListener("click", function(){
+    if(window.RA_CHAT_STATE && thread.length){
+      window.RA_CHAT_STATE.saveTransitThread(thread);
+    }
+  });
+
+  window.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && drawer.classList.contains("open")){
+      closeDrawer();
+    }
+  });
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", syncVisualViewport);
+    window.visualViewport.addEventListener("scroll", syncVisualViewport);
+  }
+
+  function addMsg(role, text, links){
+    var item = { role: role, text: text, links: links || [] };
+    thread.push(item);
+
+    var wrap = document.createElement("div");
+    wrap.className = "ra-ai-msg " + (role === "user" ? "user" : "assistant");
+
+    var html = "";
+    if(role !== "user"){
+      html += '<span class="ra-ai-label">RightAware AI</span>';
+    }
+    html += '<div class="ra-ai-bubble">' + esc(text).replace(/\n+/g, "<br/>");
+    if(links && links.length){
+      html += '<div class="ra-ai-links">';
+      links.forEach(function(l){
+        if(!l || !l.u) return;
+        html += '<a class="ra-ai-link-item" href="' + esc(l.u) + '">'
+          + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
+          + esc(l.t || "Open")
+          + '</a>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    wrap.innerHTML = html;
+    messagesBox.appendChild(wrap);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
+
+  function showTyping(){
+    var wrap = document.createElement("div");
+    wrap.className = "ra-ai-msg assistant";
+    wrap.id = "raAiTypingIndicator";
+    wrap.innerHTML = '<span class="ra-ai-label">RightAware AI</span><div class="ra-ai-typing"><span class="ra-ai-dot"></span><span class="ra-ai-dot"></span><span class="ra-ai-dot"></span></div>';
+    messagesBox.appendChild(wrap);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
+
+  function removeTyping(){
+    var el = document.getElementById("raAiTypingIndicator");
+    if(el) el.parentNode.removeChild(el);
+  }
+
+  function showLimitCard(){
+    if(document.getElementById("raAiLimitCard")) return;
+    var card = document.createElement("div");
+    card.className = "ra-ai-limit-card";
+    card.id = "raAiLimitCard";
+    card.innerHTML = '<h4>Free Preview Limit Reached (3/3)</h4>'
+      + '<p>Sign in with a free RightAware account to continue where you left off with unlimited AI answers.</p>'
+      + '<div class="ra-ai-limit-actions">'
+      + '<a class="btn btn-primary btn-sm" id="raAiLimitSignIn" href="login.html?next=ai.html%3Fresume%3D1">Sign In & Continue</a>'
+      + '<a class="btn btn-outline btn-sm" href="signup.html">Create Free Account</a>'
+      + '</div>';
+    messagesBox.appendChild(card);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+
+    var signInBtn = document.getElementById("raAiLimitSignIn");
+    if(signInBtn){
+      signInBtn.addEventListener("click", function(){
+        if(window.RA_CHAT_STATE) window.RA_CHAT_STATE.saveTransitThread(thread);
+      });
+    }
+
+    if(input){
+      input.disabled = true;
+      input.placeholder = "Sign in to continue asking questions…";
+    }
+    if(sendBtn) sendBtn.disabled = true;
+    if(chipsWrap) chipsWrap.style.display = "none";
+  }
+
+  async function handleSend(q){
+    if(isSubmitting) return;
+    q = (q || "").trim();
+    if(!q) return;
+
+    if(!isAuthed && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+      showLimitCard();
+      return;
+    }
+
+    isSubmitting = true;
+    if(input) { input.value = ""; input.disabled = true; }
+    if(sendBtn) sendBtn.disabled = true;
+
+    addMsg("user", q);
+    showTyping();
+
+    try {
+      var res = null;
+      if(isAuthed){
+        res = await window.RA_AI.ask(q);
+      } else {
+        res = await window.RA_AI.previewAsk(q);
+        if(window.RA_CHAT_STATE) window.RA_CHAT_STATE.incrementGuestPromptCount();
+        updateAuthUI();
+      }
+
+      removeTyping();
+
+      if(res && res.text){
+        addMsg("ai", res.text, res.links);
+      } else {
+        addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }]);
+      }
+
+      if(!isAuthed && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+        showLimitCard();
+      }
+    } catch(err){
+      removeTyping();
+      addMsg("ai", "A temporary issue occurred while loading this answer. Please try again or visit our help center.", [{ t: "Get Help", u: "help.html" }]);
+    } finally {
+      isSubmitting = false;
+      var reached = !isAuthed && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit();
+      if(!reached && input){
+        input.disabled = false;
+        input.focus();
+      }
+      if(!reached && sendBtn){
+        sendBtn.disabled = false;
+      }
+    }
+  }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if(input) handleSend(input.value);
+  });
+
+  document.querySelectorAll(".ra-ai-chip").forEach(function(chip){
+    chip.addEventListener("click", function(){
+      var p = chip.dataset.prompt;
+      if(p) handleSend(p);
+    });
+  });
+
+  document.addEventListener("ra:session-ready", function(){
+    checkAuth();
+  });
+
+  checkAuth();
 })();
 </script>
 </body>
