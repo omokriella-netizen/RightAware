@@ -3,7 +3,7 @@
    - Each entry: id -> { en, pcm } where `en` is the EXACT English string that appears
      in the UI or in data.js (whitespace-insensitive). js/i18n.js finds text nodes and
      placeholders matching `en` and swaps them according to the selected language.
-   - STATUTORY / LEGAL WORDING IS NEVER TRANSLATED. Pidgin entries are explanations
+   - ORIGINAL LAW TEXT IS NEVER TRANSLATED. Pidgin entries are explanations
      and UI text only; the original law wording always stays in its source language.
    - REVIEW STATUS: every `pcm` translation here is a DRAFT authored for this build and
      is marked pending review below. Qualified reviewers correct entries in this file;
@@ -14,8 +14,8 @@ window.RA_I18N = {
   meta: {
     defaultLang: "en",
     languages: [
-      { id: "en",    label: "English",         nativeLabel: "English" },
-      { id: "pcm",   label: "Nigerian Pidgin", nativeLabel: "Naijá Pidjin" }
+      { id: "en",    label: "EN",     nativeLabel: "EN" },
+      { id: "pcm",   label: "Pidgin", nativeLabel: "Pidgin" }
     ],
     futureLanguages: ["Hausa", "Yoruba", "Igbo", "Nigerian Sign Language"]
   },
@@ -26,14 +26,20 @@ window.RA_I18N = {
   },
   strings: {
     /* ---------- Navigation & account ---------- */
-    "nav.explore":    { en: "Explore Rights", pcm: "See Your Rights" },
-    "nav.resources":  { en: "Resources",      pcm: "Learning Materials" },
-    "nav.help":       { en: "Get Help",       pcm: "Find Help" },
-    "nav.contact":    { en: "Contact Us",     pcm: "Talk To Us" },
-    "nav.login":      { en: "Log In",         pcm: "Enter Account" },
-    "nav.signup":     { en: "Sign Up",        pcm: "Open Account" },
-    "nav.started":    { en: "Get Started",    pcm: "Start Now" },
-    "nav.libraries":  { en: "Libraries",      pcm: "All The Plenty Books" },
+    "nav.skip":       { en: "Skip to content",    pcm: "Jump go content" },
+    "nav.explore":    { en: "Explore Rights",     pcm: "See Your Rights" },
+    "nav.laws":       { en: "Laws Library",       pcm: "Laws Library" },
+    "nav.resources":  { en: "Resources",          pcm: "Learning Materials" },
+    "nav.help":       { en: "Get Help",           pcm: "Find Help" },
+    "nav.urgenthelp": { en: "Urgent Help",        pcm: "Quick Help" },
+    "nav.contact":    { en: "Contact Us",         pcm: "Talk To Us" },
+    "nav.login":      { en: "Log In",             pcm: "Enter Account" },
+    "nav.signup":     { en: "Sign Up",            pcm: "Open Account" },
+    "nav.started":    { en: "Get Started",        pcm: "Start Now" },
+    "nav.libraries":  { en: "Libraries",          pcm: "All The Plenty Books" },
+    "nav.pros":       { en: "Legal Professionals",pcm: "Law People" },
+    "nav.ai":         { en: "RightAware AI",      pcm: "RightAware AI" },
+    "nav.msearch":    { en: "Search rights, topics…", pcm: "Find rights, topics…" },
 
     /* ---------- Generic buttons & labels ---------- */
     "btn.search":       { en: "Search", pcm: "Find am" },
@@ -46,36 +52,105 @@ window.RA_I18N = {
     "label.language":   { en: "Language", pcm: "Language" },
 
     /* ---------- Homepage: hero & sections ---------- */
-    "home.badge":     { en: "Nigerian Civil Tech & Legal Awareness", pcm: "Nigeria Civil Tech & Knowledge About Law" },
-    "home.h1a":       { en: "Understand your Rights.", pcm: "Understand Your Rights." },
-    "home.h1b":       { en: "Know your power.", pcm: "Know Your Power." },
-    "home.lead":      { en: "RightAware helps every Nigerian understand their fundamental rights, civic responsibilities, and the laws that protect them — in simple, clear language. No legal jargon. Just knowledge you can act on.",
-                        pcm: "RightAware dey help every Nigerian understand di rights wey e get, di responsibility wey e get as citizen, and di laws wey dey protect dem — inside simple, clear talk. No plenty grammar. Just knowledge wey you fit take do work." },
-    "home.cta.explore": { en: "Explore Rights →", pcm: "See Your Rights →" },
-    "home.cta.ai":      { en: "Ask RightAware AI", pcm: "Ask RightAware AI Question" },
-    "home.stat.rights": { en: "Rights categories", pcm: "Kinds of Rights" },
-    "home.stat.videos": { en: "Demo videos", pcm: "Demo Videos" },
-    "home.stat.free":   { en: "Free awareness", pcm: "Free Knowledge" },
-    "home.search.h2":   { en: "Find rights and legal information", pcm: "Find Your Rights and Law Information" },
-    "home.search.lead": { en: "Search in plain English or Pidgin. Example: “police arrest me”, “landlord lock my shop”, “work sack me”.",
-                          pcm: "Find am for plain English or Pidgin. Example: “police arrest me”, “landlord lock my shop”, “work sack me”." },
-    "home.search.ph":   { en: "Search rights, laws, topics…", pcm: "Find rights, laws, topics…" },
-    "home.popular.eyebrow": { en: "Popular rights & topics", pcm: "Well-known rights & topics" },
-    "home.popular.h2":  { en: "Start with what Nigerians ask about most", pcm: "Start from wetin Nigerians dey ask pass" },
-    "home.libraries.eyebrow": { en: "Libraries", pcm: "All The Collections" },
-    "home.libraries.h2": { en: "Browse every collection", pcm: "Look Through All The Collections" },
-    "home.videos.eyebrow": { en: "Learn visually", pcm: "Learn With Video" },
-    "home.videos.h2":   { en: "Educational videos", pcm: "Teaching Videos" },
-    "home.res.eyebrow": { en: "Featured resources", pcm: "Special Materials" },
-    "home.res.h2":      { en: "Free guides & downloads", pcm: "Free Guides Weh You Fit Download" },
-    "home.help.h2":     { en: "In trouble right now? Get help fast.", pcm: "Trouble dey for you now? Find help sharp-sharp." },
-    "home.help.eyebrow": { en: "Get help", pcm: "Find help" },
-    "home.help.emerg":  { en: "Emergency?", pcm: "Emergency wey dey happen now?" },
-    "home.help.police": { en: "Police issue?", pcm: "Police wahala?" },
-    "home.help.lawyer": { en: "Can't afford a lawyer?", pcm: "You no get money pay lawyer?" },
-    "home.orgs.eyebrow": { en: "Support network", pcm: "People Weh Dey Help" },
-    "home.orgs.h2":     { en: "Rights-protection organisations", pcm: "Organizations Weh Dey Protect Rights" },
-    "home.pros.eyebrow": { en: "Legal professionals", pcm: "Law People" },
+    "home.badge":       { en: "Nigerian Civic Legal Awareness", pcm: "Nigeria Civic Legal Awareness" },
+    "home.h1a":         { en: "Know your rights.", pcm: "Know Your Rights." },
+    "home.h1b":         { en: "Defend yourself.", pcm: "Defend Yourself." },
+    "home.lead":        { en: "Clear legal guidance backed by Nigerian law for everyday situations across Nigeria. Learn your constitutional protections against unlawful arrest, stop illegal evictions, and connect with verified legal aid.",
+                          pcm: "Clear legal guidance wey back by law for everyday wahala across Nigeria. Know wetin constitution talk about unlawful arrest, stop landlord eviction, and find legal aid." },
+    "home.search.ph":   { en: "Search police stops, bail, eviction notice, unpaid wages…",
+                          pcm: "Find police stop, bail, eviction notice, unpaid salary…" },
+    "home.tag.arrest":  { en: "Police stop", pcm: "Police stop" },
+    "home.tag.bail":    { en: "Bail is free", pcm: "Bail dey free" },
+    "home.tag.rent":    { en: "Landlord eviction", pcm: "Landlord eviction" },
+    "home.tag.salary":  { en: "Unpaid salary", pcm: "Salary wey dem no pay" },
+    "home.tag.vote":    { en: "Voting rights", pcm: "Right to vote" },
+    "home.tag.scam":    { en: "Online scam", pcm: "Online scam" },
+
+    /* ---------- Hero Hotline Strip ---------- */
+    "hotline.urgent":   { en: "Urgent Situation?", pcm: "Wahala Dey Happen Now?" },
+    "hotline.hotlines": { en: "Direct 24/7 Hotlines:", pcm: "Direct 24/7 Hotlines:" },
+    "hotline.natemer":  { en: "National Emergency", pcm: "National Emergency" },
+    "hotline.police":   { en: "Police CRU (Extortion)", pcm: "Police CRU (Extortion)" },
+    "hotline.legalaid": { en: "Legal Aid Council", pcm: "Legal Aid Council" },
+
+    /* ---------- Section 2: Everyday Civic Rights ---------- */
+    "home.civic.eyebrow": { en: "Everyday Civic Rights", pcm: "Everyday Civic Rights" },
+    "home.civic.h2":      { en: "Official rights and legal protections across Nigeria", pcm: "Protections Wey Law Back Across Nigeria" },
+    "home.civic.lead":    { en: "Comprehensive guides covering criminal justice, housing, workplace protections, voting rights, and digital privacy.",
+                            pcm: "Full guides wey cover criminal justice, house wahala, work protection, voting rights, and digital privacy." },
+    "home.civic.cta":     { en: "Browse All 28 Rights Topics →", pcm: "Look All 28 Rights Topics →" },
+
+    /* ---------- Section 3: Action Toolkits & Situation Console ---------- */
+    "triage.eyebrow":   { en: "Action Toolkits & Emergency Guidance", pcm: "Action Toolkits & Urgent Situation Steps" },
+    "triage.h2":        { en: "Immediate steps and rights guidance", pcm: "Immediate Steps & Wetin Law Talk" },
+    "triage.lead":      { en: "Facing an active legal dispute or emergency? Select your situation below for step-by-step rights guides and direct official desks.",
+                          pcm: "You dey face legal wahala or emergency right now? Pick your situation make you see steps and official contacts." },
+    "triage.tool":      { en: "Interactive Tool", pcm: "Interactive Tool" },
+    "triage.title":     { en: "Urgent Legal Help", pcm: "Urgent Situation Steps" },
+    "triage.subhead":   { en: "Facing an active dispute or threat? Select your issue to reveal immediate action steps and official desk contacts:",
+                          pcm: "You dey face wahala or threat? Pick your issue make you see immediate steps and official contacts:" },
+    "triage.q1":        { en: "1. What best describes your situation?", pcm: "1. Wetin best describe your situation?" },
+    "triage.opt.police":{ en: "Police stop, arrest, or bail demand", pcm: "Police stop, arrest, or money for bail" },
+    "triage.opt.tenancy":{ en: "Landlord eviction, lockout, or rent dispute", pcm: "Landlord eviction, lockout, or house rent wahala" },
+    "triage.opt.salary":{ en: "Unpaid salary or sudden dismissal", pcm: "Salary wey dem no pay or sudden sack" },
+    "triage.opt.women": { en: "Domestic abuse or personal safety", pcm: "Domestic abuse or personal safety" },
+    "triage.opt.digital":{ en: "Online scam or bank fraud", pcm: "Online scam or bank fraud" },
+    "triage.opt.other": { en: "Other urgent legal dispute", pcm: "Other urgent legal wahala" },
+    "triage.q2":        { en: "2. Is anyone in immediate physical danger?", pcm: "2. Person dey inside immediate physical danger?" },
+    "triage.danger.no": { en: "No, detained or money demanded", pcm: "No, but dem hold/extort person" },
+    "triage.danger.yes":{ en: "Yes, immediate danger", pcm: "Yes, immediate danger dey" },
+    "triage.btn":       { en: "Show Immediate Steps & Guidance", pcm: "Show Steps & Wetin To Do" },
+    "triage.out.head":  { en: "Instant Guidance", pcm: "Quick Guidance" },
+    "triage.out.init":  { en: "Select your situation and click above to reveal immediate legal steps and emergency responder phone desks.",
+                          pcm: "Pick your situation and click button above make you see legal steps and responder phone desks." },
+
+    /* ---------- Section 4: Platform Core Systems (Bento Grid) ---------- */
+    "bento.eyebrow":    { en: "Platform Systems", pcm: "Platform Systems" },
+    "bento.h2":         { en: "Core Civic Tools & Resources", pcm: "Main Civic Tools & Materials" },
+    "bento.lead":       { en: "Direct legal archives, plain-language guides, AI assistance, and verified directory contacts.",
+                          pcm: "Direct law documents, simple legal guidance, AI help, and verified contact directory." },
+    "bento.c1.eye":     { en: "Rights Library", pcm: "Rights Library" },
+    "bento.c1.h3":      { en: "Civic Rights Topics", pcm: "Civic Rights Topics" },
+    "bento.c1.p":       { en: "Police bail, tenancy lockouts, unpaid wages, voting, and digital safety decoded in plain language.",
+                          pcm: "Police bail, house eviction, unpaid salary, voting, and online safety explained inside simple talk." },
+    "bento.c1.cta":     { en: "Explore Topics →", pcm: "Look Topics →" },
+    "bento.c2.eye":     { en: "Legal Archive", pcm: "Official Law Archive" },
+    "bento.c2.h3":      { en: "Decoded Laws", pcm: "Decoded Laws" },
+    "bento.c2.p":       { en: "1999 Constitution, Electoral Act 2022, ACJA 2015, and state tenancy laws in searchable text.",
+                          pcm: "1999 Constitution, Electoral Act 2022, ACJA 2015, and state rent laws wey you fit search." },
+    "bento.c2.cta":     { en: "Browse Laws →", pcm: "Read Laws →" },
+    "bento.c3.eye":     { en: "Plain-Language AI", pcm: "Simple Language AI" },
+    "bento.c3.h3":      { en: "Legal AI Assistant", pcm: "Legal AI Assistant" },
+    "bento.c3.p":       { en: "Ask legal questions in plain English or Naijá Pidgin with direct law citations.",
+                          pcm: "Ask questions for simple English or Naijá Pidgin with direct law sections." },
+    "bento.c3.cta":     { en: "Ask Legal AI →", pcm: "Ask Legal AI →" },
+    "bento.c4.eye":     { en: "Support Network", pcm: "People Wey Dey Help" },
+    "bento.c4.h3":      { en: "Verified Directory", pcm: "Verified Directory" },
+    "bento.c4.p":       { en: "Direct contacts for Legal Aid Council (LACON), NHRC, Police CRU, and vetted pro-bono clinics.",
+                          pcm: "Direct phone and address for Legal Aid Council, NHRC, Police CRU, and verified free legal clinics." },
+    "bento.c4.cta":     { en: "Find Legal Aid →", pcm: "Find Legal Aid →" },
+
+    /* ---------- Footer ---------- */
+    "footer.desc":      { en: "A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.",
+                          pcm: "Nigeria civic-tech and legal awareness platform. Dey help everyday citizens understand law and defend their rights." },
+    "footer.disc":      { en: "RightAware provides public legal information for civic education, not private legal counsel.",
+                          pcm: "RightAware dey give public legal information for education, no be private lawyer counsel." },
+    "footer.col1":      { en: "Civic Library", pcm: "Civic Library" },
+    "footer.res":       { en: "Resources & Guides", pcm: "Materials & Guides" },
+    "footer.lawyers":   { en: "Legal Directory", pcm: "Legal Directory" },
+    "footer.ai":        { en: "AI Legal Assistant", pcm: "AI Legal Assistant" },
+    "footer.col2":      { en: "Citizen Action", pcm: "Citizen Action" },
+    "footer.triage":    { en: "Emergency Help", pcm: "Emergency Help" },
+    "footer.report":    { en: "Report an Incident", pcm: "Report Wahala" },
+    "footer.faqs":      { en: "Civic FAQs", pcm: "Civic FAQs" },
+    "footer.mission":   { en: "About Our Mission", pcm: "About Our Mission" },
+    "footer.contact":   { en: "Contact Civic Desk", pcm: "Contact Civic Desk" },
+    "footer.col3":      { en: "Official Inquiries", pcm: "Official Inquiries" },
+    "footer.feedback":  { en: "Project Feedback & Inquiries", pcm: "Project Feedback & Inquiries" },
+    "footer.desk":      { en: "Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT", pcm: "Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT" },
+    "footer.police":    { en: "24/7 Police CRU:", pcm: "24/7 Police CRU:" },
+    "footer.nat":       { en: "National Emergency:", pcm: "National Emergency:" },
+    "footer.bottom":    { en: "Open-access civic awareness for all Nigerians", pcm: "Free civic awareness for all Nigerians" },
     "home.nav":         { en: "Home", pcm: "Home" },
 
     /* ---------- Search ---------- */
@@ -92,7 +167,7 @@ window.RA_I18N = {
     "laws.notice.strong": { en: "How this library stays honest:", pcm: "How this library take dey honest:" },
 
     /* ---------- Rights titles (data.js RA_RIGHTS) ---------- */
-    "right.fundamental": { en: "Fundamental Human Rights", pcm: "Fundamental Human Rights" },
+    "right.fundamental": { en: "Fundamental Human Rights", pcm: "Basic Rights Wey Every Person Get" },
     "right.police":      { en: "Police & Arrest Rights", pcm: "Your Rights When Police Hold You" },
     "right.employment":  { en: "Employment Rights", pcm: "Your Rights for Work" },
     "right.tenancy":     { en: "Rent & Tenancy Rights", pcm: "Your Rights for Rent and House" },
@@ -106,8 +181,8 @@ window.RA_I18N = {
     "right.civic":       { en: "Civic Responsibilities", pcm: "Your Work As Citizen" },
 
     /* ---------- Rights summaries (data.js RA_RIGHTS) ---------- */
-    "rightsum.fundamental": { en: "The basic rights every person in Nigeria is entitled to — life, dignity, liberty, fair hearing, privacy, expression, movement and more.",
-      pcm: "Di small-small rights weh every person for Nigeria get — life, respect, freedom, fair hearing, privacy, talk your mind, move around, and others." },
+    "rightsum.fundamental": { en: "The basic rights every person in Nigeria is entitled to: life, dignity, liberty, fair hearing, privacy, expression, movement and more.",
+      pcm: "Di basic rights wey every person for Nigeria get: life, respect, freedom, fair hearing, privacy, talk your mind, move around, and others." },
     "rightsum.police": { en: "What police can and cannot do, your right to silence and a lawyer, bail rules, detention time limits, and how to report abuse.",
       pcm: "Wetin police fit do and wetin dem no fit do, your right to keep quiet and call lawyer, how bail dey work, how long dem fit hold you, and how you fit report am." },
     "rightsum.employment": { en: "Hiring, pay, dismissal, workplace safety and what to do about unpaid salary or unfair sacking.",
@@ -128,8 +203,8 @@ window.RA_I18N = {
       pcm: "Privacy, protection of your data, online scam, cyberbullying, and wetin you go do if person carry malice attack your account or money." },
     "rightsum.constitutional": { en: "How Nigeria is governed — the arms of government, how laws are made, and how citizens can engage the system.",
       pcm: "How Nigeria dey governed — di arms of government, how dem dey make laws, and how citizen fit involve inside the system." },
-    "rightsum.civic": { en: "Voting, taxes, obeying the law, community service and holding leaders accountable — the citizen's side of the bargain.",
-      pcm: "Voting, tax, obey law, serve your community, and make leader account for wetin dem do — na di citizen own be dis." },
+    "rightsum.civic": { en: "Voting, taxes, obeying the law, community service and holding leaders accountable: the citizen's side of the bargain.",
+      pcm: "Voting, tax, obey law, serve your community, and make leader account for wetin dem do: na di citizen own be dis." },
 
     /* ---------- FAQs (data.js RA_FAQS) ---------- */
     "faq.q1": { en: "Is RightAware a law firm? Can it represent me?", pcm: "RightAware be law firm? Dem fit represent me for court?" },

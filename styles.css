@@ -36,7 +36,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font-family:var(--font-body);color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+body{margin:0;font-family:var(--font-body);color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip}
 .container{width:min(1150px,92%);margin:0 auto}
 h1,h2,h3,h4{font-family:var(--font-heading);font-weight:700;letter-spacing:-0.025em;line-height:1.25;margin:0 0 .5rem}
 h1{font-weight:800;letter-spacing:-0.03em}
@@ -103,16 +103,23 @@ p{margin:0 0 1rem}
   background:#f8fafc;
   color:var(--navy);
   border-radius:10px;
-  padding:0 1.6rem 0 .75rem;
+  padding:0 1.5rem 0 .75rem;
   font-size:.84rem;
   font-weight:600;
   cursor:pointer;
   width:auto;
-  min-width:115px;
+  min-width:80px;
   max-width:none;
   white-space:nowrap;
-  appearance:auto;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%23122620' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+  background-size:8px 5px;
   line-height:36px;
+  box-sizing:border-box;
 }
 .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;background:none;border:1px solid var(--border);border-radius:8px;width:38px;height:38px;padding:0;cursor:pointer}
 .hamburger span{width:18px;height:2px;background:var(--navy);display:block}
@@ -122,10 +129,8 @@ p{margin:0 0 1rem}
 
 /* Hero */
 .hero{background:linear-gradient(180deg,var(--ra-brand-dark) 0%,#0A1713 100%);color:#fff;padding:3.5rem 0 4rem}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:2.5rem;align-items:start}
-@media (max-width:960px){
-  .hero-grid{grid-template-columns:1fr;gap:2rem}
-}
+.hero-grid{display:block;max-width:840px;margin:0 auto}
+.hero-copy{max-width:100%}
 .badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:.35rem .8rem;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:1rem}
 .pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.25)}
 .hero h1{font-size:clamp(2.1rem,4.2vw,3.4rem);font-weight:800;line-height:1.15}
@@ -151,22 +156,24 @@ p{margin:0 0 1rem}
 .hero-search-results .result strong{color:var(--ra-brand-dark)}
 .hero-search-results .result a{color:var(--ra-brand-leaf-hover);font-weight:700}
 
-/* Hero Platform Bento Preview (Right Rail) */
-.hero-bento-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
+/* Platform Bento Systems Grid (Option B: Editorial Light Surface for WCAG AA compliance outside hero) */
+.hero-bento-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media (max-width:960px){.hero-bento-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:600px){.hero-bento-grid{grid-template-columns:1fr}}
 .bento-card,
 .bento-card:link,
 .bento-card:visited{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.14);
+  background:var(--card);
+  border:1px solid var(--border);
   border-radius:14px;
-  padding:1.15rem;
-  color:#fff;
+  padding:1.25rem;
+  color:var(--text);
+  box-shadow:var(--shadow);
   text-decoration:none;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  transition:transform .18s cubic-bezier(0.16,1,0.3,1),background .18s ease,border-color .18s ease;
+  transition:transform .18s cubic-bezier(0.16,1,0.3,1),background .18s ease,border-color .18s ease,box-shadow .18s ease;
 }
 .bento-card *,
 .bento-card:visited *{
@@ -174,26 +181,27 @@ p{margin:0 0 1rem}
 }
 .bento-card:hover,
 .bento-card:active{
-  background:rgba(255,255,255,.09);
+  background:var(--ra-brand-tint);
   border-color:var(--ra-brand-leaf);
+  box-shadow:0 12px 32px rgba(18,38,32,.12);
   transform:translateY(-2px);
-  color:#fff;
+  color:var(--text);
   text-decoration:none;
 }
 .bento-card:focus-visible{
   outline:none;
-  border-color:#ffffff;
-  box-shadow:0 0 0 2px rgba(255,255,255,.35);
+  border-color:var(--ra-brand-leaf);
+  box-shadow:0 0 0 3px rgba(119,157,50,.35);
   transform:translateY(-2px);
 }
 .bento-head{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.4rem}
 .bento-eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
 .bento-icon{color:var(--ra-brand-leaf);display:inline-flex}
-.bento-num{font-size:1.6rem;font-weight:800;line-height:1;color:#fff;margin-bottom:.2rem;display:block}
-.bento-card h3{font-size:.98rem;font-weight:700;color:#fff;margin:0 0 .35rem;line-height:1.25}
-.bento-card p{font-size:.8rem;color:#cbd5e1;line-height:1.45;margin:0 0 .65rem;flex:1}
-.bento-cta{font-size:.78rem;font-weight:700;color:#86efac;display:inline-flex;align-items:center;gap:.25rem}
-.bento-card:hover .bento-cta{color:#fff;text-decoration:underline}
+.bento-num{font-size:1.6rem;font-weight:800;line-height:1;color:var(--ra-brand-dark);margin-bottom:.2rem;display:block}
+.bento-card h3{font-size:.98rem;font-weight:700;color:var(--text);margin:0 0 .35rem;line-height:1.25}
+.bento-card p{font-size:.82rem;color:var(--muted);line-height:1.45;margin:0 0 .65rem;flex:1}
+.bento-cta{font-size:.78rem;font-weight:700;color:var(--ra-brand-leaf-hover);display:inline-flex;align-items:center;gap:.25rem}
+.bento-card:hover .bento-cta{color:var(--ra-brand-dark);text-decoration:underline}
 
 /* Hero Docked Tactile Hotline Strip */
 .hero-hotline-strip{
@@ -242,9 +250,7 @@ p{margin:0 0 1rem}
 
 /* Section 4: Toolkits & Situation Triage */
 #emergencyConsole{scroll-margin-top:5.5rem}
-.triage-section-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:2.2rem;align-items:start}
-@media (max-width:960px){.triage-section-grid{grid-template-columns:1fr;gap:2rem}}
-.checklist-card-stack{display:grid;gap:1rem}
+.triage-section-grid{display:block;max-width:860px;margin:0 auto}
 
 /* Situation Triage Console Card */
 .hero-crisis-card{background:#0D1E18;border:2px solid rgba(220,38,38,.55);border-radius:18px;padding:1.5rem;box-shadow:0 24px 60px rgba(0,0,0,.45);color:#fff;position:relative}
@@ -606,15 +612,114 @@ img{max-width:100%;height:auto}
   .hamburger{display:flex}
 }
 @media (max-width:600px){
-  .header-inner{gap:.6rem}
-  .header-actions{gap:.4rem}
-  /* Same official logo sprite, uniformly scaled (130x30 -> 98x23). */
-  .site-header .logo-brand{width:98px;height:23px}
-  .site-header .logo-brand img{width:158px;height:158px;left:-33px;top:-69px}
+  .site-header .container{width:min(1150px,96%)}
+  .header-inner{gap:.35rem;padding:.5rem 0}
+  .header-actions{gap:.3rem}
+  /* Same official logo sprite, uniformly scaled (130x30 -> 88x20). */
+  .site-header .logo-brand{width:88px;height:20px}
+  .site-header .logo-brand img{width:142px;height:142px;left:-30px;top:-62px}
+  .site-header .ra-lang{width:auto;min-width:0;flex-shrink:0}
   .site-header .ra-lang-select,
-  .ra-lang-select{font-size:.78rem;padding:0 1.2rem 0 .55rem;min-width:auto}
-  .header-actions .btn-sm{padding:0 .65rem}
+  .ra-lang-select{
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    background-color:#f8fafc;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%23122620' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 6px center;
+    background-size:8px 5px;
+    width:auto;
+    min-width:68px;
+    max-width:96px;
+    padding:0 20px 0 8px;
+    font-size:.76rem;
+    font-weight:600;
+    line-height:34px;
+    height:34px;
+    min-height:34px;
+    overflow:visible;
+    text-overflow:clip;
+    box-sizing:border-box;
+  }
+  .header-actions .btn-sm{padding:0 .4rem;font-size:.78rem;height:34px;min-height:34px;line-height:34px}
+  .header-actions .btn-urgent{gap:.25rem}
   .header-actions .btn-outline{display:none}
+  .hamburger{width:34px;height:34px}
+
+  .hero{padding:4.2rem 0 3.5rem}
+
+  /* Stacking on <= 600px into flex-direction: column / 1fr with width: 100%; min-width: 0; */
+  .hero-hotline-strip{
+    flex-direction:column;
+    align-items:stretch;
+    gap:.85rem;
+    width:100%;
+    min-width:0;
+  }
+  .hotline-strip-label{
+    white-space:normal;
+    flex-wrap:wrap;
+  }
+  .hotline-pills{
+    grid-template-columns:1fr;
+    width:100%;
+    min-width:0;
+  }
+  .hotline-pill{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+  }
+
+  .hero-search-form{
+    flex-direction:column;
+    width:100%;
+    min-width:0;
+  }
+  .hero-search-form input,
+  .hero-search-form .btn{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+  }
+  .crisis-danger-toggle{
+    grid-template-columns:1fr;
+    width:100%;
+    min-width:0;
+  }
+  .crisis-danger-toggle .crisis-radio-label{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+  }
+  .filter-bar{
+    flex-direction:column;
+    width:100%;
+    min-width:0;
+  }
+  .filter-bar input,
+  .filter-bar input[type=search],
+  .filter-bar select,
+  .filter-bar .btn,
+  .filter-bar button{
+    width:100%;
+    min-width:0;
+    flex:none;
+    box-sizing:border-box;
+  }
+  .card-actions{
+    flex-direction:column;
+    width:100%;
+    min-width:0;
+    align-items:stretch;
+  }
+  .card-actions .btn{
+    width:100%;
+    min-width:0;
+    flex:none;
+    box-sizing:border-box;
+  }
 }
 
 /* ===== mailto: launch guard (only appears when no mail app opened) ===== */
