@@ -109,6 +109,8 @@ async function run() {
 
     await client.send('Page.enable');
     await client.send('Runtime.enable');
+    await client.send('Network.enable');
+    await client.send('Network.setCacheDisabled', { cacheDisabled: true });
     await client.send('Emulation.setDeviceMetricsOverride', {
       width: 320,
       height: 568,
@@ -139,7 +141,10 @@ async function run() {
       bentoCount: document.querySelectorAll('.hero-bento-grid .bento-card').length,
       bentoCardBg: window.getComputedStyle(document.querySelector('.bento-card')).backgroundColor,
       bentoCardColor: window.getComputedStyle(document.querySelector('.bento-card h3')).color,
-      emergencyConsoleWidth: document.querySelector('#emergencyConsole')?.getBoundingClientRect().width
+      emergencyConsoleWidth: document.querySelector('#emergencyConsole')?.getBoundingClientRect().width,
+      rotDPosition: window.getComputedStyle(document.querySelector('.rot-d')).position,
+      rotDDisplay: window.getComputedStyle(document.querySelector('.rot-d')).display,
+      rotDWidth: document.querySelector('.rot-d')?.getBoundingClientRect().width
     })`);
 
     console.log('index.html Viewport Check:');
@@ -155,9 +160,35 @@ async function run() {
     console.log('  Crisis danger grid columns:', indexMetrics.crisisDangerCols);
     console.log('  Situation console width:', indexMetrics.emergencyConsoleWidth);
     console.log('  Bento card count:', indexMetrics.bentoCount);
+    console.log('  Right of the Day position:', indexMetrics.rotDPosition, 'display:', indexMetrics.rotDDisplay);
 
     const indexScrollOk = indexMetrics.docScrollWidth <= indexMetrics.innerWidth;
     console.log('>> ASSERTION 1 (index.html scrollWidth <= innerWidth):', indexScrollOk ? 'PASSED' : 'FAILED');
+    if (!indexScrollOk) throw new Error(`index.html overflows horizontally: scrollWidth=${indexMetrics.docScrollWidth} > innerWidth=${indexMetrics.innerWidth}`);
+
+    const rotDInlineOk = indexMetrics.rotDPosition !== 'fixed';
+    console.log('>> ASSERTION ROT-D (.rot-d is inline, not position: fixed):', rotDInlineOk ? 'PASSED' : 'FAILED');
+    if (!rotDInlineOk) throw new Error(`.rot-d has position: ${indexMetrics.rotDPosition}, expected inline (not fixed)`);
+
+    console.log('\nAsserting WebP assets exist and are < 45KB:');
+    const webpAssets = [
+      'assets/images/logo-rightaware.webp',
+      'assets/images/hero-citizens.webp',
+      'assets/images/help-thinking-man.webp',
+      'assets/images/laws-scales-gavel.webp',
+      'assets/images/about-everyone-has-a-story.webp',
+      'assets/images/lawyers-professional-tablet.webp',
+      'assets/images/resources-lightbulb.webp',
+      'assets/images/justice-lady.webp'
+    ];
+    for (const asset of webpAssets) {
+      const fullPath = path.resolve(asset);
+      if (!fs.existsSync(fullPath)) throw new Error(`Missing webp asset on disk: ${asset}`);
+      const bytes = fs.statSync(fullPath).size;
+      if (bytes >= 45000) throw new Error(`Webp asset ${asset} is ${bytes} bytes (>= 45KB limit)`);
+      console.log(`  ✓ ${asset}: ${(bytes / 1024).toFixed(1)} KB (< 45KB)`);
+    }
+    console.log('>> ASSERTION WEBP-BUDGET (all 8 webp images exist and < 45KB): PASSED');
 
     // Child Elements Viewport Bounding Rect Audit in ENGLISH (Zero-Trust Anti-Guillotine Audit)
     const childOverflowEn = await client.eval(`(() => {

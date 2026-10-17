@@ -105,6 +105,11 @@ async function run() {
     await client.send('DOM.enable');
     await client.send('CSS.enable');
     await client.send('Runtime.enable');
+    await client.send('Network.enable');
+    await client.send('Network.setCacheDisabled', { cacheDisabled: true });
+    try {
+      await client.send('Storage.clearDataForOrigin', { origin: 'http://localhost:8080', storageTypes: 'all' });
+    } catch (_) {}
 
     // 1. Mobile viewport 320x568
     console.log('\n[TEST 1] Setting viewport to 320px x 568px (Mobile iPhone SE)');
@@ -117,7 +122,11 @@ async function run() {
 
     console.log('Navigating to http://localhost:8080/index.html ...');
     await client.send('Page.navigate', { url: 'http://localhost:8080/index.html' });
-    await sleep(2500);
+    for (let i = 0; i < 30; i++) {
+      const ready = await client.evaluate('document.readyState === "complete" && !!document.getElementById("raAiFab")');
+      if (ready) break;
+      await sleep(300);
+    }
 
     const loc = await client.evaluate('window.location.href');
     console.log('Current Edge URL:', loc);
@@ -166,6 +175,44 @@ async function run() {
     if (!fabEval.visible) throw new Error('FAB is not visible');
     if (fabEval.overflowsWindow) throw new Error('FAB overflows 320px screen boundary!');
     if (!fabEval.text.includes('Ask AI')) throw new Error('FAB missing "Ask AI" label');
+
+    // Verify .rot-d is inline and position !== 'fixed'
+    console.log('\n[TEST ROT-D] Verifying Right of the Day is inline (not fixed)');
+    const rotDEval = await client.evaluate(`(() => {
+      const rot = document.querySelector('.rot-d');
+      if (!rot) return { error: 'No .rot-d element found' };
+      const cs = window.getComputedStyle(rot);
+      const rect = rot.getBoundingClientRect();
+      return {
+        position: cs.position,
+        display: cs.display,
+        isFixed: cs.position === 'fixed',
+        width: rect.width,
+        height: rect.height,
+        parent: rot.parentElement ? rot.parentElement.tagName + '.' + rot.parentElement.className : null
+      };
+    })()`);
+    console.log('rot-d evaluation:', rotDEval);
+    if (rotDEval.isFixed) throw new Error('.rot-d is position: fixed! Must be inline!');
+
+    console.log('\n[TEST WEBP] Verifying all referenced WebP images exist on disk and are < 45KB');
+    const webpAssets = [
+      'assets/images/logo-rightaware.webp',
+      'assets/images/hero-citizens.webp',
+      'assets/images/help-thinking-man.webp',
+      'assets/images/laws-scales-gavel.webp',
+      'assets/images/about-everyone-has-a-story.webp',
+      'assets/images/lawyers-professional-tablet.webp',
+      'assets/images/resources-lightbulb.webp',
+      'assets/images/justice-lady.webp'
+    ];
+    for (const asset of webpAssets) {
+      const fullPath = path.resolve(asset);
+      if (!fs.existsSync(fullPath)) throw new Error(`Missing webp asset on disk: ${asset}`);
+      const bytes = fs.statSync(fullPath).size;
+      if (bytes >= 45000) throw new Error(`Webp asset ${asset} is ${bytes} bytes (>= 45KB limit)`);
+      console.log(`  ✓ ${asset}: ${(bytes / 1024).toFixed(1)} KB (< 45KB)`);
+    }
 
     // 2. Open drawer on mobile
     console.log('\n[TEST 2] Tapping FAB to open drawer on mobile <= 600px');
@@ -234,10 +281,6 @@ async function run() {
       const limitCard = document.getElementById("raAiLimitCard");
       const inputDisabled = input.disabled;
 
-      // Click limit sign in
-      const signInBtn = document.getElementById("raAiLimitSignIn");
-      if (signInBtn) signInBtn.click();
-
       const rawTransit = sessionStorage.getItem("ra_pending_chat");
 
       return {
@@ -258,7 +301,12 @@ async function run() {
     // 5. Navigate to ai.html and verify thread hydration
     console.log('\n[TEST 5] Hydrating thread on ai.html?resume=1');
     await client.send('Page.navigate', { url: 'http://localhost:8080/ai.html?resume=1' });
-    await sleep(1500);
+    for (let i = 0; i < 30; i++) {
+      const ready = await client.evaluate('document.readyState === "complete"');
+      if (ready) break;
+      await sleep(200);
+    }
+    await sleep(600);
 
     const aiRes = await client.evaluate(`(() => {
       const box = document.getElementById("chatBox");

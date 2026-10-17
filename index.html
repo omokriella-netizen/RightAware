@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="RightAware | Know Your Legal Rights in Nigeria"/>
 <meta name="twitter:description" content="RightAware is a Nigerian legal awareness platform helping citizens understand their rights, stop unlawful arrests, handle landlord disputes, and get legal aid."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/"/>
-<link rel="stylesheet" href="styles.css?v=2.3"/>
+<link rel="stylesheet" href="styles.css?v=2.4"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.webp" alt="RightAware" width="130" height="30" loading="lazy" decoding="async"/></span></a>
     <nav class="nav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
@@ -81,7 +81,7 @@
     <!-- Strategic Visual Anchor: Everyday Nigerian Citizens -->
     <figure class="hero-media rv">
       <div class="hero-media-frame">
-        <img src="assets/images/hero-citizens.jpg" alt="Nigerian citizens standing together empowered with legal awareness" width="480" height="340" loading="eager"/>
+        <img src="assets/images/hero-citizens.webp" alt="Nigerian citizens standing together empowered with legal awareness" width="480" height="340" fetchpriority="high" decoding="async"/>
         <div class="hero-media-overlay">
           <div class="hero-media-tag">
             <span class="pulse"></span>
@@ -189,7 +189,7 @@
       <!-- Strategic Visual Anchor: Citizen Legal Guidance -->
       <aside class="triage-visual-card rv">
         <div class="triage-visual-img-wrap">
-          <img src="assets/images/help-thinking-man.jpg" alt="Nigerian citizen seeking legal clarity" width="480" height="240" loading="lazy"/>
+          <img src="assets/images/help-thinking-man.webp" alt="Nigerian citizen seeking legal clarity" width="480" height="240" loading="lazy" decoding="async"/>
           <div class="triage-visual-badge">
             <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             Instant Official Recourse
@@ -233,6 +233,8 @@
     </button>
     <a class="btn btn-secondary btn-lg" href="rights.html">Browse All 28 Rights Topics →</a>
   </div>
+  <!-- Featured Civic Spotlight Banner: Right of the Day -->
+  <aside class="rot-d" id="rotOfTheDay" aria-label="Right of the Day"></aside>
 </div></section>
 
 <!-- Tier 3: Platform Core Systems (Bento Grid) -->
@@ -304,7 +306,7 @@
 <footer class="footer" id="contact">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
+      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.webp" alt="RightAware" width="130" height="30" loading="lazy" decoding="async"/></span></a>
       <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
       <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
     </div>
@@ -362,12 +364,12 @@
 (function(){
   var R = window.RA_RIGHTS || [];
   var thumbMap = {
-    police: { img: "assets/images/laws-scales-gavel.jpg", alt: "Scales of justice representing criminal procedure and bail rights" },
-    tenancy: { img: "assets/images/about-everyone-has-a-story.jpg", alt: "Nigerian home and tenancy protections" },
-    employment: { img: "assets/images/lawyers-professional-tablet.jpg", alt: "Workplace contracts and employee protections" },
-    civic: { img: "assets/images/hero-citizens.jpg", alt: "Citizens participating in civic life and voting" },
-    digital: { img: "assets/images/resources-lightbulb.jpg", alt: "Digital security and online rights protection" },
-    fundamental: { img: "assets/images/justice-lady.jpg", alt: "Lady Justice representing fundamental human rights" }
+    police: { img: "assets/images/laws-scales-gavel.webp", alt: "Scales of justice representing criminal procedure and bail rights" },
+    tenancy: { img: "assets/images/about-everyone-has-a-story.webp", alt: "Nigerian home and tenancy protections" },
+    employment: { img: "assets/images/lawyers-professional-tablet.webp", alt: "Workplace contracts and employee protections" },
+    civic: { img: "assets/images/hero-citizens.webp", alt: "Citizens participating in civic life and voting" },
+    digital: { img: "assets/images/resources-lightbulb.webp", alt: "Digital security and online rights protection" },
+    fundamental: { img: "assets/images/justice-lady.webp", alt: "Lady Justice representing fundamental human rights" }
   };
   function card(r, idx){
     var det = ((window.RA_RIGHTS_DETAIL||[]).find(function(x){ return x.title===r.title; })||{});
@@ -383,11 +385,11 @@
       fundamental: '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
     };
     var iconSvg = iconMap[r.id] || '<svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>';
-    var thumb = thumbMap[r.id] || { img: "assets/images/laws-scales-gavel.jpg", alt: r.title };
+    var thumb = thumbMap[r.id] || { img: "assets/images/laws-scales-gavel.webp", alt: r.title };
     var extraClass = (idx >= 3) ? " card-extra" : "";
     return '<article class="card rv has-thumb' + extraClass + '">' +
       '<div class="card-thumb">' +
-        '<img src="' + thumb.img + '" alt="' + thumb.alt + '" width="360" height="140" loading="lazy"/>' +
+        '<img src="' + thumb.img + '" alt="' + thumb.alt + '" width="360" height="140" loading="lazy" decoding="async"/>' +
       '</div>' +
       '<div class="card-body">' +
         '<div class="card-icon-badge">' + iconSvg + '</div>' +
@@ -607,12 +609,10 @@
     }
   } catch(_) {}
 
-  /* ---- Right of the Day ----
+  /* ---- Right of the Day (Inline Featured Civic Spotlight Banner) ----
      Highlights one existing right from content/rights.js (no invented content):
      deterministic day-of-year pick, short explanation = the entry's own summary,
-     "Explore this right" links to its guide/overview. Dismissible card in the
-     corner — never a full-screen overlay — and it is shown at most once per
-     browser session per day (sessionStorage; cleared when the browser session ends). */
+     "Explore this right" links to its guide/overview. Full-width inline editorial banner. */
   (function(){
     try{
       var det = (window.RA_RIGHTS_DETAIL||[]).filter(function(d){ return d && d.id && d.summary; });
@@ -620,27 +620,19 @@
       var now = new Date();
       var doy = Math.floor((now - new Date(now.getFullYear(),0,0)) / 86400000);
       var pick = det[doy % det.length];
-      var seenKey = "ra_rotd_seen_" + now.toDateString();
-      if(sessionStorage.getItem(seenKey)) return;   // already shown this session
-      sessionStorage.setItem(seenKey, "1");
       var href = pick.fullGuide || ("rights/topic.html?id=" + pick.id);
       var tag = pick.fullGuide ? '<span class="tag">Full guide</span>' : '<span class="tag tag-soon">Overview</span>';
-      var el = document.createElement("aside");
-      el.className = "rot-d";
-      el.id = "rotOfTheDay";
-      el.setAttribute("aria-label", "Right of the Day");
+      var el = document.getElementById("rotOfTheDay");
+      if(!el) return;
       var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(m){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[m]; }); };
-      el.innerHTML = '<div class="rot-d-head"><span class="rot-d-eyebrow"><svg class="ra-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:4px;vertical-align:-1px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Right of the Day</span>'
-        + '<button class="rot-d-close" type="button" aria-label="Dismiss Right of the Day"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>'
+      el.innerHTML = '<div class="rot-d-content">'
+        + '<div class="rot-d-eyebrow"><svg class="ra-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:4px;vertical-align:-1px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Right of the Day &bull; Featured Spotlight</div>'
         + '<h3>' + esc(pick.title) + '</h3>'
         + '<p>' + esc(pick.summary) + '</p>'
-        + tag + ' <a class="btn btn-primary btn-sm" style="margin-left:.4rem" href="' + esc(href) + '">Explore this right</a>';
-      document.body.appendChild(el);
-      setTimeout(function(){ el.classList.add("in"); }, 700);
-      el.querySelector(".rot-d-close").addEventListener("click", function(){
-        el.classList.remove("in");
-        setTimeout(function(){ el.hidden = true; }, 400);
-      });
+        + '</div>'
+        + '<div class="rot-d-action">'
+        + tag + ' <a class="btn btn-primary btn-sm" href="' + esc(href) + '">Explore this right &rarr;</a>'
+        + '</div>';
     }catch(_){}
   })();
 })();
@@ -891,6 +883,9 @@
       + '</div>';
     messagesBox.appendChild(card);
     messagesBox.scrollTop = messagesBox.scrollHeight;
+
+    // Immediately persist transit thread so any navigation preserves the session
+    if(window.RA_CHAT_STATE) window.RA_CHAT_STATE.saveTransitThread(thread);
 
     var signInBtn = document.getElementById("raAiLimitSignIn");
     if(signInBtn){
