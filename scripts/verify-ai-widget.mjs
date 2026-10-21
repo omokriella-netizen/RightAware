@@ -204,7 +204,8 @@ async function run() {
       'assets/images/about-everyone-has-a-story.webp',
       'assets/images/lawyers-professional-tablet.webp',
       'assets/images/resources-lightbulb.webp',
-      'assets/images/justice-lady.webp'
+      'assets/images/justice-lady.webp',
+      'assets/images/tenancy-keys-agreement.webp'
     ];
     for (const asset of webpAssets) {
       const fullPath = path.resolve(asset);

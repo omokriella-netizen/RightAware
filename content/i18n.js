@@ -54,7 +54,7 @@ window.RA_I18N = {
     /* ---------- Homepage: hero & sections ---------- */
     "home.badge":       { en: "Nigerian Civic Legal Awareness", pcm: "Nigeria Civic Legal Awareness" },
     "home.h1a":         { en: "Know your rights.", pcm: "Know Your Rights." },
-    "home.h1b":         { en: "Defend yourself.", pcm: "Defend Yourself." },
+    "home.h1b":         { en: "Understand your power.", pcm: "Understand Your Power." },
     "home.lead":        { en: "Clear legal guidance backed by Nigerian law for everyday situations across Nigeria. Learn your constitutional protections against unlawful arrest, stop illegal evictions, and connect with verified legal aid.",
                           pcm: "Clear legal guidance wey back by law for everyday wahala across Nigeria. Know wetin constitution talk about unlawful arrest, stop landlord eviction, and find legal aid." },
     "home.search.ph":   { en: "Search police stops, bail, eviction notice, unpaid wages…",

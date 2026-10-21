@@ -89,7 +89,8 @@ const IMAGES_TO_TRANSCODE = [
   { src: 'assets/images/about-everyone-has-a-story.jpg', out: 'assets/images/about-everyone-has-a-story.webp', maxDim: 540, q: 0.72 },
   { src: 'assets/images/lawyers-professional-tablet.jpg', out: 'assets/images/lawyers-professional-tablet.webp', maxDim: 540, q: 0.72 },
   { src: 'assets/images/resources-lightbulb.jpg', out: 'assets/images/resources-lightbulb.webp', maxDim: 540, q: 0.72 },
-  { src: 'assets/images/justice-lady.jpg', out: 'assets/images/justice-lady.webp', maxDim: 540, q: 0.72 }
+  { src: 'assets/images/justice-lady.jpg', out: 'assets/images/justice-lady.webp', maxDim: 540, q: 0.72 },
+  { src: 'assets/images/tenancy-keys-agreement.jpg', out: 'assets/images/tenancy-keys-agreement.webp', maxDim: 540, q: 0.75 }
 ];
 
 async function main() {

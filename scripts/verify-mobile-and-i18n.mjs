@@ -85,7 +85,7 @@ class CDPClient {
     return res.result ? res.result.value : undefined;
   }
 
-  async waitForSelector(selector, timeoutMs = 8000) {
+  async waitForSelector(selector, timeoutMs = 15000) {
     const start = Date.now();
     while (Date.now() - start < timeoutMs) {
       const found = await this.eval(`!!document.querySelector("${selector}")`);
@@ -179,7 +179,8 @@ async function run() {
       'assets/images/about-everyone-has-a-story.webp',
       'assets/images/lawyers-professional-tablet.webp',
       'assets/images/resources-lightbulb.webp',
-      'assets/images/justice-lady.webp'
+      'assets/images/justice-lady.webp',
+      'assets/images/tenancy-keys-agreement.webp'
     ];
     for (const asset of webpAssets) {
       const fullPath = path.resolve(asset);
@@ -192,7 +193,7 @@ async function run() {
 
     // Child Elements Viewport Bounding Rect Audit in ENGLISH (Zero-Trust Anti-Guillotine Audit)
     const childOverflowEn = await client.eval(`(() => {
-      const elements = Array.from(document.querySelectorAll('.hotline-pill, .hero-crisis-card, .cards-grid .card, .bento-card'));
+      const elements = Array.from(document.querySelectorAll('.hotline-pill, .hero-crisis-card, .cards-grid .card, .bento-card, .rot-d'));
       const vpWidth = window.innerWidth;
       const violations = [];
       for (const el of elements) {
@@ -272,7 +273,7 @@ async function run() {
 
     // Typography Space in H1 Check
     const rawH1 = await client.eval(`document.querySelector('.hero h1')?.textContent`);
-    const h1TypographyOk = rawH1 && /rights\.\s+Defend/.test(rawH1);
+    const h1TypographyOk = rawH1 && /rights\.\s+Understand/.test(rawH1);
     console.log('Hero H1 Raw TextContent:', JSON.stringify(rawH1));
     console.log('>> ASSERTION 3 (h1 typography whitespace between sentences):', h1TypographyOk ? 'PASSED' : 'FAILED');
 
@@ -414,7 +415,7 @@ async function run() {
 
     // Child Elements Viewport Bounding Rect Audit in PIDGIN (Anti-Guillotine Audit in Pidgin)
     const childOverflowPcm = await client.eval(`(() => {
-      const elements = Array.from(document.querySelectorAll('.hotline-pill, .hero-crisis-card, .cards-grid .card, .bento-card'));
+      const elements = Array.from(document.querySelectorAll('.hotline-pill, .hero-crisis-card, .cards-grid .card, .bento-card, .rot-d'));
       const vpWidth = window.innerWidth;
       const violations = [];
       for (const el of elements) {

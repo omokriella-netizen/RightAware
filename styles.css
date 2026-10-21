@@ -162,6 +162,10 @@ p{margin:0 0 1rem}
 .hero .quick-tags button:hover{background:rgba(255,255,255,.2);color:#fff;border-color:#fff}
 .hero .quick-tags .tag-expand{border-color:var(--gold);color:var(--gold);background:rgba(200,151,62,.12)}
 .hero .quick-tags .tag-expand:hover{background:var(--gold);color:#122620}
+.hero .quick-tags .tag-ai{border-color:rgba(212,160,23,.6);color:var(--gold);background:rgba(200,151,62,.16);display:inline-flex;align-items:center;gap:.35rem;font-weight:700}
+.hero .quick-tags .tag-ai:hover{background:var(--gold);color:#122620;border-color:var(--gold)}
+.hero .quick-tags .tag-ai .ra-icon{color:var(--gold);transition:color .15s ease}
+.hero .quick-tags .tag-ai:hover .ra-icon{color:#122620}
 .hero .quick-tags .tags-extra{display:inline-flex;gap:.4rem;flex-wrap:wrap}
 .hero .quick-tags .tags-extra[hidden]{display:none}
 .hero-search-results{margin-top:.8rem;display:grid;gap:.5rem}
@@ -580,6 +584,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     padding: 1rem;
     margin-top: 1.5rem;
   }
+  .rot-d-content{min-width:0;width:100%}
 }
 
 
@@ -935,8 +940,8 @@ img{max-width:100%;height:auto}
   align-items: center;
   gap: 0.5rem;
   height: 44px;
-  min-width: 104px;
-  padding: 0 16px 0 12px;
+  min-width: auto;
+  padding: 0 18px 0 14px;
   background: linear-gradient(135deg, #122620 0%, #1a3c33 100%);
   color: #ffffff;
   border: 1.5px solid rgba(212, 160, 23, 0.4);
@@ -946,8 +951,18 @@ img{max-width:100%;height:auto}
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   user-select: none;
+}
+.ra-ai-fab.is-docked {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.85);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ra-ai-fab {
+    transition: none !important;
+  }
 }
 .ra-ai-fab:hover {
   transform: translateY(-2px);
@@ -1324,8 +1339,8 @@ img{max-width:100%;height:auto}
     right: 0.85rem;
     bottom: 0.85rem;
     height: 42px;
-    min-width: 96px;
-    padding: 0 14px 0 10px;
+    min-width: auto;
+    padding: 0 16px 0 12px;
     font-size: 0.82rem;
   }
   .ra-ai-drawer {
