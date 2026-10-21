@@ -650,7 +650,6 @@
     </svg>
   </span>
   <span>Ask AI</span>
-  <span class="ra-ai-fab-badge" id="raAiFabBadge">3 Free</span>
 </button>
 
 <aside class="ra-ai-drawer" id="raAiDrawer" role="dialog" aria-label="RightAware Legal AI Quick Assistant" aria-hidden="true">
@@ -718,7 +717,6 @@
   var sendBtn = document.getElementById("raAiSendBtn");
   var messagesBox = document.getElementById("raAiMessages");
   var statusBadge = document.getElementById("raAiDrawerStatus");
-  var fabBadge = document.getElementById("raAiFabBadge");
   var chipsWrap = document.getElementById("raAiChips");
 
   var thread = [];
@@ -754,17 +752,11 @@
     if(isAuthed){
       statusBadge.textContent = "AI ASSISTANT • ACTIVE";
       statusBadge.classList.add("auth");
-      if(fabBadge) fabBadge.style.display = "none";
     } else {
       statusBadge.classList.remove("auth");
       var count = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : 0;
       var max = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.MAX_PREVIEWS : 3;
       statusBadge.textContent = "Preview: " + count + "/" + max + " Free";
-      if(fabBadge){
-        fabBadge.style.display = "inline-block";
-        var remaining = Math.max(0, max - count);
-        fabBadge.textContent = remaining > 0 ? (remaining + " Free") : "Sign In";
-      }
     }
   }
 
