@@ -49,6 +49,8 @@ window.RA_I18N = {
     "btn.download":     { en: "Download original", pcm: "Collect the original copy" },
     "btn.searchinside": { en: "Search inside", pcm: "Find am inside" },
     "btn.where":        { en: "Where do I go?", pcm: "Watin I go do, where I go?" },
+    "btn.seemore":      { en: "See more", pcm: "See more" },
+    "btn.seeless":      { en: "See less", pcm: "See less" },
     "label.language":   { en: "Language", pcm: "Language" },
 
     /* ---------- Homepage: hero & sections ---------- */

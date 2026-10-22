@@ -71,7 +71,7 @@
           <button type="button" data-q="arrest">Police stop</button>
           <button type="button" data-q="bail">Bail is free</button>
           <button type="button" data-q="rent">Landlord eviction</button>
-          <button type="button" class="tag-expand" id="tagExpandBtn" aria-expanded="false" aria-label="Show more search topics">+3 more</button>
+          <button type="button" class="tag-expand" id="tagExpandBtn" aria-expanded="false" aria-label="Show more search topics">See more</button>
           <span class="tags-extra" id="tagsExtra" hidden>
             <button type="button" data-q="employment">Unpaid salary</button>
             <button type="button" data-q="vote">Voting rights</button>
@@ -233,7 +233,7 @@
   <div class="section-cta">
     <button class="btn-toggle-rights" id="toggleMoreRightsBtn" type="button" aria-expanded="false" aria-controls="homeRights">
       <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      <span id="toggleMoreRightsText">Explore More Rights (+3)</span>
+      <span id="toggleMoreRightsText">See more</span>
     </button>
     <a class="btn btn-secondary btn-lg" href="rights.html">Browse All 28 Rights Topics →</a>
   </div>
@@ -413,7 +413,7 @@
   var hr = document.getElementById("homeRights");
   if(hr) hr.innerHTML = feat.slice(0,6).map(function(r, idx){ return card(r, idx); }).join("");
 
-  // Toggle explore more rights (+3 / fewer)
+  // Toggle explore more rights (See more / See less)
   var toggleMoreRightsBtn = document.getElementById("toggleMoreRightsBtn");
   var toggleMoreRightsText = document.getElementById("toggleMoreRightsText");
   if(toggleMoreRightsBtn && hr){
@@ -423,7 +423,7 @@
       toggleMoreRightsBtn.setAttribute("aria-expanded", String(isExpanded));
       toggleMoreRightsBtn.classList.toggle("expanded", isExpanded);
       if(toggleMoreRightsText){
-        toggleMoreRightsText.textContent = isExpanded ? "Show Fewer Rights" : "Explore More Rights (+3)";
+        toggleMoreRightsText.textContent = isExpanded ? "See less" : "See more";
       }
     });
   }
@@ -447,7 +447,7 @@
     }
   });
 
-  // Expand quick tags (+3 more / less)
+  // Expand quick tags (See more / See less)
   var tagExpandBtn = document.getElementById("tagExpandBtn");
   var tagsExtra = document.getElementById("tagsExtra");
   if(tagExpandBtn && tagsExtra){
@@ -457,11 +457,13 @@
       if(isHidden){
         tagsExtra.removeAttribute("hidden");
         tagExpandBtn.setAttribute("aria-expanded", "true");
-        tagExpandBtn.textContent = "less";
+        tagExpandBtn.setAttribute("aria-label", "Show fewer search topics");
+        tagExpandBtn.textContent = "See less";
       } else {
         tagsExtra.setAttribute("hidden", "");
         tagExpandBtn.setAttribute("aria-expanded", "false");
-        tagExpandBtn.textContent = "+3 more";
+        tagExpandBtn.setAttribute("aria-label", "Show more search topics");
+        tagExpandBtn.textContent = "See more";
       }
     });
   }
