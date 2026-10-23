@@ -26,7 +26,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -62,6 +62,7 @@
     <button type="button" data-p="My employer has not paid my salary.">Unpaid salary</button>
     <button type="button" data-p="I was scammed online.">Online scam</button>
   </div>
+  <div class="ra-captcha" data-captcha id="aiCaptcha" style="margin-bottom:0.75rem"></div>
   <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Describe your issue…" autocomplete="off" aria-label="Ask RightAware AI"/><button class="btn btn-primary" type="submit">Send</button></form>
   <p class="form-note">General legal information only — not legal advice. Answers are grounded in our verified guides; if the AI service is offline you get clearly labelled library matches instead. Never share passwords, OTPs or bank details.</p>
 </div></section>
@@ -118,6 +119,8 @@
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="js/config.js"></script>
+<script src="js/turnstile.js"></script>
+<script src="js/auth.js?v=db6"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
 <script src="app.js"></script>
@@ -161,12 +164,66 @@
     return "Thanks — based on those words, start here:"+link("Search all content","search.html?q="+encodeURIComponent(q))+link("Browse the rights library","rights.html")+link("Get help","help.html")+"<br/><small>(Library match from our verified guides — general information, not legal advice.)</small>";
   }
   function showDemo(q){ mode="demo"; setPill(); add("ai","",answer(q),"RightAware AI (library match):"); }
+  function isUserAuthed(){
+    try {
+      if(window.RA_AUTH && typeof window.RA_AUTH.current === "function"){
+        var u = window.RA_AUTH.current();
+        return !!(u && !u.demo && (u.supabaseId || u.email));
+      }
+      return false;
+    } catch(_) { return false; }
+  }
+
+  function mountAiCaptcha(){
+    try {
+      if(!isUserAuthed()){
+        var cb = document.getElementById("aiCaptcha");
+        if(cb && window.RA_TURNSTILE && RA_TURNSTILE.configured()){
+          RA_TURNSTILE.mount(cb);
+        }
+      }
+    } catch(_) {}
+  }
+  mountAiCaptcha();
+  document.addEventListener("ra:backend-ready", mountAiCaptcha);
+  document.addEventListener("ra:session-ready", function(){
+    input.disabled = false;
+    input.placeholder = "Describe your issue…";
+    setPill();
+  });
+
+  // Check quota limit on arrival
+  if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+    input.disabled = true;
+    input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+    add("ai","", "You have used your 3 free preview questions. Sign in with a free account to continue asking unlimited questions.<div style='margin-top:0.6rem'><a class='btn btn-primary btn-sm' href='login.html?next=ai.html'>Sign In to Continue</a> <a class='btn btn-outline btn-sm' href='signup.html'>Create Free Account</a></div>", "RightAware AI (Preview Limit Reached):");
+  }
+
   form.addEventListener("submit",function(e){
     e.preventDefault(); var q=input.value.trim(); if(!q) return;
+    if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+      input.disabled = true;
+      input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+      add("ai","", "Free preview limit reached (3/3). Please sign in to continue.<div style='margin-top:0.6rem'><a class='btn btn-primary btn-sm' href='login.html?next=ai.html'>Sign In to Continue</a> <a class='btn btn-outline btn-sm' href='signup.html'>Create Free Account</a></div>", "RightAware AI (Preview Limit Reached):");
+      return;
+    }
     add("you",q); input.value="";
+    var capBox = document.getElementById("aiCaptcha");
     setTimeout(function(){
       if(!window.RA_AI){ showDemo(q); return; }
-      window.RA_AI.ask(q).then(function(r){
+      window.RA_AI.ask(q, { captchaContainer: capBox }).then(function(r){
+        if(r && r.limitReached){
+          mode="auth"; setPill();
+          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (Preview Limit Reached):");
+          input.disabled = true;
+          input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+          return;
+        }
+        if(r && r.captchaNeeded){
+          mode="pending"; setPill();
+          add("ai","", esc(r.text).replace(/\n+/g,"<br/>"),"RightAware AI:");
+          return;
+        }
         if(r && r.needsAuth){
           mode="auth"; setPill();
           add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");

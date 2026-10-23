@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin — RightAware</title>
+<title>Admin | RightAware</title>
 <meta name="description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Admin — RightAware"/>
+<meta property="og:title" content="Admin | RightAware"/>
 <meta property="og:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/admin.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Admin — RightAware"/>
+<meta name="twitter:title" content="Admin | RightAware"/>
 <meta name="twitter:description" content="RightAware administrator dashboard: registration-application review (professionals, organisations), content overview and moderation. Access is granted only to admin accounts; data access is enforced by database row-level security."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/admin.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
@@ -40,7 +40,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -147,19 +147,19 @@
 
   /* ==================== LOCKED: demo / no backend ==================== */
   function renderLocked(){
-    title.innerHTML = 'Content management <span class="pill">LOCKED — NO BACKEND</span>';
+    title.innerHTML = 'Content management <span class="pill">LOCKED: NO BACKEND</span>';
     line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "guest")
-      + '</strong> — role: <strong>none</strong>. This device has no database connection, so the dashboard stays locked. Applications and messages below are copies stored only in this browser.';
+      + '</strong> · role: <strong>none</strong>. This device has no database connection, so the dashboard stays locked. Applications and messages below are copies stored only in this browser.';
     var local = [];
     try{ local = JSON.parse(localStorage.getItem("ra_applications") || "[]"); }catch(_){}
     body.innerHTML =
-      '<div class="notice rv"><strong>Locked.</strong> Admin access requires a signed-in account whose role is <code>admin</code> in the database (row-level security enforces this server-side — hiding buttons is not enough). '
+      '<div class="notice rv"><strong>Locked.</strong> Admin access requires a signed-in account whose role is <code>admin</code> in the database (row-level security enforces this server-side: hiding buttons is not enough). '
       + '<button class="btn btn-secondary btn-sm" id="prevBtn">Preview dashboard layout (read-only)</button></div>'
       + '<div id="prev"></div>'
       + '<div class="section-head" style="margin-top:1.5rem"><span class="eyebrow">Applications</span><h2>Registration applications on this device</h2></div>'
       + (local.length
           ? local.map(function(a){
-              return '<div class="app-item"><strong>' + (a.path==="professional" ? "Professional" : "Organisation") + '</strong> — ' + esc(a.name)
+              return '<div class="app-item"><strong>' + (a.path==="professional" ? "Professional" : "Organisation") + '</strong> · ' + esc(a.name)
                 + ' &lt;' + esc(a.email) + '&gt;<div class="app-meta">Ref ' + esc(a.ref) + ' · ' + esc(a.status) + ' · ' + esc(String(a.at).slice(0,19).replace("T"," ")) + '</div>'
                 + '<div class="empty">Not submitted anywhere (backend never connected). Re-submit from signup when the site is live.</div></div>';
             }).join("")
@@ -173,7 +173,7 @@
           }).join("") + '</div>'
         + '<div class="two-col"><div class="card rv"><h3>Review moderation queue (this device)</h3><p>' + RA_REVIEWS.queue().length + ' flagged item(s).</p></div>'
         + '<div class="card rv"><h3>Contact messages (this device)</h3><p>' + RA_DB.messages().length + ' stored message(s).</p></div></div>'
-        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS — never by frontend code.</div>';
+        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS, never by frontend code.</div>';
     });
   }
 
@@ -182,23 +182,23 @@
     title.textContent = "Sign in required";
     line.innerHTML = 'You are not signed in. The administrator dashboard opens only for accounts that carry the <strong>admin</strong> role in the database.';
     body.innerHTML = '<div class="notice rv">Sign in with an administrator account to review registration applications, contact messages and content. '
-      + 'Roles live in the database (see <code>docs/DATABASE.md</code>) — row-level security enforces access server-side; hiding buttons is never how access is decided.</div>'
+      + 'Roles live in the database (see <code>docs/DATABASE.md</code>); row-level security enforces access server-side; hiding buttons is never how access is decided.</div>'
       + '<p><a class="btn btn-primary" href="login.html?next=admin.html">Sign in</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
   }
 
   /* ==================== DENIED: backend on, role not admin ==================== */
   function renderDenied(role){
     title.textContent = "Access denied";
-    line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "?") + '</strong> — role: <strong>' + esc(role || "user") + '</strong>. Only administrators can open this dashboard.';
+    line.innerHTML = 'Signed in as <strong>' + esc((RA_AUTH.current()||{}).email || "?") + '</strong> · role: <strong>' + esc(role || "user") + '</strong>. Only administrators can open this dashboard.';
     body.innerHTML = '<div class="notice rv">Your account does not have the <code>admin</code> role. The database would refuse every query here anyway (row-level security). '
-      + 'If you believe this is wrong, an existing administrator must grant the role — see <code>docs/DATABASE.md</code>.</div>'
+      + 'If you believe this is wrong, an existing administrator must grant the role (see <code>docs/DATABASE.md</code>).</div>'
       + '<p><a class="btn btn-primary" href="account.html">Back to my account</a> <a class="btn btn-secondary" href="index.html">Home</a></p>';
   }
 
   /* ==================== UNLOCKED: admin dashboard ==================== */
   function renderAdmin(user){
     title.innerHTML = 'Admin dashboard <span class="pill">ADMIN</span>';
-    line.innerHTML = 'Signed in as <strong>' + esc(user.email || "admin") + '</strong> — role: <strong>admin</strong>. '
+    line.innerHTML = 'Signed in as <strong>' + esc(user.email || "admin") + '</strong> · role: <strong>admin</strong>. '
       + 'Everything below is read live from the database; row-level security blocks anyone else.';
     body.innerHTML =
       '<div class="admin-tabs" role="tablist" aria-label="Admin sections">'
@@ -211,7 +211,7 @@
         + '<p>Workflow: submitted → pending → verified (publish) or rejected (private). Nothing is public while pending; rejected rows stay private too.</p>'
         + '<p class="app-meta" id="raBuild">build: admin-20261001-3 · every card, status and control below renders live from the database.</p></div>'
         + '<div id="appsBox"><p class="empty">Loading applications…</p></div>'
-        + '<div class="notice" style="margin-top:.6rem">Approval writes to the database with your admin session — the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. A message copy is never the application record: each copy states whether its record exists, and when the record is missing (the applicant has not signed in yet) the copy offers <strong>Create application record</strong> from the applicant\'s own submitted data. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
+        + '<div class="notice" style="margin-top:.6rem">Approval writes to the database with your admin session; the server re-checks your role. <strong>Mark reviewed</strong> on a message marks only that message read; Approve / Reject act on the application records. A message copy is never the application record: each copy states whether its record exists, and when the record is missing (the applicant has not signed in yet) the copy offers <strong>Create application record</strong> from the applicant\'s own submitted data. If a professional list is unexpectedly empty, apply <code>supabase/applications-access.sql</code> once (additive policies only; it does not re-run the schema).</div>'
       + '</div>'
       + '<div id="panelContent" role="tabpanel" aria-labelledby="tabContent" hidden>'
         + '<div class="section-head"><span class="eyebrow">Content</span><h2>Catalogues</h2></div>'
@@ -272,12 +272,12 @@
     var areas = arr(p.consultation_options);
     var langs = arr(p.languages);
     var sp = (appCtx.specByPro[p.id] || []).join(", ");
-    return '<div class="app-item"><details open><summary>' + esc(p.name) + ' — ' + esc(p.qualification || "professional") + '</summary>'
+    return '<div class="app-item"><details open><summary>' + esc(p.name) + ' · ' + esc(p.qualification || "professional") + '</summary>'
       + '<div class="app-meta">' + statusPill(p.verification_status) + ' ' + esc(p.location || "")
       + (p.experience_yrs ? " · " + esc(p.experience_yrs) + " yrs" : "")
       + ' · applied ' + esc(String(p.created_at || "").slice(0,10)) + (p.id ? ' · <code>' + esc(p.id) + '</code>' : '') + '</div>'
       + '<dl class="app-dl">'
-      + (em ? '<dt>E-mail</dt><dd>' + esc(em) + ' <small>(from this application’s message copy — the professionals table stores no e-mail)</small></dd>' : '')
+      + (em ? '<dt>E-mail</dt><dd>' + esc(em) + ' <small>(from this application’s message copy; the professionals table stores no e-mail)</small></dd>' : '')
       + '<dt>Qualification</dt><dd>' + esc(p.qualification || "—") + '</dd>'
       + '<dt>Location</dt><dd>' + esc(p.location || "—") + '</dd>'
       + (sp ? '<dt>Specializations</dt><dd>' + esc(sp) + '</dd>' : '')
@@ -288,7 +288,7 @@
       + (p.bio ? '<dt>Bio</dt><dd>' + esc(p.bio) + '</dd>' : '')
       + (p.photo_path ? '<dt>Photo file</dt><dd>' + esc(p.photo_path) + ' (filename recorded; original to be checked)</dd>' : '')
       + (p.verification_source ? '<dt>Record source</dt><dd>' + esc(p.verification_source) + '</dd>' : '')
-      + (p.user_id ? '' : '<dt>Account link</dt><dd>not attached to a signed-in applicant — approval still publishes this listing, but no account role can be granted for it until an applicant account is linked.</dd>')
+      + (p.user_id ? '' : '<dt>Account link</dt><dd>not attached to a signed-in applicant; approval still publishes this listing, but no account role can be granted for it until an applicant account is linked.</dd>')
       + '</dl>'
       + '<div class="app-actions"><button class="btn btn-primary btn-sm" data-act="approve-pro" data-id="' + esc(p.id) + '">Approve (publish listing)</button>'
       + '<button class="btn btn-outline btn-sm" data-act="reject-pro" data-id="' + esc(p.id) + '">Reject (keep private)</button></div>'
@@ -296,7 +296,7 @@
   }
   function orgItem(o){
     var svc = arr(o.services);
-    return '<div class="app-item"><details open><summary>' + esc(o.name) + ' — ' + esc(o.specialization || "organisation") + '</summary>'
+    return '<div class="app-item"><details open><summary>' + esc(o.name) + ' · ' + esc(o.specialization || "organisation") + '</summary>'
       + '<div class="app-meta">' + statusPill(o.verification_status) + ' ' + esc(o.location || "")
       + ' · applied ' + esc(String(o.created_at || "").slice(0,10)) + (o.id ? ' · <code>' + esc(o.id) + '</code>' : '') + '</div>'
       + '<dl class="app-dl"><dt>Contact</dt><dd>' + esc(o.email || "—") + ' · ' + esc(o.phone || "—") + '</dd>'
@@ -318,19 +318,19 @@
     var recLine = "";
     if(isApp && ci){
       if(ci.matched){
-        recLine = '<div class="app-meta">Application record: <strong>exists</strong> — Approve / Reject act on the card above; this copy stays read-only.</div>';
+        recLine = '<div class="app-meta">Application record: <strong>exists</strong>. Approve / Reject act on the card above; this copy stays read-only.</div>';
       } else if(ci.kind === "pro" || ci.kind === "org"){
-        recLine = '<div class="app-meta">Application record: <strong>missing</strong> — no ' + (ci.kind === "pro" ? "professional" : "organization")
-          + ' row matches this copy. The record is created automatically when the applicant first signs in after email confirmation; until that happens, create it here from the applicant\'s own submitted data (it will be stored as PENDING — never auto-approved): '
+        recLine = '<div class="app-meta">Application record: <strong>missing</strong>. No ' + (ci.kind === "pro" ? "professional" : "organization")
+          + ' row matches this copy. The record is created automatically when the applicant first signs in after email confirmation; until that happens, create it here from the applicant\'s own submitted data (it will be stored as PENDING, never auto-approved): '
           + '<button class="btn btn-secondary btn-sm" data-act="create-record" data-id="' + esc(m.id) + '">Create application record from this copy</button></div>';
       } else {
-        recLine = '<div class="app-meta">This copy could not be matched to an application kind — no record action is offered.</div>';
+        recLine = '<div class="app-meta">This copy could not be matched to an application kind; no record action is offered.</div>';
       }
     }
-    return '<div class="app-item"><details><summary>' + esc(m.topic || "Application") + ' — ' + esc(m.name || "") + '</summary>'
+    return '<div class="app-item"><details><summary>' + esc(m.topic || "Application") + ' · ' + esc(m.name || "") + '</summary>'
       + '<div class="app-meta">from ' + esc(m.email || "?") + ' · ' + esc(String(m.created_at || m.at || "").slice(0,19).replace("T"," "))
       + ' · status ' + esc(m.status || "new") + '</div>'
-      + (isApp ? '<div class="app-meta">Message copy of a signup application — <strong>approval happens on the application records above, not on this message.</strong></div>' : '')
+      + (isApp ? '<div class="app-meta">Message copy of a signup application. <strong>Approval happens on the application records above, not on this message.</strong></div>' : '')
       + '<dl class="app-dl"><dt>Message</dt><dd>' + esc(m.message || "") + '</dd></dl>'
       + '<div class="app-actions"><a class="btn btn-outline btn-sm" href="mailto:' + esc(m.email || "") + '">Reply by email</a>'
       + '<button class="btn btn-secondary btn-sm" data-act="mark-read" data-id="' + esc(m.id) + '">Mark reviewed</button></div>'
@@ -615,12 +615,12 @@
     /* ---- render: DECISION RECORDS FIRST, message copies LAST ---- */
     if(proPending.length){
       any = true;
-      out += '<div class="section-head"><h3>Legal Professional applications — Approve / Reject</h3></div>'
+      out += '<div class="section-head"><h3>Legal Professional applications (Approve / Reject)</h3></div>'
         + proPending.map(function(x){ return safe(proItem, x, "professional"); }).join("");
     }
     if(orgPending.length){
       any = true;
-      out += '<div class="section-head"><h3>Organization applications — Approve / Reject</h3></div>'
+      out += '<div class="section-head"><h3>Organization applications (Approve / Reject)</h3></div>'
         + orgPending.map(function(x){ return safe(orgItem, x, "organisation"); }).join("");
     }
     var decided = proDecided.map(function(x){ return { row:x, kind:"pro" }; })
@@ -628,12 +628,12 @@
     decided.sort(function(a,b){ return String(b.row.created_at || "").localeCompare(String(a.row.created_at || "")); });
     if(decided.length){
       any = true;
-      out += '<div class="section-head"><h3>Recently decided — Verified / Rejected (Reopen here)</h3></div>'
+      out += '<div class="section-head"><h3>Recently decided: Verified / Rejected (Reopen here)</h3></div>'
         + decided.map(function(d){ return safe(decidedItem, d, d.kind === "pro" ? "professional" : "organisation"); }).join("");
     }
     if(queue.length){
       any = true;
-      out += '<div class="section-head"><h3>Contact-message copies — read only, no approval here</h3></div>'
+      out += '<div class="section-head"><h3>Contact-message copies (read only, no approval here)</h3></div>'
         + queue.map(function(m){ return safe(queueItem, m, "message"); }).join("");
     }
 
@@ -644,9 +644,9 @@
       if(!pros.length && !orgs.length){
         notes.push("The database returned no professional or organisation application rows for this admin session."
           + (appMsgs ? " " + appMsgs + " application message cop" + (appMsgs === 1 ? "y exists" : "ies exist")
-            + ", but a message copy is not an application record: no application record has been created yet. A record is created automatically when the applicant confirms their email and signs in for the first time — or create it right now with <strong>Create application record</strong> on any copy below. Only if application rows really do exist in the database would the admin read policies be missing instead — run supabase/applications-access.sql once (sections 1–2), then reload." : ""));
+            + ", but a message copy is not an application record: no application record has been created yet. A record is created automatically when the applicant confirms their email and signs in for the first time, or create it right now with <strong>Create application record</strong> on any copy below. Only if application rows really do exist in the database would the admin read policies be missing instead: run supabase/applications-access.sql once (sections 1–2), then reload." : ""));
       } else if(!pros.length && appMsgs){
-        notes.push("Application message copies exist, but no professional rows are visible to this admin session. A record is created when the applicant confirms their email and signs in — or create it directly from a copy below. If rows are present in the database, run supabase/applications-access.sql once (sections 1–2), then reload.");
+        notes.push("Application message copies exist, but no professional rows are visible to this admin session. A record is created when the applicant confirms their email and signs in, or create it directly from a copy below. If rows are present in the database, run supabase/applications-access.sql once (sections 1–2), then reload.");
       }
     }
 
@@ -671,7 +671,7 @@
                 || (mro.indexOf("ra_approve_organization") > -1 && /does not exist|could not find/i.test(mro));
               if(!missRo) throw ro.error;
               await upd("organizations", { verification_status:"verified", verified_at:new Date().toISOString() }, id);
-              alert("Decision saved.\n\nNote: ra_approve_organization is not available in the database yet — run supabase/applications-access.sql once (section 4) to switch organisation approval to the secure RPC path.");
+              alert("Decision saved.\n\nNote: ra_approve_organization is not available in the database yet: run supabase/applications-access.sql once (section 4) to switch organisation approval to the secure RPC path.");
             }
           } else if(act === "reject-org"){
             var note2 = await rejectRow("organizations", id);
@@ -686,7 +686,7 @@
             var made = await createRecordFromCopy(mc, appCtx.copyInfo[id]);
             if(!made.ok){
               alert("Could not create the application record:\n\n" + made.why
-                + "\n\nNothing was written — no partial or duplicate record exists.");
+                + "\n\nNothing was written: no partial or duplicate record exists.");
               b.disabled = false;
               return;
             }
@@ -729,7 +729,7 @@
   /* ==================== boot ==================== */
   whenReady(function(connected){
     if(!connected){ renderLocked(); return; }
-    line.textContent = "Signed in — checking your role…";
+    line.textContent = "Signed in: checking your role…";
     RA_AUTH.fetchRole().then(function(role){
       var u = RA_AUTH.current() || {};
       if(!u.email){ renderSignedOut(); return; }

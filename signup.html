@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sign Up — RightAware</title>
+<title>Sign Up | RightAware</title>
 <meta name="description" content="Three registration pathways: individual, legal professional, or organisation. Professional and organisation listings are published only after administrator approval."/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -53,7 +53,7 @@
   <div>
     <span class="eyebrow">Join RightAware</span>
     <h1>Create your account or apply to be listed</h1>
-    <p class="lead-dark">Three separate pathways. <strong>Professionals and organisations are never published automatically</strong> — an administrator must approve each application first, and unverified applications stay private.</p>
+    <p class="lead-dark">Three separate pathways. <strong>Professionals and organisations are never published automatically</strong>; an administrator must approve each application first, and unverified applications stay private.</p>
   </div>
   <figure class="page-hero-media"><img src="assets/images/logo-rightaware.png" alt="RightAware logo" loading="lazy"/></figure>
 </div></section>
@@ -78,7 +78,7 @@
             <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>
           </div>
           <h3>Legal professional</h3>
-          <p>Lawyers, legal-aid officers, law students and clinic staff. Applies for the directory — listed only after admin approval.</p>
+          <p>Lawyers, legal-aid officers, law students and clinic staff. Applies for the directory; listed only after admin approval.</p>
         </button>
         <button type="button" class="path-card" data-path="organisation" aria-pressed="false">
           <div class="card-icon-badge">
@@ -137,7 +137,7 @@
           <label><input type="checkbox" value="Tenancy & Property"/>Tenancy &amp; Property</label>
           <label><input type="checkbox" value="Consumer & Digital Fraud"/>Consumer &amp; Digital Fraud</label>
           <label><input type="checkbox" value="Criminal Defence"/>Criminal Defence</label>
-          <label><input type="checkbox" value="Free Clinic — Students & Low Income"/>Free Clinic — Students &amp; Low Income</label>
+          <label><input type="checkbox" value="Free Clinic: Students & Low Income"/>Free Clinic: Students &amp; Low Income</label>
         </div>
         <label>Languages you work in <span class="field-note">(shown on your profile)</span></label>
         <div class="chips" id="pLangs">
@@ -148,13 +148,13 @@
           <label><input type="checkbox" value="Igbo"/>Igbo</label>
         </div>
         <label>Availability <select id="pAvail"><option>Open to new requests</option><option>Pro bono only</option><option>Limited availability</option><option>Not currently taking requests</option></select></label>
-        <label>About you <span class="field-note">(short bio — describe experience accurately; do not promise case outcomes)</span><textarea id="pBio" rows="3" maxlength="600" placeholder="What you do, where, and who you help."></textarea></label>
-        <label>Consultation fee note <span class="field-note">(optional — write your own wording; leave blank if unknown)</span><input id="pFee" placeholder="e.g. Free first consultation"/></label>
+        <label>About you <span class="field-note">(short bio: describe experience accurately; do not promise case outcomes)</span><textarea id="pBio" rows="3" maxlength="600" placeholder="What you do, where, and who you help."></textarea></label>
+        <label>Consultation fee note <span class="field-note">(optional: write your own wording; leave blank if unknown)</span><input id="pFee" placeholder="e.g. Free first consultation"/></label>
       </fieldset>
 
       <fieldset>
         <legend>Credential documents</legend>
-        <label>ID or practising certificate <span class="field-note">(PDF/JPG/PNG, max 5MB — filename recorded; you'll present the original during verification)</span><input id="pIdFile" type="file" accept=".pdf,.jpg,.jpeg,.png"/></label>
+        <label>ID or practising certificate <span class="field-note">(PDF/JPG/PNG, max 5MB: filename recorded; you'll present the original during verification)</span><input id="pIdFile" type="file" accept=".pdf,.jpg,.jpeg,.png"/></label>
         <label>Profile photo <span class="field-note">(optional, JPG/PNG, max 5MB)</span><input id="pPhoto" type="file" accept=".jpg,.jpeg,.png"/></label>
       </fieldset>
 
@@ -198,13 +198,13 @@
           <label>Address <span class="field-note">(optional)</span><input id="oAddress" placeholder="Street / area, if you have one"/></label>
         </div>
         <label>Website <span class="field-note">(optional)</span><input id="oWeb" type="url" placeholder="https://…"/></label>
-        <label>How can we verify you? <span class="field-note">(optional — e.g. registration number, official website, known partner. Do not claim verification you cannot back up.)</span><textarea id="oVerify" rows="2" maxlength="400"></textarea></label>
+        <label>How can we verify you? <span class="field-note">(optional: e.g. registration number, official website, known partner. Do not claim verification you cannot back up.)</span><textarea id="oVerify" rows="2" maxlength="400"></textarea></label>
         <label>About the organisation <span class="field-note">(what you do and who you help)</span><textarea id="oAbout" rows="3" maxlength="600" required></textarea></label>
       </fieldset>
 
       <fieldset>
         <legend>Documents</legend>
-        <label>Registration document <span class="field-note">(PDF/JPG/PNG, max 5MB — filename recorded; original requested during verification)</span><input id="oDoc" type="file" accept=".pdf,.jpg,.jpeg,.png"/></label>
+        <label>Registration document <span class="field-note">(PDF/JPG/PNG, max 5MB: filename recorded; original requested during verification)</span><input id="oDoc" type="file" accept=".pdf,.jpg,.jpeg,.png"/></label>
         <label>Logo <span class="field-note">(optional, JPG/PNG, max 5MB)</span><input id="oLogo" type="file" accept=".jpg,.jpeg,.png"/></label>
       </fieldset>
 
@@ -330,9 +330,9 @@
   document.querySelectorAll(".path-card").forEach(function(c){
     c.addEventListener("click", function(){
       document.querySelectorAll(".path-card").forEach(function(x){ x.setAttribute("aria-pressed", x===c ? "true":"false"); });
-      if(c.dataset.path === "user") show("user", "2. Individual — create your account");
-      if(c.dataset.path === "professional") show("pro", "2. Legal professional — your application");
-      if(c.dataset.path === "organisation") show("org", "2. Organisation — your application");
+      if(c.dataset.path === "user") show("user", "2. Individual: create your account");
+      if(c.dataset.path === "professional") show("pro", "2. Legal professional: your application");
+      if(c.dataset.path === "organisation") show("org", "2. Organisation: your application");
     });
   });
   /* deep link: signup.html?path=professional | organisation | user */
@@ -428,7 +428,7 @@
   function fileNote(inputId){
     var f = document.getElementById(inputId).files[0];
     if(!f) return null;
-    if(f.size > 5*1024*1024) return { error:"“"+f.name+"” is larger than 5MB — please use a smaller file." };
+    if(f.size > 5*1024*1024) return { error:"“"+f.name+"” is larger than 5MB; please use a smaller file." };
     return { name:f.name, size:f.size, recordedOnly:true };
   }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
@@ -443,7 +443,7 @@
     return RA_TURNSTILE.gate(capBox(scope)).then(function(g){
       if(g.unconfigured) return { token:null };
       if(g.blocked) return { error: g.error
-        ? "CAPTCHA could not load — check your connection (or disable blocking) and try again."
+        ? "CAPTCHA could not load: check your connection (or disable blocking) and try again."
         : "Please complete the CAPTCHA check to continue." };
       return { token:g.token };
     });
@@ -455,16 +455,16 @@
     document.getElementById("confirmTitle").textContent = exists ? "Already registered" : "Confirm your email";
     document.getElementById("confirmLine").textContent = exists
       ? "An account with this email address already exists."
-      : "One more step — your account is not active yet.";
+      : "One more step: your account is not active yet.";
     document.getElementById("confirmDetail").innerHTML = exists
       ? "If you registered but never opened the confirmation link, request it again below (check your spam folder first). If you already confirmed it, simply <a class='link' href='login.html'>log in →</a>."
-      : "We sent a confirmation link to <strong>" + esc(lastSignupEmail) + "</strong>. RightAware does <strong>not</strong> treat your account as verified until you open that link — afterwards, log in normally. Didn’t get it? Request a resend below (check spam too).";
+      : "We sent a confirmation link to <strong>" + esc(lastSignupEmail) + "</strong>. RightAware does <strong>not</strong> treat your account as verified until you open that link. Afterwards, log in normally. Didn’t get it? Request a resend below (check spam too).";
     document.getElementById("resendOut").textContent = "";
     show("confirm", "3. Check your inbox");
   }
   document.getElementById("resendBtn").addEventListener("click", function(){
     var out = document.getElementById("resendOut");
-    if(!lastSignupEmail){ out.textContent = "No signup email to resend to — sign up again."; return; }
+    if(!lastSignupEmail){ out.textContent = "No signup email to resend to: sign up again."; return; }
     var box = capBox(panes.confirm);
     var gate = (window.RA_TURNSTILE && RA_TURNSTILE.configured() && box)
       ? RA_TURNSTILE.gate(box) : Promise.resolve({ token:null, unconfigured:true });
@@ -473,15 +473,15 @@
       out.textContent = "Sending…";
       return RA_AUTH.resendConfirmation(lastSignupEmail, { captchaToken: g.token || undefined })
         .then(function(msg){ out.textContent = msg; });
-    }).catch(function(){ out.textContent = "Could not resend — try again shortly."; });
+    }).catch(function(){ out.textContent = "Could not resend; try again shortly."; });
   });
 
-  var submitBusy = false;   // one application attempt at a time — a double click
+  var submitBusy = false;   // one application attempt at a time: a double click
                             // can never race a second insert for the same user.
   function finish(o){
     submitBusy = false;
     document.getElementById("doneTitle").textContent = o.title;
-    document.getElementById("doneRef").textContent = o.ref ? ("Reference: " + o.ref + " — status: AWAITING ADMIN REVIEW.") : "";
+    document.getElementById("doneRef").textContent = o.ref ? ("Reference: " + o.ref + " · status: AWAITING ADMIN REVIEW.") : "";
     document.getElementById("doneDetail").innerHTML = o.detail;
     show("done", "3. Done");
   }
@@ -514,7 +514,7 @@
       var du = RA_AUTH.signup(opts.account.name, opts.account.email);
       RA_DB.saveProfile({ name:du.name, email:du.email, phone:"", state:opts.row.location||"", language:"English" });
       finish({ title:"Saved on this device (demo mode)", ref:ref,
-        detail:"The backend is <strong>not connected</strong>, so this application was <strong>not submitted to RightAware</strong> — it only exists in this browser. When the site is connected, re-submit so an administrator can review it." });
+        detail:"The backend is <strong>not connected</strong>, so this application was <strong>not submitted to RightAware</strong>; it only exists in this browser. When the site is connected, re-submit so an administrator can review it." });
       return;
     }
 
@@ -526,19 +526,19 @@
 
     // 1. account (the password never enters the application payload)
     //    An applicant who is ALREADY signed in IS the account: no signup call
-    //    is made (it could only answer "already registered" — and must never
+    //    is made (it could only answer "already registered" and must never
     //    disturb the live session the row is about to be linked to).
     var acctRes;
     var signedInAs = await liveApplicantId(opts.account.email, true);
     if(signedInAs){
-      acctRes = { ok:true, note:"Signed in as " + opts.account.email + " — this application is attached to that account." };
+      acctRes = { ok:true, note:"Signed in as " + opts.account.email + " (this application is attached to that account)." };
     } else {
       acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
                                          { captchaToken: opts.captchaToken });
     }
     var acctNote;
     if(acctRes.ok && acctRes.needsConfirm){
-      acctNote = acctRes.note + " After confirming, sign in — this application attaches to your account automatically.";
+      acctNote = acctRes.note + " After confirming, sign in; this application attaches to your account automatically.";
     } else if(acctRes.ok){
       acctNote = acctRes.note || "Account created.";
     } else if(acctRes.alreadyRegistered){
@@ -558,7 +558,7 @@
     var client = await withClientP();
     if(!client){
       finish({ title:"Application saved on this device", ref:ref,
-        detail: acctNote + "<br/><br/>Could not reach RightAware's backend. This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
+        detail: acctNote + "<br/><br/>Could not reach RightAware's backend. This copy exists only in this browser; please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
       return;
     }
 
@@ -578,8 +578,8 @@
         finish({ title:"Application already submitted",
           ref: (st === "pending" && prev) ? prev.ref : null,
           detail: acctNote + "<br/><br/>" + (st === "verified"
-            ? "This account already has an <strong>approved</strong> professional record — no second application was created."
-            : "Your professional application for this account is <strong>already in the review queue</strong> — no duplicate was created.")
+            ? "This account already has an <strong>approved</strong> professional record; no second application was created."
+            : "Your professional application for this account is <strong>already in the review queue</strong>; no duplicate was created.")
           + " Status: <strong>" + esc(st) + "</strong>, read live from RightAware." });
         return;
       }
@@ -594,7 +594,7 @@
         if(ex.length){ try{ await client.from(opts.extraTable).insert(ex); }catch(_){} }
       }
       finish({ title:"Application submitted for review", ref:ref,
-        detail: acctNote + "<br/><br/>Your application was stored in RightAware's application list. An administrator reviews it personally — <strong>your profile will not appear anywhere until it is approved</strong>." });
+        detail: acctNote + "<br/><br/>Your application was stored in RightAware's application list. An administrator reviews it personally: <strong>your profile will not appear anywhere until it is approved</strong>." });
       return;
     }
 
@@ -602,11 +602,11 @@
     var q = await client.from("contact_messages").insert({ name:opts.account.name, email:opts.account.email, topic:opts.queue.topic, message:opts.queue.message, status:"new" });
     if(!q.error){
       finish({ title:"Application received", ref:ref,
-        detail: acctNote + "<br/><br/>Your application was recorded in RightAware's review queue for an administrator. <strong>Nothing is public until approval.</strong> Your <strong>application record</strong> is created in the application list automatically the first time you confirm your email and sign in — until then an administrator can create it directly from this message copy." });
+        detail: acctNote + "<br/><br/>Your application was recorded in RightAware's review queue for an administrator. <strong>Nothing is public until approval.</strong> Your <strong>application record</strong> is created in the application list automatically the first time you confirm your email and sign in; until then an administrator can create it directly from this message copy." });
       return;
     }
     finish({ title:"Application saved on this device", ref:ref,
-      detail: acctNote + "<br/><br/>Delivery to RightAware failed (" + (q.error.message || "permissions") + "). This copy exists only in this browser — please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
+      detail: acctNote + "<br/><br/>Delivery to RightAware failed (" + (q.error.message || "permissions") + "). This copy exists only in this browser; please retry, or use the <a class='link' href='contact.html'>contact form</a>." });
   }
 
   /* ---------- pathway: individual (general user) ---------- */
@@ -627,7 +627,7 @@
         RA_AUTH.signupLive(n, em, p, { captchaToken: cap.token || undefined }).then(function(r){
           if(!r.ok){
             if(r.alreadyRegistered){ showConfirm(em, true); return; }
-            out.textContent = r.error + " — if you already have an account, log in instead.";
+            out.textContent = r.error + " (if you already have an account, log in instead).";
             return;
           }
           if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
@@ -639,7 +639,7 @@
         RA_AUTH.signup(n, em);
         RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
         finish({ title:"Demo account created on this device", ref:null,
-          detail:"The backend is <strong>not connected</strong> — this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
+          detail:"The backend is <strong>not connected</strong>: this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
       }
     });
   });
@@ -663,7 +663,7 @@
     withCaptcha(panes.pro).then(async function(cap){
       if(cap.error) return bad(cap.error);
       var docLines = [];
-      if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded — original requested during verification).");
+      if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded; original requested during verification).");
       if(photo) docLines.push("Photo recorded: " + photo.name + " (not uploaded yet).");
       var queueMsg =
         "PROFESSIONAL APPLICATION (submitted via signup)\n" +
@@ -672,7 +672,7 @@
         "Areas: " + specs.join("; ") + "\nLanguages: " + chips("pLangs").join("; ") + "\n" +
         "Availability: " + val("pAvail") + "\nFee note: " + (val("pFee") || "—") + "\n" +
         "Bio: " + val("pBio") + "\n" + docLines.join("\n") +
-        "\nStatus: PENDING — publish only after admin approval.";
+        "\nStatus: PENDING: publish only after admin approval.";
 
       var pid = "prof-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
       var row = { id:pid, name:n, qualification:q, experience_yrs:val("pYears") || null,
@@ -691,7 +691,7 @@
         extraTable:"professional_specializations",
         extraRows: row.user_id ? specs.map(function(s){ return { professional_id:pid, specialization:s }; }) : [],
         account:{ name:n, email:em, pass:pw },
-        queue:{ topic:"Application — Legal professional", message:queueMsg },
+        queue:{ topic:"Application: Legal professional", message:queueMsg },
         captchaToken: cap.token || undefined
       });
     });
@@ -717,7 +717,7 @@
     withCaptcha(panes.org).then(function(cap){
       if(cap.error) return bad(cap.error);
       var docLines = [];
-      if(doc) docLines.push("Registration file recorded: " + doc.name + " (not uploaded — original requested during verification).");
+      if(doc) docLines.push("Registration file recorded: " + doc.name + " (not uploaded; original requested during verification).");
       if(logo) docLines.push("Logo recorded: " + logo.name + " (not uploaded yet).");
       var queueMsg =
         "ORGANISATION APPLICATION (submitted via signup)\n" +
@@ -725,7 +725,7 @@
         "State: " + val("oState") + "\nAddress: " + (val("oAddress") || "—") + "\nWebsite: " + (val("oWeb") || "—") + "\n" +
         "Services: " + services.join("; ") + "\nVerification hints: " + (val("oVerify") || "—") + "\n" +
         "About: " + val("oAbout") + "\n" + docLines.join("\n") +
-        "\nStatus: PENDING — list publicly only after admin verification.";
+        "\nStatus: PENDING: list publicly only after admin verification.";
 
       var oid = "org-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,6);
       var row = { id:oid, name:n, description:val("oAbout"), services:services, specialization:val("oType"),
@@ -736,7 +736,7 @@
       submitApplication({
         path:"organisation", table:"organizations", row:row,
         account:{ name:person, email:em, pass:pw },
-        queue:{ topic:"Application — Organisation", message:queueMsg },
+        queue:{ topic:"Application: Organisation", message:queueMsg },
         captchaToken: cap.token || undefined
       });
     });

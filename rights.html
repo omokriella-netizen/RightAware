@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Explore Rights — RightAware Library</title>
+<title>Explore Rights | RightAware Library</title>
 <meta name="description" content="Searchable library of Nigerian rights: fundamental, police & arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Explore Rights — RightAware Library"/>
+<meta property="og:title" content="Explore Rights | RightAware Library"/>
 <meta property="og:description" content="Searchable library of Nigerian rights: fundamental, police &amp; arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/rights.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Explore Rights — RightAware Library"/>
+<meta name="twitter:title" content="Explore Rights | RightAware Library"/>
 <meta name="twitter:description" content="Searchable library of Nigerian rights: fundamental, police &amp; arrest, employment, tenancy, consumer, women, children, disability, education, digital, constitutional and civic responsibilities."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/rights.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
@@ -28,7 +28,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -50,7 +50,7 @@
   <div>
   <span class="eyebrow">Explore Rights</span>
   <h1>Rights library</h1>
-  <p class="lead-dark"><span data-rights-count>12</span> categories. Search below — the Police & Arrest guide is complete; others open as structured overviews with source hints while full guides are researched and verified.</p>
+  <p class="lead-dark"><span data-rights-count>12</span> categories. Search below. The Police &amp; Arrest guide is complete; other sections open as structured overviews with source citations while full guides are researched and verified.</p>
   <form id="libSearch" class="search-form" role="search" style="margin:1.2rem 0 0"><input id="libInput" type="search" placeholder="Filter: try 'bail', 'rent', 'vote', 'scam'…" aria-label="Filter rights"/><button class="btn btn-primary" type="submit">Filter</button></form>
   </div>
   <figure class="page-hero-media"><img src="assets/images/rights-collage.jpg" alt="The word “RIGHTS” spelled out with letters cut from newspapers and magazines" loading="lazy"/></figure>
@@ -143,7 +143,7 @@
       var badge=r.badge==='Full guide'?'<span class="tag">Full guide</span>':'<span class="tag tag-soon">'+r.badge+'</span>';
       var iconBadge = '<div class="card-icon-badge"><svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>';
       return '<article class="card rv">'+iconBadge+'<h3>'+r.title+'</h3><p>'+r.summary+'</p>'+badge+'<br/><br/><a class="link" href="'+r.url+'">Open →</a></article>';
-    }).join("") : '<div class="result">No match. Try "arrest", "rent", "vote", "scam" — or <a class="link" href="help.html">get help →</a></div>';
+    }).join("") : '<div class="result">No match. Try keywords such as "arrest", "rent", "vote", or "scam", or <a class="link" href="help.html">get help →</a></div>';
   }
   render("");
   var params=new URLSearchParams(location.search); if(params.get("q")){ input.value=params.get("q"); render(input.value); }

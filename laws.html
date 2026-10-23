@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Laws & Legal Documents Library — RightAware</title>
-<meta name="description" content="Search and read the actual legal documents supplied for RightAware: the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, ACJA 2015 and more — with in-browser reading and downloads."/>
+<title>Laws &amp; Legal Documents Library | RightAware</title>
+<meta name="description" content="Search and read the actual legal documents supplied for RightAware, including the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, and ACJA 2015, with in-browser reading and downloads."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Laws &amp; Legal Documents Library — RightAware"/>
-<meta property="og:description" content="Search and read the actual legal documents supplied for RightAware: the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, ACJA 2015 and more — with in-browser reading and downloads."/>
+<meta property="og:title" content="Laws &amp; Legal Documents Library | RightAware"/>
+<meta property="og:description" content="Search and read the actual legal documents supplied for RightAware, including the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, and ACJA 2015, with in-browser reading and downloads."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/laws.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Laws &amp; Legal Documents Library — RightAware"/>
-<meta name="twitter:description" content="Search and read the actual legal documents supplied for RightAware: the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, ACJA 2015 and more — with in-browser reading and downloads."/>
+<meta name="twitter:title" content="Laws &amp; Legal Documents Library | RightAware"/>
+<meta name="twitter:description" content="Search and read the actual legal documents supplied for RightAware, including the 1999 Constitution, Electoral Act 2022, Marriage Act, Lagos Tenancy Law 2011, and ACJA 2015, with in-browser reading and downloads."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/laws.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +61,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -84,7 +84,7 @@
   <div>
     <span class="eyebrow">Laws & legal documents</span>
     <h1>Read the actual laws. Search their actual words.</h1>
-    <p class="lead-dark">Every document below is the <strong>original file supplied for this platform</strong> — open it in the in-browser viewer, download it as-is, or search inside its text. Explanations are kept separate from the law itself, and nothing here is quoted from memory.</p>
+    <p class="lead-dark">Every document below is the <strong>original file supplied for this platform</strong>. You can open it in the in-browser viewer, download it directly, or search inside its text. Explanations are kept separate from the law itself, and nothing here is quoted from memory.</p>
     <div class="filter-bar" role="search">
       <input id="lawQ" type="search" placeholder='Search inside the laws… e.g. "arrest", "tenant", "Section 35"' aria-label="Search laws by title, topic, section or keyword"/>
       <select id="lawCat" aria-label="Filter by category"><option value="">All categories</option></select>
@@ -106,7 +106,7 @@
 <section class="section"><div class="container">
   <div id="ftResults" class="rv" aria-live="polite"></div>
   <div id="lawGrid" class="cards-grid"></div>
-  <div class="notice rv" style="margin-top:1.5rem"><strong>How this library stays honest:</strong> documents show their source, year note and verification state. Academic papers are labelled “not legislation”. Scanned files with no text layer say so instead of pretending to be searchable. Administrators can update metadata in <code>content/laws.js</code> (and drop new PDFs into <code>assets/legal/</code>) without rebuilding the site — see CONTENT_UPLOAD_GUIDE.md.</div>
+  <div class="notice rv" style="margin-top:1.5rem"><strong>How this library stays honest:</strong> documents show their source, year note and verification state. Academic papers are labelled “not legislation”. Scanned files with no text layer say so instead of pretending to be searchable. Administrators can update metadata in <code>content/laws.js</code> (and drop new PDFs into <code>assets/legal/</code>) without rebuilding the site (see CONTENT_UPLOAD_GUIDE.md).</div>
 </div></section>
 </main>
 
@@ -217,7 +217,7 @@
   function openDoc(id, page){
     var l = lawById(id); if(!l || !l.file){ return; }
     var url = l.file + (page ? ("#page=" + page) : "");
-    document.getElementById("viewerTitle").textContent = l.title + (page ? (" — page " + page) : "");
+    document.getElementById("viewerTitle").textContent = l.title + (page ? (" · page " + page) : "");
     document.getElementById("viewerDl").href = l.file;
     document.getElementById("viewerNew").href = url;
     document.getElementById("viewerFrame").src = url;
@@ -246,11 +246,11 @@
     h += '<h3>'+esc(l.title)+'</h3><p>'+esc(l.description)+'</p>';
     h += '<div class="doc-badges">';
     if(uploaded){
-      h += '<span class="tag badge-text">'+(l.textAvailable ? ("Searchable text • "+(l.pages||"?")+" pages") : ("Scanned copy • "+(l.pages||"?")+" pages — view only"))+'</span>';
+      h += '<span class="tag badge-text">'+(l.textAvailable ? ("Searchable text • "+(l.pages||"?")+" pages") : ("Scanned copy • "+(l.pages||"?")+" pages · view only"))+'</span>';
     }
     h += '<span class="tag">'+esc(l.category)+'</span></div>';
     var meta = uploaded
-      ? '<strong>Source:</strong> '+esc(l.sourceNote)+'<br/><strong>Year:</strong> '+esc(l.yearNote)+'<br/><strong>Verification:</strong> '+esc(l.verification.status)+' — '+esc(l.verification.note)
+      ? '<strong>Source:</strong> '+esc(l.sourceNote)+'<br/><strong>Year:</strong> '+esc(l.yearNote)+'<br/><strong>Verification:</strong> '+esc(l.verification.status)+' · '+esc(l.verification.note)
       : '<strong>Source hint:</strong> '+esc(l.sourceHint||"")+'<br/><strong>Year:</strong> '+esc(l.yearNote||"")+'<br/><strong>Verification:</strong> '+esc((l.verification&&l.verification.status)||"");
     h += '<p><small>'+meta+'</small></p>';
     if(l.relatedRights && l.relatedRights.length){
@@ -263,7 +263,7 @@
       if(l.textAvailable){
         h += '<button class="btn btn-outline btn-sm" data-search="'+l.id+'">Search inside</button>';
       } else {
-        h += '<span class="tag badge-scan" title="Image-only PDF — no text layer">Scanned — no text search</span>';
+        h += '<span class="tag badge-scan" title="Image-only PDF (no text layer)">Scanned (no text search)</span>';
       }
     } else {
       h += '<button class="btn btn-secondary btn-sm" disabled title="Enabled after a verified upload">Download (pending upload)</button> ';
@@ -295,7 +295,7 @@
   function renderCards(){
     var list = visibleList();
     grid.innerHTML = list.length ? list.map(card).join("")
-      : '<div class="result">No documents match those filters. The catalog grows only through verified uploads — nothing here is invented.</div>';
+      : '<div class="result">No documents match those filters. The catalog grows only through verified uploads; unverified documents are not published.</div>';
     grid.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ openDoc(b.dataset.open); }); });
     grid.querySelectorAll("[data-search]").forEach(function(b){ b.addEventListener("click", function(){
       qInput.value = qInput.value || "Section";
@@ -371,7 +371,7 @@
       var dl2 = lawById(onlyDoc);
       if(dl2 && !dl2.textAvailable){
         renderCards();
-        ftResults.innerHTML = '<div class="result"><strong>“'+esc(dl2.title)+'” is a scanned copy (image pages, no text layer) — full-text search is not available for it.</strong><br/>Open it in the viewer and read it directly:<div style="margin-top:.6rem"><button class="btn btn-primary btn-sm" data-open="'+esc(onlyDoc)+'">Open document</button> <a class="btn btn-secondary btn-sm" href="'+dl2.file+'" download>Download original</a></div></div>';
+        ftResults.innerHTML = '<div class="result"><strong>“'+esc(dl2.title)+'” is a scanned copy (image pages, no text layer). Full-text search is not available for this document.</strong><br/>Open it in the viewer and read it directly:<div style="margin-top:.6rem"><button class="btn btn-primary btn-sm" data-open="'+esc(onlyDoc)+'">Open document</button> <a class="btn btn-secondary btn-sm" href="'+dl2.file+'" download>Download original</a></div></div>';
         ftResults.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ openDoc(b.dataset.open); }); });
         statusEl.textContent = "";
         return;
@@ -392,7 +392,7 @@
       }
       renderCards();
       if(!all.length){
-        ftResults.innerHTML = warn + '<div class="result"><strong>No match for "'+esc(q)+'" inside the searchable documents.</strong><br/>Tips: try fewer words, a section reference like <em>Section 35</em>, or remember that two supplied files are <em>scanned</em> (ACJA 2015, National Policy on Education) — open them in the viewer and read them directly. <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search the whole site →</a></div>';
+        ftResults.innerHTML = warn + '<div class="result"><strong>No match for "'+esc(q)+'" inside the searchable documents.</strong><br/>Tips: try fewer words, a section reference like <em>Section 35</em>, or remember that two supplied files are <em>scanned</em> (ACJA 2015 and National Policy on Education); open them in the viewer to read them directly. <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search the whole site →</a></div>';
         return;
       }
       var totalHits = all.reduce(function(n,x){ return n + x.hits.length; }, 0);

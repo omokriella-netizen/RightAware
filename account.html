@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My Account — RightAware</title>
+<title>My Account | RightAware</title>
 <meta name="description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="My Account — RightAware"/>
+<meta property="og:title" content="My Account | RightAware"/>
 <meta property="og:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/account.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="My Account — RightAware"/>
+<meta name="twitter:title" content="My Account | RightAware"/>
 <meta name="twitter:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/account.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
@@ -26,7 +26,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -45,7 +45,7 @@
   </div>
 </header>
 <main id="main">
-<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Your profile, saved items, account role and application status sync with your account when you are signed in — and everything stays available on this device.</p>
+<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Your profile, saved items, account role and application status sync with your account when you are signed in, and everything stays available on this device.</p>
 <div class="chip-row"><a href="#mystatus">My status</a><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
 <section class="section section-alt" id="mystatus"><div class="container">
   <div class="section-head"><span class="eyebrow">Access & applications</span><h2>My status</h2></div>
@@ -129,7 +129,7 @@
   function renderSaved(){
     const l = RA_DB.savedList();
     document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+s.type+'</span><h3 style="margin-top:.4rem">'+s.title+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+s.type+"|"+s.ref+'">Remove</button></article>').join("")
-      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap Save on any rights guide or video — items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
+      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap Save on any rights guide or video; items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
     document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
   }
   var consultMsg = "";
@@ -140,8 +140,8 @@
   function renderConsult(){
     var signedIn = consultSignedIn(), c = consultRows();
     document.getElementById("consultMeta").textContent = signedIn
-      ? "From your account (Supabase) — real requests, database is the source of truth. Payments stay “none” until Paystack is configured."
-      : "Local copy on this device — sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
+      ? "From your account (Supabase): real requests; database is the source of truth. Payments stay “none” until Paystack is configured."
+      : "Local copy on this device: sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
     document.getElementById("consultList").innerHTML = c.length ? c.map(function(x){
       var st = String(x.status || "requested");
       var stLabel = st === "accepted" ? "Accepted" : st === "declined" ? "Declined" : st;
@@ -162,7 +162,7 @@
     var unread = 0; n.forEach(function(x){ if(!x.read) unread++; });
     document.getElementById("notifMeta").textContent = signedIn
       ? (unread ? unread + " unread · from your account (Supabase)" : "All read · from your account (Supabase)")
-      : "Local copy on this device — sign in to sync notifications with your account.";
+      : "Local copy on this device: sign in to sync notifications with your account.";
     var mb = document.getElementById("notifMarkAll");
     mb.style.display = unread > 0 ? "" : "none";
     document.getElementById("notifList").innerHTML = n.length
@@ -173,7 +173,7 @@
             + '<button class="btn btn-outline btn-sm" type="button" data-notif-del="'+esc(x.id)+'">Delete</button></div>';
         }).join("")
       : (signedIn
-          ? '<p class="empty">No notifications yet — application decisions and other account events appear here automatically; nothing is generated for display.</p>'
+          ? '<p class="empty">No notifications yet. Application decisions and other account events appear here automatically; nothing is generated for display.</p>'
           : '<p class="empty">No notifications on this device yet.</p>');
     document.querySelectorAll("[data-notif-read]").forEach(function(b){ b.addEventListener("click", function(){
       var id = b.getAttribute("data-notif-read"), row = null;
@@ -188,7 +188,7 @@
   /* Every action reports ONLY after the server re-read that proves it stuck
      (remote) or honestly labels the device-local copy (offline/demo). */
   function notifDone(r){
-    notifMsg = r.ok ? "Saved — re-read from the database just now."
+    notifMsg = r.ok ? "Saved; re-read from the database just now."
       : "Could not save: " + (r.error || "unknown error");
     renderNotif();
   }
@@ -225,10 +225,10 @@
     RA_DB.saveProfile(prof);
     var pOut=document.getElementById("pOut");
     if(RA_DB.remote.ready() && RA_DB.remote.uid()){
-      pOut.textContent="Profile saved on this device — syncing…";
+      pOut.textContent="Profile saved on this device; syncing…";
       RA_DB.remote.pushProfile(prof).then(function(r){
         pOut.textContent = r.ok ? "Profile saved on this device and synced to your account."
-          : r.conflict ? "Another device updated this profile first — the account copy was kept. Save again to apply your change."
+          : r.conflict ? "Another device updated this profile first; the account copy was kept. Save again to apply your change."
           : "Profile saved on this device (sync failed: " + (r.error||"error") + "). It will retry on your next visit.";
       });
     } else {
@@ -246,12 +246,12 @@
     var pill = document.getElementById("syncPill");
     // Version proof on the page itself: this HTML is network-first (always
     // fresh) and knows the expected build; RA_DB.v comes from the script that
-    // actually loaded. A mismatch means a stale copy is running — say so
+    // actually loaded. A mismatch means a stale copy is running: say so
     // instead of trusting it. (Keep "?v=" on the script tags = "db6".)
     var ver = (window.RA_DB && RA_DB.v) || "unknown";
-    var tag = (ver === "db6") ? "SYNC db6" : "RELOAD — OLD APP COPY";
+    var tag = (ver === "db6") ? "SYNC db6" : "RELOAD: OLD APP COPY";
     if(window.RA_SUPA && RA_SUPA.ready){ pill.textContent = "BACKEND CONNECTED · " + tag; }
-    else { pill.textContent = "LOCAL / DEMO — NOT CONNECTED · " + tag; }
+    else { pill.textContent = "LOCAL / DEMO: NOT CONNECTED · " + tag; }
   }
   function renderStatus(){
     var box = document.getElementById("statusBox");
@@ -274,10 +274,10 @@
       var a = local[0];
       html += '<article class="card"><span class="tag">Application (this device)</span><h3>'
         + (a.path==="professional" ? "Professional application" : "Organisation application") + '</h3>'
-        + '<p>Reference <strong>'+esc(a.ref)+'</strong> — '+esc(a.status)+' — '+esc(String(a.at).slice(0,10))+'</p>'
+        + '<p>Reference <strong>'+esc(a.ref)+'</strong> ('+esc(a.status)+', '+esc(String(a.at).slice(0,10))+')</p>'
         + '<p><small>' + (window.RA_SUPA && RA_SUPA.ready
-            ? "Reference receipt saved locally — status is shown in the “Application (live)” card above when available."
-            : "Backend not connected — this copy has NOT been submitted to RightAware. Re-submit when connected.")
+            ? "Reference receipt saved locally. Status is shown in the “Application (live)” card above when available."
+            : "Backend not connected; this copy has not been submitted to RightAware. Re-submit when connected.")
         + '</small></p></article>';
     } else {
       html += '<article class="card"><span class="tag">Application</span><h3>No pending application</h3>'
@@ -291,7 +291,7 @@
           errCard.className = "card";
           errCard.innerHTML = '<span class="tag">Application (live)</span><h3>Live status unavailable</h3>'
             + '<p><small>Your application could not be read from the server right now: '
-            + esc(app.error) + ' — try again in a moment.</small></p>';
+            + esc(app.error) + '; try again in a moment.</small></p>';
           box.appendChild(errCard);
           return;
         }
@@ -302,11 +302,11 @@
         if(st === "verified"){
           label = isPro ? "VERIFIED LEGAL PROFESSIONAL" : "VERIFIED ORGANIZATION";
           pill = "pill-green";
-          hint = "Approved by an administrator — shown publicly as verified.";
+          hint = "Approved by an administrator; shown publicly as verified.";
         } else if(st === "pending"){
           label = "PENDING VERIFICATION";
           pill = "pill-gold";
-          hint = "Submitted and awaiting an administrator's review. Your details stay private — only administrators can see them until approval.";
+          hint = "Submitted and awaiting an administrator's review. Your details stay private; only administrators can see them until approval.";
         } else if(st === "rejected"){
           label = "APPLICATION REJECTED";
           pill = "pill-red";
@@ -314,13 +314,13 @@
         } else {
           label = "NOT VERIFIED";
           pill = "pill-gold";
-          hint = "Not verified — this record is never shown publicly as verified.";
+          hint = "Not verified; this record is never shown publicly as verified.";
         }
         var extra = document.createElement("article");
         extra.className = "card";
         extra.innerHTML = '<span class="tag">Application (live)</span><h3>'
           + (isPro ? "Professional application" : "Organisation application") + '</h3>'
-          + '<p>'+esc(app.row.name)+' — <span class="'+pill+'">'+label+'</span></p>'
+          + '<p>'+esc(app.row.name)+' · <span class="'+pill+'">'+label+'</span></p>'
           + '<p><small>'+hint+'</small></p>'
           + (st === "verified" ? '<p><a class="btn btn-primary btn-sm" href="' + (isPro ? "professional.html" : "organization.html") + '">Open workspace</a></p>' : '');
         box.appendChild(extra);
@@ -329,12 +329,12 @@
   }
   document.addEventListener("ra:backend-ready", function(){
     paintSync(); renderStatus(); renderNotif(); renderConsult();
-    // fetchRole() resolves AFTER the first paint — repaint when the real role
+    // fetchRole() resolves AFTER the first paint; repaint when the real role
     // arrives so an admin/professional does not sit on "General user" until reload.
     RA_AUTH.fetchRole().then(function(){ renderStatus(); });
   });
   /* The account sync finishes AFTER this page first painted, so whatever arrived
-     from the other device is in localStorage by now — repaint from it. An edit
+     from the other device is in localStorage by now; repaint from it. An edit
      already in progress is never overwritten. A failed notification pull is
      shown honestly instead of leaving a stale list unexplained. */
   document.addEventListener("ra:synced", function(ev){
@@ -342,7 +342,7 @@
     var d = ev && ev.detail;
     if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
       notifMsg = "Could not refresh notifications from the server: " + d.notif.error
-        + " — your own notifications are read through policy own_notif (base schema)";
+        + " (your own notifications are read through policy own_notif, base schema)";
       renderNotif();
     } else if(d && d.notif && d.notif.ok !== false){
       notifMsg = "";
@@ -350,7 +350,7 @@
     }
     if(consultSignedIn() && d && d.consult && d.consult.ok === false && d.consult.error){
       consultMsg = "Could not refresh consultations from the server: " + d.consult.error
-        + " — your own rows are read through policy own_cons_sel (supabase/consultations-access.sql)";
+        + " (your own rows are read through policy own_cons_sel, supabase/consultations-access.sql)";
       renderConsult();
     } else if(d && d.consult && d.consult.ok !== false){
       consultMsg = "";
@@ -370,7 +370,7 @@
       var note = document.createElement("article");
       note.className = "card";
       note.innerHTML = '<span class="tag">Application</span><h3>Application attached</h3>'
-        + '<p>Your earlier application was attached to this account — status: <span class="pill-gold">PENDING VERIFICATION</span>.</p>';
+        + '<p>Your earlier application was attached to this account. Status: <span class="pill-gold">PENDING VERIFICATION</span>.</p>';
       box.prepend(note);
     });
   }

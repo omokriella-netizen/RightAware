@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Legal Professionals (Demo) — RightAware</title>
+<title>Legal Professionals (Demo) | RightAware</title>
 <meta name="description" content="Demo directory of legal professionals: fictional placeholder profiles with practice area, location, rating, reviews and request-help."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Legal Professionals (Demo) — RightAware"/>
+<meta property="og:title" content="Legal Professionals (Demo) | RightAware"/>
 <meta property="og:description" content="Demo directory of legal professionals: fictional placeholder profiles with practice area, location, rating, reviews and request-help."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/lawyers.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Legal Professionals (Demo) — RightAware"/>
+<meta name="twitter:title" content="Legal Professionals (Demo) | RightAware"/>
 <meta name="twitter:description" content="Demo directory of legal professionals: fictional placeholder profiles with practice area, location, rating, reviews and request-help."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/lawyers.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
@@ -26,7 +26,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -46,12 +46,12 @@
 <main id="main">
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
-  <span class="eyebrow">Legal professionals</span><h1>Directory <span class="pill">DEMO DATA — NOT REAL LAWYERS</span></h1>
-  <p class="lead-dark">Below the <strong>VERIFIED</strong> list (real, but only ever shown after an administrator approves an application) sit clearly-marked <span class="pill">DEMO</span> placeholder profiles for interface preview. No real phone numbers or emails are ever listed — contact happens through an on-site request. Professional applications open via <a class="link" href="signup.html">Sign Up</a>.</p>
+  <span class="eyebrow">Legal professionals</span><h1>Directory <span class="pill">DEMO DATA: PREVIEW ONLY</span></h1>
+  <p class="lead-dark">Below the <strong>VERIFIED</strong> list (real profiles shown only after administrator approval) sit clearly marked <span class="pill">DEMO</span> placeholder profiles for interface preview. Personal contact details are not published; communication is initiated through an on-site consultation request. Professional applications open via <a class="link" href="signup.html">Sign Up</a>.</p>
   <div class="filter-bar">
     <input id="fQ" type="search" placeholder="Search name, practice, keyword…" aria-label="Search professionals"/>
     <select id="fLoc" aria-label="Filter by location"><option value="">All locations</option><option>Lagos</option><option>Abuja FCT</option><option>Rivers</option><option>Oyo</option><option>Kano</option><option>Enugu</option></select>
-    <select id="fArea" aria-label="Filter by area"><option value="">All areas</option><option>Human Rights & Police Matters</option><option>Family & Gender-Based Violence</option><option>Employment & Workplace Disputes</option><option>Tenancy & Property</option><option>Consumer & Digital Fraud</option><option>Free Clinic — Students & Low Income</option></select>
+    <select id="fArea" aria-label="Filter by area"><option value="">All areas</option><option>Human Rights & Police Matters</option><option>Family & Gender-Based Violence</option><option>Employment & Workplace Disputes</option><option>Tenancy & Property</option><option>Consumer & Digital Fraud</option><option>Free Clinic: Students &amp; Low Income</option></select>
   </div>
   </div>
   <figure class="page-hero-media"><img src="assets/images/lawyers-professional-tablet.jpg" alt="A professional woman holding a tablet" loading="lazy"/></figure>
@@ -64,7 +64,7 @@
 </main>
 <div class="modal" id="reqModal" aria-hidden="true"><div class="modal-box">
   <h3 id="reqTitle">Request help</h3>
-  <p style="color:var(--muted);font-size:.9rem" id="reqNote">Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.</p>
+  <p style="color:var(--muted);font-size:.9rem" id="reqNote">Demo only: saved on this device and not sent to external parties. Never share passwords, OTPs, or bank details.</p>
   <label>Your name<input id="reqName" placeholder="e.g. Jane Doe"/></label>
   <label>Briefly describe your issue<textarea id="reqMsg" rows="3" placeholder="Facts only, no sensitive data"></textarea></label>
   <div style="display:flex;gap:.6rem"><button class="btn btn-primary" id="reqSend">Send Request (demo)</button><button class="btn btn-secondary" id="reqClose">Close</button></div>
@@ -186,7 +186,7 @@
     });
     grid.innerHTML=list.length?list.map(function(l){
       var revs = RA_REVIEWS.forProfessional(l.id).map(function(r){
-        return '<div class="rev-item"><strong>'+r.user+'</strong> <small>'+r.rating+'/5'+(r.verifiedInteraction?' • verified interaction':'')+' — '+r.text+'</small><br/><small>'+(r.date||"")+'</small> <button class="link" style="border:none;background:none;cursor:pointer;font-size:.78rem" data-flag="'+l.id+"|"+r.user+"|"+(r.date||"")+'">Report review</button></div>';
+        return '<div class="rev-item"><strong>'+r.user+'</strong> <small>'+r.rating+'/5'+(r.verifiedInteraction?' • verified interaction':'')+' · '+r.text+'</small><br/><small>'+(r.date||"")+'</small> <button class="link" style="border:none;background:none;cursor:pointer;font-size:.78rem" data-flag="'+l.id+"|"+r.user+"|"+(r.date||"")+'">Report review</button></div>';
       }).join("");
       return '<article class="card lawyer rv" id="'+l.id+'"><span class="pill">DEMO</span><div class="avatar">'+l.initials+'</div><h3>'+l.name+'</h3><small>'+l.location+' • '+l.practice+' • '+l.exp+'</small><p>'+l.bio+'</p><p>Rating: '+l.rating+' ('+l.reviews+' demo reviews) • '+l.fee+'</p><div class="rev">'+revs+'</div>'
       + '<form data-review="'+l.id+'" style="margin-top:.6rem"><div class="form-row"><select data-rate aria-label="Rating"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select><input data-text placeholder="Write a review (demo)…" aria-label="Review text"/></div><button class="btn btn-outline btn-sm" type="submit">Submit Review</button> <small class="form-note" data-rout></small></form>'
@@ -206,12 +206,12 @@
     var isLive=false;
     if(!current){ current=(live||[]).find(function(p){return p.id===id;}); isLive=!!current; }
     else { isLive=false; }
-    document.getElementById("reqTitle").textContent="Request help — "+(current?current.name:"");
+    document.getElementById("reqTitle").textContent="Request help: "+(current?current.name:"");
     document.getElementById("reqNote").textContent = isLive
       ? ((window.RA_DB&&RA_DB.remote.ready()&&RA_DB.remote.uid())
-          ? "This is a verified professional. Your request is created as a real consultation request on your account — the professional accepts or declines from their workspace. Never share passwords, OTPs or bank details."
+          ? "This is a verified professional. Your request is created as a consultation request on your account; the professional reviews and responds from their workspace. Never share passwords, OTPs or bank details."
           : "This is a verified professional. Sign in to send a real consultation request; without a session it goes to RightAware's contact queue instead. Never share passwords, OTPs or bank details.")
-      : "Demo only — saved on this device, not sent to anyone. Never share passwords, OTPs or bank details.";
+      : "Demo only: saved on this device and not sent to external parties. Never share passwords, OTPs or bank details.";
     document.getElementById("reqSend").textContent = isLive ? "Send request" : "Send Request (demo)";
     currentIsLive=isLive;
     document.getElementById("reqOut").textContent="";
@@ -235,9 +235,9 @@
       RA_DB.remote.pushConsultation({ professionalId:(current&&current.id)||null, msg:(n+": "+m) }).then(function(r){
         if(r && r.ok){
           try{ RA_DB.remote.pullConsultations(); }catch(_){}
-          out.textContent="Consultation request sent — a real row is now on your account, addressed to "+((current&&current.name)||"this professional")+". Track its status in My Account → Consultations; the professional accepts or declines from their workspace. Payments remain disabled until Paystack is configured.";
+          out.textContent="Consultation request sent: a consultation record is now on your account, addressed to "+((current&&current.name)||"this professional")+". Track its status in My Account → Consultations; the professional reviews and responds from their workspace. Payments remain disabled until Paystack is configured.";
         } else {
-          out.textContent="Could not send ("+((r&&r.error)||"network")+"). Your copy is saved on this device — please retry, or use the contact page.";
+          out.textContent="Could not send ("+((r&&r.error)||"network")+"). Your copy is saved on this device. Please retry or use the contact page.";
         }
       }).catch(function(){ out.textContent="Delivery failed (network). Saved on this device only."; });
       return;
@@ -248,12 +248,12 @@
       out.textContent="Sending…";
       RA_SUPA.client.from("contact_messages").insert({
         name:n, email:(RA_AUTH.current()||{}).email||"",
-        topic:"Directory request — "+((current&&current.name)||"professional"),
+        topic:"Directory request: "+((current&&current.name)||"professional"),
         message:"Request for help directed to "+((current&&current.name)||"a verified professional")+" ("+(current&&current.id)+"):\n"+m, status:"new"
       }).then(function(r){
         out.textContent = (r&&!r.error)
           ? "Request sent to RightAware for follow-up with this professional. Sign in to send it as a real consultation request the professional can accept or decline. Payments remain disabled until Paystack is configured."
-          : "Could not deliver ("+((r&&r.error&&r.error.message)||"network")+"). Your copy is saved on this device — please retry or use the contact page.";
+          : "Could not deliver ("+((r&&r.error&&r.error.message)||"network")+"). Your copy is saved on this device. Please retry or use the contact page.";
       }).catch(function(){ out.textContent="Delivery failed (network). Saved on this device only."; });
       return;
     }

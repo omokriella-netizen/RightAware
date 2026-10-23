@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Organizations Directory — RightAware</title>
-<meta name="description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide — legal aid, human rights, GBV, digital rights — with published official contacts."/>
+<title>Organizations Directory | RightAware</title>
+<meta name="description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide across legal aid, human rights, GBV, and digital rights, with published official contacts."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Organizations Directory — RightAware"/>
-<meta property="og:description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide — legal aid, human rights, GBV, digital rights — with published official contacts."/>
+<meta property="og:title" content="Organizations Directory | RightAware"/>
+<meta property="og:description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide across legal aid, human rights, GBV, and digital rights, with published official contacts."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/organizations.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Organizations Directory — RightAware"/>
-<meta name="twitter:description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide — legal aid, human rights, GBV, digital rights — with published official contacts."/>
+<meta name="twitter:title" content="Organizations Directory | RightAware"/>
+<meta name="twitter:description" content="Rights-protection agency directory: search 36 organisations in Nigeria and worldwide across legal aid, human rights, GBV, and digital rights, with published official contacts."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/organizations.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -48,7 +48,7 @@
 <main id="main">
 <section class="page-hero"><div class="container rv">
   <span class="eyebrow">Organizations</span><h1>Rights-protection directory</h1>
-  <p class="lead-dark"><strong>36 organisations</strong> — 18 Nigerian and 18 international — searchable by the problem you are facing, with the phone, e-mail, website or directory page each one publishes. <strong>All listings are compiled from verified statutory sources and official directories.</strong></p>
+  <p class="lead-dark"><strong>36 organisations</strong> (18 Nigerian and 18 international) searchable by issue, with published phone, email, website, or directory page for each. <strong>All listings are compiled from verified statutory sources and official directories.</strong></p>
   <form id="orgSearch" class="search-form" role="search" style="margin:1.2rem 0 0"><input id="orgQ" type="search" placeholder="Search: try 'police abuse', 'free lawyer', 'rape', 'refugee'…" aria-label="Search organizations"/><button class="btn btn-primary" type="submit">Search</button></form>
 </div></section>
 <section class="section"><div class="container">
@@ -56,7 +56,7 @@
   <div id="orgTypes" class="cards-grid"></div>
 </div></section>
 <section class="section section-alt" id="directory"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">The directory</span><h2>Find an organisation <span class="pill" id="dirCount">36 LISTED</span></h2><p>Names, specialisations and contact points as published in the official <em>RightAware Rights Protection Agencies Directory</em>. Search with the words you would use for your problem — "police abuse", "free lawyer", "rape", "refugee" — or filter by type, focus, country and Nigerian state.</p></div>
+  <div class="section-head rv"><span class="eyebrow">The directory</span><h2>Find an organisation <span class="pill" id="dirCount">36 LISTED</span></h2><p>Names, specialisations and contact points as published in the official <em>RightAware Rights Protection Agencies Directory</em>. Search using terms relevant to your issue, such as "police abuse", "free lawyer", "rape", or "refugee", or filter by type, focus, country, and Nigerian state.</p></div>
   <div id="dirFilters" class="rv" style="display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:1.1rem">
     <input id="dirQ" type="search" placeholder="Search the directory…" aria-label="Search the organisation directory" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit"/>
     <select id="fType" aria-label="Filter by organisation type" style="padding:.7rem .9rem;border:1px solid rgba(11,107,58,.25);border-radius:10px;font:inherit;background:#fff"></select>
@@ -68,7 +68,7 @@
   <div id="orgProfile"></div>
 </div></section>
 <section class="section" id="hubs"><div class="container">
-  <div class="section-head rv"><span class="eyebrow">Keep expanding</span><h2>Directory hubs</h2><p>Official hubs that maintain wider lists of protection bodies. These are external directories, not RightAware records — open them for the fullest coverage.</p></div>
+  <div class="section-head rv"><span class="eyebrow">Keep expanding</span><h2>Directory hubs</h2><p>Official hubs that maintain wider lists of protection bodies. These are external directories rather than RightAware records; consult them for wider jurisdictional coverage.</p></div>
   <div id="orgHubs" class="cards-grid"></div>
 </div></section>
 <section class="section section-alt"><div class="container">
@@ -140,7 +140,7 @@
     f=(f||"").toLowerCase();
     const list=(window.RA_ORG_TYPES||[]).filter(o=>!f||(o.name+" "+o.help+" "+o.specializations.join(" ")).toLowerCase().includes(f));
     types.innerHTML=list.length?list.map(o=>'<article class="card rv"><div class="card-icon-badge" style="width:36px;height:36px;margin-bottom:.6rem"><svg class="ra-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><h3>'+o.name+'</h3><p>'+o.help+'</p><p><small><strong>Handles:</strong> '+o.specializations.join(" • ")+'</small></p><span class="badge-verified">Verified Organization Type</span><br/><br/><a class="link" href="help.html#organisations">How to reach this type →</a></article>').join("")
-      :'<div class="result">No match. Try "police", "child", "consumer" — or <a class="link" href="help.html">get help →</a></div>';
+      :'<div class="result">No match. Try "police", "child", or "consumer", or <a class="link" href="help.html">get help →</a></div>';
     const full=(window.RA_ORGANIZATIONS||[]).filter(o=>o.verification.status==="verified");
     recs.innerHTML=full.length?full.map(o=>'<article class="card rv"><h3>'+o.name+'</h3><p>'+o.description+'</p><a class="btn btn-primary btn-sm" href="help.html#report">Contact →</a></article>').join("")
       :'<div class="card rv" style="grid-column:1/-1;text-align:center;padding:2.5rem"><div class="card-icon-badge" style="width:48px;height:48px;margin:0 auto 1rem"><svg class="ra-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M14 10v11M4 10l8-6 8 6"></path></svg></div><h3>No verified records yet</h3><p>Records publish only after official-source verification (name, logo, services, location, contacts, verification badge). See CONTENT_UPLOAD_GUIDE.md.</p></div>';
@@ -159,7 +159,7 @@
     fillFacet(fCountry,"All countries",F.countries);
     fillFacet(fState,"All Nigerian states",F.states);
   }
-  function placeLine(o){ return [o.location,o.coverage].filter(Boolean).join(" — "); }
+  function placeLine(o){ return [o.location,o.coverage].filter(Boolean).join(" · "); }
   /* Card + contact HTML come from the shared builders in content/organizations.js
      (RA_ORG_CARD_HTML / RA_ORG_CONTACTS_HTML) so help.html renders identically. */
   const orgCard = o => (window.RA_ORG_CARD_HTML ? window.RA_ORG_CARD_HTML(o) : "");
@@ -180,7 +180,7 @@
   function renderProfile(id){
     const o=(window.RA_ORG_BY_ID?window.RA_ORG_BY_ID(id):null);
     if(!o){
-      profBox.innerHTML=id?'<div class="result">That organisation record was not found — <a class="link" href="organizations.html">back to the directory →</a></div>':"";
+      profBox.innerHTML=id?'<div class="result">That organisation record was not found. <a class="link" href="organizations.html">Back to the directory →</a></div>':"";
       dirBox.style.display="";
       return;
     }
@@ -202,7 +202,7 @@
       +'<p><strong>Location &amp; coverage:</strong> '+esc(placeLine(o))+'</p>'
       +contactLines(o)
       +(o.contactNote?'<p><small><strong>Contact note:</strong> '+esc(o.contactNote)+'</small></p>':'')
-      +'<p><small><strong>Source:</strong> '+esc(srcName)+' — official publication record (<a class="link" href="'+esc(o.source_url)+'" target="_blank" rel="noopener nofollow">'+esc(o.source_url)+' ↗</a>). <span class="badge-verified">Verified Directory Listing</span></small></p>'
+      +'<p><small><strong>Source:</strong> '+esc(srcName)+' · official publication record (<a class="link" href="'+esc(o.source_url)+'" target="_blank" rel="noopener nofollow">'+esc(o.source_url)+' ↗</a>). <span class="badge-verified">Verified Directory Listing</span></small></p>'
       +'</article></div>';
   }
   function applyQuery(v){

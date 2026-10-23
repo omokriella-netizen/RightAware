@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Contact Us — RightAware</title>
+<title>Contact Us | RightAware</title>
 <meta name="description" content="Contact RightAware: general enquiries and partnerships by email, phone and our Abuja office, plus a message form delivered straight to the team."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Contact Us — RightAware"/>
+<meta property="og:title" content="Contact Us | RightAware"/>
 <meta property="og:description" content="Contact RightAware: general enquiries and partnerships by email, phone and our Abuja office, plus a message form delivered straight to the team."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/contact.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Contact Us — RightAware"/>
+<meta name="twitter:title" content="Contact Us | RightAware"/>
 <meta name="twitter:description" content="Contact RightAware: general enquiries and partnerships by email, phone and our Abuja office, plus a message form delivered straight to the team."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/contact.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
@@ -26,7 +26,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -47,7 +47,7 @@
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
   <span class="eyebrow">Contact Us</span><h1>Talk to the RightAware team</h1>
-  <p class="lead-dark">Email us, call us, or send a message below — the form validates your input, blocks obvious spam and delivers your message straight to the RightAware team. For urgent rights issues, use <a class="link" href="help.html">Get Help</a> first.</p>
+  <p class="lead-dark">Email us, call us, or send a message below. The form validates your input, blocks spam, and delivers your message directly to the RightAware team. For urgent rights issues, use <a class="link" href="help.html">Get Help</a> first.</p>
   </div>
   <figure class="page-hero-media"><img src="assets/images/contact-hands-together.jpg" alt="Many hands joined together in the centre of a circle" loading="lazy"/></figure>
 </div></section>
@@ -83,7 +83,7 @@
           <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
         </div>
         <h3>Office &amp; availability</h3>
-        <p>Abuja, Nigeria — <strong>Open 24/7</strong></p>
+        <p>Abuja, Nigeria · <strong>Open 24/7</strong></p>
       </article>
 
       <article class="card" style="border-color:rgba(220,38,38,.4)">
@@ -91,7 +91,7 @@
           <svg class="ra-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         </div>
         <h3>Urgent rights issue?</h3>
-        <p>Don't wait for email — use <a class="link" href="help.html">Get Help</a> and official emergency channels.</p>
+        <p>If your situation is urgent, do not wait for email. Use <a class="link" href="help.html">Get Help</a> and official emergency channels.</p>
       </article>
     </div>
   <form class="form-card rv" id="contactForm" novalidate>
@@ -102,7 +102,7 @@
     <!-- spam trap: hidden from people, tempting to bots -->
     <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>Leave this empty<input id="cWebsite" tabindex="-1" autocomplete="off"/></label></div>
     <button class="btn btn-primary" type="submit">Send Message</button>
-    <p class="form-note" id="cOut" aria-live="polite">Your message goes to the RightAware team. We only use your email address to reply — nothing else.</p>
+    <p class="form-note" id="cOut" aria-live="polite">Your message goes to the RightAware team. We only use your email address to reply to your inquiry.</p>
   </form>
 </div></section>
 </main>
@@ -230,11 +230,11 @@
     if(name.length < 2){ fail("Please enter your full name."); document.getElementById("cName").focus(); return; }
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ fail("Please enter a valid email address (e.g. you@example.com)."); document.getElementById("cEmail").focus(); return; }
     if(msg.length < 10){ fail("Please write a message of at least 10 characters so we can understand it."); document.getElementById("cMsg").focus(); return; }
-    if(/https?:\/\//i.test(msg) && (msg.match(/https?:\/\//gi) || []).length > 3){ fail("Your message contains too many links — please remove some."); return; }
+    if(/https?:\/\//i.test(msg) && (msg.match(/https?:\/\//gi) || []).length > 3){ fail("Your message contains too many links. Please remove some links before sending."); return; }
 
     /* --- spam protection: honeypot + time trap + per-device throttle --- */
     if(document.getElementById("cWebsite").value !== ""){ form.reset(); ok("Message sent. We'll only use your email to reply."); return; }
-    if(Date.now() - loadedAt < 3000){ fail("That was quick — please take a moment to review your message and send again."); return; }
+    if(Date.now() - loadedAt < 3000){ fail("Submission was too rapid. Please take a moment to review your message and send again."); return; }
     if(!throttleOK()){ fail("You've sent several messages in the last few minutes. Please wait a little before sending another."); return; }
 
     var payload = { name:name, email:email, topic:topic, message:msg };

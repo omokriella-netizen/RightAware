@@ -18,6 +18,8 @@
  * Never place the API key in this file or frontend JavaScript.
  */
 
+const crypto = require("crypto");
+
 const DISCLAIMER =
   "General legal information only — not legal advice. Verify important points with a qualified professional.";
 
@@ -878,6 +880,111 @@ async function verifiedAccount(req){
   } catch(_) { return null; }
 }
 
+/* ---------- Guest Quota & Device Verification Utilities ---------- */
+function getClientIp(req) {
+  const fwd = (req.headers && (req.headers["x-forwarded-for"] || req.headers["x-real-ip"])) || "";
+  const ip = String(Array.isArray(fwd) ? fwd[0] : fwd).split(",")[0].trim();
+  return ip || "127.0.0.1";
+}
+
+function getIpSubnet(ip) {
+  if (!ip) return null;
+  if (ip.includes(".")) {
+    const parts = ip.split(".");
+    if (parts.length === 4) return `${parts[0]}.${parts[1]}.${parts[2]}.0/24`;
+  }
+  if (ip.includes(":")) {
+    const parts = ip.split(":");
+    if (parts.length >= 3) return `${parts[0]}:${parts[1]}:${parts[2]}::/48`;
+  }
+  return null;
+}
+
+function parseCookies(cookieHeader) {
+  const list = {};
+  if (!cookieHeader || typeof cookieHeader !== "string") return list;
+  cookieHeader.split(";").forEach(function(cookie){
+    const parts = cookie.split("=");
+    const name = parts.shift().trim();
+    if (name) list[name] = decodeURIComponent(parts.join("=").trim());
+  });
+  return list;
+}
+
+function signGuestId(id, secret) {
+  return crypto.createHmac("sha256", secret).update(id).digest("hex");
+}
+
+function verifyGuestCookie(val, secret) {
+  if (!val || typeof val !== "string" || !val.includes(".")) return null;
+  const parts = val.split(".");
+  const id = parts[0];
+  const sig = parts[1];
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) return null;
+  const expectedSig = signGuestId(id, secret);
+  try {
+    const a = Buffer.from(sig, "hex");
+    const b = Buffer.from(expectedSig, "hex");
+    if (a.length === b.length && crypto.timingSafeEqual(a, b)) return id;
+  } catch(_) {}
+  return null;
+}
+
+function serializeGuestCookie(id, secret, isSecure) {
+  const sig = signGuestId(id, secret);
+  const val = encodeURIComponent(id + "." + sig);
+  const secureFlag = isSecure ? "; Secure" : "";
+  return "ra_guest_token=" + val + "; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax" + secureFlag;
+}
+
+async function verifyTurnstile(token, clientIp, secret) {
+  if (!secret) return { ok: true };
+  if (!token) return { ok: false, error: "Missing Turnstile token" };
+  try {
+    const params = new URLSearchParams();
+    params.append("secret", secret);
+    params.append("response", token);
+    if (clientIp) params.append("remoteip", clientIp);
+
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    });
+    const outcome = await res.json();
+    return { ok: !!outcome.success, error: (outcome["error-codes"] || []).join(", ") };
+  } catch(e) {
+    console.error("[TURNSTILE_VERIFY_ERROR]", e);
+    return { ok: false, error: e.message };
+  }
+}
+
+async function callSupabaseRpc(functionName, params) {
+  try {
+    const base = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+    if (!base || !serviceKey) return null;
+    const res = await fetch(base + "/rest/v1/rpc/" + functionName, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": serviceKey,
+        "Authorization": "Bearer " + serviceKey
+      },
+      body: JSON.stringify(params)
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn("[RA_RPC_WARN]", functionName, res.status, errText);
+      return null;
+    }
+    return await res.json();
+  } catch(err) {
+    console.warn("[RA_RPC_EXCEPTION]", functionName, err);
+    return null;
+  }
+}
+
 
 /* =========================================================
    API ENDPOINT
@@ -1003,17 +1110,116 @@ module.exports = async function (req, res) {
 
 
   /* ---------------------------------------------------------
-     VERIFIED CALLER (a configured key is only spendable by a
-     signed-in account; fail closed)
+     CALLER VERIFICATION: Authenticated User vs. Verified Guest
+     - Signed-in account: Unlimited tier (verified via Supabase JWT)
+     - Guest caller: Enforce Turnstile + signed HttpOnly cookie +
+       atomic 3-attempt quota per 24h via increment_guest_quota
      --------------------------------------------------------- */
 
   const acct = await verifiedAccount(req);
+  let isGuest = false;
+  let guestId = null;
+  let guestQuota = null;
+
   if (!acct) {
-    return res.status(401).json({
-      ok: false,
-      code: "unauthorized",
-      error: "Sign in required."
+    isGuest = true;
+    const clientIp = getClientIp(req);
+    const ipSubnet = getIpSubnet(clientIp);
+
+    // 1. Enforce Cloudflare Turnstile Verification (Proof of Human Execution)
+    const turnstileToken = body.turnstileToken || (req.headers && req.headers["x-turnstile-token"]);
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+    if (turnstileSecret) {
+      if (!turnstileToken) {
+        return res.status(403).json({
+          ok: false,
+          code: "captcha_required",
+          error: "Security verification required. Please complete the CAPTCHA."
+        });
+      }
+      const verifyRes = await verifyTurnstile(turnstileToken, clientIp, turnstileSecret);
+      if (!verifyRes.ok) {
+        return res.status(403).json({
+          ok: false,
+          code: "captcha_invalid",
+          error: "Security verification failed. Please try again."
+        });
+      }
+    }
+
+    // 2. Cookie Device Identification (HMAC-SHA256 Signed Cookie)
+    const hmacSecret = process.env.GUEST_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!hmacSecret) {
+      console.error("[RA_GUEST_AUTH_CONFIG_ERROR] Neither GUEST_HMAC_SECRET nor SUPABASE_SERVICE_ROLE_KEY configured.");
+      return res.status(503).json({
+        ok: false,
+        code: "service_unavailable",
+        error: "Guest preview service is temporarily unavailable due to server configuration. Please sign in or try again shortly.",
+        text: "Guest preview service is temporarily unavailable. Please sign in with a free account to continue without interruption.",
+        links: [
+          { t: "Sign In", u: "login.html?next=ai.html" },
+          { t: "Create Free Account", u: "signup.html" }
+        ],
+        disclaimer: DISCLAIMER
+      });
+    }
+
+    const cookies = parseCookies(req.headers ? req.headers.cookie : "");
+    guestId = verifyGuestCookie(cookies.ra_guest_token, hmacSecret);
+    let needSetCookie = false;
+    if (!guestId) {
+      guestId = crypto.randomUUID();
+      needSetCookie = true;
+    }
+    if (needSetCookie) {
+      const isSecure = (req.headers && req.headers["x-forwarded-proto"] === "https") || process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+      res.setHeader("Set-Cookie", serializeGuestCookie(guestId, hmacSecret, isSecure));
+    }
+
+    // 3. Atomic Database Quota Mutation via Supabase RPC
+    const rpcRes = await callSupabaseRpc("increment_guest_quota", {
+      p_guest_id: guestId,
+      p_ip_subnet: ipSubnet
     });
+
+    if (rpcRes && Array.isArray(rpcRes) && rpcRes.length > 0) {
+      guestQuota = rpcRes[0];
+      if (guestQuota.status_code === "subnet_burst_limit") {
+        return res.status(429).json({
+          ok: false,
+          code: "too_many_requests",
+          error: "High network activity detected. Please wait a moment or sign in."
+        });
+      }
+      if (!guestQuota.allowed || (guestQuota.current_attempts != null && guestQuota.current_attempts > 3)) {
+        return res.status(403).json({
+          ok: false,
+          code: "free_limit_reached",
+          attempts: guestQuota.current_attempts || 4,
+          max: 3,
+          error: "Free preview limit reached (3/3). Sign in with a free account to continue asking unlimited questions.",
+          text: "Free preview limit reached (3/3). Please sign in with a free RightAware account to continue where you left off with unlimited answers.",
+          links: [
+            { t: "Sign In & Continue", u: "login.html?next=ai.html" },
+            { t: "Create Free Account", u: "signup.html" }
+          ],
+          disclaimer: DISCLAIMER
+        });
+      }
+    } else {
+      console.error("[RA_GUEST_QUOTA_ERROR] Supabase RPC failed or returned empty payload");
+      return res.status(503).json({
+        ok: false,
+        code: "service_unavailable",
+        error: "Guest preview verification is temporarily unavailable. Please sign in or try again shortly.",
+        text: "Guest preview verification is temporarily unavailable. Please sign in with a free account to continue without interruption.",
+        links: [
+          { t: "Sign In", u: "login.html?next=ai.html" },
+          { t: "Create Free Account", u: "signup.html" }
+        ],
+        disclaimer: DISCLAIMER
+      });
+    }
   }
 
 
@@ -1175,6 +1381,12 @@ module.exports = async function (req, res) {
         providerMessage
       );
 
+      // Refund guest quota attempt if upstream provider fails
+      if (isGuest && guestId) {
+        try {
+          await callSupabaseRpc("refund_guest_quota", { p_guest_id: guestId });
+        } catch (_) {}
+      }
 
       /*
        * Return a diagnostic to the existing frontend
@@ -1220,6 +1432,12 @@ module.exports = async function (req, res) {
         )
       );
 
+      // Refund guest quota if unreadable
+      if (isGuest && guestId) {
+        try {
+          await callSupabaseRpc("refund_guest_quota", { p_guest_id: guestId });
+        } catch (_) {}
+      }
 
       return res.status(200).json({
         ok: false,
@@ -1263,7 +1481,11 @@ module.exports = async function (req, res) {
         resourceData.sources,
 
       disclaimer:
-        DISCLAIMER
+        DISCLAIMER,
+
+      isGuest: isGuest,
+      guestAttempts: guestQuota ? guestQuota.current_attempts : undefined,
+      guestMax: isGuest ? 3 : undefined
     });
 
 
@@ -1274,6 +1496,12 @@ module.exports = async function (req, res) {
       error
     );
 
+    // Refund guest quota on network / unhandled exceptions
+    if (isGuest && guestId) {
+      try {
+        await callSupabaseRpc("refund_guest_quota", { p_guest_id: guestId });
+      } catch (_) {}
+    }
 
     return res.status(200).json({
       ok: false,

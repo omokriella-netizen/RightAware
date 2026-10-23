@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Search — RightAware</title>
+<title>Search | RightAware</title>
 <meta name="description" content="Search all RightAware content: rights, guides, videos, FAQs and pages."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Search — RightAware"/>
+<meta property="og:title" content="Search | RightAware"/>
 <meta property="og:description" content="Search all RightAware content: rights, guides, videos, FAQs and pages."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/search.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Search — RightAware"/>
+<meta name="twitter:title" content="Search | RightAware"/>
 <meta name="twitter:description" content="Search all RightAware content: rights, guides, videos, FAQs and pages."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/search.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
@@ -26,7 +26,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -136,7 +136,7 @@
       }
       var tag=x.e.kind==="org"?'<span class="pill">organisation</span><br/>':x.e.title.indexOf("Law:")===0?'<span class="tag tag-soon">law document</span><br/>':"";
       return '<div class="result">'+tag+'<strong>'+x.e.title+'</strong><br/><a class="link" href="'+url+'">Open →</a></div>';
-    }).join(""):'<div class="result">No match for "<strong>'+raw.replace(/</g,"&lt;")+'</strong>". Try "arrest", "rent", "salary", "vote" or "scam" — or <a class="link" href="help.html">get help →</a></div>')+lawNote;
+    }).join(""):'<div class="result">No match for "<strong>'+raw.replace(/</g,"&lt;")+'</strong>". Try "arrest", "rent", "salary", "vote", or "scam", or <a class="link" href="help.html">get help →</a></div>')+lawNote;
   }
   var init=new URLSearchParams(location.search).get("q")||"";
   input.value=init; run(init);

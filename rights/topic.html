@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rights Guide — RightAware</title>
+<title>Rights Guide | RightAware</title>
 <meta name="description" content="Plain-language Nigerian rights guide: explanation, legal basis, practical steps, examples, FAQs, organisations and sources."/>
 <link rel="icon" href="../assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
@@ -10,12 +10,12 @@
 <meta name="theme-color" content="#122620"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="Rights Guide — RightAware"/>
+<meta property="og:title" content="Rights Guide | RightAware"/>
 <meta property="og:description" content="Plain-language Nigerian rights guide: explanation, legal basis, practical steps, examples, FAQs, organisations and sources."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/rights/topic.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Rights Guide — RightAware"/>
+<meta name="twitter:title" content="Rights Guide | RightAware"/>
 <meta name="twitter:description" content="Plain-language Nigerian rights guide: explanation, legal basis, practical steps, examples, FAQs, organisations and sources."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/rights/topic.html"/>
 <link rel="stylesheet" href="../styles.css?v=2.3"/>
@@ -26,7 +26,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="../index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="../assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="../rights.html">Explore Rights</a><a href="../laws.html">Laws Library</a><a href="../resources.html">Resources</a><a href="../about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -62,7 +62,7 @@
     <article class="guide-content" id="guideBody"></article>
   </div>
   <section class="section" style="padding-top:0"><div class="cta-banner rv">
-    <div><h3>Need a professional's help with this?</h3><p id="helpLine">Browse the demo directory or report your concern — never share passwords, OTPs or bank details.</p></div>
+    <div><h3>Need a professional's help with this?</h3><p id="helpLine">Browse the demo directory or report your concern; never share passwords, OTPs or bank details.</p></div>
     <div style="display:flex;gap:.6rem;flex-wrap:wrap"><a href="../lawyers.html" class="btn btn-primary">Find a Professional</a><a href="../help.html#report" class="btn btn-secondary">Report a Concern</a></div>
   </div></section>
 </main>
@@ -129,8 +129,8 @@
   const r = D.find(x => x.id === id);
   if(!r){ document.getElementById("guideBody").innerHTML = '<div class="result">Guide not found. <a class="link" href="../rights.html">Back to library →</a></div>'; return; }
   if(r.fullGuide){ location.replace(r.fullGuide); return; }
-  const statusLabel = { "full-guide":"Verified guide", "partial":"Draft — needs legal review", "overview":"Overview — full guide in research" }[r.status] || r.status;
-  document.title = r.title + " — RightAware";
+  const statusLabel = { "full-guide":"Verified guide", "partial":"Draft (needs legal review)", "overview":"Overview (full guide in research)" }[r.status] || r.status;
+  document.title = r.title + " | RightAware";
   document.getElementById("crumb").textContent = r.title;
   document.getElementById("kicker").textContent = "Rights guide";
   document.getElementById("statusPill").textContent = statusLabel;
@@ -140,7 +140,7 @@
   const li = a => (a||[]).map(x => "<li>"+esc(x)+"</li>").join("");
   const orgCards = (r.orgs||[]).map(n => {
     const t = (window.RA_ORG_TYPES||[]).find(o => o.name===n);
-    return '<article class="card"><div class="card-icon-badge" style="width:34px;height:34px;margin-bottom:.6rem"><svg class="ra-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><h3>'+esc(n)+'</h3><p>'+esc(t?t.help:"Support organisation type — verify contacts officially.")+'</p><a class="link" href="../organizations.html">Directory →</a></article>';
+    return '<article class="card"><div class="card-icon-badge" style="width:34px;height:34px;margin-bottom:.6rem"><svg class="ra-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><h3>'+esc(n)+'</h3><p>'+esc(t?t.help:"Support organisation type; verify contacts officially.")+'</p><a class="link" href="../organizations.html">Directory →</a></article>';
   }).join("");
   const relCards = (r.related||[]).map(rid => {
     const o = D.find(x => x.id===rid); if(!o) return "";
@@ -152,19 +152,19 @@
   const lawChips = lawRefs.map(f => {
     const l = (window.RA_LAWS||[]).find(x => x.id===f.doc);
     const href = "../laws.html?doc="+encodeURIComponent(f.doc)+"&q="+encodeURIComponent(f.q);
-    const scan = l.textAvailable ? "" : " (scanned copy — viewer only)";
-    return '<a class="btn btn-outline btn-sm" style="margin:.25rem .3rem 0 0" href="'+href+'">'+esc(l.title)+' — search “'+esc(f.q)+'”'+scan+'</a>';
+    const scan = l.textAvailable ? "" : " (scanned copy, viewer only)";
+    return '<a class="btn btn-outline btn-sm" style="margin:.25rem .3rem 0 0" href="'+href+'">'+esc(l.title)+': search “'+esc(f.q)+'”'+scan+'</a>';
   }).join("");
   const lawBlock = lawChips
     ? '<h2 id="s-provisions">Relevant provisions in the supplied laws</h2>'
-      + '<p style="color:var(--muted);font-size:.9rem">Each button opens the laws library pre-searched for this topic inside the <strong>original documents supplied for this platform</strong>. Results show the documents’ own wording with page numbers — never wording invented here.</p>'
+      + '<p style="color:var(--muted);font-size:.9rem">Each button opens the laws library pre-searched for this topic inside the <strong>original documents supplied for this platform</strong>. Results show the documents’ own wording with page numbers, never wording invented here.</p>'
       + '<div>'+lawChips+'</div>'
     : '';
   document.getElementById("guideBody").innerHTML =
     '<div class="key-box"><strong>In short:</strong><p style="margin:.4rem 0 0">'+esc((r.explanation||[])[0]||r.summary)+'</p></div>'
     + '<h2 id="s-what">What this right means</h2><ul class="checklist">'+li(r.meaning)+'</ul>'
     + '<h2>Simple explanation</h2>' + (r.explanation||[]).slice(1).map(p=>"<p>"+esc(p)+"</p>").join("")
-    + '<h2 id="s-basis">Legal basis / source</h2><div class="key-box">'+esc(r.legalBasis.text)+'<br/><small>Status: '+(r.legalBasis.status==="verified"?"verified":"<strong>awaiting verification</strong> — confirm against the official text")+'.</small></div>'
+    + '<h2 id="s-basis">Legal basis / source</h2><div class="key-box">'+esc(r.legalBasis.text)+'<br/><small>Status: '+(r.legalBasis.status==="verified"?"verified":"<strong>awaiting verification</strong> (confirm against the official text)")+'.</small></div>'
     + lawBlock
     + '<h2 id="s-do">What you can do</h2><div class="do-dont do"><ul>'+li(r.canDo)+'</ul></div>'
     + '<h2 id="s-avoid">What to avoid</h2><div class="do-dont dont"><ul>'+li(r.avoid)+'</ul></div>'

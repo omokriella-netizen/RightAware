@@ -37,6 +37,61 @@
     location.reload();
   };
   window.RA_SUPA.clearLocal = function(){ try{ localStorage.removeItem("ra_env"); }catch(_){} location.reload(); };
+  window.RA_SUPA.probe = function(){
+    var cred = creds();
+    if(window.RA_SUPA.ready && window.RA_SUPA.client) {
+      return Promise.resolve(true);
+    }
+    if(!window.RA_SUPA.client){
+      if(cred.SUPABASE_URL && cred.SUPABASE_PUBLISHABLE_KEY){
+        if(!document.querySelector('script[src*="supabase-js"]')){
+          started = false;
+          start(cred);
+        }
+      }
+      return new Promise(function(resolve, reject){
+        var wait = 0;
+        var check = setInterval(function(){
+          wait += 150;
+          if(window.RA_SUPA.ready){
+            clearInterval(check);
+            resolve(true);
+          } else if(window.RA_SUPA.client){
+            clearInterval(check);
+            window.RA_SUPA.client.from("faqs").select("id", { count:"exact", head:true }).then(function(r){
+              if(r && !r.error){
+                window.RA_SUPA.ready = true;
+                try{
+                  if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
+                  if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = cred.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = cred.SUPABASE_PUBLISHABLE_KEY; }
+                }catch(_){}
+                document.dispatchEvent(new CustomEvent("ra:backend-ready"));
+                resolve(true);
+              } else {
+                reject(new Error("Probe failed"));
+              }
+            }).catch(reject);
+          } else if(wait > 3000){
+            clearInterval(check);
+            reject(new Error("Supabase client connection timed out"));
+          }
+        }, 150);
+      });
+    }
+    return window.RA_SUPA.client.from("faqs").select("id", { count:"exact", head:true }).then(function(r){
+      if(r && !r.error){
+        window.RA_SUPA.ready = true;
+        try{
+          if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
+          if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = cred.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = cred.SUPABASE_PUBLISHABLE_KEY; }
+        }catch(_){}
+        document.dispatchEvent(new CustomEvent("ra:backend-ready"));
+        return true;
+      }
+      window.RA_SUPA.ready = false;
+      throw new Error((r && r.error && (r.error.message || String(r.error))) || "backend probe failed");
+    });
+  };
 
   var started = false;
   function start(c){

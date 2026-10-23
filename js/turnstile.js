@@ -71,13 +71,32 @@
       }catch(_){}
       return new Promise(function(res){
         var waited = 0;
+        if(rec.pollTimer){
+          clearInterval(rec.pollTimer);
+          rec.pollTimer = null;
+        }
         var iv = setInterval(function(){
           waited += 100;
+          // Clean up if container unmounted or removed from document
+          if(!rec.el || !document.body.contains(rec.el)){
+            clearInterval(iv);
+            rec.pollTimer = null;
+            res(null);
+            return;
+          }
           var cur = rec.token;
           try{ cur = cur || window.turnstile.getResponse(rec.widgetId); }catch(_){}
-          if(cur){ clearInterval(iv); res(cur); }
-          else if(waited > 8000){ clearInterval(iv); res(null); }
+          if(cur){
+            clearInterval(iv);
+            rec.pollTimer = null;
+            res(cur);
+          } else if(waited >= 8000){
+            clearInterval(iv);
+            rec.pollTimer = null;
+            res(null);
+          }
         }, 100);
+        rec.pollTimer = iv;
       });
     },
 
@@ -93,6 +112,36 @@
           return t ? { token: t } : { blocked:true };
         });
       });
+    },
+
+    /* Reset widget and clear token cache for token rotation */
+    reset: function(el){
+      var rec = find(el);
+      if(rec){
+        if(rec.pollTimer){
+          clearInterval(rec.pollTimer);
+          rec.pollTimer = null;
+        }
+        rec.token = null;
+        if(window.turnstile && rec.widgetId != null){
+          try{ window.turnstile.reset(rec.widgetId); }catch(_){}
+        }
+      }
+    },
+
+    /* Unmount container: cleanly clears timers and removes widget from registry */
+    unmount: function(el){
+      var rec = find(el);
+      if(rec){
+        if(rec.pollTimer){
+          clearInterval(rec.pollTimer);
+          rec.pollTimer = null;
+        }
+        if(window.turnstile && rec.widgetId != null){
+          try{ window.turnstile.remove(rec.widgetId); }catch(_){}
+        }
+        mounted = mounted.filter(function(m){ return m !== rec; });
+      }
     }
   };
 })();

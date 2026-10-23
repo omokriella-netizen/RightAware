@@ -93,6 +93,165 @@ p{margin:0 0 1rem}
 .nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap;padding:.4rem .8rem;border-radius:999px;transition:color .15s ease,background .15s ease}
 .nav a:hover{color:var(--ra-brand-dark);background:var(--ra-brand-tint)}
 .nav a.active{color:var(--ra-brand-dark);background:rgba(119,157,50,.16);font-weight:700;border-bottom:none}
+
+/* Desktop Dropdown Clustering */
+.nav-dropdown{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown-btn{
+  background:transparent;
+  border:none;
+  color:var(--muted);
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:.95rem;
+  padding:.4rem .8rem;
+  border-radius:999px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  transition:color .15s ease,background .15s ease;
+  white-space:nowrap;
+}
+.nav-dropdown-btn:hover,
+.nav-dropdown.open .nav-dropdown-btn{
+  color:var(--ra-brand-dark);
+  background:var(--ra-brand-tint);
+}
+.nav-dropdown.active .nav-dropdown-btn{
+  color:var(--ra-brand-dark);
+  background:rgba(119,157,50,.16);
+  font-weight:700;
+}
+.nav-dropdown-btn .ra-chevron{
+  transition:transform .2s ease;
+  display:inline-block;
+}
+.nav-dropdown.open .nav-dropdown-btn .ra-chevron{
+  transform:rotate(180deg);
+}
+
+.nav-dropdown-menu{
+  display:none;
+  position:absolute;
+  top:calc(100% + 8px);
+  left:0;
+  min-width:250px;
+  background:#ffffff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  box-shadow:0 14px 36px rgba(18,38,32,.12);
+  padding:.5rem 0;
+  z-index:100;
+  opacity:0;
+  transform:translateY(-6px);
+  transition:opacity .18s ease, transform .18s ease;
+  pointer-events:none;
+}
+.nav-dropdown-menu::before{
+  content:"";
+  position:absolute;
+  top:-10px;
+  left:0;
+  right:0;
+  height:10px;
+}
+.nav-dropdown.open .nav-dropdown-menu{
+  display:block;
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+.nav-dropdown-item{
+  display:flex;
+  flex-direction:column;
+  padding:.55rem 1rem !important;
+  border-radius:0 !important;
+  text-decoration:none !important;
+  color:var(--ra-brand-dark) !important;
+  background:transparent !important;
+  transition:background .15s ease !important;
+  white-space:normal !important;
+}
+.nav-dropdown-item:hover,
+.nav-dropdown-item:focus-visible{
+  background:var(--ra-brand-tint) !important;
+  outline:none;
+}
+.nav-dropdown-item-title{
+  font-weight:700;
+  font-size:.88rem;
+  color:var(--ra-brand-dark);
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+}
+.nav-dropdown-item-desc{
+  font-size:.78rem;
+  color:var(--muted);
+  line-height:1.35;
+  margin-top:2px;
+}
+.nav-dropdown-divider{
+  height:1px;
+  background:var(--border);
+  margin:.4rem 0;
+}
+
+/* User Account Header Menu */
+.ra-user-menu{position:relative}
+.ra-user-menu .nav-dropdown-menu{
+  left:auto;
+  right:0;
+  min-width:220px;
+}
+.ra-user-btn{
+  height:38px;
+  padding:0 .9rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  border-radius:10px;
+  font-size:.88rem;
+  font-weight:700;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--ra-brand-dark);
+  cursor:pointer;
+  transition:border-color .15s ease, background .15s ease;
+}
+.ra-user-btn:hover,
+.ra-user-menu.open .ra-user-btn{
+  border-color:var(--ra-brand-leaf);
+  background:var(--ra-brand-tint);
+}
+.ra-user-name{
+  max-width:110px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.ra-logout-link{
+  width:100%;
+  text-align:left;
+  background:none;
+  border:none;
+  padding:.55rem 1rem;
+  font-family:var(--font-body);
+  font-size:.88rem;
+  font-weight:700;
+  color:var(--ra-emergency-red);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  transition:background .15s ease;
+}
+.ra-logout-link:hover,
+.ra-logout-link:focus-visible{
+  background:var(--ra-emergency-bg);
+  outline:none;
+}
 .header-actions{display:flex;align-items:center;gap:.65rem;justify-content:flex-end}
 .header-actions .btn-sm,
 .site-header .ra-lang-select{height:38px;min-height:38px;box-sizing:border-box;display:inline-flex;align-items:center;border-radius:10px}
@@ -427,6 +586,8 @@ p{margin:0 0 1rem}
 
 /* Responsive */
 @media (max-width:900px){
+  .nav{display:none}
+  .hamburger{display:flex}
   .hero-grid,.help-grid{grid-template-columns:1fr}
   .cards-grid{grid-template-columns:repeat(2,1fr)}
   .footer-grid{grid-template-columns:1fr 1fr}

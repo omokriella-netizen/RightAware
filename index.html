@@ -28,7 +28,7 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.webp" alt="RightAware" width="130" height="30" loading="lazy" decoding="async"/></span></a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="rights.html">Explore Rights</a><a href="laws.html">Laws Library</a><a href="resources.html">Resources</a><a href="about.html">About Us</a>
     </nav>
     <div class="header-actions">
@@ -85,13 +85,13 @@
     <!-- Strategic Visual Anchor: Everyday Nigerian Citizens -->
     <figure class="hero-media rv">
       <div class="hero-media-frame">
-        <img src="assets/images/hero-citizens.webp" alt="Nigerian citizens standing together empowered with legal awareness" width="480" height="340" fetchpriority="high" decoding="async"/>
+        <img src="assets/images/hero-citizens.webp" alt="Nigerian citizens learning practical legal rights and civic protections" width="480" height="340" fetchpriority="high" decoding="async"/>
         <div class="hero-media-overlay">
           <div class="hero-media-tag">
             <span class="pulse"></span>
-            <span>Civic Empowerment</span>
+            <span>Civic Awareness</span>
           </div>
-          <p class="hero-media-note">Empowering over 150,000 citizens with real legal protections.</p>
+          <p class="hero-media-note">Accessible legal information and verified civic guides for Nigerian citizens.</p>
         </div>
       </div>
     </figure>
@@ -361,6 +361,8 @@
 <script src="content/rights.js"></script>
 <script src="content/laws.js"></script>
 <script src="js/config.js"></script>
+<script src="js/turnstile.js"></script>
+<script src="js/auth.js?v=db6"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
 <script src="app.js"></script>
@@ -685,6 +687,7 @@
   </div>
 
   <div class="ra-ai-footer">
+    <div class="ra-captcha" data-captcha id="drawerCaptcha" style="margin-bottom:0.5rem"></div>
     <form class="ra-ai-form" id="raAiForm">
       <input class="ra-ai-input" id="raAiInput" type="text" placeholder="Ask a quick legal question…" autocomplete="off" aria-label="Ask RightAware AI"/>
       <button class="ra-ai-send-btn" id="raAiSendBtn" type="submit" aria-label="Send question">
@@ -723,12 +726,20 @@
 
   function checkAuth(){
     try {
-      if(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client && RA_SUPA.client.auth){
+      if(window.RA_AUTH && RA_AUTH.supabaseReady() && RA_SUPA.client && RA_SUPA.client.auth){
         RA_SUPA.client.auth.getSession().then(function(s){
           var tok = s && s.data && s.data.session && s.data.session.access_token;
           isAuthed = !!tok;
           updateAuthUI();
-        }).catch(function(){ isAuthed = false; updateAuthUI(); });
+        }).catch(function(){
+          var cur = window.RA_AUTH ? window.RA_AUTH.current() : null;
+          isAuthed = !!(cur && !cur.demo && (cur.supabaseId || cur.email));
+          updateAuthUI();
+        });
+      } else if(window.RA_AUTH && RA_AUTH.current && RA_AUTH.current()){
+        var u = RA_AUTH.current();
+        isAuthed = !!(u && !u.demo && (u.supabaseId || u.email));
+        updateAuthUI();
       } else {
         isAuthed = false;
         updateAuthUI();
@@ -744,6 +755,14 @@
     if(isAuthed){
       statusBadge.textContent = "AI ASSISTANT • ACTIVE";
       statusBadge.classList.add("auth");
+      var limitCard = document.getElementById("raAiLimitCard");
+      if(limitCard) limitCard.remove();
+      if(input && !isSubmitting){
+        input.disabled = false;
+        input.placeholder = "Ask a quick legal question…";
+      }
+      if(sendBtn && !isSubmitting) sendBtn.disabled = false;
+      if(chipsWrap) chipsWrap.style.display = "";
     } else {
       statusBadge.classList.remove("auth");
       var count = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : 0;
@@ -752,8 +771,13 @@
     }
   }
 
+  var viewportRafId = null;
   function syncVisualViewport(){
-    if(window.visualViewport && drawer.classList.contains("open")){
+    if(!window.visualViewport || !drawer.classList.contains("open")) return;
+    if(viewportRafId) return;
+    viewportRafId = requestAnimationFrame(function(){
+      viewportRafId = null;
+      if(!drawer.classList.contains("open")) return;
       if(window.innerWidth <= 600){
         drawer.style.height = window.visualViewport.height + "px";
         drawer.style.top = window.visualViewport.offsetTop + "px";
@@ -762,7 +786,7 @@
         drawer.style.height = "";
         drawer.style.top = "";
       }
-    }
+    });
   }
 
   // Docking State Machine: Prevent FAB collision with Hero Search Form above the fold
@@ -811,9 +835,25 @@
   function openDrawer(){
     drawer.classList.add("open");
     drawer.setAttribute("aria-hidden", "false");
+    drawer.setAttribute("aria-modal", "true");
     fab.setAttribute("aria-expanded", "true");
+
+    // Modal background inert locking (WCAG 2.1 Modal Focus Boundary)
+    var mainEl = document.getElementById("main");
+    var topEl = document.getElementById("top");
+    var footerEl = document.querySelector(".site-footer");
+    if(mainEl) mainEl.setAttribute("inert", "");
+    if(topEl) topEl.setAttribute("inert", "");
+    if(footerEl) footerEl.setAttribute("inert", "");
+
     updateDockState();
     syncVisualViewport();
+    try {
+      if(!isAuthed && window.RA_TURNSTILE && RA_TURNSTILE.configured()){
+        var cb = document.getElementById("drawerCaptcha");
+        if(cb) RA_TURNSTILE.mount(cb);
+      }
+    } catch(_) {}
     setTimeout(function(){
       if(input && !input.disabled) input.focus();
     }, 150);
@@ -822,10 +862,24 @@
   function closeDrawer(){
     drawer.classList.remove("open");
     drawer.setAttribute("aria-hidden", "true");
+    drawer.removeAttribute("aria-modal");
     fab.setAttribute("aria-expanded", "false");
+
+    // Restore background interactivity
+    var mainEl = document.getElementById("main");
+    var topEl = document.getElementById("top");
+    var footerEl = document.querySelector(".site-footer");
+    if(mainEl) mainEl.removeAttribute("inert");
+    if(topEl) topEl.removeAttribute("inert");
+    if(footerEl) footerEl.removeAttribute("inert");
+
     if(window.innerWidth <= 600){
       drawer.style.height = "";
       drawer.style.top = "";
+    }
+    if(viewportRafId){
+      cancelAnimationFrame(viewportRafId);
+      viewportRafId = null;
     }
     updateDockState();
     if(isHeroIntersecting && heroAiBridgeBtn){
@@ -849,6 +903,31 @@
   if(fullViewLink) fullViewLink.addEventListener("click", function(){
     if(window.RA_CHAT_STATE && thread.length){
       window.RA_CHAT_STATE.saveTransitThread(thread);
+    }
+  });
+
+  // Strict Modal Focus Trap & Keyboard Boundary
+  drawer.addEventListener("keydown", function(e){
+    if(e.key === "Tab"){
+      var focusable = drawer.querySelectorAll('button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]');
+      if(!focusable.length) return;
+      var firstEl = focusable[0];
+      var lastEl = focusable[focusable.length - 1];
+
+      if(e.shiftKey){
+        if(document.activeElement === firstEl){
+          e.preventDefault();
+          lastEl.focus();
+        }
+      } else {
+        if(document.activeElement === lastEl){
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    } else if(e.key === "Escape"){
+      e.preventDefault();
+      closeDrawer();
     }
   });
 
@@ -957,22 +1036,36 @@
     showTyping();
 
     try {
-      var res = null;
-      if(isAuthed){
-        res = await window.RA_AI.ask(q);
-      } else {
-        res = await window.RA_AI.previewAsk(q);
-        if(window.RA_CHAT_STATE) window.RA_CHAT_STATE.incrementGuestPromptCount();
-        updateAuthUI();
-      }
+      var capBox = document.getElementById("drawerCaptcha");
+      var res = await window.RA_AI.ask(q, { captchaContainer: capBox });
 
       removeTyping();
+
+      if(res && res.limitReached){
+        showLimitCard();
+        return;
+      }
+
+      if(res && res.captchaNeeded){
+        addMsg("ai", res.text || "Security verification required. Please complete the CAPTCHA check to continue.", []);
+        return;
+      }
 
       if(res && res.text){
         addMsg("ai", res.text, res.links);
       } else {
         addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }]);
       }
+
+      if(!isAuthed && window.RA_CHAT_STATE){
+        if(res && res.isGuest && typeof res.guestAttempts === "number"){
+          window.RA_CHAT_STATE.setGuestPromptCount(res.guestAttempts);
+        } else {
+          window.RA_CHAT_STATE.incrementGuestPromptCount();
+        }
+      }
+
+      updateAuthUI();
 
       if(!isAuthed && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
         showLimitCard();
@@ -1007,6 +1100,12 @@
 
   document.addEventListener("ra:session-ready", function(){
     checkAuth();
+  });
+  document.addEventListener("ra:backend-ready", function(){
+    checkAuth();
+  });
+  window.addEventListener("storage", function(e){
+    if(e.key === "ra_demo_user") checkAuth();
   });
 
   checkAuth();
