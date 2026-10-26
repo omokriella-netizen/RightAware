@@ -1,6 +1,9 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 let PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3005;
 const ROOT = path.resolve('.');
@@ -22,9 +25,44 @@ const MIME_TYPES = {
   '.webmanifest': 'application/manifest+json'
 };
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(parsedUrl.pathname);
+
+  // Dispatch /api/* to api directory handlers
+  if (pathname.startsWith('/api/')) {
+    let apiRel = pathname.replace(/^\/api\//, '');
+    if (!apiRel.endsWith('.js')) apiRel += '.js';
+    const apiFile = path.join(ROOT, 'api', apiRel);
+    if (fs.existsSync(apiFile)) {
+      try {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        await new Promise(resolve => req.on('end', resolve));
+        if (body && req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+          try { req.body = JSON.parse(body); } catch (_) { req.body = {}; }
+        } else {
+          req.body = body;
+        }
+
+        res.status = function(code) { this.statusCode = code; return this; };
+        res.json = function(data) {
+          this.setHeader('Content-Type', 'application/json; charset=utf-8');
+          this.end(JSON.stringify(data));
+          return this;
+        };
+
+        const handler = require(apiFile);
+        await handler(req, res);
+        return;
+      } catch (apiErr) {
+        console.error('API Error:', apiErr);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: 'Internal API Server Error' }));
+        return;
+      }
+    }
+  }
 
   if (pathname === '/') pathname = '/index.html';
 

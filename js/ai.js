@@ -22,14 +22,14 @@
     const hit = localKB(m);
     if(hit){
       const url = hit.fullGuide || ("rights/topic.html?id="+hit.id);
-      return { text:"The AI service isn’t available right now. Based on your words, start here: “"+hit.title+"” — "+(hit.summary||""), links:[{t:"Open: "+hit.title,u:url},{t:"Get Help",u:"help.html"}], disclaimer:DISCLAIMER, demo:true };
+      return { text:"The AI service is temporarily unavailable. Based on your question, start with verified legal info on “"+hit.title+"”: "+(hit.summary||""), links:[{t:"Open: "+hit.title,u:url},{t:"Get Help",u:"help.html"}], disclaimer:DISCLAIMER, demo:true };
     }
-    return { text:"The AI service isn’t available right now. Try keywords like arrest, rent, salary, vote, scam — or browse the library.", links:[{t:"Search all content",u:"search.html?q="+encodeURIComponent(m)},{t:"Browse rights library",u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
+    return { text:"The AI service is temporarily unavailable. Try keywords like arrest, rent, salary, vote, scam — or browse our verified library below.", links:[{t:"Search all content",u:"search.html?q="+encodeURIComponent(m)},{t:"Browse rights library",u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
   }
   const AI = {
-    _down: false,        // 501 not_configured / provider trouble — stop calling this session
+    _downUntil: 0,       // 15-second cooldown timestamp — never permanently locks the browser session
     _authNeeded: false,  // 401 — a configured AI key is only spendable signed-in
-    mode(){ return (window.RA_FEATURES && RA_FEATURES.aiConnected && RA_CONFIG.AI_ENDPOINT && !this._down) ? "server" : "demo-kb"; },
+    mode(){ return (window.RA_FEATURES && RA_FEATURES.aiConnected && RA_CONFIG.AI_ENDPOINT && Date.now() >= (this._downUntil || 0)) ? "server" : "demo-kb"; },
     async ask(message, opts){
       opts = opts || {};
       const m = (message||"").trim();
@@ -165,8 +165,10 @@
             return needAuth();
           }
 
-          /* 501 = the key is not configured server-side. */
-          if(res.status===501 || (data && data.code==="not_configured")) this._down = true;
+          /* 501 / 503 or provider trouble: use a short 15-second cooldown timestamp instead of permanently disabling for the session */
+          if(res.status===501 || res.status===503 || (data && (data.code==="not_configured" || data.code==="service_unavailable"))){
+            this._downUntil = Date.now() + 15000;
+          }
 
         }catch(_){ /* network/provider trouble — fall back below */ }
         finally {

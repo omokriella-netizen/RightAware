@@ -35,7 +35,7 @@
   --font-body:'Plus Jakarta Sans',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:clip}
 body{margin:0;font-family:var(--font-body);color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:clip}
 .container{width:min(1150px,92%);margin:0 auto}
 h1,h2,h3,h4{font-family:var(--font-heading);font-weight:700;letter-spacing:-0.025em;line-height:1.25;margin:0 0 .5rem}
@@ -85,7 +85,8 @@ p{margin:0 0 1rem}
 
 /* Header: 3-Zone Architecture */
 .site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-.header-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:clamp(1rem,2vw,2rem);padding:.75rem 0}
+.header-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:clamp(1rem,2vw,2rem);padding:.75rem 0;min-width:0}
+.header-inner > *{min-width:0}
 .logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--navy);font-weight:800;font-size:1.35rem}
 .logo-mark{background:var(--green);color:#fff;width:38px;height:38px;display:grid;place-items:center;border-radius:10px;font-size:.95rem}
 .logo-dot{color:var(--green)}
@@ -391,9 +392,10 @@ p{margin:0 0 1rem}
 .bento-icon{color:var(--ra-brand-leaf);display:inline-flex}
 .bento-num{font-size:1.6rem;font-weight:800;line-height:1;color:var(--ra-brand-dark);margin-bottom:.2rem;display:block}
 .bento-card h3{font-size:.98rem;font-weight:700;color:var(--text);margin:0 0 .35rem;line-height:1.25}
-.bento-card p{font-size:.82rem;color:var(--muted);line-height:1.45;margin:0 0 .65rem;flex:1}
-.bento-cta{font-size:.78rem;font-weight:700;color:var(--ra-brand-leaf-hover);display:inline-flex;align-items:center;gap:.25rem}
-.bento-card:hover .bento-cta{color:var(--ra-brand-dark);text-decoration:underline}
+.bento-cta{font-size:.78rem;font-weight:700;color:var(--ra-brand-leaf-hover);display:inline-flex;align-items:center;gap:.35rem}
+.bento-cta svg{transition:transform .2s ease;flex-shrink:0}
+.bento-card:hover .bento-cta{color:var(--ra-brand-dark)}
+.bento-card:hover .bento-cta svg{transform:translateX(3px)}
 
 /* Hero Docked Tactile Hotline Strip */
 .hero-hotline-strip{
@@ -454,8 +456,15 @@ p{margin:0 0 1rem}
 .triage-visual-content h3{font-size:1.18rem;margin:0 0 .5rem;color:var(--ra-text-ink)}
 .triage-visual-content p{font-size:.88rem;color:var(--muted);line-height:1.5;margin-bottom:1rem}
 .triage-quick-rules{display:flex;flex-direction:column;gap:.65rem;margin-top:auto;padding-top:.85rem;border-top:1px solid var(--border)}
-.triage-rule-item{display:flex;align-items:flex-start;gap:.55rem;font-size:.82rem;color:var(--ra-text-ink);line-height:1.4}
-.triage-rule-dot{width:6px;height:6px;border-radius:50%;background:var(--ra-brand-leaf);margin-top:.35rem;flex-shrink:0}
+.triage-rule-item{display:flex;align-items:flex-start;gap:.65rem;font-size:.82rem;color:var(--ra-text-ink);line-height:1.45}
+.triage-rule-item strong{color:var(--ra-brand-dark);display:block;margin-bottom:.15rem;font-weight:700}
+.triage-rule-dot{width:7px;height:7px;border-radius:50%;background:var(--ra-brand-leaf);margin-top:.4rem;flex-shrink:0}
+.triage-rule-cite{display:inline-flex;align-items:center;gap:.25rem;font-size:.72rem;font-weight:700;color:var(--ra-brand-dark);background:#f0fdf4;border:1px solid #bbf7d0;padding:.15rem .5rem;border-radius:6px;margin-top:.35rem}
+
+.auth-tabs{display:flex;gap:0;margin-bottom:1.25rem;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;overflow:hidden}
+.auth-tab{flex:1;text-align:center;padding:.75rem 1rem;font-size:.92rem;font-weight:600;color:var(--muted);text-decoration:none;transition:all .18s ease;border-bottom:2px solid transparent}
+.auth-tab:hover{color:var(--text);background:rgba(0,0,0,.02)}
+.auth-tab.is-active{color:var(--ra-brand-dark);font-weight:700;border-bottom-color:var(--ra-brand-leaf);background:rgba(119,157,50,.06)}
 
 /* Situation Triage Console Card */
 .hero-crisis-card{background:#0D1E18;border:2px solid rgba(220,38,38,.55);border-radius:18px;padding:1.5rem;box-shadow:0 24px 60px rgba(0,0,0,.45);color:#fff;position:relative}
@@ -504,9 +513,9 @@ p{margin:0 0 1rem}
 .eyebrow{display:inline-block;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem;margin-bottom:.4rem}
 .eyebrow-light{color:var(--gold)}
 .section-head h2{font-size:clamp(1.6rem,3vw,2.2rem)}
-.section-head p{color:var(--muted)}
-.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);transition:.18s;display:flex;flex-direction:column}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;min-width:0}
+.cards-grid > *{min-width:0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);transition:.18s;display:flex;flex-direction:column;min-width:0}
 .card.has-thumb{padding:0;overflow:hidden}
 .card.has-thumb .card-thumb{
   height:140px;
@@ -585,9 +594,12 @@ p{margin:0 0 1rem}
 .footer-bottom a{display:inline;color:#94a3b8}
 
 /* Responsive */
+@media (max-width:1150px){
+  .header-inner{display:flex;justify-content:space-between;gap:1rem}
+  .nav{display:none !important}
+  .hamburger{display:flex !important}
+}
 @media (max-width:900px){
-  .nav{display:none}
-  .hamburger{display:flex}
   .hero-grid,.help-grid{grid-template-columns:1fr}
   .cards-grid{grid-template-columns:repeat(2,1fr)}
   .footer-grid{grid-template-columns:1fr 1fr}
@@ -615,7 +627,9 @@ p{margin:0 0 1rem}
 .page-hero-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:2rem;align-items:center}
 .page-hero-media{margin:0}
 .page-hero-media img{display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
-@media(max-width:900px){.page-hero-grid{grid-template-columns:1fr}.page-hero-media{order:-1;max-width:520px}}
+.logo-media-frame{background:#ffffff;padding:2.2rem 2.8rem;border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(0,0,0,.3);max-width:380px;margin-left:auto}
+.logo-media-frame img{box-shadow:none !important;max-width:250px;width:100%;height:auto}
+@media(max-width:900px){.page-hero-grid{grid-template-columns:1fr}.page-hero-media{order:-1;max-width:520px}.logo-media-frame{margin:0 auto;padding:1.6rem 2rem}}
 /* Section image (content pages) */
 .figure{margin:0 0 1.2rem}
 .figure img{display:block;width:100%;height:auto;border-radius:14px;box-shadow:var(--shadow)}
@@ -854,11 +868,11 @@ img{max-width:100%;height:auto}
 .hsearch input{width:130px;min-width:0;flex:0 1 auto}
 .ra-lang{display:inline-flex;align-items:center;flex-shrink:0}
 
-/* Handover to Mobile Drawer strictly at <= 880px */
-@media (max-width:880px){
+/* Handover to Mobile Drawer strictly at <= 1150px */
+@media (max-width:1150px){
   .header-inner{display:flex;justify-content:space-between;gap:1rem}
-  .nav{display:none}
-  .hamburger{display:flex}
+  .nav{display:none !important}
+  .hamburger{display:flex !important}
 }
 @media (max-width:600px){
   .site-header .container{width:min(1150px,96%)}
@@ -1379,6 +1393,9 @@ img{max-width:100%;height:auto}
   scrollbar-width: none;
   background: #f8fafc;
   border-top: 1px solid #f1f5f9;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 .ra-ai-chips::-webkit-scrollbar { display: none; }
 .ra-ai-chip {
@@ -1512,6 +1529,102 @@ img{max-width:100%;height:auto}
   }
   .ra-ai-drawer.open {
     transform: none;
+  }
+}
+
+/* ==========================================================================
+   Multi-Stakeholder Civic Ecosystem & Workspace Styles
+   ========================================================================== */
+.ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.ecosystem-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.8rem 1.6rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+.ecosystem-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--green);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+.ecosystem-card-pro {
+  border-color: rgba(0, 135, 83, 0.35);
+  background: linear-gradient(180deg, #ffffff 0%, #f7fdf9 100%);
+}
+.ecosystem-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--navy);
+  font-size: 0.8rem;
+  font-weight: 800;
+  width: fit-content;
+  margin-bottom: 1rem;
+}
+.ecosystem-badge-pro {
+  background: #e8f5e9;
+  color: #008753;
+}
+.ecosystem-badge-org {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.ecosystem-card h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 0 0.6rem;
+  line-height: 1.3;
+}
+.ecosystem-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0 0 1.2rem;
+}
+.ecosystem-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.ecosystem-features li {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.ecosystem-action {
+  margin-top: auto;
+}
+.ecosystem-action .btn {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+@media (max-width: 960px) {
+  .ecosystem-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
   }
 }
 

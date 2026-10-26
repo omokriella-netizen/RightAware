@@ -45,14 +45,28 @@
 </header>
 <main id="main"><section class="section"><div class="container" style="max-width:480px">
   <div class="form-card rv">
+    <div class="auth-tabs">
+      <a class="auth-tab is-active" href="login.html">Log In</a>
+      <a class="auth-tab" href="signup.html">Create Account</a>
+    </div>
     <div class="auth-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" loading="lazy"/></div>
-    <span class="pill" id="loginPill">CONNECTING TO SECURE AUTH…</span><h1>Log in</h1>
-    <p style="color:var(--muted)">Sign in with your email and password. New here? <a class="link" href="signup.html">Create an account →</a></p>
+    <span class="pill pill-green" id="loginPill">SECURE LOGIN</span><h1>Log in</h1>
+    <p style="color:var(--muted);font-size:.92rem;line-height:1.45;margin-bottom:1.1rem">Single secure sign-in for Citizens, Legal Professionals, Organizations, and Administrators. You will be automatically routed to your dedicated workspace.</p>
+
+    <!-- 8-Second Timeout Recovery Boundary (Low stress, zero privilege leakage) -->
+    <div id="timeoutRecoveryBox" class="notice" style="background:#f8fafc;border-color:var(--border);color:var(--navy);margin-bottom:1rem" hidden>
+      <strong>Slow connection detected.</strong>
+      <p style="margin:.3rem 0 .6rem;font-size:.88rem;color:var(--muted)">Your credentials were verified, but high mobile network latency delayed loading your profile.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" id="retryResolutionBtn" type="button">Retry Connection</button>
+        <button class="btn btn-outline btn-sm" id="continueToAccountBtn" type="button">Continue to Account</button>
+      </div>
+    </div>
 
     <!-- Fail-Closed Connection Error Boundary -->
     <div id="authErrorBox" class="notice" style="background:#fef2f2;border-color:#fecaca;color:#991b1b;margin-bottom:1rem" hidden>
-      <strong>Connection Unavailable.</strong> We could not establish a secure connection to the authentication servers. Please verify your internet connection or disable aggressive script-blocking extensions, then retry.
-      <div style="margin-top:.6rem"><button class="btn btn-outline btn-sm" id="raRetryAuth" type="button">Retry Secure Connection</button></div>
+      <strong>Authentication Configuration Missing.</strong> We could not establish a connection to the authentication servers.
+      <div style="margin-top:.6rem"><button class="btn btn-outline btn-sm" id="raRetryAuth" type="button">Retry Connection</button></div>
     </div>
 
     <!-- Password reset landing: the emailed reset link opens this page (?recovery=1).
@@ -71,17 +85,17 @@
     </form>
 
     <form id="loginForm">
-      <label>Email<input type="email" id="lEmail" required placeholder="you@example.com" autocomplete="username" disabled/></label>
-      <label>Password<input type="password" id="lPass" required placeholder="Your password" autocomplete="current-password" disabled/></label>
+      <label>Email<input type="email" id="lEmail" required placeholder="you@example.com" autocomplete="username"/></label>
+      <label>Password<input type="password" id="lPass" required placeholder="Your password" autocomplete="current-password"/></label>
       <div class="ra-captcha" data-captcha></div>
-      <button class="btn btn-primary" id="loginSubmitBtn" type="submit" style="width:100%" disabled aria-busy="true">Connecting to secure service…</button>
+      <button class="btn btn-primary" id="loginSubmitBtn" type="submit" style="width:100%">Log In</button>
     </form>
     <p class="form-note" id="lOut" aria-live="polite"></p>
 
     <!-- Shown when GoTrue refuses the sign-in because the address is unconfirmed -->
     <div id="unverifiedBox" class="notice" hidden>
       <strong>Email not confirmed.</strong> Open the confirmation link we sent you (check spam too), or
-      <button class="link" style="border:none;background:none;cursor:pointer;font-size:inherit;font-weight:700;padding:0" id="resendBtn" type="button">resend the confirmation email →</button>
+      <button class="link" style="border:none;background:none;cursor:pointer;font-size:inherit;font-weight:700;padding:0" id="resendBtn" type="button">resend the confirmation email</button>
       <p class="form-note" id="resendOut" aria-live="polite"></p>
     </div>
 
@@ -95,9 +109,9 @@
       </form>
       <p class="form-note" id="resetOut" aria-live="polite"></p>
     </div>
-    <p style="margin-top:1rem"><a class="link" href="#" id="forgotToggle">Forgot password? Send a reset link →</a></p>
-    <p><a class="link" href="signup.html">No account? Choose a signup pathway →</a></p>
-    <p><a class="link" href="index.html">← Back home</a></p>
+    <p style="margin-top:1rem"><a class="link" href="#" id="forgotToggle">Forgot password? Send a reset link</a></p>
+    <p><a class="link" href="signup.html">Don't have an account? Create citizen account</a></p>
+    <p><a class="link" href="index.html">Back to homepage</a></p>
   </div>
 </div></section></main>
 <footer class="footer" id="contact">
@@ -178,43 +192,95 @@
   // network round-trip AFTER them. orgOwned stays null until the read answers;
   // the redirect NEVER waits on it (see goWorkspaceOrNext).
   var orgOwned = null;
-  function orgLookup(email){
+  function orgLookup(email, uid){
     orgOwned = null;
     function done(v){ orgOwned = !!v; }
     try{
-      if(!email || !(window.RA_SUPA && RA_SUPA.ready && RA_SUPA.client)){ done(false); return; }
-      var pat = String(email).replace(/([\\%_])/g, "\\$1");
-      RA_SUPA.client.from("organizations").select("id").ilike("email", pat).limit(1).then(function(r){
-        done(!!(r && !r.error && r.data && r.data.length));
-      }, function(){ done(false); });
-    }catch(_){ done(false); }
+      if(!window.RA_SUPA || !RA_SUPA.ready || !RA_SUPA.client){ done(false); return Promise.resolve(false); }
+      if(uid){
+        return RA_SUPA.client.from("organizations").select("id").eq("user_id", uid).limit(1).then(function(r){
+          if(r && !r.error && r.data && r.data.length){ done(true); return true; }
+          return checkEmailFallback();
+        }, function(){ return checkEmailFallback(); });
+      }
+      return checkEmailFallback();
+      function checkEmailFallback(){
+        if(!email){ done(false); return Promise.resolve(false); }
+        var pat = String(email).replace(/([\\%_])/g, "\\$1");
+        return RA_SUPA.client.from("organizations").select("id").ilike("email", pat).limit(1).then(function(r){
+          var has = !!(r && !r.error && r.data && r.data.length);
+          done(has); return has;
+        }, function(){ done(false); return false; });
+      }
+    }catch(_){ done(false); return Promise.resolve(false); }
   }
+
   function afterSignIn(){
-    // Role-aware destination: admins → admin dashboard, professionals → their
-    // workspace; everyone else is checked for an owned organization record
-    // (organisations have no distinct role — ownership is the account e-mail,
-    // read the same way My Account loads it) before falling back to ?next=.
-    if(RA_AUTH.supabaseReady()){
-      RA_AUTH.fetchRole().then(function(role){
-        if(role === "admin"){ location.href = "admin.html"; return; }
-        if(role === "professional"){ location.href = "professional.html"; return; }
-        goWorkspaceOrNext();
-      }).catch(function(){ location.href = next; });
-    } else {
+    // Priority 1: User explicitly navigated to a destination (?next=)
+    if(params.get("next")){
       location.href = next;
+      return;
     }
-  }
-  function goWorkspaceOrNext(){
-    // Destination decided from the own-organisation read (by e-mail, escaped so
-    // %/_ cannot over-match) that was started at submit — NEVER waited on: if
-    // it has already answered "owned", go to the workspace; otherwise (still in
-    // flight, no record, read failed, backend off) fall through to ?next= in
-    // the same instant as before this routing existed. Account.html carries the
-    // workspace link, so a slow read costs one click, never access.
-    try{
-      if(orgOwned === true){ location.href = "organization.html"; return; }
+
+    if(!RA_AUTH.supabaseReady()){
       location.href = next;
-    }catch(_){ location.href = next; }
+      return;
+    }
+
+    // Priority 2: Adaptive 8,000ms latency ceiling for Nigerian mobile networks
+    var resolved = false;
+    var timer = setTimeout(function(){
+      if(resolved) return;
+      resolved = true;
+      var tBox = document.getElementById("timeoutRecoveryBox");
+      if(tBox){
+        tBox.hidden = false;
+        out.textContent = "";
+        var retryBtn = document.getElementById("retryResolutionBtn");
+        var contBtn = document.getElementById("continueToAccountBtn");
+        if(retryBtn){
+          retryBtn.onclick = function(){
+            tBox.hidden = true;
+            out.textContent = "Re-verifying workspace permissions…";
+            afterSignIn();
+          };
+        }
+        if(contBtn){
+          contBtn.onclick = function(){
+            location.href = "account.html";
+          };
+        }
+      } else {
+        location.href = "account.html";
+      }
+    }, 8000);
+
+    RA_SUPA.client.auth.getUser().then(function(gu){
+      var u = gu && gu.data && gu.data.user;
+      var uid = u ? u.id : null;
+      var email = u ? u.email : ((RA_AUTH.current()||{}).email || "");
+
+      return Promise.all([
+        RA_AUTH.fetchRole(),
+        orgLookup(email, uid)
+      ]);
+    }).then(function(res){
+      if(resolved) return;
+      clearTimeout(timer);
+      resolved = true;
+      var role = res && res[0];
+      var isOrg = res && res[1];
+
+      if(role === "admin"){ location.href = "admin.html"; return; }
+      if(role === "professional"){ location.href = "professional.html"; return; }
+      if(isOrg === true || orgOwned === true){ location.href = "organization.html"; return; }
+      location.href = next;
+    }).catch(function(){
+      if(resolved) return;
+      clearTimeout(timer);
+      resolved = true;
+      location.href = next;
+    });
   }
 
   /* ---- CAPTCHA helper (Cloudflare Turnstile; configured via TURNSTILE_SITE_KEY) ---- */
@@ -292,85 +358,50 @@
   var retryAuthBtn = document.getElementById("raRetryAuth");
   var isSubmitting = false;
 
+  function checkConfigSync(){
+    var cred = (function(){
+      var c = { SUPABASE_URL:"", SUPABASE_PUBLISHABLE_KEY:"" };
+      try{ Object.assign(c, window.__ENV__ || {}); }catch(_){}
+      try{ var o = JSON.parse(localStorage.getItem("ra_env") || "null"); if(o) Object.assign(c, o); }catch(_){}
+      return c;
+    })();
+    var hasConfig = !!(cred.SUPABASE_URL && cred.SUPABASE_PUBLISHABLE_KEY);
+    if(!hasConfig && (!window.RA_CONFIG || !window.RA_CONFIG.SUPABASE_URL)){
+      if(loginPill){
+        loginPill.textContent = "CONFIG MISSING";
+        loginPill.className = "pill pill-red";
+      }
+      if(authErrorBox){
+        authErrorBox.innerHTML = "<strong>Authentication configuration missing.</strong> Backend credentials (<code>SUPABASE_URL</code> and <code>SUPABASE_PUBLISHABLE_KEY</code>) have not been provided in this environment. In Vercel, ensure these environment variables are set in Settings → Environment Variables and redeploy.";
+        authErrorBox.hidden = false;
+      }
+      return false;
+    }
+    if(authErrorBox) authErrorBox.hidden = true;
+    if(loginPill){
+      loginPill.textContent = "SUPABASE: SECURE LOGIN";
+      loginPill.className = "pill pill-green";
+    }
+    return true;
+  }
+
   function setReadyState(){
-    if(!loginPill) return;
-    loginPill.textContent = "SUPABASE: SECURE LOGIN";
-    loginPill.className = "pill pill-green";
-    if(authErrorBox) authErrorBox.hidden = true;
-    if(!isSubmitting){
-      if(emailInput) emailInput.disabled = false;
-      if(passInput) passInput.disabled = false;
-      if(submitBtn){
-        submitBtn.disabled = false;
-        submitBtn.removeAttribute("aria-busy");
-        submitBtn.textContent = "Log In";
-      }
-    }
+    checkConfigSync();
     if(!loginForm.hidden) mountCaptcha(loginForm);
-  }
-
-  function setFailClosedState(){
-    if(!loginPill) return;
-    loginPill.textContent = "CONNECTION UNAVAILABLE";
-    loginPill.className = "pill pill-red";
-    if(emailInput) emailInput.disabled = true;
-    if(passInput) passInput.disabled = true;
-    if(submitBtn){
-      submitBtn.disabled = true;
-      submitBtn.removeAttribute("aria-busy");
-      submitBtn.textContent = "Authentication Unavailable";
-    }
-    if(authErrorBox) authErrorBox.hidden = false;
-  }
-
-  function setInitializingState(){
-    if(!loginPill) return;
-    loginPill.textContent = "CONNECTING TO SECURE AUTH…";
-    loginPill.className = "pill";
-    if(emailInput) emailInput.disabled = true;
-    if(passInput) passInput.disabled = true;
-    if(submitBtn){
-      submitBtn.disabled = true;
-      submitBtn.setAttribute("aria-busy", "true");
-      submitBtn.textContent = "Connecting to secure service…";
-    }
-    if(authErrorBox) authErrorBox.hidden = true;
-  }
-
-  var authTimer = null;
-  function startProbeBudget(){
-    if(authTimer) clearTimeout(authTimer);
-    if(RA_AUTH.supabaseReady()){
-      setReadyState();
-      return;
-    }
-    setInitializingState();
-    authTimer = setTimeout(function(){
-      if(!RA_AUTH.supabaseReady()){
-        setFailClosedState();
-      }
-    }, 4000);
   }
 
   if(retryAuthBtn){
     retryAuthBtn.addEventListener("click", function(){
-      if(window.RA_SUPA && typeof window.RA_SUPA.probe === "function"){
-        setInitializingState();
-        startProbeBudget();
-        window.RA_SUPA.probe().then(function(){
-          setReadyState();
-        }).catch(function(){
-          setFailClosedState();
-        });
-      } else {
+      if(checkConfigSync()){
         location.reload();
+      } else {
+        out.textContent = "Authentication keys are missing from environment configuration.";
       }
     });
   }
 
   /* Backend-ready: pill, CAPTCHA mount, and finish the link states. */
   document.addEventListener("ra:backend-ready", function(){
-    if(authTimer) clearTimeout(authTimer);
     setReadyState();
     if(linkState === "recovery" || linkState === "confirmed"){ /* session handled below */ }
     if(recoveryForm.hidden === false || linkState === "recovery"){
@@ -392,7 +423,8 @@
     }
   });
 
-  startProbeBudget();
+  // Synchronous config evaluation immediately on load — form remains completely unlocked
+  checkConfigSync();
 
   /* ---- login ---- */
   loginForm.addEventListener("submit", function(e){
@@ -404,10 +436,9 @@
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ out.textContent = "Please enter a valid email address."; return; }
     if(pw.length < 6){ out.textContent = "Enter your password (at least 6 characters)."; return; }
 
-    // STRICT ZERO-TRUST: Fail closed if backend is not verified. Demo mode completely eradicated.
-    if(!RA_AUTH.supabaseReady()){
-      out.textContent = "Secure connection to authentication servers is not available. Please retry above.";
-      setFailClosedState();
+    var hasConfig = checkConfigSync();
+    if(!hasConfig){
+      out.textContent = "Authentication configuration is missing. Please set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY in your deployment environment.";
       return;
     }
 
@@ -438,31 +469,57 @@
       }
     }
 
-    orgLookup(em);   // pre-start: overlaps captcha + sign-in + redirect delay
-    gateCaptcha(loginForm).then(function(cap){
-      if(cap.error){
-        releaseMutationLock(cap.error);
+    function isAuthReady(){
+      return !!(window.RA_SUPA && window.RA_SUPA.client) || (window.RA_AUTH && typeof window.RA_AUTH.supabaseReady === "function" && window.RA_AUTH.supabaseReady());
+    }
+
+    function executeLogin(){
+      if(!isAuthReady()){
+        releaseMutationLock("Secure connection to authentication servers could not be established. Please verify your connection.");
         return;
       }
-      RA_AUTH.loginLive(em, pw, { captchaToken: cap.token || undefined }).then(function(r){
+      orgLookup(em);
+      gateCaptcha(loginForm).then(function(cap){
+        if(cap.error){
+          releaseMutationLock(cap.error);
+          return;
+        }
+        return RA_AUTH.loginLive(em, pw, { captchaToken: cap.token || undefined });
+      }).then(function(r){
+        if(!r) return;
         if(!r.ok){
           if(r.needsConfirm){
             pendingEmail = em;
-            releaseMutationLock(r.error + ". Open the confirmation link first, or resend it below.");
+            releaseMutationLock((r.error || "Email not confirmed") + ". Open the confirmation link first, or resend it below.");
             unverifiedBox.hidden = false;
             return;
           }
-          releaseMutationLock("Error: " + r.error);
+          releaseMutationLock(r.error || "Login failed. Check your email and password.");
           return;
         }
         out.textContent = "Signed in. Redirecting…";
         setTimeout(afterSignIn, 500);
-      }).catch(function(){
-        releaseMutationLock("Login encountered an unexpected network error. Please try again.");
+      }).catch(function(err){
+        var msg = (err && err.message) || "Login encountered an unexpected network error. Please try again.";
+        releaseMutationLock(msg);
       });
-    }).catch(function(){
-      releaseMutationLock("CAPTCHA check could not be completed. Please retry.");
-    });
+    }
+
+    if(!isAuthReady()){
+      var attempts = 0;
+      var waiter = setInterval(function(){
+        attempts++;
+        if(isAuthReady()){
+          clearInterval(waiter);
+          executeLogin();
+        } else if(attempts >= 15){
+          clearInterval(waiter);
+          releaseMutationLock("Connection to authentication servers timed out. Please check your internet connection.");
+        }
+      }, 150);
+    } else {
+      executeLogin();
+    }
   });
 
   /* ---- resend confirmation email ---- */

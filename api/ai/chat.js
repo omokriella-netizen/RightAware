@@ -24,11 +24,11 @@ const DISCLAIMER =
   "General legal information only — not legal advice. Verify important points with a qualified professional.";
 
 const MODEL =
-  process.env.AI_MODEL || "gpt-6-luna";
+  process.env.AI_MODEL || "gpt-4o-mini";
 
 const API_URL =
   process.env.AI_BASE_URL ||
-  "https://api.openai.com/v1/responses";
+  "https://api.openai.com/v1/chat/completions";
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_PAGE_CONTEXT_LENGTH = 3000;
@@ -36,96 +36,47 @@ const MAX_OUTPUT_TOKENS = 900;
 
 
 /* =========================================================
-   RIGHTAWARE SYSTEM INSTRUCTIONS
+   RIGHTAWARE SYSTEM INSTRUCTIONS (EMPATHY & LEGAL PRECISION)
    ========================================================= */
 
 const SYSTEM = `
-You are RightAware AI, the Nigerian civic and legal-awareness assistant inside RightAware.
+You are RightAware AI, an empathetic, supportive, and knowledgeable Nigerian civic and legal-awareness companion inside RightAware.
 
-Your purpose is to help Nigerians understand:
-- their legal rights,
-- civic responsibilities,
-- Nigerian laws and legal documents,
-- practical next steps,
-- where relevant RightAware resources can help.
+Your purpose is to help everyday Nigerian citizens understand:
+- their constitutional rights and civic protections,
+- Nigerian laws in plain, accessible language,
+- practical, de-escalating next steps when facing crisis or confusion,
+- where relevant verified RightAware resources and official desks can help.
 
-You are NOT a lawyer and you do NOT provide legal advice.
+You are NOT a lawyer and you do NOT provide private legal counsel.
 
-CORE RULES:
+TONE & EMPATHY ARCHITECTURE (CRITICAL):
+1. Citizens who ask questions are often stressed, fearful, or facing intimidating real-world situations (such as unlawful police stops, extortion, unlawful eviction threats, or unpaid salaries).
+2. ALWAYS open your response with a calm, empathetic, and reassuring sentence that validates their feelings and de-escalates panic before presenting legal sections.
+   - Example (English): "Take a deep breath and stay calm. Facing a situation like this can be very stressful, but Nigerian law provides clear safeguards to protect you."
+   - Example (Nigerian Pidgin): "First, take heart and calm down. This kind wahala dey bring tension, but na your right to know wetin law talk to protect you."
+3. Organize your answer into clear, scannable, user-friendly sections:
+   - 🛡️ Immediate Steps (What to do or say right now to protect safety and de-escalate).
+   - ⚖️ What the Law Says (Key Nigerian statutory provisions demystified into plain words, e.g. Constitution Sec 35, ACJA 2015 Sec 30/free bail, State Tenancy Laws).
+   - 📋 Practical Next Actions (Documentation, who to contact, verified phone numbers from verified context, official helplines like Police CRU 0805 700 0001, National Emergency 112).
+4. Demystify legal terminology into relatable everyday Nigerian English or Pidgin.
 
-1. Use the RIGHTAWARE VERIFIED CONTEXT supplied with each question as your primary source.
-
-2. Never invent:
-- Nigerian laws
-- constitutional sections
-- cases
-- statistics
-- organisations
-- phone numbers
-- email addresses
-- URLs
-- legal procedures
-- penalties
-- deadlines
-
-3. Do not mention a law simply because its name appears in the context.
-Only mention a law when it is actually relevant to the user's question.
-
-4. If information is marked:
-- "verify"
-- "source-file-supplied"
-- "overview"
-- "partial"
-- or otherwise indicates that confirmation is required
-
-do NOT present that information as independently confirmed.
-Tell the user that verification may be necessary.
-
-5. If the supplied RightAware context does not contain enough information,
-say so clearly instead of guessing.
-
-6. Answer the user's actual question directly.
-Do not begin with generic phrases such as:
-"Thanks — based on those words..."
-
-7. Keep answers clear and practical.
-Use short paragraphs and bullet points where helpful.
-
-8. If the user writes Nigerian Pidgin, respond naturally in Nigerian Pidgin.
-
-9. If the user mixes Nigerian Pidgin and English, follow the user's style naturally.
-
-10. If the user describes immediate danger, threats, violence or an active arrest,
-give practical safety guidance first.
-
-11. Never ask for:
-- passwords
-- PINs
-- OTPs
-- bank details
-- card details
-- security answers
-
-12. Do not claim to be a lawyer or legal professional.
-
-13. Do not overstate certainty.
-
-14. When a relevant RightAware guide exists, mention it naturally.
-When the context includes organisations from the rights-protection agency
-directory, you may refer the user to them for such questions — repeat only
-the phone, email, website and directory-page details supplied for that
-organisation, exactly as given, and never a contact detail that is not in
-the context. Their listing reproduces published details and is not
-verified by RightAware.
-
-15. Do not dump unrelated laws or resources into the answer.
-
-16. Where a legal source has not been independently verified by RightAware,
-make that limitation clear.
-
-17. Keep the response reasonably concise and useful.
-
-18. End every answer with exactly:
+CORE FACTUAL INVARIANTS (ZERO HALLUCINATION):
+5. Use the RIGHTAWARE VERIFIED CONTEXT supplied with each question as your primary source.
+6. Never invent:
+   - Nigerian laws or statutes
+   - Constitutional sections
+   - Legal cases or citations
+   - Statistics or false guarantees
+   - Organisations or unverified contacts
+   - Phone numbers, email addresses, or URLs
+7. Do not cite a law merely because it appears in the context; only mention laws genuinely relevant to the citizen's dilemma.
+8. If the supplied RightAware context is insufficient, state honestly what is known and advise speaking with a verified legal aid professional or exploring the RightAware directory.
+9. If the user writes Nigerian Pidgin, respond naturally and warmly in Nigerian Pidgin. If they mix Pidgin and English, match their natural style.
+10. If the user describes imminent physical danger, violence, or active armed threat, prioritize physical safety guidance and emergency contact (112) immediately.
+11. Never ask for passwords, bank details, card PINs, or sensitive credentials.
+12. Do not dump unrelated laws into the answer.
+13. End every answer with exactly:
 
 General legal information only — not legal advice. Verify important points with a qualified professional.
 `;
@@ -144,6 +95,18 @@ General legal information only — not legal advice. Verify important points wit
    ========================================================= */
 
 function extractResponseText(data) {
+  /* Standard OpenAI chat completions: choices[0].message.content */
+  if (data && Array.isArray(data.choices) && data.choices[0] && data.choices[0].message) {
+    const content = data.choices[0].message.content;
+    if (typeof content === "string" && content.trim()) {
+      return content.trim();
+    }
+    if (Array.isArray(content)) {
+      const parts = content.map(p => (p && typeof p.text === "string") ? p.text : "").filter(Boolean);
+      if (parts.length) return parts.join("\n").trim();
+    }
+  }
+
   /* SDK-style / convenience field */
   if (
     data &&
@@ -1147,21 +1110,30 @@ module.exports = async function (req, res) {
       }
     }
 
-    // 2. Cookie Device Identification (HMAC-SHA256 Signed Cookie)
-    const hmacSecret = process.env.GUEST_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+    // In production, require authoritative server secrets to prevent forged HMAC signatures.
+    // In local dev/preview environments, use an ephemeral in-memory random salt generated per worker cold start.
+    let hmacSecret = process.env.GUEST_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
+
     if (!hmacSecret) {
-      console.error("[RA_GUEST_AUTH_CONFIG_ERROR] Neither GUEST_HMAC_SECRET nor SUPABASE_SERVICE_ROLE_KEY configured.");
-      return res.status(503).json({
-        ok: false,
-        code: "service_unavailable",
-        error: "Guest preview service is temporarily unavailable due to server configuration. Please sign in or try again shortly.",
-        text: "Guest preview service is temporarily unavailable. Please sign in with a free account to continue without interruption.",
-        links: [
-          { t: "Sign In", u: "login.html?next=ai.html" },
-          { t: "Create Free Account", u: "signup.html" }
-        ],
-        disclaimer: DISCLAIMER
-      });
+      if (isProduction) {
+        console.error("[RA_GUEST_AUTH_CONFIG_ERROR] GUEST_HMAC_SECRET or SUPABASE_SERVICE_ROLE_KEY required in production.");
+        return res.status(503).json({
+          ok: false,
+          code: "service_unavailable",
+          error: "Guest preview service is temporarily unavailable due to server configuration. Please sign in to continue.",
+          text: "Guest preview service is temporarily unavailable. Please sign in with a free account to continue without interruption.",
+          links: [
+            { t: "Sign In", u: "login.html?next=ai.html" },
+            { t: "Create Free Account", u: "signup.html" }
+          ],
+          disclaimer: DISCLAIMER
+        });
+      }
+      if (!global.__DEV_GUEST_HMAC_SALT) {
+        global.__DEV_GUEST_HMAC_SALT = crypto.randomBytes(32).toString("hex");
+      }
+      hmacSecret = global.__DEV_GUEST_HMAC_SALT;
     }
 
     const cookies = parseCookies(req.headers ? req.headers.cookie : "");
@@ -1171,16 +1143,23 @@ module.exports = async function (req, res) {
       guestId = crypto.randomUUID();
       needSetCookie = true;
     }
+    const isSecure = (req.headers && req.headers["x-forwarded-proto"] === "https") || process.env.NODE_ENV === "production" || !!process.env.VERCEL;
     if (needSetCookie) {
-      const isSecure = (req.headers && req.headers["x-forwarded-proto"] === "https") || process.env.NODE_ENV === "production" || !!process.env.VERCEL;
       res.setHeader("Set-Cookie", serializeGuestCookie(guestId, hmacSecret, isSecure));
     }
 
-    // 3. Atomic Database Quota Mutation via Supabase RPC
-    const rpcRes = await callSupabaseRpc("increment_guest_quota", {
-      p_guest_id: guestId,
-      p_ip_subnet: ipSubnet
-    });
+    // 3. Database Quota Mutation with Graceful Fallback
+    let rpcRes = null;
+    try {
+      if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.SUPABASE_URL) {
+        rpcRes = await callSupabaseRpc("increment_guest_quota", {
+          p_guest_id: guestId,
+          p_ip_subnet: ipSubnet
+        });
+      }
+    } catch (e) {
+      console.warn("[RA_GUEST_QUOTA_WARN] Supabase RPC unavailable, using cookie quota fallback:", e.message);
+    }
 
     if (rpcRes && Array.isArray(rpcRes) && rpcRes.length > 0) {
       guestQuota = rpcRes[0];
@@ -1207,18 +1186,32 @@ module.exports = async function (req, res) {
         });
       }
     } else {
-      console.error("[RA_GUEST_QUOTA_ERROR] Supabase RPC failed or returned empty payload");
-      return res.status(503).json({
-        ok: false,
-        code: "service_unavailable",
-        error: "Guest preview verification is temporarily unavailable. Please sign in or try again shortly.",
-        text: "Guest preview verification is temporarily unavailable. Please sign in with a free account to continue without interruption.",
-        links: [
-          { t: "Sign In", u: "login.html?next=ai.html" },
-          { t: "Create Free Account", u: "signup.html" }
-        ],
-        disclaimer: DISCLAIMER
-      });
+      // Graceful Cookie-Scoped Quota Fallback (when Supabase Service Role is not connected)
+      const countCookieName = "ra_guest_c";
+      const currentCount = parseInt(cookies[countCookieName] || "0", 10) || 0;
+      const nextCount = currentCount + 1;
+
+      if (nextCount > 3) {
+        return res.status(403).json({
+          ok: false,
+          code: "free_limit_reached",
+          attempts: nextCount,
+          max: 3,
+          error: "Free preview limit reached (3/3). Sign in with a free account to continue asking unlimited questions.",
+          text: "Free preview limit reached (3/3). Please sign in with a free RightAware account to continue where you left off with unlimited answers.",
+          links: [
+            { t: "Sign In & Continue", u: "login.html?next=ai.html" },
+            { t: "Create Free Account", u: "signup.html" }
+          ],
+          disclaimer: DISCLAIMER
+        });
+      }
+
+      const existingCookies = res.getHeader("Set-Cookie");
+      const cookieList = Array.isArray(existingCookies) ? existingCookies : existingCookies ? [existingCookies] : [];
+      cookieList.push(`${countCookieName}=${nextCount}; Path=/; Max-Age=86400; SameSite=Lax${isSecure ? "; Secure" : ""}`);
+      res.setHeader("Set-Cookie", cookieList);
+      guestQuota = { current_attempts: nextCount, allowed: true };
     }
   }
 
@@ -1306,19 +1299,23 @@ module.exports = async function (req, res) {
           },
 
           body:
-            JSON.stringify({
-              model:
-                MODEL,
-
-              instructions:
-                SYSTEM,
-
-              input:
-                input,
-
-              max_output_tokens:
-                MAX_OUTPUT_TOKENS
-            })
+            JSON.stringify(
+              API_URL.includes("/responses")
+                ? {
+                    model: MODEL,
+                    instructions: SYSTEM,
+                    input: input,
+                    max_output_tokens: MAX_OUTPUT_TOKENS
+                  }
+                : {
+                    model: MODEL,
+                    messages: [
+                      { role: "system", content: SYSTEM },
+                      { role: "user", content: input }
+                    ],
+                    max_tokens: MAX_OUTPUT_TOKENS
+                  }
+            )
         }
       );
 

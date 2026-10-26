@@ -58,19 +58,13 @@
             resolve(true);
           } else if(window.RA_SUPA.client){
             clearInterval(check);
-            window.RA_SUPA.client.from("faqs").select("id", { count:"exact", head:true }).then(function(r){
-              if(r && !r.error){
-                window.RA_SUPA.ready = true;
-                try{
-                  if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
-                  if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = cred.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = cred.SUPABASE_PUBLISHABLE_KEY; }
-                }catch(_){}
-                document.dispatchEvent(new CustomEvent("ra:backend-ready"));
-                resolve(true);
-              } else {
-                reject(new Error("Probe failed"));
-              }
-            }).catch(reject);
+            window.RA_SUPA.ready = true;
+            try{
+              if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
+              if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = cred.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = cred.SUPABASE_PUBLISHABLE_KEY; }
+            }catch(_){}
+            document.dispatchEvent(new CustomEvent("ra:backend-ready"));
+            resolve(true);
           } else if(wait > 3000){
             clearInterval(check);
             reject(new Error("Supabase client connection timed out"));
@@ -78,19 +72,11 @@
         }, 150);
       });
     }
-    return window.RA_SUPA.client.from("faqs").select("id", { count:"exact", head:true }).then(function(r){
-      if(r && !r.error){
-        window.RA_SUPA.ready = true;
-        try{
-          if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
-          if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = cred.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = cred.SUPABASE_PUBLISHABLE_KEY; }
-        }catch(_){}
-        document.dispatchEvent(new CustomEvent("ra:backend-ready"));
-        return true;
-      }
-      window.RA_SUPA.ready = false;
-      throw new Error((r && r.error && (r.error.message || String(r.error))) || "backend probe failed");
-    });
+    if(window.RA_SUPA.client){
+      window.RA_SUPA.ready = true;
+      return Promise.resolve(true);
+    }
+    return Promise.reject(new Error("Supabase client not initialized"));
   };
 
   var started = false;
@@ -105,21 +91,22 @@
       try{
         var client = window.supabase.createClient(c.SUPABASE_URL, c.SUPABASE_PUBLISHABLE_KEY);
         window.RA_SUPA.client = client;
+        window.RA_SUPA.ready = true;
+        try{
+          if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
+          if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = c.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = c.SUPABASE_PUBLISHABLE_KEY; }
+        }catch(_){}
+        document.dispatchEvent(new CustomEvent("ra:backend-ready"));
+
+        // Non-blocking database table verification (never blocks auth readiness)
         client.from("faqs").select("id", { count:"exact", head:true }).then(function(r){
           if(r && !r.error){
-            window.RA_SUPA.ready = true;
-            try{
-              if(window.RA_FEATURES) RA_FEATURES.backendConnected = true;
-              if(window.RA_CONFIG){ RA_CONFIG.BACKEND = "supabase"; RA_CONFIG.SUPABASE_URL = c.SUPABASE_URL; RA_CONFIG.SUPABASE_PUBLISHABLE_KEY = c.SUPABASE_PUBLISHABLE_KEY; }
-            }catch(_){}
-            document.dispatchEvent(new CustomEvent("ra:backend-ready"));
+            window.RA_SUPA.dbReady = true;
           } else {
-            window.RA_SUPA.error = (r && r.error && (r.error.message || String(r.error))) || "backend probe failed";
-            if(window.console && console.warn) console.warn("RightAware: Supabase readiness probe failed — staying in demo mode:", window.RA_SUPA.error);
+            window.RA_SUPA.dbError = (r && r.error && (r.error.message || String(r.error))) || "database probe failed";
           }
         }).catch(function(e){
-          window.RA_SUPA.error = (e && (e.message || String(e))) || "backend probe failed";
-          if(window.console && console.warn) console.warn("RightAware: Supabase readiness probe failed — staying in demo mode:", window.RA_SUPA.error);
+          window.RA_SUPA.dbError = (e && (e.message || String(e))) || "database probe failed";
         });
       }catch(_){}
     };

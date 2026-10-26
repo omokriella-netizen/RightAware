@@ -97,18 +97,25 @@
       if(pro && pro.error) errs.push((pro.error.message || String(pro.error)) + " (professionals)");
     }catch(e){ errs.push(((e && e.message) || String(e)) + " (professionals)"); }
     try{
-      var email = (this.current()||{}).email;
-      if(email){
-        // Case-insensitive exact match (the account email is normalised by
-        // Supabase; the form captured it as typed). Pattern chars are escaped
-        // so "john_doe@x.com" never over-matches another address.
-        var pat = String(email).replace(/([\\%_])/g, "\\$1");
-        var org = await RA_SUPA.client.from("organizations")
+      var org = null;
+      if(uid){
+        var o1 = await RA_SUPA.client.from("organizations")
           .select("id,name,verification_status,created_at")
-          .ilike("email", pat).limit(1);
-        if(org && !org.error && org.data && org.data.length) return { path:"organisation", row:org.data[0] };
-        if(org && org.error) errs.push((org.error.message || String(org.error)) + " (organizations)");
+          .eq("user_id", uid).limit(1);
+        if(o1 && !o1.error && o1.data && o1.data.length) org = o1;
       }
+      if(!org){
+        var email = (this.current()||{}).email;
+        if(email){
+          var pat = String(email).replace(/([\\%_])/g, "\\$1");
+          var o2 = await RA_SUPA.client.from("organizations")
+            .select("id,name,verification_status,created_at")
+            .ilike("email", pat).limit(1);
+          if(o2 && !o2.error && o2.data && o2.data.length) org = o2;
+          if(o2 && o2.error) errs.push((o2.error.message || String(o2.error)) + " (organizations)");
+        }
+      }
+      if(org && org.data && org.data.length) return { path:"organisation", row:org.data[0] };
     }catch(e){ errs.push(((e && e.message) || String(e)) + " (organizations)"); }
     // {error} = reads failed (report honestly); null = reads worked, no application.
     if(errs.length) return { error: errs.join("; ") };
@@ -138,7 +145,8 @@
     o = o || {};
     if(!this.supabaseReady()) return { ok:false, error:"backend not connected" };
     try{
-      var opts = { data:{ name:name }, emailRedirectTo: this.signupRedirect() };
+      var meta = Object.assign({ name:name }, (o && o.data) || {});
+      var opts = { data:meta, emailRedirectTo: this.signupRedirect() };
       if(o.captchaToken) opts.captchaToken = o.captchaToken;
       var r = await RA_SUPA.client.auth.signUp({ email:email, password:pass, options:opts });
       if(r.error){

@@ -51,20 +51,32 @@
 <main>
 <section class="page-hero"><div class="container page-hero-grid rv">
   <div>
-    <span class="eyebrow">Join RightAware</span>
-    <h1>Create your account or apply to be listed</h1>
-    <p class="lead-dark">Three separate pathways. <strong>Professionals and organisations are never published automatically</strong>; an administrator must approve each application first, and unverified applications stay private.</p>
+    <span class="eyebrow">RightAware Account</span>
+    <h1>Create your citizen account</h1>
+    <p class="lead-dark">Save emergency legal guides offline, keep personal incident notes, and request pro-bono aid. Applying as a Lawyer or NGO? <a class="link" href="#" id="heroPartnerLink" style="color:var(--gold);font-weight:700">Apply for directory accreditation</a></p>
   </div>
-  <figure class="page-hero-media"><img src="assets/images/logo-rightaware.png" alt="RightAware logo" loading="lazy"/></figure>
+  <figure class="page-hero-media logo-media-frame"><img src="assets/images/logo-rightaware.png" alt="RightAware logo" loading="lazy"/></figure>
 </div></section>
 
 <section class="section"><div class="container" style="max-width:720px">
   <div class="form-card rv">
-    <h2 id="stepTitle">1. Choose how you're joining</h2>
-    <p class="field-note">Already registered? <a class="link" href="login.html">Log in →</a></p>
+    <div class="auth-tabs">
+      <a class="auth-tab" href="login.html">Log In</a>
+      <a class="auth-tab is-active" href="signup.html">Create Account</a>
+    </div>
 
-    <!-- STEP 1: pathway -->
-    <div id="stepChoose">
+    <h2 id="stepTitle">Create citizen account</h2>
+    <p class="field-note">Already registered? <a class="link" href="login.html">Log in</a></p>
+
+    <!-- Partner Bridge Banner -->
+    <div id="partnerBanner" class="notice" style="display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;margin:1rem 0 1.2rem;background:#f8fafc;border-color:var(--border)">
+      <span style="font-size:.88rem">⚖️ <strong>Are you a Legal Practitioner or Civic NGO?</strong></span>
+      <button type="button" class="btn btn-outline btn-sm" id="partnerApplyBtn">Apply for Verified Directory Listing</button>
+    </div>
+
+    <!-- STEP 1: pathway (hidden by default, revealed for partners) -->
+    <div id="stepChoose" hidden>
+      <button type="button" class="btn btn-outline btn-sm" id="backToCitizenBtn" style="margin-bottom:.8rem">Back to Citizen Sign Up</button>
       <div class="path-grid" role="group" aria-label="Registration pathway">
         <button type="button" class="path-card" data-path="user" aria-pressed="false">
           <div class="card-icon-badge">
@@ -91,25 +103,23 @@
       <div class="notice" style="margin-top:.6rem"><strong>Privacy first:</strong> applications are visible only to administrators during review. Your contact details, documents and messages are never shown to the public or to other users.</div>
     </div>
 
-    <!-- STEP 2a: general user -->
-    <form id="formUser" hidden>
-      <button type="button" class="btn btn-outline btn-sm" id="backBtnUser">← Choose a different pathway</button>
-      <h3>Individual</h3>
+    <!-- STEP 2a: general user (ACTIVE BY DEFAULT) -->
+    <form id="formUser">
       <label>Full name<input id="uName" required placeholder="Your name" autocomplete="name"/></label>
       <label>Email<input id="uEmail" type="email" required placeholder="you@example.com" autocomplete="email"/></label>
       <div class="form-row">
         <label>Password<input id="uPass" type="password" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password"/></label>
         <label>Confirm password<input id="uPass2" type="password" required placeholder="Repeat password" autocomplete="new-password"/></label>
       </div>
-      <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="uConsent" required/> I agree that RightAware stores my account details to provide the service. <a class="link" href="about.html#privacy">How my data is handled →</a></label>
+      <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="uConsent" required/> I agree that RightAware stores my account details to provide the service. <a class="link" href="about.html#privacy">How my data is handled</a></label>
       <div class="ra-captcha" data-captcha></div>
-      <button class="btn btn-primary" style="width:100%" type="submit">Create account</button>
+      <button class="btn btn-primary" style="width:100%" type="submit">Create citizen account</button>
       <p class="form-note" id="uOut" aria-live="polite"></p>
     </form>
 
     <!-- STEP 2b: legal professional -->
     <form id="formPro" hidden>
-      <button type="button" class="btn btn-outline btn-sm" id="backBtnPro">← Choose a different pathway</button>
+      <button type="button" class="btn btn-outline btn-sm" id="backBtnPro">← Back to pathways</button>
       <h3>Legal professional application</h3>
       <p class="field-note">Your application is reviewed by an administrator. <strong>Nothing is published until you are approved</strong>, and approval only follows credential checks.</p>
 
@@ -313,8 +323,10 @@
                 pro:document.getElementById("formPro"), org:document.getElementById("formOrg"),
                 done:document.getElementById("stepDone"), confirm:document.getElementById("stepConfirm") };
 
+  var partnerBanner = document.getElementById("partnerBanner");
   function show(which, title){
     Object.keys(panes).forEach(function(k){ panes[k].hidden = (k !== which); });
+    if(partnerBanner) partnerBanner.hidden = (which !== "user");
     stepTitle.textContent = title;
     stepTitle.scrollIntoView({ behavior:"smooth", block:"start" });
     // Start the CAPTCHA widget early (only when configured) so it is ready on submit.
@@ -325,25 +337,49 @@
       }
     }catch(_){}
   }
-  function back(btn, form){ btn.addEventListener("click", function(){ show("choose", "1. Choose how you're joining"); }); }
+  function back(btn, form){
+    if(btn) btn.addEventListener("click", function(){ show("choose", "Apply to be listed in directory"); });
+  }
+
+  var applyBtn = document.getElementById("partnerApplyBtn");
+  if(applyBtn){
+    applyBtn.addEventListener("click", function(){
+      show("choose", "Apply to be listed in directory");
+    });
+  }
+  var heroLink = document.getElementById("heroPartnerLink");
+  if(heroLink){
+    heroLink.addEventListener("click", function(e){
+      e.preventDefault();
+      show("choose", "Apply to be listed in directory");
+    });
+  }
+  var backCitBtn = document.getElementById("backToCitizenBtn");
+  if(backCitBtn){
+    backCitBtn.addEventListener("click", function(){
+      show("user", "Create citizen account");
+    });
+  }
 
   document.querySelectorAll(".path-card").forEach(function(c){
     c.addEventListener("click", function(){
       document.querySelectorAll(".path-card").forEach(function(x){ x.setAttribute("aria-pressed", x===c ? "true":"false"); });
-      if(c.dataset.path === "user") show("user", "2. Individual: create your account");
-      if(c.dataset.path === "professional") show("pro", "2. Legal professional: your application");
-      if(c.dataset.path === "organisation") show("org", "2. Organisation: your application");
+      if(c.dataset.path === "user") show("user", "Create citizen account");
+      if(c.dataset.path === "professional") show("pro", "Legal professional application");
+      if(c.dataset.path === "organisation") show("org", "Organisation application");
     });
   });
   /* deep link: signup.html?path=professional | organisation | user */
   try{
-    var pre = new URLSearchParams(location.search).get("path");
-    if(pre){
+    var pre = (new URLSearchParams(location.search).get("path") || "").toLowerCase();
+    if(pre === "pro" || pre === "lawyer" || pre === "professional") pre = "professional";
+    else if(pre === "org" || pre === "organization" || pre === "organisation") pre = "organisation";
+    else if(pre === "user" || pre === "citizen" || pre === "individual") pre = "user";
+    if(pre && pre !== "user"){
       var pc = document.querySelector('.path-card[data-path="'+pre+'"]');
       if(pc) pc.click();
     }
   }catch(_){}
-  back(document.getElementById("backBtnUser"));
   back(document.getElementById("backBtnPro"));
   back(document.getElementById("backBtnOrg"));
 
@@ -457,7 +493,7 @@
       ? "An account with this email address already exists."
       : "One more step: your account is not active yet.";
     document.getElementById("confirmDetail").innerHTML = exists
-      ? "If you registered but never opened the confirmation link, request it again below (check your spam folder first). If you already confirmed it, simply <a class='link' href='login.html'>log in →</a>."
+      ? "If you registered but never opened the confirmation link, request it again below (check your spam folder first). If you already confirmed it, simply <a class='link' href='login.html'>log in</a>."
       : "We sent a confirmation link to <strong>" + esc(lastSignupEmail) + "</strong>. RightAware does <strong>not</strong> treat your account as verified until you open that link. Afterwards, log in normally. Didn’t get it? Request a resend below (check spam too).";
     document.getElementById("resendOut").textContent = "";
     show("confirm", "3. Check your inbox");
@@ -534,7 +570,7 @@
       acctRes = { ok:true, note:"Signed in as " + opts.account.email + " (this application is attached to that account)." };
     } else {
       acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
-                                         { captchaToken: opts.captchaToken });
+                                         { data: opts.meta || {}, captchaToken: opts.captchaToken });
     }
     var acctNote;
     if(acctRes.ok && acctRes.needsConfirm){
@@ -686,8 +722,22 @@
       if(uid1) row.user_id = uid1;
       if(!row.user_id) delete row.user_id;
 
+      var metaPro = {
+        path: "professional",
+        qualification: q,
+        experience_yrs: val("pYears") || null,
+        location: val("pLoc"),
+        languages: chips("pLangs"),
+        bio: val("pBio"),
+        specializations: specs,
+        fee_note: val("pFee") || null,
+        availability: val("pAvail"),
+        phone: ph
+      };
+
       submitApplication({
         path:"professional", table:"professionals", row:row,
+        meta: metaPro,
         extraTable:"professional_specializations",
         extraRows: row.user_id ? specs.map(function(s){ return { professional_id:pid, specialization:s }; }) : [],
         account:{ name:n, email:em, pass:pw },
@@ -733,8 +783,22 @@
         website:val("oWeb") || null, logo_path: logo ? logo.name : null,
         verification_status:"pending", verification_source:val("oVerify") || null, source_note:"Applied via site signup; awaiting admin review." };
 
+      var metaOrg = {
+        path: "organisation",
+        org_name: n,
+        description: val("oAbout"),
+        services: services,
+        specialization: val("oType"),
+        location: val("oState"),
+        address: val("oAddress") || null,
+        phone: ph,
+        website: val("oWeb") || null,
+        verification_source: val("oVerify") || null
+      };
+
       submitApplication({
         path:"organisation", table:"organizations", row:row,
+        meta: metaOrg,
         account:{ name:person, email:em, pass:pw },
         queue:{ topic:"Application: Organisation", message:queueMsg },
         captchaToken: cap.token || undefined
