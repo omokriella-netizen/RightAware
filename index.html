@@ -1109,17 +1109,26 @@
         return;
       }
 
+      if(res && res.needsAuth){
+        addMsg("ai", res.text, res.links);
+        return;
+      }
+
+      if(res && res.serviceUnavailable){
+        addMsg("ai", res.text, res.links);
+        return;
+      }
+
       if(res && res.text){
         addMsg("ai", res.text, res.links);
       } else {
         addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }]);
       }
 
+      /* Authoritative State Invariant: mutate guest preview count ONLY on verified successful AI answers */
       if(!isAuthed && window.RA_CHAT_STATE){
-        if(res && res.isGuest && typeof res.guestAttempts === "number"){
+        if(res && res.ok && res.isGuest && typeof res.guestAttempts === "number"){
           window.RA_CHAT_STATE.setGuestPromptCount(res.guestAttempts);
-        } else {
-          window.RA_CHAT_STATE.incrementGuestPromptCount();
         }
       }
 

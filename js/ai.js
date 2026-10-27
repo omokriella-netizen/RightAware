@@ -168,6 +168,17 @@
           /* 501 / 503 or provider trouble: use a short 15-second cooldown timestamp instead of permanently disabling for the session */
           if(res.status===501 || res.status===503 || (data && (data.code==="not_configured" || data.code==="service_unavailable"))){
             this._downUntil = Date.now() + 15000;
+            if(data && (data.text || data.error)){
+              return {
+                ok: false,
+                serviceUnavailable: true,
+                code: data.code || (res.status === 501 ? "not_configured" : "service_unavailable"),
+                text: data.text || data.error,
+                links: data.links || [{t:"Sign In", u:"login.html?next=ai.html"}, {t:"Browse rights library", u:"rights.html"}],
+                disclaimer: data.disclaimer || DISCLAIMER,
+                demo: false
+              };
+            }
           }
 
         }catch(_){ /* network/provider trouble — fall back below */ }
