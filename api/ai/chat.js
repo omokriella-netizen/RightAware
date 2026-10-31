@@ -1386,23 +1386,14 @@ module.exports = async function (req, res) {
       }
 
       /*
-       * Return a diagnostic to the existing frontend
-       * rather than exposing the raw provider response.
+       * Resilient error boundary: never return 200 for upstream AI failure.
+       * Keep raw provider status / error strictly in server logs.
        */
-
-      return res.status(200).json({
+      return res.status(503).json({
         ok: false,
-        diagnostic: true,
-
-        text:
-          "RightAware AI connection diagnostic:\n\n" +
-          "OpenAI status: " +
-          response.status +
-          "\n\n" +
-          "The AI provider could not complete the request. Details are recorded in the server log.",
-
-        disclaimer:
-          "Temporary technical diagnostic."
+        code: "provider_unavailable",
+        error: "The AI assistant is temporarily unavailable. Verified guides and helplines are available below.",
+        disclaimer: DISCLAIMER
       });
     }
 
@@ -1436,16 +1427,11 @@ module.exports = async function (req, res) {
         } catch (_) {}
       }
 
-      return res.status(200).json({
+      return res.status(503).json({
         ok: false,
-        diagnostic: true,
-
-        text:
-          "RightAware AI connection diagnostic:\n\n" +
-          "OpenAI accepted the request, but RightAware could not extract the generated answer.",
-
-        disclaimer:
-          "Temporary technical diagnostic."
+        code: "provider_unavailable",
+        error: "The AI assistant could not parse the provider response. Verified guides and helplines are available below.",
+        disclaimer: DISCLAIMER
       });
     }
 
@@ -1500,16 +1486,11 @@ module.exports = async function (req, res) {
       } catch (_) {}
     }
 
-    return res.status(200).json({
+    return res.status(503).json({
       ok: false,
-      diagnostic: true,
-
-      text:
-        "RightAware AI connection diagnostic:\n\n" +
-        "Unexpected error while contacting the AI provider. Details are recorded in the server log.",
-
-      disclaimer:
-        "Temporary technical diagnostic."
+      code: "provider_unavailable",
+      error: "Temporary network connection issue contacting the AI provider. Verified guides and helplines are available below.",
+      disclaimer: DISCLAIMER
     });
   }
 };

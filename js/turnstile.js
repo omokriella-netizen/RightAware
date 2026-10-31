@@ -48,12 +48,20 @@
         rec.widgetId = ts.render(el, {
           sitekey: key,
           size: "normal",
-          callback: function(t){ rec.token = t; },
+          callback: function(t){ rec.token = t; rec.hasError = false; rec.errorCode = null; },
           "expired-callback": function(){ rec.token = null; },
-          "error-callback": function(){ rec.token = null; }
+          "error-callback": function(code){
+            rec.token = null;
+            rec.hasError = true;
+            rec.errorCode = code;
+          }
         });
         return { ok: true };
-      }).catch(function(e){ return { ok:false, error: e.message }; });
+      }).catch(function(e){
+        var rec = { el: el, widgetId: null, token: null, hasError: true, loadFailed: true, errorMessage: e.message };
+        mounted.push(rec);
+        return { ok:false, error: e.message };
+      });
     },
 
     /* Resolve a token for the widget in `el`.
@@ -69,6 +77,7 @@
         if(t){ rec.token = t; return Promise.resolve(t); }
         window.turnstile.execute(rec.widgetId);
       }catch(_){}
+      if(rec.hasError || rec.loadFailed) return Promise.resolve(null);
       return new Promise(function(res){
         var waited = 0;
         if(rec.pollTimer){
@@ -77,8 +86,8 @@
         }
         var iv = setInterval(function(){
           waited += 100;
-          // Clean up if container unmounted or removed from document
-          if(!rec.el || !document.body.contains(rec.el)){
+          // Clean up if container unmounted or removed from document or widget errored
+          if(!rec.el || !document.body.contains(rec.el) || rec.hasError || rec.loadFailed){
             clearInterval(iv);
             rec.pollTimer = null;
             res(null);
@@ -100,6 +109,29 @@
       });
     },
 
+    /* Returns current diagnostic status for the container */
+    getStatus: function(el){
+      var key = siteKey();
+      if(!key) return { configured:false, ready:false };
+      var rec = find(el);
+      if(!rec) return { configured:true, mounted:false, ready:false };
+      return {
+        configured: true,
+        mounted: true,
+        ready: !!window.turnstile,
+        hasError: !!(rec.hasError || rec.loadFailed),
+        errorCode: rec.errorCode || null,
+        loadFailed: !!rec.loadFailed,
+        hasToken: !!rec.token
+      };
+    },
+
+    /* Returns whether the widget encountered an unrecoverable load/origin error */
+    hasError: function(el){
+      var rec = find(el);
+      return !!(rec && (rec.hasError || rec.loadFailed));
+    },
+
     /* Submit gate: → { token, unconfigured } to proceed,
        or { blocked:true, error? } when a configured CAPTCHA was not solved. */
     gate: function(el){
@@ -108,6 +140,7 @@
       var self = this;
       return this.mount(el).then(function(m){
         if(!m.ok) return { blocked:true, error: m.error };
+        if(self.hasError(el)) return { blocked:true, error: "Security verification could not connect (network or configuration issue)." };
         return self.token(el).then(function(t){
           return t ? { token: t } : { blocked:true };
         });

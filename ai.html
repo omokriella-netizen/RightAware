@@ -207,10 +207,29 @@
       add("ai","", "Free preview limit reached (3/3). Please sign in to continue.<div style='margin-top:0.6rem'><a class='btn btn-primary btn-sm' href='login.html?next=ai.html'>Sign In to Continue</a> <a class='btn btn-outline btn-sm' href='signup.html'>Create Free Account</a></div>", "RightAware AI (Preview Limit Reached):");
       return;
     }
+
+    // Mutation lock: disable input and submit button
+    input.disabled = true;
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if(submitBtn) submitBtn.disabled = true;
+
+    function releaseMutationLock(){
+      var reached = !isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit();
+      if(!reached){
+        input.disabled = false;
+        if(submitBtn) submitBtn.disabled = false;
+        input.focus();
+      }
+    }
+
     add("you",q); input.value="";
     var capBox = document.getElementById("aiCaptcha");
     setTimeout(function(){
-      if(!window.RA_AI){ showDemo(q); return; }
+      if(!window.RA_AI){
+        showDemo(q);
+        releaseMutationLock();
+        return;
+      }
       window.RA_AI.ask(q, { captchaContainer: capBox }).then(function(r){
         if(r && r.limitReached){
           mode="auth"; setPill();
@@ -221,34 +240,38 @@
         }
         if(r && r.captchaNeeded){
           mode="pending"; setPill();
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>"),"RightAware AI:");
+          var capLabel = r.captchaErrored ? "Verification Notice:" : "Security Verification:";
+          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links), capLabel);
           return;
         }
         if(r && r.needsAuth){
           mode="auth"; setPill();
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");
+          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"Account Required:");
           return;
         }
-        if(r && r.serviceUnavailable){
+        if(r && r.serviceUnavailable && !r.isFallback){
           mode="auth"; setPill();
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (Notice):");
+          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware Notice:");
           return;
         }
-        if(r && !r.demo && r.text){
+        if(r && !r.demo && !r.isFallback && r.text){
           mode="live"; setPill();
           add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");
           return;
         }
         if(r && r.text){
-          /* Labelled fallback from js/ai.js (library match) — render ITS answer
-             and links instead of the canned on-page script, so nothing the
-             client computed is thrown away. */
+          /* Verified RightAware Guide fallback — never misrepresent as live AI */
           mode="demo"; setPill();
-          add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (library match):");
+          var label = (r.sourceLabel || "Verified RightAware Guide") + ":";
+          add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links), label);
           return;
         }
         showDemo(q);
-      }, function(){ showDemo(q); });
+      }, function(){
+        showDemo(q);
+      }).finally(function(){
+        releaseMutationLock();
+      });
     },350);
   });
   document.querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(){input.value=b.dataset.p;form.dispatchEvent(new Event("submit"))});});

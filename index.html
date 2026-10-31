@@ -1000,7 +1000,7 @@
     window.visualViewport.addEventListener("scroll", syncVisualViewport);
   }
 
-  function addMsg(role, text, links){
+  function addMsg(role, text, links, customLabel){
     var item = { role: role, text: text, links: links || [] };
     thread.push(item);
 
@@ -1009,7 +1009,8 @@
 
     var html = "";
     if(role !== "user"){
-      html += '<span class="ra-ai-label">RightAware AI</span>';
+      var labelText = customLabel || "RightAware AI";
+      html += '<span class="ra-ai-label">' + esc(labelText) + '</span>';
     }
     html += '<div class="ra-ai-bubble">' + esc(text).replace(/\n+/g, "<br/>");
     if(links && links.length){
@@ -1105,24 +1106,26 @@
       }
 
       if(res && res.captchaNeeded){
-        addMsg("ai", res.text || "Security verification required. Please complete the CAPTCHA check to continue.", []);
+        var capLabel = res.captchaErrored ? "Verification Notice" : "Security Verification";
+        addMsg("ai", res.text || "Security verification required. Please complete the CAPTCHA check to continue.", res.links || [], capLabel);
         return;
       }
 
       if(res && res.needsAuth){
-        addMsg("ai", res.text, res.links);
+        addMsg("ai", res.text, res.links, "Account Required");
         return;
       }
 
-      if(res && res.serviceUnavailable){
-        addMsg("ai", res.text, res.links);
+      if(res && res.serviceUnavailable && !res.isFallback){
+        addMsg("ai", res.text, res.links, "Service Notice");
         return;
       }
 
       if(res && res.text){
-        addMsg("ai", res.text, res.links);
+        var label = (res.isFallback || res.demo) ? (res.sourceLabel || "Verified RightAware Guide") : "RightAware AI";
+        addMsg("ai", res.text, res.links, label);
       } else {
-        addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }]);
+        addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }], "Verified RightAware Guide");
       }
 
       /* Authoritative State Invariant: mutate guest preview count ONLY on verified successful AI answers */

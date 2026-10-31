@@ -17,14 +17,36 @@
     return hit || null;
   }
   /* Shared labelled fallback used only in server mode (demo-kb mode below keeps
-     its original wording untouched). */
+     its original wording untouched). Never claim to be live AI. */
   function serverFallback(m){
     const hit = localKB(m);
     if(hit){
       const url = hit.fullGuide || ("rights/topic.html?id="+hit.id);
-      return { text:"The AI service is temporarily unavailable. Based on your question, start with verified legal info on “"+hit.title+"”: "+(hit.summary||""), links:[{t:"Open: "+hit.title,u:url},{t:"Get Help",u:"help.html"}], disclaimer:DISCLAIMER, demo:true };
+      return {
+        text: "The live AI assistant is temporarily unavailable. Based on verified RightAware legal guides, here is key guidance on “" + hit.title + "”:\n\n" + (hit.summary || ""),
+        links: [
+          { t: "Open Guide: " + hit.title, u: url },
+          { t: "Browse Rights Library", u: "rights.html" },
+          { t: "Emergency Helplines", u: "help.html" }
+        ],
+        disclaimer: DISCLAIMER,
+        demo: true,
+        isFallback: true,
+        sourceLabel: "Verified RightAware Guide"
+      };
     }
-    return { text:"The AI service is temporarily unavailable. Try keywords like arrest, rent, salary, vote, scam — or browse our verified library below.", links:[{t:"Search all content",u:"search.html?q="+encodeURIComponent(m)},{t:"Browse rights library",u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
+    return {
+      text: "The live AI assistant is temporarily unavailable. We could not find an exact keyword match, but you can explore verified Nigerian legal protections in our library below or contact official help desks.",
+      links: [
+        { t: "Search all content", u: "search.html?q=" + encodeURIComponent(m) },
+        { t: "Browse rights library", u: "rights.html" },
+        { t: "Emergency Helplines", u: "help.html" }
+      ],
+      disclaimer: DISCLAIMER,
+      demo: true,
+      isFallback: true,
+      sourceLabel: "Verified RightAware Guide"
+    };
   }
   const AI = {
     _downUntil: 0,       // 15-second cooldown timestamp — never permanently locks the browser session
@@ -82,10 +104,18 @@
 
           /* Resolve Turnstile token for guest requests if Turnstile is active */
           let turnstileToken = opts.turnstileToken || null;
-          if(!tok && !turnstileToken && window.RA_TURNSTILE && capContainer){
-            try {
-              turnstileToken = await window.RA_TURNSTILE.token(capContainer);
-            } catch(_) {}
+          let turnstileErrored = false;
+          if(!tok && window.RA_TURNSTILE && capContainer){
+            if(window.RA_TURNSTILE.hasError(capContainer)){
+              turnstileErrored = true;
+            } else if(!turnstileToken){
+              try {
+                turnstileToken = await window.RA_TURNSTILE.token(capContainer);
+              } catch(_) {}
+              if(!turnstileToken && window.RA_TURNSTILE.hasError(capContainer)){
+                turnstileErrored = true;
+              }
+            }
           }
 
           const reqBody = {
@@ -108,7 +138,9 @@
             window.RA_CHAT_STATE.setGuestPromptCount(data.guestAttempts);
           }
 
-          if(res.ok && data && data.text){
+          /* Defensive validation: only accept real successful answers.
+             Never render diagnostic payloads or failed status objects to citizens. */
+          if(res.ok && data && data.ok === true && data.text && !data.diagnostic){
             return {
               ok: true,
               text: String(data.text),
@@ -139,11 +171,20 @@
 
           /* 403 captcha_required / captcha_invalid */
           if(data && (data.code === "captcha_required" || data.code === "captcha_invalid")){
+            let errorText = "Security verification required. Please complete the CAPTCHA check to continue.";
+            if(turnstileErrored){
+              errorText = "Security verification could not connect (network or configuration block). You can sign in with a free account to continue asking questions without CAPTCHA.";
+            } else if(data.code === "captcha_invalid"){
+              errorText = "Security verification expired or was invalid. Please tick the verification box again.";
+            } else {
+              errorText = "Please complete the security check above before submitting your question.";
+            }
             return {
               captchaNeeded: true,
               code: data.code,
-              text: data.error || "Security verification required. Please complete the CAPTCHA check to continue.",
-              links: [],
+              captchaErrored: turnstileErrored,
+              text: errorText,
+              links: turnstileErrored ? [{t:"Sign In Free (No CAPTCHA)", u:"login.html?next=ai.html"}, {t:"Create Free Account", u:"signup.html"}] : [],
               disclaimer: DISCLAIMER
             };
           }
@@ -165,23 +206,18 @@
             return needAuth();
           }
 
-          /* 501 / 503 or provider trouble: use a short 15-second cooldown timestamp instead of permanently disabling for the session */
-          if(res.status===501 || res.status===503 || (data && (data.code==="not_configured" || data.code==="service_unavailable"))){
+          /* 501 / 502 / 503 or provider_unavailable / upstream failure:
+             Trip 15-second cooldown and execute verified knowledge-base fallback. */
+          if(res.status === 501 || res.status === 502 || res.status === 503 ||
+             (data && (data.code === "provider_unavailable" || data.code === "service_unavailable" || data.code === "not_configured" || data.diagnostic === true || data.ok === false))){
             this._downUntil = Date.now() + 15000;
-            if(data && (data.text || data.error)){
-              return {
-                ok: false,
-                serviceUnavailable: true,
-                code: data.code || (res.status === 501 ? "not_configured" : "service_unavailable"),
-                text: data.text || data.error,
-                links: data.links || [{t:"Sign In", u:"login.html?next=ai.html"}, {t:"Browse rights library", u:"rights.html"}],
-                disclaimer: data.disclaimer || DISCLAIMER,
-                demo: false
-              };
-            }
+            return serverFallback(m);
           }
 
-        }catch(_){ /* network/provider trouble — fall back below */ }
+        }catch(_){
+          this._downUntil = Date.now() + 15000;
+          return serverFallback(m);
+        }
         finally {
           /* Rotate Turnstile token so subsequent prompts do not attempt to reuse spent token */
           if(window.RA_TURNSTILE && capContainer){
