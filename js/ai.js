@@ -58,7 +58,7 @@
       if(!m) return { text:"Please describe your issue in a few words.", links:[], disclaimer:DISCLAIMER };
       if(this.mode()==="server"){
         let data = null;
-        const capContainer = opts.captchaContainer || opts.captchaEl || document.querySelector("[data-captcha]");
+        
         try{
           /* Attach the Supabase session token when one exists: a configured AI
              key is only spendable by signed-in callers (or 3 free attempts for verified guests). */
@@ -102,25 +102,8 @@
              guaranteed-failing call. (ra:session-ready also clears the latch.) */
           if(this._authNeeded && !tok) return needAuth();
 
-          /* Resolve Turnstile token for guest requests if Turnstile is active */
-          let turnstileToken = opts.turnstileToken || null;
-          let turnstileErrored = false;
-          if(!tok && window.RA_TURNSTILE && capContainer){
-            if(window.RA_TURNSTILE.hasError(capContainer)){
-              turnstileErrored = true;
-            } else if(!turnstileToken){
-              try {
-                turnstileToken = await window.RA_TURNSTILE.token(capContainer);
-              } catch(_) {}
-              if(!turnstileToken && window.RA_TURNSTILE.hasError(capContainer)){
-                turnstileErrored = true;
-              }
-            }
-          }
-
           const reqBody = {
             message: m,
-            turnstileToken: turnstileToken || undefined,
             context: opts.context || undefined
           };
 
@@ -218,12 +201,7 @@
           this._downUntil = Date.now() + 15000;
           return serverFallback(m);
         }
-        finally {
-          /* Rotate Turnstile token so subsequent prompts do not attempt to reuse spent token */
-          if(window.RA_TURNSTILE && capContainer){
-            try { window.RA_TURNSTILE.reset(capContainer); } catch(_) {}
-          }
-        }
+        finally {}
         return serverFallback(m);
       }
       const hit = localKB(m);

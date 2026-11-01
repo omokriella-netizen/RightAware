@@ -11,7 +11,6 @@ window.RA_CONFIG = Object.assign({
   SUPABASE_URL: "",             // public URL only; set via window.__ENV__ when ready
   SUPABASE_PUBLISHABLE_KEY: "", // publishable key only — never a secret/service key
   PAYSTACK_PUBLIC_KEY: "",      // public key only — secret stays server-side
-  TURNSTILE_SITE_KEY: "",       // public Cloudflare Turnstile site key (CAPTCHA); empty = not configured
   AI_ENDPOINT: "/api/ai/chat",  // live route (Stage 7); answers 501 until AI_API_KEY is set server-side, client then falls back to labelled library matches
   SUPPORT_EMAIL_PLACEHOLDER: "hello@rightaware.ng",
   CONTACT_STATUS: "placeholder" // placeholder | live

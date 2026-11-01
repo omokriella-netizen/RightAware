@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Log In | RightAware</title>
-<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
+<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth)."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,12 +11,12 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Log In | RightAware"/>
-<meta property="og:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
+<meta property="og:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth)."/>
 <meta property="og:url" content="https://rightaware-three.vercel.app/login.html"/>
 <meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Log In | RightAware"/>
-<meta name="twitter:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth, CAPTCHA-protected)."/>
+<meta name="twitter:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth)."/>
 <link rel="canonical" href="https://rightaware-three.vercel.app/login.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -87,7 +87,6 @@
     <form id="loginForm">
       <label>Email<input type="email" id="lEmail" required placeholder="you@example.com" autocomplete="username"/></label>
       <label>Password<input type="password" id="lPass" required placeholder="Your password" autocomplete="current-password"/></label>
-      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" id="loginSubmitBtn" type="submit" style="width:100%">Log In</button>
     </form>
     <p class="form-note" id="lOut" aria-live="polite"></p>
@@ -104,7 +103,6 @@
       <p><strong>Forgot your password?</strong> We email you a secure reset link.</p>
       <form id="resetForm">
         <label>Email for the reset link<input type="email" id="resetEmail" required placeholder="you@example.com" autocomplete="email"/></label>
-        <div class="ra-captcha" data-captcha></div>
         <button class="btn btn-secondary" type="submit" style="width:100%">Send password reset link</button>
       </form>
       <p class="form-note" id="resetOut" aria-live="polite"></p>
@@ -164,7 +162,6 @@
   <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
 </footer>
 <script src="js/config.js"></script>
-<script src="js/turnstile.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="app.js"></script>
 <script>
@@ -283,25 +280,7 @@
     });
   }
 
-  /* ---- CAPTCHA helper (Cloudflare Turnstile; configured via TURNSTILE_SITE_KEY) ---- */
-  function capBox(scope){ return (scope || document).querySelector("[data-captcha]"); }
-  function gateCaptcha(scope){
-    if(!(window.RA_SUPA && RA_SUPA.ready) || !window.RA_TURNSTILE) return Promise.resolve({ token:null });
-    return RA_TURNSTILE.gate(capBox(scope)).then(function(g){
-      if(g.unconfigured) return { token:null };
-      if(g.blocked) return { error: g.error
-        ? "CAPTCHA could not load: check your connection (or disable blocking) and try again."
-        : "Please complete the CAPTCHA check to continue." };
-      return { token:g.token };
-    });
-  }
-  function mountCaptcha(scope){
-    try{
-      if(window.RA_TURNSTILE && RA_TURNSTILE.configured() && window.RA_SUPA && RA_SUPA.ready){
-        var b = capBox(scope); if(b) RA_TURNSTILE.mount(b);
-      }
-    }catch(_){}
-  }
+
 
   /* ---- states arriving from Supabase email links ---- */
   var linkState = (function(){
@@ -387,7 +366,7 @@
 
   function setReadyState(){
     checkConfigSync();
-    if(!loginForm.hidden) mountCaptcha(loginForm);
+    
   }
 
   if(retryAuthBtn){
@@ -410,11 +389,9 @@
         if(s){ document.getElementById("rPass").focus(); }
         else {
           recoveryForm.hidden = true; loginForm.hidden = false;
-          mountCaptcha(loginForm);
           out.innerHTML = "That reset link is invalid or has expired. Send yourself a fresh one below.";
           document.getElementById("resetBox").hidden = false;
-          mountCaptcha(document.getElementById("resetBox"));
-        }
+          }
       });
     } else if(linkState === "confirmed"){
       RA_AUTH.supabaseReady() && RA_SUPA.client.auth.getSession().then(function(r){
@@ -465,7 +442,7 @@
       if(passInput) passInput.disabled = false;
       if(errMsg) {
         out.textContent = errMsg;
-        try{ if(window.RA_TURNSTILE) RA_TURNSTILE.reset(capBox(loginForm)); }catch(_){}
+        
       }
     }
 
@@ -479,13 +456,7 @@
         return;
       }
       orgLookup(em);
-      gateCaptcha(loginForm).then(function(cap){
-        if(cap.error){
-          releaseMutationLock(cap.error);
-          return;
-        }
-        return RA_AUTH.loginLive(em, pw, { captchaToken: cap.token || undefined });
-      }).then(function(r){
+      RA_AUTH.loginLive(em, pw).then(function(r){
         if(!r) return;
         if(!r.ok){
           if(r.needsConfirm){
@@ -530,9 +501,7 @@
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ ro.textContent = "Enter a valid email address first."; return; }
     pendingEmail = em;
     ro.textContent = "Sending…";
-    gateCaptcha(loginForm).then(function(cap){
-      return RA_AUTH.resendConfirmation(em, { captchaToken: cap.token || undefined });
-    }).then(function(msg){ ro.textContent = msg; })
+    RA_AUTH.resendConfirmation(em).then(function(msg){ ro.textContent = msg; })
       .catch(function(){ ro.textContent = "Could not resend; try again shortly."; });
   });
 
@@ -541,7 +510,7 @@
     e.preventDefault();
     var box = document.getElementById("resetBox");
     box.hidden = !box.hidden;
-    if(!box.hidden){ mountCaptcha(box); document.getElementById("resetEmail").focus(); }
+    if(!box.hidden){ document.getElementById('resetEmail').focus(); }
   });
   document.getElementById("resetForm").addEventListener("submit", function(e){
     e.preventDefault();
@@ -549,10 +518,8 @@
     var ro = document.getElementById("resetOut");
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ ro.textContent = "Please enter a valid email address."; return; }
     ro.textContent = "Sending…";
-    gateCaptcha(document.getElementById("resetBox")).then(function(cap){
-      if(cap.error){ ro.textContent = cap.error; return; }
-      return RA_AUTH.recoverLive(em, { captchaToken: cap.token || undefined }).then(function(msg){ ro.textContent = msg; });
-    }).catch(function(){ ro.textContent = "Could not send; try again shortly."; });
+    RA_AUTH.recoverLive(em).then(function(msg){ ro.textContent = msg; })
+      .catch(function(){ ro.textContent = "Could not send; try again shortly."; });
   });
 
   /* ---- set new password (recovery landing) ---- */

@@ -62,7 +62,6 @@
     <button type="button" data-p="My employer has not paid my salary.">Unpaid salary</button>
     <button type="button" data-p="I was scammed online.">Online scam</button>
   </div>
-  <div class="ra-captcha" data-captcha id="aiCaptcha" style="margin-bottom:0.75rem"></div>
   <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Describe your issue…" autocomplete="off" aria-label="Ask RightAware AI"/><button class="btn btn-primary" type="submit">Send</button></form>
   <p class="form-note">General legal information only — not legal advice. Answers are grounded in our verified guides; if the AI service is offline you get clearly labelled library matches instead. Never share passwords, OTPs or bank details.</p>
 </div></section>
@@ -119,7 +118,6 @@
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="js/config.js"></script>
-<script src="js/turnstile.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
@@ -174,18 +172,7 @@
     } catch(_) { return false; }
   }
 
-  function mountAiCaptcha(){
-    try {
-      if(!isUserAuthed()){
-        var cb = document.getElementById("aiCaptcha");
-        if(cb && window.RA_TURNSTILE && RA_TURNSTILE.configured()){
-          RA_TURNSTILE.mount(cb);
-        }
-      }
-    } catch(_) {}
-  }
-  mountAiCaptcha();
-  document.addEventListener("ra:backend-ready", mountAiCaptcha);
+
   document.addEventListener("ra:session-ready", function(){
     input.disabled = false;
     input.placeholder = "Describe your issue…";
@@ -223,14 +210,13 @@
     }
 
     add("you",q); input.value="";
-    var capBox = document.getElementById("aiCaptcha");
     setTimeout(function(){
       if(!window.RA_AI){
         showDemo(q);
         releaseMutationLock();
         return;
       }
-      window.RA_AI.ask(q, { captchaContainer: capBox }).then(function(r){
+      window.RA_AI.ask(q).then(function(r){
         if(r && r.limitReached){
           mode="auth"; setPill();
           add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (Preview Limit Reached):");

@@ -36,7 +36,7 @@ var fs = require("node:fs");
 var path = require("node:path");
 
 // Strict whitelist: names that are safe in frontend code (docs/ENVIRONMENT.md).
-var PUBLIC = ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "PAYSTACK_PUBLIC_KEY", "TURNSTILE_SITE_KEY"];
+var PUBLIC = ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "PAYSTACK_PUBLIC_KEY"];
 
 var root = path.resolve(__dirname, "..");
 var outPath = path.join(root, "env.local.js");
@@ -132,7 +132,7 @@ var text =
   "   Regen  : Vercel build (node tools/make-env.vercel.js)\n" +
   "            local: powershell -NoProfile -ExecutionPolicy Bypass -File tools\\make-env.ps1\n" +
   "   PUBLIC values only - safe to load in the browser. Secrets\n" +
-  "   (SUPABASE_SERVICE_ROLE_KEY, TURNSTILE_SECRET_KEY, PAYSTACK_SECRET_KEY, AI keys)\n" +
+  "   (SUPABASE_SERVICE_ROLE_KEY, PAYSTACK_SECRET_KEY, AI keys)\n" +
   "   are never copied here: the generator only writes a fixed whitelist.\n" +
   "   Loaded by js/supabase-client.js. */\n" +
   "window.__ENV__ = window.__ENV__ || {};\n" +

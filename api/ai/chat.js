@@ -900,27 +900,7 @@ function serializeGuestCookie(id, secret, isSecure) {
   return "ra_guest_token=" + val + "; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax" + secureFlag;
 }
 
-async function verifyTurnstile(token, clientIp, secret) {
-  if (!secret) return { ok: true };
-  if (!token) return { ok: false, error: "Missing Turnstile token" };
-  try {
-    const params = new URLSearchParams();
-    params.append("secret", secret);
-    params.append("response", token);
-    if (clientIp) params.append("remoteip", clientIp);
 
-    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString()
-    });
-    const outcome = await res.json();
-    return { ok: !!outcome.success, error: (outcome["error-codes"] || []).join(", ") };
-  } catch(e) {
-    console.error("[TURNSTILE_VERIFY_ERROR]", e);
-    return { ok: false, error: e.message };
-  }
-}
 
 async function callSupabaseRpc(functionName, params) {
   try {
@@ -1075,7 +1055,7 @@ module.exports = async function (req, res) {
   /* ---------------------------------------------------------
      CALLER VERIFICATION: Authenticated User vs. Verified Guest
      - Signed-in account: Unlimited tier (verified via Supabase JWT)
-     - Guest caller: Enforce Turnstile + signed HttpOnly cookie +
+     - Guest caller: Enforce signed HttpOnly cookie +
        atomic 3-attempt quota per 24h via increment_guest_quota
      --------------------------------------------------------- */
 
@@ -1089,26 +1069,7 @@ module.exports = async function (req, res) {
     const clientIp = getClientIp(req);
     const ipSubnet = getIpSubnet(clientIp);
 
-    // 1. Enforce Cloudflare Turnstile Verification (Proof of Human Execution)
-    const turnstileToken = body.turnstileToken || (req.headers && req.headers["x-turnstile-token"]);
-    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-    if (turnstileSecret) {
-      if (!turnstileToken) {
-        return res.status(403).json({
-          ok: false,
-          code: "captcha_required",
-          error: "Security verification required. Please complete the CAPTCHA."
-        });
-      }
-      const verifyRes = await verifyTurnstile(turnstileToken, clientIp, turnstileSecret);
-      if (!verifyRes.ok) {
-        return res.status(403).json({
-          ok: false,
-          code: "captcha_invalid",
-          error: "Security verification failed. Please try again."
-        });
-      }
-    }
+
 
     // In production, require authoritative server secrets to prevent forged HMAC signatures.
     // In local dev/preview environments, use an ephemeral in-memory random salt generated per worker cold start.

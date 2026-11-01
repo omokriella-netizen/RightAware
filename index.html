@@ -419,7 +419,6 @@
 <script src="content/rights.js"></script>
 <script src="content/laws.js"></script>
 <script src="js/config.js"></script>
-<script src="js/turnstile.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
@@ -745,7 +744,6 @@
   </div>
 
   <div class="ra-ai-footer">
-    <div class="ra-captcha" data-captcha id="drawerCaptcha" style="margin-bottom:0.5rem"></div>
     <form class="ra-ai-form" id="raAiForm">
       <input class="ra-ai-input" id="raAiInput" type="text" placeholder="Ask a quick legal question…" autocomplete="off" aria-label="Ask RightAware AI"/>
       <button class="ra-ai-send-btn" id="raAiSendBtn" type="submit" aria-label="Send question">
@@ -906,12 +904,7 @@
 
     updateDockState();
     syncVisualViewport();
-    try {
-      if(!isAuthed && window.RA_TURNSTILE && RA_TURNSTILE.configured()){
-        var cb = document.getElementById("drawerCaptcha");
-        if(cb) RA_TURNSTILE.mount(cb);
-      }
-    } catch(_) {}
+
     setTimeout(function(){
       if(input && !input.disabled) input.focus();
     }, 150);
@@ -1095,8 +1088,7 @@
     showTyping();
 
     try {
-      var capBox = document.getElementById("drawerCaptcha");
-      var res = await window.RA_AI.ask(q, { captchaContainer: capBox });
+      var res = await window.RA_AI.ask(q);
 
       removeTyping();
 

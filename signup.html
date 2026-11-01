@@ -112,7 +112,6 @@
         <label>Confirm password<input id="uPass2" type="password" required placeholder="Repeat password" autocomplete="new-password"/></label>
       </div>
       <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="uConsent" required/> I agree that RightAware stores my account details to provide the service. <a class="link" href="about.html#privacy">How my data is handled</a></label>
-      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" style="width:100%" type="submit">Create citizen account</button>
       <p class="form-note" id="uOut" aria-live="polite"></p>
     </form>
@@ -169,7 +168,6 @@
       </fieldset>
 
       <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="pConsent" required/> I confirm these details are accurate, that I have the right to list them, and I consent to RightAware storing this application for review. I understand my profile stays private until an administrator approves it.</label>
-      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" style="width:100%" type="submit">Submit professional application</button>
       <p class="form-note" id="pOut" aria-live="polite"></p>
     </form>
@@ -219,7 +217,6 @@
       </fieldset>
 
       <label class="chips" style="justify-content:flex-start"><input type="checkbox" id="oConsent" required/> I confirm I am authorised to apply for this organisation and consent to RightAware storing this application for review. The listing stays private until an administrator approves it.</label>
-      <div class="ra-captcha" data-captcha></div>
       <button class="btn btn-primary" style="width:100%" type="submit">Submit organisation application</button>
       <p class="form-note" id="oOut" aria-live="polite"></p>
     </form>
@@ -246,7 +243,6 @@
       <h2 id="confirmTitle">Confirm your email</h2>
       <p id="confirmLine"></p>
       <div id="confirmDetail" class="notice"></div>
-      <div class="ra-captcha" data-captcha></div>
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
         <button class="btn btn-secondary" id="resendBtn" type="button">Resend confirmation email</button>
         <a class="btn btn-primary" href="login.html">Open Log In</a>
@@ -310,7 +306,6 @@
 </footer>
 
 <script src="js/config.js"></script>
-<script src="js/turnstile.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
 <script src="app.js"></script>
@@ -329,13 +324,7 @@
     if(partnerBanner) partnerBanner.hidden = (which !== "user");
     stepTitle.textContent = title;
     stepTitle.scrollIntoView({ behavior:"smooth", block:"start" });
-    // Start the CAPTCHA widget early (only when configured) so it is ready on submit.
-    try{
-      if(window.RA_TURNSTILE && RA_TURNSTILE.configured() && window.RA_SUPA && RA_SUPA.ready){
-        var box = panes[which] && panes[which].querySelector("[data-captcha]");
-        if(box) RA_TURNSTILE.mount(box);
-      }
-    }catch(_){}
+
   }
   function back(btn, form){
     if(btn) btn.addEventListener("click", function(){ show("choose", "Apply to be listed in directory"); });
@@ -469,21 +458,7 @@
   }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
 
-  /* ---- CAPTCHA (Cloudflare Turnstile; public site key via TURNSTILE_SITE_KEY).
-     Runs only when the Supabase backend is up; with no site key configured the
-     widget area stays empty and submission continues (CAPTCHA not yet enabled). */
   var lastSignupEmail = "";
-  function capBox(scope){ return (scope || document).querySelector("[data-captcha]"); }
-  function withCaptcha(scope){
-    if(!(window.RA_SUPA && RA_SUPA.ready) || !window.RA_TURNSTILE) return Promise.resolve({ token:null });
-    return RA_TURNSTILE.gate(capBox(scope)).then(function(g){
-      if(g.unconfigured) return { token:null };
-      if(g.blocked) return { error: g.error
-        ? "CAPTCHA could not load: check your connection (or disable blocking) and try again."
-        : "Please complete the CAPTCHA check to continue." };
-      return { token:g.token };
-    });
-  }
 
   /* ---- "Check your inbox" / "Already registered" result pane ---- */
   function showConfirm(email, exists){
@@ -501,15 +476,10 @@
   document.getElementById("resendBtn").addEventListener("click", function(){
     var out = document.getElementById("resendOut");
     if(!lastSignupEmail){ out.textContent = "No signup email to resend to: sign up again."; return; }
-    var box = capBox(panes.confirm);
-    var gate = (window.RA_TURNSTILE && RA_TURNSTILE.configured() && box)
-      ? RA_TURNSTILE.gate(box) : Promise.resolve({ token:null, unconfigured:true });
-    gate.then(function(g){
-      if(g.blocked){ out.textContent = g.error ? g.error : "Please complete the CAPTCHA check first."; return; }
-      out.textContent = "Sending…";
-      return RA_AUTH.resendConfirmation(lastSignupEmail, { captchaToken: g.token || undefined })
-        .then(function(msg){ out.textContent = msg; });
-    }).catch(function(){ out.textContent = "Could not resend; try again shortly."; });
+    out.textContent = "Sending…";
+    RA_AUTH.resendConfirmation(lastSignupEmail)
+      .then(function(msg){ out.textContent = msg; })
+      .catch(function(){ out.textContent = "Could not resend; try again shortly."; });
   });
 
   var submitBusy = false;   // one application attempt at a time: a double click
@@ -570,7 +540,7 @@
       acctRes = { ok:true, note:"Signed in as " + opts.account.email + " (this application is attached to that account)." };
     } else {
       acctRes = await RA_AUTH.signupLive(opts.account.name, opts.account.email, opts.account.pass,
-                                         { data: opts.meta || {}, captchaToken: opts.captchaToken });
+                                         { data: opts.meta || {} });
     }
     var acctNote;
     if(acctRes.ok && acctRes.needsConfirm){
@@ -657,31 +627,28 @@
     var trap = spamTrap(); if(trap) return bad(trap);
     var out = document.getElementById("uOut"); out.textContent = "Creating your account…";
 
-    withCaptcha(panes.user).then(function(cap){
-      if(cap.error){ out.textContent = cap.error; return; }
-      if(window.RA_SUPA && RA_SUPA.ready){
-        RA_AUTH.signupLive(n, em, p, { captchaToken: cap.token || undefined }).then(function(r){
-          if(!r.ok){
-            if(r.alreadyRegistered){ showConfirm(em, true); return; }
-            out.textContent = r.error + " (if you already have an account, log in instead).";
-            return;
-          }
-          if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
-          RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
-          finish({ title:"Account created", ref:null,
-            detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
-        });
-      } else {
-        RA_AUTH.signup(n, em);
+    if(window.RA_SUPA && RA_SUPA.ready){
+      RA_AUTH.signupLive(n, em, p).then(function(r){
+        if(!r.ok){
+          if(r.alreadyRegistered){ showConfirm(em, true); return; }
+          out.textContent = r.error + " (if you already have an account, log in instead).";
+          return;
+        }
+        if(r.needsConfirm){ showConfirm(r.email || em, false); return; }
         RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
-        finish({ title:"Demo account created on this device", ref:null,
-          detail:"The backend is <strong>not connected</strong>: this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
-      }
-    });
+        finish({ title:"Account created", ref:null,
+          detail:(r.note || "Signed in.") + " You can save guides, keep private reports and manage your details from your account." });
+      });
+    } else {
+      RA_AUTH.signup(n, em);
+      RA_DB.saveProfile({ name:n, email:em, phone:"", state:"", language:"English" });
+      finish({ title:"Demo account created on this device", ref:null,
+        detail:"The backend is <strong>not connected</strong>: this demo account exists only in this browser (no password was stored). Real accounts need the site to be connected to its backend." });
+    }
   });
 
   /* ---------- pathway: legal professional ---------- */
-  document.getElementById("formPro").addEventListener("submit", function(e){
+  document.getElementById("formPro").addEventListener("submit", async function(e){
     e.preventDefault(); current = "pro";
     var n=val("pName"), em=val("pEmail"), ph=val("pPhone"), pw=val("pPass"), q=val("pQual");
     if(n.length < 2) return bad("Please enter your full name.", "pName");
@@ -696,9 +663,7 @@
     var photo = fileNote("pPhoto"); if(photo && photo.error) return bad(photo.error, "pPhoto");
     var trap = spamTrap(); if(trap) return bad(trap);
 
-    withCaptcha(panes.pro).then(async function(cap){
-      if(cap.error) return bad(cap.error);
-      var docLines = [];
+    var docLines = [];
       if(idFile) docLines.push("Credential file recorded: " + idFile.name + " (not uploaded; original requested during verification).");
       if(photo) docLines.push("Photo recorded: " + photo.name + " (not uploaded yet).");
       var queueMsg =
@@ -741,9 +706,7 @@
         extraTable:"professional_specializations",
         extraRows: row.user_id ? specs.map(function(s){ return { professional_id:pid, specialization:s }; }) : [],
         account:{ name:n, email:em, pass:pw },
-        queue:{ topic:"Application: Legal professional", message:queueMsg },
-        captchaToken: cap.token || undefined
-      });
+        queue:{ topic:"Application: Legal professional", message:queueMsg }
     });
   });
 
@@ -764,9 +727,7 @@
     var logo = fileNote("oLogo"); if(logo && logo.error) return bad(logo.error, "oLogo");
     var trap = spamTrap(); if(trap) return bad(trap);
 
-    withCaptcha(panes.org).then(function(cap){
-      if(cap.error) return bad(cap.error);
-      var docLines = [];
+    var docLines = [];
       if(doc) docLines.push("Registration file recorded: " + doc.name + " (not uploaded; original requested during verification).");
       if(logo) docLines.push("Logo recorded: " + logo.name + " (not uploaded yet).");
       var queueMsg =
@@ -800,9 +761,7 @@
         path:"organisation", table:"organizations", row:row,
         meta: metaOrg,
         account:{ name:person, email:em, pass:pw },
-        queue:{ topic:"Application: Organisation", message:queueMsg },
-        captchaToken: cap.token || undefined
-      });
+        queue:{ topic:"Application: Organisation", message:queueMsg }
     });
   });
 })();
