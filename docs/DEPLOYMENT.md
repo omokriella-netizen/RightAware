@@ -40,11 +40,9 @@ click test first (SW-controlled navigation + redirect = `ERR_FAILED`).
 3. Public keys reach the browser through `env.local.js`, regenerated on every
    build by `node tools/make-env.vercel.js` from the Vercel environment via a
    fixed public whitelist (`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
-   `PAYSTACK_PUBLIC_KEY`, `TURNSTILE_SITE_KEY`) — secrets
-   (`SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_SECRET_KEY`, `AI_API_KEY`,
-   `TURNSTILE_SECRET_KEY`) are never copied, even when set. `TURNSTILE_SITE_KEY`
-   is only the public Cloudflare site key; the Turnstile SECRET key belongs in
-   the Supabase Auth CAPTCHA setting, never in a page (see ENVIRONMENT.md).
+   `PAYSTACK_PUBLIC_KEY`) — secrets (`SUPABASE_SERVICE_ROLE_KEY`,
+   `PAYSTACK_SECRET_KEY`, `AI_API_KEY`) are never copied, even when set.
+   (Turnstile CAPTCHA has been removed from all auth flows; see ENVIRONMENT.md).
 4. Verify: `/api/health` → 200; `/api/paystack/*` + `/api/ai/chat` → 501 until
    secrets are set (expected, safe); test a Paystack **test-mode** transaction
    end-to-end before going live.

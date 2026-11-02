@@ -23,12 +23,43 @@ const crypto = require("crypto");
 const DISCLAIMER =
   "General legal information only — not legal advice. Verify important points with a qualified professional.";
 
-const MODEL =
-  process.env.AI_MODEL || "gpt-4o-mini";
+/* =========================================================
+   PROVIDER & MODEL RESOLUTION
+   - Supports Google Gemini (OpenAI-compatible & direct)
+   - Supports OpenAI (default)
+   - Auto-normalizes trailing /openai or /v1 endpoints
+   ========================================================= */
 
-const API_URL =
-  process.env.AI_BASE_URL ||
-  "https://api.openai.com/v1/chat/completions";
+function resolveAiConfig(apiKey) {
+  const envModel = (process.env.AI_MODEL || "").trim();
+  const envBaseUrl = (process.env.AI_BASE_URL || "").trim();
+
+  // Detect Gemini provider from API key format (AIza...) or model name
+  const isGeminiKey = typeof apiKey === "string" && apiKey.startsWith("AIza");
+  const isGeminiModel = envModel.toLowerCase().startsWith("gemini");
+  const isGemini = isGeminiKey || isGeminiModel;
+
+  // Resolve active model
+  const model = envModel || (isGemini ? "gemini-1.5-flash" : "gpt-4o-mini");
+
+  // Resolve API URL
+  let apiUrl = envBaseUrl;
+  if (!apiUrl) {
+    if (isGemini) {
+      apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+    } else {
+      apiUrl = "https://api.openai.com/v1/chat/completions";
+    }
+  } else {
+    // Gracefully handle standard SDK baseURL formats (e.g. ".../v1beta/openai" or ".../v1")
+    const stripped = apiUrl.replace(/\/+$/, "");
+    if (stripped.endsWith("/openai") || stripped.endsWith("/v1")) {
+      apiUrl = stripped + "/chat/completions";
+    }
+  }
+
+  return { model, apiUrl, isGemini };
+}
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_PAGE_CONTEXT_LENGTH = 3000;
@@ -95,7 +126,7 @@ General legal information only — not legal advice. Verify important points wit
    ========================================================= */
 
 function extractResponseText(data) {
-  /* Standard OpenAI chat completions: choices[0].message.content */
+  /* Standard OpenAI & Gemini OpenAI-compatible chat completions: choices[0].message.content */
   if (data && Array.isArray(data.choices) && data.choices[0] && data.choices[0].message) {
     const content = data.choices[0].message.content;
     if (typeof content === "string" && content.trim()) {
@@ -104,6 +135,15 @@ function extractResponseText(data) {
     if (Array.isArray(content)) {
       const parts = content.map(p => (p && typeof p.text === "string") ? p.text : "").filter(Boolean);
       if (parts.length) return parts.join("\n").trim();
+    }
+  }
+
+  /* Gemini native response structure: candidates[0].content.parts[0].text */
+  if (data && Array.isArray(data.candidates) && data.candidates[0] && data.candidates[0].content) {
+    const parts = data.candidates[0].content.parts;
+    if (Array.isArray(parts)) {
+      const text = parts.map(p => (p && typeof p.text === "string") ? p.text : "").filter(Boolean).join("\n").trim();
+      if (text) return text;
     }
   }
 
@@ -1240,14 +1280,16 @@ module.exports = async function (req, res) {
 
 
   /* ---------------------------------------------------------
-     OPENAI REQUEST
+     AI PROVIDER REQUEST (Gemini / OpenAI)
      --------------------------------------------------------- */
+
+  const { model, apiUrl } = resolveAiConfig(apiKey);
 
   try {
 
     const response =
       await fetch(
-        API_URL,
+        apiUrl,
         {
           method: "POST",
 
@@ -1256,20 +1298,23 @@ module.exports = async function (req, res) {
               "application/json",
 
             "Authorization":
-              "Bearer " + apiKey
+              "Bearer " + apiKey,
+
+            "User-Agent":
+              "RightAware-AI/1.0"
           },
 
           body:
             JSON.stringify(
-              API_URL.includes("/responses")
+              apiUrl.includes("/responses")
                 ? {
-                    model: MODEL,
+                    model: model,
                     instructions: SYSTEM,
                     input: input,
                     max_output_tokens: MAX_OUTPUT_TOKENS
                   }
                 : {
-                    model: MODEL,
+                    model: model,
                     messages: [
                       { role: "system", content: SYSTEM },
                       { role: "user", content: input }
@@ -1334,7 +1379,7 @@ module.exports = async function (req, res) {
 
 
       console.error(
-        "RIGHTAWARE_OPENAI_ERROR",
+        "RIGHTAWARE_AI_PROVIDER_ERROR",
         response.status,
         providerMessage
       );
@@ -1372,7 +1417,7 @@ module.exports = async function (req, res) {
     if (!answer) {
 
       console.error(
-        "RIGHTAWARE_OPENAI_UNREADABLE_RESPONSE",
+        "RIGHTAWARE_AI_UNREADABLE_RESPONSE",
         JSON.stringify(
           providerData
         ).slice(

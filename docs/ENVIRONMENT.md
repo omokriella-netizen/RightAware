@@ -24,33 +24,32 @@ git-ignored and must never be committed.
 | SUPABASE_SERVICE_ROLE_KEY | server only | admin writes, payments update, AI retrieval |
 | PAYSTACK_PUBLIC_KEY | browser | inline payment popup (future) |
 | PAYSTACK_SECRET_KEY | server only | initialize + verify transactions |
-| TURNSTILE_SITE_KEY | browser | Cloudflare Turnstile **public** site key (CAPTCHA widget) |
-| TURNSTILE_SECRET_KEY | Supabase dashboard only | Cloudflare Turnstile **secret** — verified inside Supabase Auth; never in this repo or the browser |
 | AI_API_KEY / AI_MODEL / AI_BASE_URL | server only | provider calls in `/api/ai/chat` |
 | APP_ENV / SUPPORT_EMAIL | anywhere | labels, support display |
 
-## CAPTCHA (Cloudflare Turnstile) — where each key goes
-The CAPTCHA guards **Sign Up, Login and Password Reset**. It is compatible with
-Supabase Auth: the browser solves the widget and passes the token as
-`captcha_token` (`js/turnstile.js` → `js/auth.js`); **Supabase verifies the token
-server-side with the secret**. The secret therefore lives ONLY in Supabase:
+## AI Provider Configuration (Google Gemini & OpenAI)
+`/api/ai/chat` supports both Google Gemini and OpenAI natively:
 
-1. Cloudflare dashboard → Turnstile → Add site → copy the **site key** (public)
-   and the **secret key**.
-2. Put the **site key** in `.env.local` as `TURNSTILE_SITE_KEY=…`, then re-run
-   `tools\make-env.ps1` (it is on the public whitelist). On Vercel, add it to
-   the `window.__ENV__` snippet (DEPLOYMENT.md step 3).
-3. Supabase Dashboard → **Authentication → Settings → CAPTCHA** → provider
-   **Cloudflare Turnstile** → paste the **secret key** → enable. That single
-   setting makes Supabase enforce the token on signup / sign-in / recovery.
-4. Keep `TURNSTILE_SECRET_KEY` out of git and out of every page. If it ever
-   leaks, rotate it in the Cloudflare dashboard.
+### Google Gemini (Recommended)
+1. In Google AI Studio, generate an API key.
+2. In Vercel Project Settings → Environment Variables:
+   - `AI_API_KEY`: `AIzaSy...` (your Gemini key)
+   - `AI_MODEL`: `gemini-1.5-flash` or `gemini-2.5-flash`
+   - `AI_BASE_URL` (optional): `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`
+     (if omitted or set to the SDK baseURL `.../openai/`, it is auto-resolved)
 
-Behaviour when not configured: with no site key the forms submit without a
-widget (matching a Supabase project with CAPTCHA disabled) — nothing crashes
-and the demo mode is unaffected. `.env.local` currently carries Cloudflare's
-documented **always-pass TEST site key** (`1x00000000000000000000AA`) for local
-development only; replace it with your real site key for production.
+### OpenAI (Legacy / Alternative)
+1. In OpenAI platform, generate an API key (`sk-...`).
+2. In Vercel Project Settings → Environment Variables:
+   - `AI_API_KEY`: `sk-...`
+   - `AI_MODEL`: `gpt-4o-mini`
+   - `AI_BASE_URL` (optional): `https://api.openai.com/v1/chat/completions`
+
+## CAPTCHA Status (Removed)
+Cloudflare Turnstile CAPTCHA has been retired from RightAware. Sign-up, login, and
+password reset submit directly to Supabase Auth without CAPTCHA challenge. If CAPTCHA
+was previously enabled in Supabase, ensure it is disabled under:
+**Supabase Dashboard → Authentication → Attack Protection (or Security / CAPTCHA)**.
 
 ## Local connection from `.env.local`
 The browser never reads `.env.local` (it contains secret **names**; only the
@@ -75,8 +74,6 @@ win). Re-run the script after editing `.env.local`.
   `RA_SUPA.configure("https://YOUR-REF.supabase.co", "YOUR-PUBLISHABLE-KEY")` —
   stored in that browser only, never in the repo. Clear with `RA_SUPA.clearLocal()`.
 - [ ] Vercel → Project → Settings → Environment Variables set per environment
-- [ ] CAPTCHA: `TURNSTILE_SITE_KEY` set in `.env.local` → re-run `make-env.ps1`
-  (or add it to the Vercel `window.__ENV__` snippet); the Turnstile **secret**
-  pasted into Supabase Authentication → Settings → CAPTCHA and enabled
+- [x] CAPTCHA removed: Supabase Authentication → Attack Protection CAPTCHA disabled
 - [ ] `/api/health` returns `backend: supabase-configured` after Supabase set
 - [ ] No secret string appears in any committed file (`grep -ri "sk_live\|service_role\|pat_\|TURNSTILE_SECRET" — expect zero hits)
