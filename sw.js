@@ -69,7 +69,7 @@
    supplied logo in headers/footers, Right of the Day (client-injected).
    v4: cleanUrls (Vercel 308s) must stay OFF - a 308 makes addAll/fetch store a
    redirected response, and answering a navigation with it fails with net::ERR_FAILED. */
-const CACHE = "rightaware-v13";
+const CACHE = "rightaware-v14";
 const CORE = [
   "./", "./index.html", "./rights.html", "./laws.html", "./videos.html",
   "./organizations.html", "./resources.html", "./help.html", "./about.html",
@@ -137,12 +137,12 @@ self.addEventListener("fetch", (e) => {
     const slowNetwork = new Promise((r) => setTimeout(() => r(undefined), 2500));
     const winner = Promise.race([fetch(req).then(store).catch(() => undefined), slowNetwork]);
     e.respondWith(
-      winner.then((res) => res || caches.match(req).then((hit) => hit || caches.match("./offline.html")))
+      winner.then((res) => res || caches.match(req, { ignoreSearch: true }).then((hit) => hit || caches.match("./offline.html")))
     );
     return;
   }
   e.respondWith(
-    caches.match(req).then((hit) => {
+    caches.match(req, { ignoreSearch: true }).then((hit) => {
       if (hit) { fromNetwork(null); return hit; }   // background refresh, no reload needed
       return fromNetwork(caches.match("./offline.html"));
     })

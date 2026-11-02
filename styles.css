@@ -281,10 +281,25 @@ p{margin:0 0 1rem}
   line-height:36px;
   box-sizing:border-box;
 }
-.hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;background:none;border:1px solid var(--border);border-radius:8px;width:38px;height:38px;padding:0;cursor:pointer}
-.hamburger span{width:18px;height:2px;background:var(--navy);display:block}
-.mobile-nav{display:none;flex-direction:column;padding:.5rem 4% 1rem;background:#fff;border-top:1px solid var(--border)}
-.mobile-nav a{padding:.7rem 0;text-decoration:none;color:var(--navy);font-weight:600;border-bottom:1px solid #f1f5f9}
+body.nav-open{overflow:hidden}
+.hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;background:none;border:1px solid var(--border);border-radius:8px;width:38px;height:38px;padding:0;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.hamburger span{width:18px;height:2px;background:var(--navy);display:block;transition:transform .2s ease,opacity .2s ease}
+.hamburger.is-active span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.is-active span:nth-child(2){opacity:0}
+.hamburger.is-active span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mobile-nav{
+  display:none;
+  flex-direction:column;
+  padding:.75rem 4% 2rem;
+  background:#fff;
+  border-top:1px solid var(--border);
+  max-height:calc(100vh - 60px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  box-shadow:0 16px 36px rgba(18,38,32,.12);
+}
+.mobile-nav a{padding:.75rem 0;text-decoration:none;color:var(--navy);font-weight:600;border-bottom:1px solid #f1f5f9;font-size:1rem;transition:padding-left .15s ease,color .15s ease,background .15s ease}
+.mobile-nav a:hover{color:var(--ra-brand-leaf-hover);background:var(--ra-brand-tint);padding-left:.5rem;border-radius:6px}
 .mobile-nav.open{display:flex}
 
 /* Hero */
@@ -1629,3 +1644,273 @@ img{max-width:100%;height:auto}
 }
 
 
+
+/* ==========================================================================
+   Modern RightAware Card Component System (.ra-card & .ra-card--org)
+   Strictly scoped to eliminate regression on legacy .card consumers.
+   Designed for crisis accessibility, touch targets (min 44px), and clear
+   institutional hierarchy.
+   ========================================================================== */
+
+.ra-card {
+  background: var(--ra-surface-card, #ffffff);
+  border: 1px solid var(--ra-border, #dde5d6);
+  border-radius: 16px;
+  padding: 1.35rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(18, 38, 32, 0.04), 0 1px 2px rgba(18, 38, 32, 0.02);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.18s ease;
+  position: relative;
+}
+
+.ra-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ra-brand-leaf, #779d32);
+  box-shadow: 0 12px 28px -4px rgba(18, 38, 32, 0.1), 0 4px 8px -2px rgba(18, 38, 32, 0.04);
+}
+
+/* Top metadata row: badge & jurisdiction */
+.ra-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.ra-card-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.ra-card-pill--statutory {
+  background: rgba(119, 157, 50, 0.12);
+  color: var(--ra-brand-leaf-hover, #5f8025);
+  border: 1px solid rgba(119, 157, 50, 0.28);
+}
+
+.ra-card-pill--aid {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.ra-card-pill--ngo {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.ra-card-pill--intl {
+  background: #fdf4ff;
+  color: #86198f;
+  border: 1px solid #f5d0fe;
+}
+
+.ra-card-jurisdiction {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ra-text-muted, #475851);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--ra-brand-tint, #f4f8ee);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(18, 38, 32, 0.06);
+}
+
+/* Entity title & acronym */
+.ra-card-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--ra-text-ink, #122620);
+  line-height: 1.3;
+  margin: 0 0 0.45rem;
+  letter-spacing: -0.02em;
+}
+
+.ra-card-acronym {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ra-brand-leaf-hover, #5f8025);
+  background: rgba(119, 157, 50, 0.1);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+
+/* Chips row: rights focus areas */
+.ra-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.4rem 0 0.75rem;
+}
+
+.ra-chip {
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--ra-text-ink, #122620);
+  background: #f1f5f2;
+  border: 1px solid rgba(18, 38, 32, 0.08);
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  line-height: 1.35;
+}
+
+/* Mandate description with scannable clamping */
+.ra-card-desc {
+  color: var(--ra-text-muted, #475851);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Location & metadata */
+.ra-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--ra-text-muted, #475851);
+  margin-bottom: 1.1rem;
+}
+
+.ra-card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ra-card-meta-row svg {
+  flex-shrink: 0;
+  color: var(--ra-brand-leaf, #779d32);
+}
+
+/* Action hub footer pinned to baseline */
+.ra-card-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(18, 38, 32, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+/* Primary touch button (min 44-48px touch target) */
+.ra-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0.65rem 1.15rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.93rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  box-sizing: border-box;
+}
+
+.ra-card-btn svg {
+  flex-shrink: 0;
+}
+
+.ra-card-btn--call {
+  background: var(--ra-brand-leaf, #779d32);
+  color: #ffffff;
+  border-color: var(--ra-brand-leaf, #779d32);
+}
+
+.ra-card-btn--call:hover {
+  background: var(--ra-brand-leaf-hover, #5f8025);
+  border-color: var(--ra-brand-leaf-hover, #5f8025);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.ra-card-btn--portal {
+  background: var(--ra-brand-dark, #122620);
+  color: #ffffff;
+  border-color: var(--ra-brand-dark, #122620);
+}
+
+.ra-card-btn--portal:hover {
+  background: #1b382f;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.ra-card-btn--outline {
+  background: #ffffff;
+  color: var(--ra-brand-dark, #122620);
+  border-color: var(--ra-border, #dde5d6);
+}
+
+.ra-card-btn--outline:hover {
+  background: var(--ra-brand-tint, #f4f8ee);
+  border-color: var(--ra-brand-dark, #122620);
+  transform: translateY(-1px);
+}
+
+/* Secondary links row */
+.ra-card-sec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.84rem;
+}
+
+.ra-card-sec-link {
+  font-weight: 700;
+  color: var(--ra-brand-leaf-hover, #5f8025);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.ra-card-sec-link:hover {
+  color: var(--ra-brand-dark, #122620);
+  text-decoration: underline;
+}
+
+.ra-card-sec-link--muted {
+  font-weight: 600;
+  color: var(--ra-text-muted, #475851);
+}
+
+.ra-card-sec-link--muted:hover {
+  color: var(--ra-brand-leaf-hover, #5f8025);
+}

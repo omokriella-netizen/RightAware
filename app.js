@@ -7,9 +7,18 @@
     if(btn && nav){
       btn.addEventListener("click", function(){
         var open = nav.classList.toggle("open");
+        btn.classList.toggle("is-active", open);
         btn.setAttribute("aria-expanded", open ? "true" : "false");
+        document.body.classList.toggle("nav-open", open);
       });
-      nav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", function(){ nav.classList.remove("open"); }); });
+      nav.querySelectorAll("a").forEach(function(a){
+        a.addEventListener("click", function(){
+          nav.classList.remove("open");
+          btn.classList.remove("is-active");
+          btn.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("nav-open");
+        });
+      });
     }
     function esc(s){
       return String(s == null ? "" : s).replace(/[&<>"']/g, function(m){

@@ -65,6 +65,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights, human rights violation, complaint, abuse, detention, police abuse, police brutality, government abuse, rights commission, report abuse, unlawful detention",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://nhrc.gov.ng/regional-offices.html", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Toll-Free: 0800 647 2428", uri:"tel:+2348006472428", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-lacon", name:"Legal Aid Council of Nigeria", acronym:"LACON",
@@ -83,6 +84,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"legal aid, free legal help, free lawyer, lawyer, legal representation, poor, indigent, criminal case, access to justice, vulnerable persons",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.legalaidcouncil.gov.ng/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 903 043 6616", uri:"tel:+2349030436616", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-fida", name:"FIDA Nigeria", acronym:"FIDA",
@@ -101,6 +103,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"women rights, women, girls, children, GBV, domestic violence, family law, sexual violence, rape, free legal help, free legal representation, indigent women",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://fida.org.ng/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 708 849 6115", uri:"tel:+2347088496115", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-hurilaws", name:"HURILAWS", acronym:null,
@@ -119,6 +122,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights, legal assistance, human rights litigation, constitutional rights, socio-economic rights, law reform, governance, accountability, free legal help, human rights lawyer",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://hurilaws.org/contact-hurilaws/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Office: +234 1 342 6522", uri:"tel:+23413426522", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-cleen", name:"CLEEN Foundation", acronym:null,
@@ -137,6 +141,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"police, police abuse, police brutality, law enforcement, security, public safety, accountability, justice, research, legislative advocacy",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://cleen.org/contact/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: 0810 249 3148", uri:"tel:08102493148", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-serap", name:"SERAP", acronym:null,
@@ -155,6 +160,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"corruption, anti-corruption, transparency, accountability, socio-economic rights, strategic litigation, civic space, public funds, governance",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://serap-nigeria.org/contact/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 816 053 7202", uri:"tel:+2348160537202", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-media-rights-agenda", name:"Media Rights Agenda", acronym:"MRA",
@@ -173,6 +179,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"media freedom, press freedom, journalist, journalists, freedom of expression, expression, access to information, digital rights, censorship, reporter, broadcast",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://mediarightsagenda.org/contact-us/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 813 875 5660", uri:"tel:+2348138755660", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-actionaid-nigeria", name:"ActionAid Nigeria", acronym:null,
@@ -191,6 +198,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"poverty, inequality, women rights, women, governance, civic participation, humanitarian, accountability, development, social justice",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://nigeria.actionaid.org/contact", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 812 888 8825", uri:"tel:+2348128888825", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-paradigm-initiative", name:"Paradigm Initiative", acronym:"PIN",
@@ -209,6 +217,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"digital rights, privacy, internet freedom, online freedoms, online abuse, cyber rights, digital inclusion, social media, policy litigation",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://paradigmhq.org/contact/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Office: +234 1 342 6245", uri:"tel:+23413426245", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-baobab", name:"BAOBAB for Women's Human Rights", acronym:null,
@@ -227,6 +236,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"women rights, women, girls, legal literacy, advocacy, research, capacity building, policy reform, gender equality",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.baobabforwomen.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 810 170 0009", uri:"tel:+2348101700009", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-wrapa", name:"WRAPA", acronym:null,
@@ -245,6 +255,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"women rights, women, gender equality, violence, discrimination, legal support, legal reform, social justice, protection from violence",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.wrapanigeria.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 818 869 9961", uri:"tel:+2348188699961", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-lawyers-alert", name:"Lawyers Alert", acronym:null,
@@ -263,6 +274,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"legal aid, free legal help, lawyer, legal assistance, human rights, socio-economic rights, citizen empowerment, advocacy, makurdi",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.lawyersalertng.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 809 993 7358", uri:"tel:+2348099937358", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-wacol", name:"WACOL", acronym:null,
@@ -281,6 +293,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"women rights, girls, GBV, domestic violence, sexual violence, rape, free legal help, legal aid, counselling, psychosocial support, anti-trafficking, enugu",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://wacolnigeria.org/wp-content/uploads/2022/12/wacol.pdf", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Hotline: 0703 577 9083", uri:"tel:07035779083", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-mirabel-centre", name:"Mirabel Centre", acronym:null,
@@ -299,6 +312,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"rape, sexual violence, survivor support, GBV, domestic violence, forensic medical care, psychosocial, counselling, help after rape, women, lagos",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://mirabelcentre.org/contact-us/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call 24/7 Helpline: 0815 577 0000", uri:"tel:08155770000", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-partners-west-africa", name:"Partners West Africa Nigeria", acronym:null,
@@ -317,6 +331,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"governance, security sector reform, justice, conflict prevention, civic engagement, accountability, peace, security",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.partnersnigeria.org/get-in-touch/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: +234 809 125 7245", uri:"tel:+2348091257245", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-asf-france-nigeria", name:"ASF France – Nigeria", acronym:"ASF",
@@ -335,6 +350,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"legal aid, torture, arbitrary detention, unlawful detention, human rights litigation, access to justice, free lawyer, human rights, lawyers",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.avocatssansfrontieres-france.org/en/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Legal Desk: +234 701 328 6982", uri:"tel:+2347013286982", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-ledap", name:"LEDAP", acronym:null,
@@ -353,6 +369,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"legal aid, free legal help, lawyer, legal representation, public interest litigation, poor, vulnerable, rights violations, access to justice, human rights lawyer",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://ledapnigeria.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"call", label:"Call Helpline: 0803 691 3264", uri:"tel:08036913264", isExternal:false },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-nba", name:"Nigerian Bar Association", acronym:"NBA",
@@ -371,6 +388,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"lawyer, lawyers, bar association, branch referral, human rights lawyer, rule of law, access to justice, legal profession, ethics, nba",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://nigerianbar.org.ng/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official NBA Portal ↗", uri:"https://nigerianbar.org.ng/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"The directory lists no public phone or e-mail for the NBA — use the official site's current branch and office directory." },
 
@@ -391,6 +409,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights, united nations, un, treaty bodies, special procedures, monitoring, reporting, universal periodic review, standards, complaint",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.ohchr.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"UN Human Rights Portal ↗", uri:"https://www.ohchr.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-amnesty", name:"Amnesty International", acronym:null,
@@ -409,6 +428,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights, urgent action, campaign, advocacy, research, abuse, detention, prisoners of conscience, civil political economic social cultural rights",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.amnesty.org/en/about-us/contact/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official Amnesty Portal ↗", uri:"https://www.amnesty.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No public e-mail in the directory — use the official contact form on the directory page." },
 
@@ -428,6 +448,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights, abuse, investigation, reporting, advocacy, research, countries, violations",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.hrw.org/contact-us", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official HRW Portal ↗", uri:"https://www.hrw.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No single public e-mail in the directory — use the office-specific e-mail directory on the directory page." },
 
@@ -447,6 +468,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"rule of law, judicial independence, fair hearing, access to justice, human rights law, legal profession, lawyer, constitutional",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.icj.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official ICJ Portal ↗", uri:"https://www.icj.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-fidh", name:"FIDH", acronym:null,
@@ -465,6 +487,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights, investigation, litigation, advocacy, defender protection, victim protection, accountability, international federation",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.fidh.org/en/about-us/contact-1776/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official FIDH Portal ↗", uri:"https://www.fidh.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-omct", name:"OMCT", acronym:null,
@@ -483,6 +506,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"torture, cruel treatment, detention, victim assistance, defender protection, urgent intervention, accountability, against torture",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.omct.org/en/contact-us", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official OMCT Portal ↗", uri:"https://www.omct.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-front-line-defenders", name:"Front Line Defenders", acronym:null,
@@ -501,6 +525,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights defenders, protection, at risk, emergency, security support, advocacy, reprisals",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.frontlinedefenders.org/en/contact-us", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official FLD Portal ↗", uri:"https://www.frontlinedefenders.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-ishr", name:"ISHR", acronym:null,
@@ -519,6 +544,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"human rights defenders, un system, regional systems, training, advocacy, information, protection",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://ishr.ch/contact/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official ISHR Portal ↗", uri:"https://ishr.ch/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No public e-mail in the directory — use the official contact page." },
 
@@ -538,6 +564,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"civic space, civil society, freedom of association, assembly, protest, defender support, research, advocacy, monitor",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.civicus.org/index.php/who-we-are/contact-us", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official CIVICUS Portal ↗", uri:"https://www.civicus.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-unhcr", name:"UNHCR", acronym:null,
@@ -556,6 +583,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"refugee, asylum, displaced person, statelessness, refugee protection, asylum seeker, forced to flee, refugee help, country offices",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.unhcr.org/contact-us", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"UN Refugee Portal ↗", uri:"https://www.unhcr.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No single public e-mail in the directory — use the country/contact form to reach the relevant country office." },
 
@@ -575,6 +603,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"humanitarian, armed conflict, missing persons, family links, detention, ihl, international humanitarian law, protection, conflict, war",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://icrc.org/en/contact", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official Red Cross Portal ↗", uri:"https://www.icrc.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No single public e-mail in the directory — use the country/contact directory for the relevant country office." },
 
@@ -594,6 +623,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"women rights, women, gender equality, violence against women, gbv, gender policy, participation, empowerment",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.unwomen.org/en/where-we-are", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official UN Women Portal ↗", uri:"https://www.unwomen.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No single public e-mail in the directory — use the country/subject directory on the directory page." },
 
@@ -613,6 +643,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"political rights, civil liberties, democracy, internet freedom, freedom, civic space, research, ratings, internet",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://freedomhouse.org/about-us/contact-us", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Freedom House Portal ↗", uri:"https://freedomhouse.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" } },
 
   { id:"org-minority-rights-group", name:"Minority Rights Group International", acronym:null,
@@ -631,6 +662,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"minority rights, minorities, indigenous, discrimination, anti-discrimination, ethnic, religious minority, coalition, advocacy",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://minorityrights.org/contact-us/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official MRG Portal ↗", uri:"https://minorityrights.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No public e-mail in the directory — use the official contact form." },
 
@@ -650,6 +682,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"women rights, women, feminist, gender justice, grants, movement building, girls, gender equality",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.globalfundforwomen.org/contact-us/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official GFW Portal ↗", uri:"https://www.globalfundforwomen.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No public e-mail in the directory — use the official contact page." },
 
@@ -669,6 +702,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"reproductive rights, abortion rights, maternal health, pregnancy, equality, strategic litigation, legal policy, health, women",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://reproductiverights.org/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official CRR Portal ↗", uri:"https://reproductiverights.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No public e-mail in the directory — use the official contact channels." },
 
@@ -688,6 +722,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"digital rights, privacy, internet freedom, digital security, online threats, cyber, social media, helpline, civil society",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.accessnow.org/help/", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official Access Now Portal ↗", uri:"https://www.accessnow.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"The helpline is primarily online and e-mail — use the help centre; no public phone number in the directory." },
 
@@ -707,6 +742,7 @@ window.RA_ORGANIZATIONS = [
     keywords:"equality, non-discrimination, discrimination, equality law, legal standards, capacity building, equal rights, advocacy",
     source:"RightAware Rights Protection Agencies Directory",
     source_url:"https://www.equalrightstrust.org/contact", last_verified_at:"2026-10-04",
+    primary_action:{ type:"portal", label:"Official ERT Portal ↗", uri:"https://www.equalrightstrust.org/", isExternal:true },
     verification:{ status:"unverified", source:"RightAware Rights Protection Agencies Directory", date:"2026-10-04" },
     contactNote:"No public phone number in the directory — use the official contact page." }
 ];
@@ -980,21 +1016,99 @@ window.RA_ORG_HUBS = [
     }
     return out.join("");
   }
+  /* RFC 3966 whitespace stripping + OWASP URI scheme protocol whitelisting */
+  function sanitizeUri(uri){
+    var s = String(uri == null ? "" : uri).trim();
+    if (/^tel:[+0-9\s.-]+$/i.test(s)) {
+      return "tel:" + s.slice(4).replace(/[\s.-]/g, "");
+    }
+    return /^(https?:\/\/[^\s"'<>]+|mailto:[^\s@]+@[^\s@]+|\/[^\s"'<>]*|[a-zA-Z0-9_-]+\.html(?:[?#][^\s"'<>]*)?)$/i.test(s) ? s : "#";
+  }
+
+  function orgBadgeType(o){
+    var c = String(o.country || "").trim().toLowerCase();
+    var t = String(o.type || "").toLowerCase();
+    if (c && c !== "nigeria") {
+      return { cls: "ra-card-pill--intl", text: "International HQ" };
+    }
+    if (t.includes("legal aid")) {
+      return { cls: "ra-card-pill--aid", text: "Free Legal Aid" };
+    }
+    if (t.includes("human-rights") || t.includes("statutory") || t.includes("protection")) {
+      return { cls: "ra-card-pill--statutory", text: "Statutory Oversight" };
+    }
+    return { cls: "ra-card-pill--ngo", text: "Civic Organization" };
+  }
+
+  function orgChipsHtml(o){
+    var areas = (Array.isArray(o.rights_areas) && o.rights_areas.length) 
+      ? o.rights_areas 
+      : ((Array.isArray(o.services) && o.services.length) ? o.services : []);
+    var topChips = areas.slice(0, 3);
+    if (!topChips.length) return "";
+    return '<div class="ra-card-chips">' + topChips.map(function(c){
+      return '<span class="ra-chip">' + escHtml(c) + '</span>';
+    }).join("") + '</div>';
+  }
+
+  function orgSecLinksHtml(o, act){
+    var profileUrl = "organizations.html?id=" + encodeURIComponent(o.id);
+    var profileLink = '<a class="ra-card-sec-link" href="' + escHtml(sanitizeUri(profileUrl)) + '"><span>Full Profile</span> <span aria-hidden="true">→</span></a>';
+    if (act.type === "call" && o.website) {
+      return profileLink + '<a class="ra-card-sec-link ra-card-sec-link--muted" href="' + escHtml(sanitizeUri(o.website)) + '" target="_blank" rel="noopener nofollow"><span>Website</span> <span aria-hidden="true">↗</span></a>';
+    }
+    if (o.directory_url && o.directory_url !== o.website) {
+      return profileLink + '<a class="ra-card-sec-link ra-card-sec-link--muted" href="' + escHtml(sanitizeUri(o.directory_url)) + '" target="_blank" rel="noopener nofollow"><span>Directory</span> <span aria-hidden="true">↗</span></a>';
+    }
+    return profileLink;
+  }
+
+  /* Dumb, pure view renderer. Reads static o.primary_action directly from data. Zero runtime regex. */
   function orgCardHtml(o){
     var pill = [o.country, o.state].filter(Boolean).join(" • ").toUpperCase();
-    var spec = o.specialization.length > 170 ? o.specialization.slice(0, 167) + "…" : o.specialization;
+    var spec = o.specialization || o.description || "";
     var place = [o.location, o.coverage].filter(Boolean).join(" — ");
-    return '<article class="card rv">'
-      + '<span class="pill">' + escHtml(pill) + '</span>'
-      + '<h3 style="margin-top:.5rem">' + escHtml(o.name) + (o.acronym ? ' <small>(' + escHtml(o.acronym) + ')</small>' : '') + '</h3>'
-      + '<p><span class="tag">' + escHtml(o.type) + '</span></p>'
-      + '<p><small>' + escHtml(spec) + '</small></p>'
-      + '<p><small><strong>Location:</strong> ' + escHtml(place) + '</small></p>'
-      + orgContactsHtml(o)
-      + '<div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap"><a class="btn btn-primary btn-sm" href="organizations.html?id='
-      + encodeURIComponent(o.id) + '">View full profile</a></div>'
+    var bType = orgBadgeType(o);
+    var act = o.primary_action || {
+      type: "portal",
+      label: "Official Agency Portal ↗",
+      uri: o.website || "#",
+      isExternal: true
+    };
+
+    var btnIcon = (act.type === "call")
+      ? '<svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>'
+      : '<svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>';
+
+    var btnClass = (act.type === "call") ? "ra-card-btn--call" : "ra-card-btn--portal";
+    var btnTarget = act.isExternal ? ' target="_blank" rel="noopener nofollow"' : '';
+    
+    var primaryBtnHtml = '<a class="ra-card-btn ' + btnClass + '" href="' + escHtml(sanitizeUri(act.uri)) + '"' + btnTarget + '>'
+      + btnIcon + '<span>' + escHtml(act.label) + '</span></a>';
+
+    var secLinks = orgSecLinksHtml(o, act);
+
+    return '<article class="card ra-card ra-card--org rv" id="org-card-' + escHtml(o.id) + '">'
+      + '<div class="ra-card-head">'
+        + '<span class="ra-card-pill ' + bType.cls + '">' + escHtml(bType.text) + '</span>'
+        + '<span class="ra-card-jurisdiction">' + escHtml(pill) + '</span>'
+      + '</div>'
+      + '<h3 class="ra-card-title">' + escHtml(o.name) + (o.acronym ? ' <span class="ra-card-acronym">' + escHtml(o.acronym) + '</span>' : '') + '</h3>'
+      + orgChipsHtml(o)
+      + '<p class="ra-card-desc">' + escHtml(spec) + '</p>'
+      + '<div class="ra-card-meta">'
+        + '<div class="ra-card-meta-row">'
+          + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>'
+          + '<span>' + escHtml(place) + '</span>'
+        + '</div>'
+      + '</div>'
+      + '<div class="ra-card-actions">'
+        + primaryBtnHtml
+        + '<div class="ra-card-sec-row">' + secLinks + '</div>'
+      + '</div>'
       + '</article>';
   }
+
   window.RA_ORG_ESC = escHtml;
   window.RA_ORG_CONTACTS_HTML = orgContactsHtml;
   window.RA_ORG_CARD_HTML = orgCardHtml;
