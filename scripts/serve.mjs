@@ -5,8 +5,23 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-let PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3005;
 const ROOT = path.resolve('.');
+['.env', '.env.local'].forEach(file => {
+  const p = path.join(ROOT, file);
+  if (fs.existsSync(p)) {
+    fs.readFileSync(p, 'utf8').split(/\r?\n/).forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;
+      const idx = trimmed.indexOf('=');
+      if (idx > 0) {
+        const k = trimmed.slice(0, idx).trim();
+        const v = trimmed.slice(idx + 1).trim().replace(/^['"](.*)['"]$/, '$1');
+        if (!process.env[k]) process.env[k] = v;
+      }
+    });
+  }
+});
+let PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3005;
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',

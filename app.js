@@ -131,79 +131,114 @@
       });
     }
 
-    // Progressive Desktop Navigation Hydration (Phase 3)
+    // Progressive Desktop & Mobile Navigation Hydration (Phase 3)
+    // Enforces order: Home, About, Explore Rights, Resources, Contact Us, Get Help + Hover Dropdown (More)
     function hydrateDesktopNav(){
       var nav = document.getElementById("mainNav") || document.querySelector("header .nav");
       if(!nav) return;
       var base = getBasePath();
       var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 
-      var rightsActive = page === "rights.html" || page === "laws.html" || page === "printables.html" || page === "videos.html" || page.indexOf("topic.html") !== -1 || page.indexOf("arrest-rights.html") !== -1;
-      var actionActive = page === "help.html" || page === "lawyers.html" || page === "organizations.html" || page === "resources.html";
+      var homeActive = page === "index.html" || page === "";
+      var aboutActive = page === "about.html";
+      var rightsActive = page === "rights.html" || page.indexOf("topic.html") !== -1;
+      var resourcesActive = page === "resources.html";
+      var contactActive = page === "contact.html";
+      var helpActive = page === "help.html";
+      var moreActive = page === "laws.html" || page === "organizations.html" || page === "organization.html" || page === "lawyers.html" || page === "ai.html" || page === "printables.html" || page === "videos.html" || page.indexOf("arrest-rights.html") !== -1;
 
       nav.innerHTML = ''
-        + '<div class="nav-dropdown' + (rightsActive ? ' active' : '') + '">'
+        + '<a href="' + base + 'index.html"' + (homeActive ? ' class="active"' : '') + '>Home</a>'
+        + '<a href="' + base + 'about.html"' + (aboutActive ? ' class="active"' : '') + '>About</a>'
+        + '<a href="' + base + 'rights.html"' + (rightsActive ? ' class="active"' : '') + '>Explore Rights</a>'
+        + '<a href="' + base + 'resources.html"' + (resourcesActive ? ' class="active"' : '') + '>Resources</a>'
+        + '<a href="' + base + 'contact.html"' + (contactActive ? ' class="active"' : '') + '>Contact Us</a>'
+        + '<a href="' + base + 'help.html"' + (helpActive ? ' class="active"' : '') + '>Get Help</a>'
+        + '<div class="nav-dropdown' + (moreActive ? ' active' : '') + '">'
         + '  <button type="button" class="nav-dropdown-btn" aria-expanded="false" aria-haspopup="true">'
-        + '    Rights &amp; Laws'
+        + '    More'
         + '    <svg class="ra-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 1 5 5 9 1"></polyline></svg>'
         + '  </button>'
         + '  <div class="nav-dropdown-menu" role="menu">'
-        + '    <a class="nav-dropdown-item' + (page === "rights.html" ? " active" : "") + '" href="' + base + "rights.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Rights Library</span>'
-        + '      <span class="nav-dropdown-item-desc">Constitutional protections &amp; civic freedoms</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "arrest-rights.html" ? " active" : "") + '" href="' + base + "rights/arrest-rights.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Police &amp; Bail Guide</span>'
-        + '      <span class="nav-dropdown-item-desc">Critical steps during stops, search &amp; arrest</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "laws.html" ? " active" : "") + '" href="' + base + "laws.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Laws of the Federation</span>'
+        + '    <a class="nav-dropdown-item' + (page === "laws.html" ? " active" : "") + '" href="' + base + 'laws.html" role="menuitem">'
+        + '      <span class="nav-dropdown-item-title">Laws Library</span>'
         + '      <span class="nav-dropdown-item-desc">Searchable Nigerian legal acts &amp; statutes</span>'
         + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "printables.html" ? " active" : "") + '" href="' + base + "printables.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Printable Checklists</span>'
-        + '      <span class="nav-dropdown-item-desc">Pocket emergency guides &amp; tenancy handbooks</span>'
+        + '    <a class="nav-dropdown-item' + (page === "organizations.html" || page === "organization.html" ? " active" : "") + '" href="' + base + 'organizations.html" role="menuitem">'
+        + '      <span class="nav-dropdown-item-title">Organizations Directory</span>'
+        + '      <span class="nav-dropdown-item-desc">Public complaint commissions &amp; rights desks</span>'
         + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "videos.html" ? " active" : "") + '" href="' + base + "videos.html" + '" role="menuitem">'
+        + '    <a class="nav-dropdown-item' + (page === "lawyers.html" ? " active" : "") + '" href="' + base + 'lawyers.html" role="menuitem">'
+        + '      <span class="nav-dropdown-item-title">Legal Professionals</span>'
+        + '      <span class="nav-dropdown-item-desc">Verified lawyers &amp; legal aid clinics</span>'
+        + '    </a>'
+        + '    <a class="nav-dropdown-item' + (page === "ai.html" ? " active" : "") + '" href="' + base + 'ai.html" role="menuitem">'
+        + '      <span class="nav-dropdown-item-title">RightAware AI</span>'
+        + '      <span class="nav-dropdown-item-desc">Interactive Nigerian civic &amp; legal assistant</span>'
+        + '    </a>'
+        + '    <div class="nav-dropdown-divider"></div>'
+        + '    <a class="nav-dropdown-item' + (page.indexOf("arrest-rights.html") !== -1 ? " active" : "") + '" href="' + base + 'rights/arrest-rights.html" role="menuitem">'
+        + '      <span class="nav-dropdown-item-title">Police &amp; Bail Guide</span>'
+        + '      <span class="nav-dropdown-item-desc">Critical safeguards during stops &amp; arrest</span>'
+        + '    </a>'
+        + '    <a class="nav-dropdown-item' + (page === "printables.html" ? " active" : "") + '" href="' + base + 'printables.html" role="menuitem">'
+        + '      <span class="nav-dropdown-item-title">Printable Checklists</span>'
+        + '      <span class="nav-dropdown-item-desc">Pocket emergency guides &amp; handbooks</span>'
+        + '    </a>'
+        + '    <a class="nav-dropdown-item' + (page === "videos.html" ? " active" : "") + '" href="' + base + 'videos.html" role="menuitem">'
         + '      <span class="nav-dropdown-item-title">Civic Video Guides</span>'
         + '      <span class="nav-dropdown-item-desc">Visual legal walkthroughs in English &amp; Pidgin</span>'
         + '    </a>'
         + '  </div>'
-        + '</div>'
-        + '<div class="nav-dropdown' + (actionActive ? ' active' : '') + '">'
-        + '  <button type="button" class="nav-dropdown-btn" aria-expanded="false" aria-haspopup="true">'
-        + '    Citizen Action'
-        + '    <svg class="ra-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 1 5 5 9 1"></polyline></svg>'
-        + '  </button>'
-        + '  <div class="nav-dropdown-menu" role="menu">'
-        + '    <a class="nav-dropdown-item' + (page === "help.html" ? " active" : "") + '" href="' + base + "help.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Emergency Help Console</span>'
-        + '      <span class="nav-dropdown-item-desc">Direct intervention, police CRU contacts &amp; hotlines</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item" href="' + base + "help.html#report" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Report a Violation</span>'
-        + '      <span class="nav-dropdown-item-desc">Document and escalate police or human rights abuse</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "lawyers.html" ? " active" : "") + '" href="' + base + "lawyers.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Verified Legal Directory</span>'
-        + '      <span class="nav-dropdown-item-desc">Connect with verified lawyers &amp; legal aid clinics</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "organizations.html" ? " active" : "") + '" href="' + base + "organizations.html" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Protection Agencies</span>'
-        + '      <span class="nav-dropdown-item-desc">Public complaint commissions &amp; human rights desks</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "resources.html" ? " active" : "") + '" href="' + base + "resources.html#faqs" + '" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Citizen FAQs</span>'
-        + '      <span class="nav-dropdown-item-desc">Common legal dilemmas answered in plain English</span>'
-        + '    </a>'
-        + '  </div>'
-        + '</div>'
-        + '<a href="' + base + 'ai.html"' + (page === "ai.html" ? ' class="active"' : '') + '>RightAware AI</a>'
-        + '<a href="' + base + 'about.html"' + (page === "about.html" ? ' class="active"' : '') + '>About Us</a>';
+        + '</div>';
 
       nav.querySelectorAll(".nav-dropdown").forEach(setupDropdown);
     }
+
+    function hydrateMobileNav(){
+      var mNav = document.getElementById("mobileNav");
+      if(!mNav) return;
+      var base = getBasePath();
+      var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+
+      var cur = (window.RA_AUTH && typeof window.RA_AUTH.current === "function") ? window.RA_AUTH.current() : null;
+      var isAuthed = !!(cur && !cur.demo && (cur.supabaseId || cur.email));
+
+      var authLink = isAuthed
+        ? '<a href="' + base + 'account.html">My Account</a>'
+        : '<a href="' + base + 'login.html">Log In</a>';
+
+      mNav.innerHTML = ''
+        + '<form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>'
+        + '<a href="' + base + 'index.html"' + (page === "index.html" || page === "" ? ' class="active"' : '') + '>Home</a>'
+        + '<a href="' + base + 'about.html"' + (page === "about.html" ? ' class="active"' : '') + '>About</a>'
+        + '<a href="' + base + 'rights.html"' + (page === "rights.html" || page.indexOf("topic.html") !== -1 ? ' class="active"' : '') + '>Explore Rights</a>'
+        + '<a href="' + base + 'resources.html"' + (page === "resources.html" ? ' class="active"' : '') + '>Resources</a>'
+        + '<a href="' + base + 'contact.html"' + (page === "contact.html" ? ' class="active"' : '') + '>Contact Us</a>'
+        + '<a href="' + base + 'help.html"' + (page === "help.html" ? ' class="active"' : '') + '>Get Help</a>'
+        + '<a href="' + base + 'laws.html"' + (page === "laws.html" ? ' class="active"' : '') + '>Laws Library</a>'
+        + '<a href="' + base + 'organizations.html"' + (page === "organizations.html" || page === "organization.html" ? ' class="active"' : '') + '>Organizations Directory</a>'
+        + '<a href="' + base + 'lawyers.html"' + (page === "lawyers.html" ? ' class="active"' : '') + '>Legal Professionals</a>'
+        + '<a href="' + base + 'ai.html"' + (page === "ai.html" ? ' class="active"' : '') + '>RightAware AI</a>'
+        + '<a href="' + base + 'printables.html"' + (page === "printables.html" ? ' class="active"' : '') + '>Printable Checklists</a>'
+        + '<a href="' + base + 'videos.html"' + (page === "videos.html" ? ' class="active"' : '') + '>Civic Video Guides</a>'
+        + authLink;
+
+      var btn = document.getElementById("menuBtn");
+      mNav.querySelectorAll("a").forEach(function(a){
+        a.addEventListener("click", function(){
+          mNav.classList.remove("open");
+          if(btn) {
+            btn.classList.remove("is-active");
+            btn.setAttribute("aria-expanded", "false");
+          }
+          document.body.classList.remove("nav-open");
+        });
+      });
+    }
+
     hydrateDesktopNav();
+    hydrateMobileNav();
 
     // Live Header Auth Synchronization (Phase 4)
     function syncHeaderAuth(){

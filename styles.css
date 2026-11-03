@@ -90,8 +90,8 @@ p{margin:0 0 1rem}
 .logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--navy);font-weight:800;font-size:1.35rem}
 .logo-mark{background:var(--green);color:#fff;width:38px;height:38px;display:grid;place-items:center;border-radius:10px;font-size:.95rem}
 .logo-dot{color:var(--green)}
-.nav{display:flex;align-items:center;justify-content:center;gap:clamp(1rem,2vw,2rem);flex-wrap:nowrap}
-.nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap;padding:.4rem .8rem;border-radius:999px;transition:color .15s ease,background .15s ease}
+.nav{display:flex;align-items:center;justify-content:center;gap:clamp(.35rem,1.1vw,1.25rem);flex-wrap:nowrap}
+.nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.92rem;white-space:nowrap;padding:.4rem .65rem;border-radius:999px;transition:color .15s ease,background .15s ease}
 .nav a:hover{color:var(--ra-brand-dark);background:var(--ra-brand-tint)}
 .nav a.active{color:var(--ra-brand-dark);background:rgba(119,157,50,.16);font-weight:700;border-bottom:none}
 
@@ -103,8 +103,8 @@ p{margin:0 0 1rem}
   color:var(--muted);
   font-family:var(--font-body);
   font-weight:600;
-  font-size:.95rem;
-  padding:.4rem .8rem;
+  font-size:.92rem;
+  padding:.4rem .65rem;
   border-radius:999px;
   cursor:pointer;
   display:inline-flex;
@@ -114,6 +114,8 @@ p{margin:0 0 1rem}
   white-space:nowrap;
 }
 .nav-dropdown-btn:hover,
+.nav-dropdown:hover .nav-dropdown-btn,
+.nav-dropdown:focus-within .nav-dropdown-btn,
 .nav-dropdown.open .nav-dropdown-btn{
   color:var(--ra-brand-dark);
   background:var(--ra-brand-tint);
@@ -127,6 +129,8 @@ p{margin:0 0 1rem}
   transition:transform .2s ease;
   display:inline-block;
 }
+.nav-dropdown:hover .nav-dropdown-btn .ra-chevron,
+.nav-dropdown:focus-within .nav-dropdown-btn .ra-chevron,
 .nav-dropdown.open .nav-dropdown-btn .ra-chevron{
   transform:rotate(180deg);
 }
@@ -135,8 +139,8 @@ p{margin:0 0 1rem}
   display:none;
   position:absolute;
   top:calc(100% + 8px);
-  left:0;
-  min-width:250px;
+  right:0;
+  min-width:270px;
   background:#ffffff;
   border:1px solid var(--border);
   border-radius:14px;
@@ -156,6 +160,8 @@ p{margin:0 0 1rem}
   right:0;
   height:10px;
 }
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu,
 .nav-dropdown.open .nav-dropdown-menu{
   display:block;
   opacity:1;

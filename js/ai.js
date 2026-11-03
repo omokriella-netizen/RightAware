@@ -193,6 +193,9 @@
              Trip 15-second cooldown and execute verified knowledge-base fallback. */
           if(res.status === 501 || res.status === 502 || res.status === 503 ||
              (data && (data.code === "provider_unavailable" || data.code === "service_unavailable" || data.code === "not_configured" || data.diagnostic === true || data.ok === false))){
+            if(data && (data.providerMessage || data.error || data.text)){
+              console.warn("[RightAware AI Notice]", res.status, data.code || "", data.providerStatus ? ("Provider HTTP " + data.providerStatus) : "", data.providerMessage || data.error || data.text);
+            }
             this._downUntil = Date.now() + 15000;
             return serverFallback(m);
           }

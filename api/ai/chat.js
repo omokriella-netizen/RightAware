@@ -39,8 +39,16 @@ function resolveAiConfig(apiKey) {
   const isGeminiModel = envModel.toLowerCase().startsWith("gemini");
   const isGemini = isGeminiKey || isGeminiModel;
 
-  // Resolve active model
-  const model = envModel || (isGemini ? "gemini-1.5-flash" : "gpt-4o-mini");
+  // Resolve active model (Gemini 1.5/2.0 have been discontinued; standard active is gemini-2.5-flash)
+  let model = envModel;
+  if (!model) {
+    model = isGemini ? "gemini-2.5-flash" : "gpt-4o-mini";
+  } else if (isGemini) {
+    const lower = model.toLowerCase();
+    if (lower === "gemini-1.5-flash" || lower === "gemini-1.5-pro" || lower === "gemini-2.0-flash" || lower === "gemini-1.0-pro") {
+      model = "gemini-2.5-flash";
+    }
+  }
 
   // Resolve API URL
   let apiUrl = envBaseUrl;
@@ -1116,21 +1124,11 @@ module.exports = async function (req, res) {
     let hmacSecret = process.env.GUEST_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
     const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
 
+    if (!hmacSecret && apiKey) {
+      // In production/preview without GUEST_HMAC_SECRET, derive a cryptographically secure HMAC secret from the server-only AI_API_KEY
+      hmacSecret = crypto.createHash("sha256").update("rightaware-guest-salt:" + apiKey).digest("hex");
+    }
     if (!hmacSecret) {
-      if (isProduction) {
-        console.error("[RA_GUEST_AUTH_CONFIG_ERROR] GUEST_HMAC_SECRET or SUPABASE_SERVICE_ROLE_KEY required in production.");
-        return res.status(503).json({
-          ok: false,
-          code: "service_unavailable",
-          error: "Guest preview service is temporarily unavailable due to server configuration. Please sign in to continue.",
-          text: "Guest preview service is temporarily unavailable. Please sign in with a free account to continue without interruption.",
-          links: [
-            { t: "Sign In", u: "login.html?next=ai.html" },
-            { t: "Create Free Account", u: "signup.html" }
-          ],
-          disclaimer: DISCLAIMER
-        });
-      }
       if (!global.__DEV_GUEST_HMAC_SALT) {
         global.__DEV_GUEST_HMAC_SALT = crypto.randomBytes(32).toString("hex");
       }
@@ -1287,7 +1285,7 @@ module.exports = async function (req, res) {
 
   try {
 
-    const response =
+    let response =
       await fetch(
         apiUrl,
         {
@@ -1330,7 +1328,7 @@ module.exports = async function (req, res) {
        READ PROVIDER RESPONSE
        ------------------------------------------------------- */
 
-    const providerText =
+    let providerText =
       await response.text();
 
 
@@ -1348,6 +1346,40 @@ module.exports = async function (req, res) {
     catch (_) {
       providerData =
         null;
+    }
+
+    // Resilient fallback: If upstream returns 404 Model Not Found on Gemini, retry once with gemini-2.5-flash
+    if (!response.ok && response.status === 404 && isGemini && model !== "gemini-2.5-flash") {
+      console.warn("[RA_AI_FALLBACK] Model " + model + " returned 404; retrying with gemini-2.5-flash");
+      try {
+        const retryRes = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiKey,
+            "User-Agent": "RightAware-AI/1.0"
+          },
+          body: JSON.stringify({
+            model: "gemini-2.5-flash",
+            messages: [
+              { role: "system", content: SYSTEM },
+              { role: "user", content: input }
+            ],
+            max_tokens: MAX_OUTPUT_TOKENS
+          })
+        });
+        if (retryRes.ok) {
+          response = retryRes;
+          providerText = await retryRes.text();
+          try {
+            providerData = JSON.parse(providerText);
+          } catch (_) {
+            providerData = null;
+          }
+        }
+      } catch (retryErr) {
+        console.warn("[RA_AI_RETRY_ERROR]", retryErr);
+      }
     }
 
 
@@ -1399,6 +1431,8 @@ module.exports = async function (req, res) {
         ok: false,
         code: "provider_unavailable",
         error: "The AI assistant is temporarily unavailable. Verified guides and helplines are available below.",
+        providerStatus: response.status,
+        providerMessage: providerMessage,
         disclaimer: DISCLAIMER
       });
     }
@@ -1496,6 +1530,7 @@ module.exports = async function (req, res) {
       ok: false,
       code: "provider_unavailable",
       error: "Temporary network connection issue contacting the AI provider. Verified guides and helplines are available below.",
+      providerMessage: error && error.message ? error.message : String(error),
       disclaimer: DISCLAIMER
     });
   }
