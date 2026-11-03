@@ -34,7 +34,7 @@ git-ignored and must never be committed.
 1. In Google AI Studio, generate an API key.
 2. In Vercel Project Settings → Environment Variables:
    - `AI_API_KEY`: `AIzaSy...` (your Gemini key)
-   - `AI_MODEL`: `gemini-1.5-flash` or `gemini-2.5-flash`
+   - `AI_MODEL`: `gemini-3.8-flash`
    - `AI_BASE_URL` (optional): `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`
      (if omitted or set to the SDK baseURL `.../openai/`, it is auto-resolved)
 

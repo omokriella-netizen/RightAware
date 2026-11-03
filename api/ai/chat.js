@@ -39,14 +39,14 @@ function resolveAiConfig(apiKey) {
   const isGeminiModel = envModel.toLowerCase().startsWith("gemini");
   const isGemini = isGeminiKey || isGeminiModel;
 
-  // Resolve active model (Gemini 1.5/2.0 have been discontinued; standard active is gemini-2.5-flash)
+  // Resolve active model (Google Gemini latest active model is gemini-3.8-flash)
   let model = envModel;
   if (!model) {
-    model = isGemini ? "gemini-2.5-flash" : "gpt-4o-mini";
+    model = isGemini ? "gemini-3.8-flash" : "gpt-4o-mini";
   } else if (isGemini) {
     const lower = model.toLowerCase();
-    if (lower === "gemini-1.5-flash" || lower === "gemini-1.5-pro" || lower === "gemini-2.0-flash" || lower === "gemini-1.0-pro") {
-      model = "gemini-2.5-flash";
+    if (lower === "gemini-1.5-flash" || lower === "gemini-1.5-pro" || lower === "gemini-2.0-flash" || lower === "gemini-2.5-flash" || lower === "gemini-2.5-pro" || lower === "gemini-1.0-pro") {
+      model = "gemini-3.8-flash";
     }
   }
 
@@ -1343,9 +1343,9 @@ module.exports = async function (req, res) {
         null;
     }
 
-    // Resilient fallback: If upstream returns 404 Model Not Found on Gemini, retry once with gemini-2.5-flash
-    if (!response.ok && response.status === 404 && isGemini && model !== "gemini-2.5-flash") {
-      console.warn("[RA_AI_FALLBACK] Model " + model + " returned 404; retrying with gemini-2.5-flash");
+    // Resilient fallback: If upstream returns 404 Model Not Found on Gemini, retry once with gemini-3.8-flash
+    if (!response.ok && response.status === 404 && isGemini && model !== "gemini-3.8-flash") {
+      console.warn("[RA_AI_FALLBACK] Model " + model + " returned 404; retrying with gemini-3.8-flash");
       try {
         const retryRes = await fetch(apiUrl, {
           method: "POST",
@@ -1355,7 +1355,7 @@ module.exports = async function (req, res) {
             "User-Agent": "RightAware-AI/1.0"
           },
           body: JSON.stringify({
-            model: "gemini-2.5-flash",
+            model: "gemini-3.8-flash",
             messages: [
               { role: "system", content: SYSTEM },
               { role: "user", content: input }
