@@ -272,6 +272,9 @@
       }
       window.RA_AI.ask(q).then(function(r){
         if(r && r.limitReached){
+          if(window.RA_CHAT_STATE && typeof r.attempts === "number"){
+            window.RA_CHAT_STATE.setGuestPromptCount(r.attempts);
+          }
           mode="auth"; setPill();
           add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (Preview Limit Reached):");
           input.disabled = true;
@@ -293,6 +296,9 @@
           mode="auth"; setPill();
           add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware Notice:");
           return;
+        }
+        if(!isUserAuthed() && window.RA_CHAT_STATE && r && r.isGuest && typeof r.guestAttempts === "number"){
+          window.RA_CHAT_STATE.setGuestPromptCount(r.guestAttempts);
         }
         if(r && !r.demo && !r.isFallback && r.text){
           mode="live"; setPill();

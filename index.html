@@ -1093,6 +1093,11 @@
   }
 
   function showLimitCard(){
+    if(statusBadge){
+      var max = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.MAX_PREVIEWS : 3;
+      var c = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : max;
+      statusBadge.textContent = "Preview: " + (c || max) + "/" + max + " Free";
+    }
     if(document.getElementById("raAiLimitCard")) return;
     var card = document.createElement("div");
     card.className = "ra-ai-limit-card";
@@ -1147,6 +1152,10 @@
       removeTyping();
 
       if(res && res.limitReached){
+        if(window.RA_CHAT_STATE && typeof res.attempts === "number"){
+          window.RA_CHAT_STATE.setGuestPromptCount(res.attempts);
+        }
+        updateAuthUI();
         showLimitCard();
         return;
       }

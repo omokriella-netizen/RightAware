@@ -1188,13 +1188,12 @@ module.exports = async function (req, res) {
       // Graceful Cookie-Scoped Quota Fallback (when Supabase Service Role is not connected)
       const countCookieName = "ra_guest_c";
       const currentCount = parseInt(cookies[countCookieName] || "0", 10) || 0;
-      const nextCount = currentCount + 1;
 
-      if (nextCount > 3) {
+      if (currentCount >= 3) {
         return res.status(403).json({
           ok: false,
           code: "free_limit_reached",
-          attempts: nextCount,
+          attempts: 3,
           max: 3,
           error: "Free preview limit reached (3/3). Sign in with a free account to continue asking unlimited questions.",
           text: "Free preview limit reached (3/3). Please sign in with a free RightAware account to continue where you left off with unlimited answers.",
@@ -1206,11 +1205,7 @@ module.exports = async function (req, res) {
         });
       }
 
-      const existingCookies = res.getHeader("Set-Cookie");
-      const cookieList = Array.isArray(existingCookies) ? existingCookies : existingCookies ? [existingCookies] : [];
-      cookieList.push(`${countCookieName}=${nextCount}; Path=/; Max-Age=86400; SameSite=Lax${isSecure ? "; Secure" : ""}`);
-      res.setHeader("Set-Cookie", cookieList);
-      guestQuota = { current_attempts: nextCount, allowed: true };
+      guestQuota = { current_attempts: currentCount, allowed: true };
     }
   }
 
@@ -1281,7 +1276,7 @@ module.exports = async function (req, res) {
      AI PROVIDER REQUEST (Gemini / OpenAI)
      --------------------------------------------------------- */
 
-  const { model, apiUrl } = resolveAiConfig(apiKey);
+  const { model, apiUrl, isGemini } = resolveAiConfig(apiKey);
 
   try {
 
@@ -1489,6 +1484,20 @@ module.exports = async function (req, res) {
     /* -------------------------------------------------------
        SUCCESS
        ------------------------------------------------------- */
+
+    // Single Ownership Quota Invariant:
+    // Only charge and increment guest quota upon VERIFIED SUCCESSFUL answer generation
+    if (isGuest && guestId) {
+      const countCookieName = "ra_guest_c";
+      const currentCount = (guestQuota && typeof guestQuota.current_attempts === "number") ? guestQuota.current_attempts : 0;
+      const nextCount = currentCount + 1;
+      const isSecure = (req.headers && req.headers["x-forwarded-proto"] === "https") || process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+      const existingCookies = res.getHeader("Set-Cookie");
+      const cookieList = Array.isArray(existingCookies) ? existingCookies : existingCookies ? [existingCookies] : [];
+      cookieList.push(`${countCookieName}=${nextCount}; Path=/; Max-Age=86400; SameSite=Lax${isSecure ? "; Secure" : ""}`);
+      res.setHeader("Set-Cookie", cookieList);
+      if (guestQuota) guestQuota.current_attempts = nextCount;
+    }
 
     return res.status(200).json({
 
