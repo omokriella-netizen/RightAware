@@ -97,28 +97,73 @@
     <a href="login.html">Log In</a>
   </div>
 </header>
-<main id="main">
-<section class="page-hero"><div class="container page-hero-grid rv">
-  <div>
-    <span class="eyebrow">RightAware AI &bull; <span class="pill" id="aiModePill">AI ASSISTANT</span></span>
-    <h1>Interactive Legal Assistant</h1>
-  <p class="lead-dark">RightAware AI gives general legal information grounded in our verified guides — it is <strong>not</strong> a lawyer, cannot give legal advice and cannot represent you. If the AI service is unavailable, it says so and matches your words to the library instead. Never enter passwords, OTPs or bank details. For real cases, use Get Help or a qualified lawyer.</p>
+<main id="main" class="ra-messenger-page">
+  <div class="ra-messenger-container">
+    <!-- Messenger Action Header -->
+    <header class="ra-messenger-header">
+      <div class="ra-messenger-identity">
+        <div class="ra-messenger-avatar" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="ra-messenger-info">
+          <div class="ra-messenger-title-row">
+            <h1 class="ra-messenger-name">RightAware AI</h1>
+            <span class="ra-status-pill" id="aiModePill">AI ASSISTANT</span>
+          </div>
+          <p class="ra-messenger-caption">Civic &amp; legal awareness grounded in Nigerian law • Not legal advice</p>
+        </div>
+      </div>
+      <div class="ra-messenger-actions">
+        <a href="index.html#emergencyConsole" class="btn btn-urgent btn-sm ra-messenger-urgent-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Emergency Help
+        </a>
+        <button type="button" class="btn btn-ghost btn-sm" id="clearChatBtn" title="Clear conversation" aria-label="Clear conversation">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <span class="ra-clear-text">Clear</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Draft Prompt Notice (when navigated via ?q=) -->
+    <div class="ra-draft-notice" id="raDraftNotice" hidden>
+      <span>Search inquiry loaded. Edit below or press <strong>Send</strong> to consult RightAware AI.</span>
+      <button type="button" id="raDismissDraftBtn" aria-label="Dismiss notice">&times;</button>
+    </div>
+
+    <!-- Scrollable Messages Stream -->
+    <div class="ra-messenger-stream" id="chatBox" aria-live="polite">
+      <!-- Greeting Assistant Message -->
+      <div class="ra-msg assistant">
+        <div class="ra-msg-bubble">
+          <span class="ra-msg-sender">RightAware AI</span>
+          <div class="ra-msg-content">
+            <p class="ra-ai-p">Hello! I can explain your legal rights under Nigerian law (police stops, tenancy, salary disputes, online scams). What would you like to know?</p>
+          </div>
+          <span class="ra-msg-time">Just now</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Starter Chips -->
+    <div class="ra-messenger-chips" id="quickChips">
+      <button type="button" class="ra-chip" data-p="Police arrested someone I know. What are our constitutional rights?">🚔 Police Arrest &amp; Bail</button>
+      <button type="button" class="ra-chip" data-p="My landlord locked my apartment without court notice. What can I do?">🏠 Landlord Lockout</button>
+      <button type="button" class="ra-chip" data-p="My employer has refused to pay my salary for 3 months.">💼 Unpaid Salary</button>
+      <button type="button" class="ra-chip" data-p="I was scammed online by a fake vendor. How do I recover my money?">📱 Online Scam</button>
+    </div>
+
+    <!-- Bottom Composer Bar -->
+    <div class="ra-messenger-composer">
+      <form id="chatForm" class="ra-composer-form">
+        <input id="chatInput" class="ra-composer-input" type="text" placeholder="Describe your issue in plain words…" autocomplete="off" aria-label="Ask RightAware AI"/>
+        <button class="ra-composer-send-btn" id="sendBtn" type="submit" aria-label="Send message">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+      <p class="ra-composer-disclaimer">General legal information only — not legal advice. Grounded in verified Nigerian statutes.</p>
+    </div>
   </div>
-  <figure class="page-hero-media"><img src="assets/images/justice-lady.webp" alt="Golden statue of Lady Justice holding scales and a sword" width="480" height="240" loading="lazy" decoding="async"/></figure>
-</div></section>
-<section class="section"><div class="container chat-wrap rv">
-  <div class="chat-box" id="chatBox" aria-live="polite">
-    <div class="msg ai"><strong>RightAware AI:</strong> Hello! Tell me what happened in plain words — e.g. “police arrested my brother”, “landlord locked my shop”, “my boss has not paid me”. I'll point you to the right page.</div>
-  </div>
-  <div class="chip-row" style="margin:.8rem 0">
-    <button type="button" data-p="Police arrested someone I know. What are our rights?">Arrest help</button>
-    <button type="button" data-p="My landlord wants to evict me. What should I do?">Eviction</button>
-    <button type="button" data-p="My employer has not paid my salary.">Unpaid salary</button>
-    <button type="button" data-p="I was scammed online.">Online scam</button>
-  </div>
-  <form id="chatForm" class="chat-form"><input id="chatInput" type="text" placeholder="Describe your issue…" autocomplete="off" aria-label="Ask RightAware AI"/><button class="btn btn-primary" type="submit">Send</button></form>
-  <p class="form-note">General legal information only — not legal advice. Answers are grounded in our verified guides; if the AI service is offline you get clearly labelled library matches instead. Never share passwords, OTPs or bank details.</p>
-</div></section>
 </main>
 <footer class="footer" id="contact">
   <div class="container footer-grid">
@@ -173,49 +218,154 @@
 <script src="content/rights.js"></script>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
+<script src="js/ai-renderer.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
-  var box=document.getElementById("chatBox"), form=document.getElementById("chatForm"), input=document.getElementById("chatInput"), pill=document.getElementById("aiModePill");
-  var mode="pending"; /* pending | live | auth (sign-in required) | demo (labelled library match) */
-  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  var box = document.getElementById("chatBox");
+  var form = document.getElementById("chatForm");
+  var input = document.getElementById("chatInput");
+  var sendBtn = document.getElementById("sendBtn");
+  var pill = document.getElementById("aiModePill");
+  var clearBtn = document.getElementById("clearChatBtn");
+  var draftNotice = document.getElementById("raDraftNotice");
+  var dismissDraftBtn = document.getElementById("raDismissDraftBtn");
+
+  var mode = "pending"; /* pending | live | auth (sign-in required) | demo (labelled library match) */
+  var isSubmitting = false;
+
+  function esc(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function formatTime(){
+    var d = new Date();
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12;
+    h = h ? h : 12;
+    return h + ":" + (m < 10 ? "0" + m : m) + " " + ampm;
+  }
+
   function setPill(){
     if(!pill) return;
-    pill.textContent = mode==="live" ? "AI: LIVE"
-      : (mode==="auth" ? "AI: SIGN IN REQUIRED"
-      : (mode==="demo" ? "AI: LIBRARY MATCHES (DEMO)" : "AI ASSISTANT"));
+    var isAuthed = isUserAuthed();
+    if(isAuthed){
+      pill.textContent = "AI ASSISTANT • ACTIVE";
+      pill.className = "ra-status-pill auth";
+    } else {
+      var count = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : 0;
+      var max = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.MAX_PREVIEWS : 3;
+      pill.textContent = "PREVIEW: " + count + "/" + max + " FREE";
+      pill.className = "ra-status-pill preview";
+    }
   }
-  function add(who, text, html, label){
-    var d=document.createElement("div"); d.className="msg "+who;
-    var strong = who==="ai" ? (label||"RightAware AI:") : "You:";
-    d.innerHTML="<strong>"+strong+"</strong> "+(html||esc(text).replace(/\n+/g,"<br/>"));
-    box.appendChild(d); box.scrollTop=box.scrollHeight;
-  }
+
   function linksHtml(links){
-    var out="";
-    (links||[]).forEach(function(l){
-      if(!l || !l.u) return;
-      out += '<div style="display:flex;align-items:center;gap:.4rem;margin-top:.35rem"><svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> <a class="link" href="'+esc(String(l.u).replace(/[<>"']/g,""))+'">'+esc(l.t||"Open")+'</a></div>';
-    });
+    var out = "";
+    if(links && links.length){
+      out += '<div class="ra-msg-links">';
+      links.forEach(function(l){
+        if(!l || !l.u) return;
+        var safe = window.RA_AI_RENDERER ? window.RA_AI_RENDERER.sanitizeUrl(l.u) : esc(l.u);
+        out += '<a class="ra-msg-link-item" href="' + safe + '">'
+          + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
+          + esc(l.t || "Open Link")
+          + '</a>';
+      });
+      out += '</div>';
+    }
     return out;
   }
-  function answer(q){
-    var s=q.toLowerCase();
-    var link=function(t,u){return '<div style="display:flex;align-items:center;gap:.4rem;margin-top:.35rem"><svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> <a class="link" href="'+u+'">'+t+'</a></div>';};
-    if(/arrest|police|bail|station|cell|custody/.test(s)) return "For police/arrest issues: (1) stay calm, (2) ask the offence, (3) remain silent until you can reach a lawyer/family, (4) never pay for bail. Full steps:"+link("Open Police & Arrest guide","rights/arrest-rights.html")+link("Report a concern","help.html#report");
-    if(/rent|landlord|evict|quit|shop|house|tenan/.test(s)) return "For rent/eviction: keep your agreement + all receipts, note notice dates, and do not accept lockouts quietly — document them."+link("Open Rent & Tenancy overview","rights/topic.html?id=tenancy")+link("Get help","help.html");
-    if(/salary|pay|job|sack|dismiss|boss|employ/.test(s)) return "For work/pay issues: gather your offer letter, payslips and any query/dismissal letters, then raise a written demand."+link("Open Employment overview","rights/topic.html?id=employment");
-    if(/scam|fraud|otp|fake vendor|transfer|hack/.test(s)) return "For scams: screenshot everything, alert your bank/platform immediately, and keep reference numbers."+link("Open Digital Rights overview","rights/topic.html?id=digital");
-    if(/vote|pvc|inec|election/.test(s)) return "For voting issues:"+link("Open Civic Responsibilities overview","rights/topic.html?id=civic");
-    if(/woman|wife|husband|beat|abuse|assault|marriage/.test(s)) return "If anyone is unsafe, prioritise safety and official help channels first, then document and seek support."+link("Open Women's Rights overview","rights/topic.html?id=women")+link("Get help","help.html");
-    if(/child|school|student/.test(s)) return "For children/school issues:"+link("Open Children's Rights overview","rights/topic.html?id=children");
-    if(/lawyer|advocate|barrister|court/.test(s)) return "You can browse the demo directory interface (fictional profiles in v1):"+link("Open directory (demo)","lawyers.html");
-    if(/hello|hi|hey/.test(s)) return "Hello! Describe your issue in a few words and I'll point you to the right page. Try the quick buttons above.";
-    return "Thanks — based on those words, start here:"+link("Search all content","search.html?q="+encodeURIComponent(q))+link("Browse the rights library","rights.html")+link("Get help","help.html")+"<br/><small>(Library match from our verified guides — general information, not legal advice.)</small>";
+
+  function addMsg(role, text, links, customLabel){
+    var wrap = document.createElement("div");
+    wrap.className = "ra-msg " + (role === "user" ? "user" : "assistant");
+
+    var timeStr = formatTime();
+    var bubble = document.createElement("div");
+    bubble.className = "ra-msg-bubble";
+
+    if(role === "user"){
+      bubble.innerHTML = '<div class="ra-msg-content"><p class="ra-ai-p">' + esc(text) + '</p></div>'
+        + '<span class="ra-msg-time">' + timeStr + '</span>';
+    } else {
+      var sender = customLabel || "RightAware AI";
+      var parsedBody = window.RA_AI_RENDERER
+        ? window.RA_AI_RENDERER.renderMarkdown(text)
+        : '<p class="ra-ai-p">' + esc(text).replace(/\n+/g, "<br/>") + '</p>';
+
+      bubble.innerHTML = '<span class="ra-msg-sender">' + esc(sender) + '</span>'
+        + '<div class="ra-msg-content">' + parsedBody + linksHtml(links) + '</div>'
+        + '<span class="ra-msg-time">' + timeStr + '</span>';
+    }
+
+    wrap.appendChild(bubble);
+    box.appendChild(wrap);
+    box.scrollTop = box.scrollHeight;
   }
-  function showDemo(q){ mode="demo"; setPill(); add("ai","",answer(q),"RightAware AI (library match):"); }
+
+  function showTyping(){
+    var wrap = document.createElement("div");
+    wrap.className = "ra-msg assistant";
+    wrap.id = "raAiTypingBubble";
+    wrap.innerHTML = '<div class="ra-msg-bubble" style="padding:0.6rem 0.9rem">'
+      + '<span class="ra-msg-sender">RightAware AI</span>'
+      + '<div class="ra-ai-typing"><span class="ra-ai-dot"></span><span class="ra-ai-dot"></span><span class="ra-ai-dot"></span></div>'
+      + '</div>';
+    box.appendChild(wrap);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function removeTyping(){
+    var el = document.getElementById("raAiTypingBubble");
+    if(el && el.parentNode) el.parentNode.removeChild(el);
+  }
+
+  function setMutationLock(locked){
+    isSubmitting = locked;
+    if(input) input.disabled = locked;
+    if(sendBtn){
+      sendBtn.disabled = locked;
+      if(locked){
+        sendBtn.innerHTML = '<span class="ra-spinner"></span>';
+      } else {
+        sendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+      }
+    }
+  }
+
+  function showLimitCard(){
+    setPill();
+    if(document.getElementById("raAiLimitCard")) return;
+    var card = document.createElement("div");
+    card.className = "ra-ai-limit-card";
+    card.id = "raAiLimitCard";
+    card.style.margin = "0.75rem 0";
+    card.innerHTML = '<h4>Free Preview Limit Reached (3/3)</h4>'
+      + '<p>Sign in with a free RightAware account to continue where you left off with unlimited AI answers.</p>'
+      + '<div class="ra-ai-limit-actions">'
+      + '<a class="btn btn-primary btn-sm" href="login.html?next=ai.html">Sign In & Continue</a>'
+      + '<a class="btn btn-outline btn-sm" href="signup.html">Create Free Account</a>'
+      + '</div>';
+    box.appendChild(card);
+    box.scrollTop = box.scrollHeight;
+
+    if(input){
+      input.disabled = true;
+      input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+    }
+    if(sendBtn) sendBtn.disabled = true;
+  }
+
   function isUserAuthed(){
     try {
       if(window.RA_AUTH && typeof window.RA_AUTH.current === "function"){
@@ -226,125 +376,162 @@
     } catch(_) { return false; }
   }
 
+  async function handleSend(q){
+    if(isSubmitting) return;
+    q = (q || "").trim();
+    if(!q) return;
 
-  document.addEventListener("ra:session-ready", function(){
-    input.disabled = false;
-    input.placeholder = "Describe your issue…";
-    setPill();
-  });
-
-  // Check quota limit on arrival
-  if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
-    input.disabled = true;
-    input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
-    add("ai","", "You have used your 3 free preview questions. Sign in with a free account to continue asking unlimited questions.<div style='margin-top:0.6rem'><a class='btn btn-primary btn-sm' href='login.html?next=ai.html'>Sign In to Continue</a> <a class='btn btn-outline btn-sm' href='signup.html'>Create Free Account</a></div>", "RightAware AI (Preview Limit Reached):");
-  }
-
-  form.addEventListener("submit",function(e){
-    e.preventDefault(); var q=input.value.trim(); if(!q) return;
     if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
-      input.disabled = true;
-      input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
-      add("ai","", "Free preview limit reached (3/3). Please sign in to continue.<div style='margin-top:0.6rem'><a class='btn btn-primary btn-sm' href='login.html?next=ai.html'>Sign In to Continue</a> <a class='btn btn-outline btn-sm' href='signup.html'>Create Free Account</a></div>", "RightAware AI (Preview Limit Reached):");
+      showLimitCard();
       return;
     }
 
-    // Mutation lock: disable input and submit button
-    input.disabled = true;
-    var submitBtn = form.querySelector('button[type="submit"]');
-    if(submitBtn) submitBtn.disabled = true;
+    setMutationLock(true);
+    addMsg("user", q);
+    if(input) input.value = "";
+    showTyping();
 
-    function releaseMutationLock(){
-      var reached = !isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit();
-      if(!reached){
-        input.disabled = false;
-        if(submitBtn) submitBtn.disabled = false;
-        input.focus();
-      }
-    }
-
-    add("you",q); input.value="";
-    setTimeout(function(){
+    try {
       if(!window.RA_AI){
-        showDemo(q);
-        releaseMutationLock();
+        removeTyping();
+        addMsg("ai", "RightAware AI is initializing. Please try again in a few moments.", [{ t: "Browse Rights", u: "rights.html" }], "RightAware Notice");
         return;
       }
-      window.RA_AI.ask(q).then(function(r){
-        if(r && r.limitReached){
-          if(window.RA_CHAT_STATE && typeof r.attempts === "number"){
-            window.RA_CHAT_STATE.setGuestPromptCount(r.attempts);
-          }
-          mode="auth"; setPill();
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI (Preview Limit Reached):");
-          input.disabled = true;
-          input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
-          return;
-        }
-        if(r && r.captchaNeeded){
-          mode="pending"; setPill();
-          var capLabel = r.captchaErrored ? "Verification Notice:" : "Security Verification:";
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links), capLabel);
-          return;
-        }
-        if(r && r.needsAuth){
-          mode="auth"; setPill();
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"Account Required:");
-          return;
-        }
-        if(r && r.serviceUnavailable && !r.isFallback){
-          mode="auth"; setPill();
-          add("ai","", esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware Notice:");
-          return;
-        }
-        if(!isUserAuthed() && window.RA_CHAT_STATE && r && r.isGuest && typeof r.guestAttempts === "number"){
-          window.RA_CHAT_STATE.setGuestPromptCount(r.guestAttempts);
-        }
-        if(r && !r.demo && !r.isFallback && r.text){
-          mode="live"; setPill();
-          add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links),"RightAware AI:");
-          return;
-        }
-        if(r && r.text){
-          /* Verified RightAware Guide fallback — never misrepresent as live AI */
-          mode="demo"; setPill();
-          var label = (r.sourceLabel || "Verified RightAware Guide") + ":";
-          add("ai","",esc(r.text).replace(/\n+/g,"<br/>")+linksHtml(r.links), label);
-          return;
-        }
-        showDemo(q);
-      }, function(){
-        showDemo(q);
-      }).finally(function(){
-        releaseMutationLock();
-      });
-    },350);
-  });
-  document.querySelectorAll("[data-p]").forEach(function(b){b.addEventListener("click",function(){input.value=b.dataset.p;form.dispatchEvent(new Event("submit"))});});
 
-  // Hydrate transit thread from homepage widget if available
+      var res = await window.RA_AI.ask(q);
+      removeTyping();
+
+      if(res && res.limitReached){
+        if(window.RA_CHAT_STATE && typeof res.attempts === "number"){
+          window.RA_CHAT_STATE.setGuestPromptCount(res.attempts);
+        }
+        showLimitCard();
+        return;
+      }
+
+      if(res && res.captchaNeeded){
+        addMsg("ai", res.text || "Security verification required.", res.links || [], "Verification Notice");
+        return;
+      }
+
+      if(res && res.needsAuth){
+        addMsg("ai", res.text, res.links, "Account Required");
+        return;
+      }
+
+      if(res && res.serviceUnavailable && !res.isFallback){
+        addMsg("ai", res.text, res.links, "RightAware Notice");
+        return;
+      }
+
+      if(!isUserAuthed() && window.RA_CHAT_STATE && res && res.isGuest && typeof res.guestAttempts === "number"){
+        window.RA_CHAT_STATE.setGuestPromptCount(res.guestAttempts);
+      }
+
+      if(res && res.text){
+        var label = (res.isFallback || res.demo) ? (res.sourceLabel || "Verified RightAware Guide") : "RightAware AI";
+        addMsg("ai", res.text, res.links, label);
+      } else {
+        addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }], "Verified RightAware Guide");
+      }
+
+      setPill();
+
+      if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+        showLimitCard();
+      }
+    } catch(err){
+      removeTyping();
+      addMsg("ai", "A temporary issue occurred while loading this answer. Please try again or visit our help center.", [{ t: "Get Help", u: "help.html" }]);
+    } finally {
+      var reached = !isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit();
+      setMutationLock(false);
+      if(reached){
+        if(input){ input.disabled = true; input.placeholder = "Sign in to continue…"; }
+        if(sendBtn) sendBtn.disabled = true;
+      } else {
+        if(input){ input.disabled = false; input.focus(); }
+      }
+    }
+  }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if(input) handleSend(input.value);
+  });
+
+  // Starter chip click handlers
+  document.querySelectorAll("[data-p]").forEach(function(b){
+    b.addEventListener("click", function(){
+      if(input) {
+        input.value = b.dataset.p;
+        handleSend(b.dataset.p);
+      }
+    });
+  });
+
+  // Clear conversation button handler
+  if(clearBtn){
+    clearBtn.addEventListener("click", function(){
+      box.innerHTML = '<div class="ra-msg assistant">'
+        + '<div class="ra-msg-bubble">'
+        + '<span class="ra-msg-sender">RightAware AI</span>'
+        + '<div class="ra-msg-content"><p class="ra-ai-p">Conversation cleared. What would you like to know about Nigerian legal rights?</p></div>'
+        + '<span class="ra-msg-time">Just now</span>'
+        + '</div></div>';
+      if(input) input.focus();
+    });
+  }
+
+  // Handle ?q= Deep Link Contract (Pre-fill without auto-submit to protect guest quota)
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var queryParam = (params.get("q") || "").trim();
+    if(queryParam && input){
+      input.value = queryParam;
+      input.focus();
+      if(draftNotice) draftNotice.removeAttribute("hidden");
+      // Clean URL so refresh does not keep stale query
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  } catch(_) {}
+
+  if(dismissDraftBtn && draftNotice){
+    dismissDraftBtn.addEventListener("click", function(){
+      draftNotice.setAttribute("hidden", "");
+    });
+  }
+
+  // Hydrate transit thread from homepage drawer if available
   try {
     if(window.RA_CHAT_STATE){
       var transit = window.RA_CHAT_STATE.consumeTransitThread();
       if(transit && transit.length){
-        var notice = document.createElement("div");
-        notice.className = "msg ai";
-        notice.style.background = "#f0fdf4";
-        notice.style.borderColor = "#bbf7d0";
-        notice.innerHTML = "<strong>RightAware AI:</strong> <em>Restored your conversation from the home page. You can now continue asking questions with full access.</em>";
-        box.appendChild(notice);
+        box.innerHTML = "";
         transit.forEach(function(m){
           if(m.role === "user"){
-            add("you", m.text);
-          } else if(m.role === "ai"){
-            add("ai", "", esc(m.text).replace(/\n+/g, "<br/>") + linksHtml(m.links), "RightAware AI (restored):");
+            addMsg("user", m.text);
+          } else if(m.role === "ai" || m.role === "assistant"){
+            addMsg("ai", m.text, m.links, "RightAware AI");
           }
         });
       }
     }
   } catch(_) {}
 
-  setPill();
+  document.addEventListener("ra:session-ready", function(){
+    setPill();
+  });
+  document.addEventListener("ra:backend-ready", function(){
+    setPill();
+  });
+
+  // Initial check
+  if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+    showLimitCard();
+  } else {
+    setPill();
+  }
 })();
 </script>
 </body>

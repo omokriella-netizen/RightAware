@@ -163,6 +163,16 @@
 <script>
 (function(){
   var input=document.getElementById("sInput"), out=document.getElementById("sOut");
+
+  function isConversationalDilemma(s){
+    if(!s || typeof s !== "string") return false;
+    var trimmed = s.trim();
+    if(trimmed.length < 10) return false;
+    var hasPronoun = /\b(i|my|me|myself|we|our|us|they|them|he|she)\b/i.test(trimmed);
+    var hasDilemmaVerb = /\b(locked|locked\s+up|arrested|seized|confiscated|fired|sacked|beaten|threatened|harassed|scammed|defrauded|detained|refused|extorted|evict|evicted)\b/i.test(trimmed);
+    return hasPronoun && hasDilemmaVerb;
+  }
+
   function run(q){
     var raw=(q||"").trim();
     q=raw.toLowerCase();
@@ -180,8 +190,22 @@
       }
       return {e:e,score:score};
     }).filter(function(x){return x.score>0;}).sort(function(a,b){return b.score-a.score;}).slice(0,12);
+
+    var isDilemma = isConversationalDilemma(raw);
+    var aiCard = '<div class="ra-search-ai-card">'
+      + '<span class="ra-search-ai-badge">'
+      + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> '
+      + 'Ask RightAware AI</span>'
+      + '<h4>Have a personal or crisis situation?</h4>'
+      + '<p>' + (hits.length === 0 ? 'No direct keyword match in our document index. ' : 'You are describing a personal scenario. ') + 'RightAware AI can analyze your situation under Nigerian law and explain your immediate legal rights.</p>'
+      + '<a class="btn btn-primary btn-sm" href="ai.html?q=' + encodeURIComponent(raw) + '">'
+      + 'Consult RightAware AI with this search →'
+      + '</a>'
+      + '</div>';
+
     var lawNote='<div class="result"><strong>Search the exact wording inside the supplied laws</strong><br/><a class="link" href="laws.html?q='+encodeURIComponent(raw)+'">Search “'+raw.replace(/</g,"&lt;")+'” inside every document →</a></div>';
-    out.innerHTML=(hits.length?hits.map(function(x){
+
+    var resultsHtml = hits.length ? hits.map(function(x){
       var url=x.e.url;
       if(x.e.lawId){
         url = x.e.textAvailable
@@ -190,7 +214,15 @@
       }
       var tag=x.e.kind==="org"?'<span class="pill">organisation</span><br/>':x.e.title.indexOf("Law:")===0?'<span class="tag tag-soon">law document</span><br/>':"";
       return '<div class="result">'+tag+'<strong>'+x.e.title+'</strong><br/><a class="link" href="'+url+'">Open →</a></div>';
-    }).join(""):'<div class="result">No match for "<strong>'+raw.replace(/</g,"&lt;")+'</strong>". Try "arrest", "rent", "salary", "vote", or "scam", or <a class="link" href="help.html">get help →</a></div>')+lawNote;
+    }).join("") : '';
+
+    if (hits.length === 0) {
+      out.innerHTML = aiCard + '<div class="result">No direct document match for "<strong>'+raw.replace(/</g,"&lt;")+'</strong>". Try keywords like "arrest", "rent", "salary", "vote", or "scam", or <a class="link" href="help.html">get help →</a></div>' + lawNote;
+    } else if (isDilemma) {
+      out.innerHTML = aiCard + resultsHtml + lawNote;
+    } else {
+      out.innerHTML = resultsHtml + lawNote;
+    }
   }
   var init=new URLSearchParams(location.search).get("q")||"";
   input.value=init; run(init);

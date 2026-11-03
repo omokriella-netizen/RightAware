@@ -474,6 +474,7 @@
 <script src="content/laws.js"></script>
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
+<script src="js/ai-renderer.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
 <script src="app.js"></script>
@@ -539,7 +540,7 @@
     var idx = window.RA_SEARCH_INDEX().filter(function(e){ return e.text.includes(q) || e.title.toLowerCase().includes(q); }).slice(0,4);
     out.innerHTML = idx.length
       ? idx.map(function(e){ return '<div class="result"><strong>'+e.title+'</strong><br/><a class="link" href="'+e.url+'">Open Guide</a></div>'; }).join("") + '<div style="text-align:center"><a class="link" href="search.html?q='+encodeURIComponent(q)+'">See all results</a></div>'
-      : '<div class="result">No direct match for "<strong>'+q+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content</a> or <a class="link" href="help.html">get help</a></div>';
+      : '<div class="result">No direct match for "<strong>'+q+'</strong>". <a class="link" href="search.html?q='+encodeURIComponent(q)+'">Search all content</a> or <a class="link" href="ai.html?q='+encodeURIComponent(q)+'">ask RightAware AI →</a></div>';
   }
   var sf = document.getElementById("homeSearchForm");
   if(sf) sf.addEventListener("submit", function(e){ e.preventDefault(); location.href = "search.html?q="+encodeURIComponent(input.value.trim()); });
@@ -1058,13 +1059,17 @@
     if(role !== "user"){
       var labelText = customLabel || "RightAware AI";
       html += '<span class="ra-ai-label">' + esc(labelText) + '</span>';
+      var parsed = window.RA_AI_RENDERER ? window.RA_AI_RENDERER.renderMarkdown(text) : esc(text).replace(/\n+/g, "<br/>");
+      html += '<div class="ra-ai-bubble">' + parsed;
+    } else {
+      html += '<div class="ra-ai-bubble">' + esc(text).replace(/\n+/g, "<br/>");
     }
-    html += '<div class="ra-ai-bubble">' + esc(text).replace(/\n+/g, "<br/>");
     if(links && links.length){
       html += '<div class="ra-ai-links">';
       links.forEach(function(l){
         if(!l || !l.u) return;
-        html += '<a class="ra-ai-link-item" href="' + esc(l.u) + '">'
+        var safe = window.RA_AI_RENDERER ? window.RA_AI_RENDERER.sanitizeUrl(l.u) : esc(l.u);
+        html += '<a class="ra-ai-link-item" href="' + safe + '">'
           + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
           + esc(l.t || "Open")
           + '</a>';
