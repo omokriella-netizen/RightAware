@@ -45,7 +45,15 @@ function resolveAiConfig(apiKey) {
     model = isGemini ? "gemini-3.8-flash" : "gpt-4o-mini";
   } else if (isGemini) {
     const lower = model.toLowerCase();
-    if (lower === "gemini-1.5-flash" || lower === "gemini-1.5-pro" || lower === "gemini-2.0-flash" || lower === "gemini-2.5-flash" || lower === "gemini-2.5-pro" || lower === "gemini-1.0-pro") {
+    if (
+      lower === "gemini-1.5-flash" ||
+      lower === "gemini-1.5-pro" ||
+      lower === "gemini-2.0-flash" ||
+      lower === "gemini-2.5-flash" ||
+      lower === "gemini-2.5-pro" ||
+      lower === "gemini-1.0-pro" ||
+      lower === "gemini-3.7-flash"
+    ) {
       model = "gemini-3.8-flash";
     }
   }
@@ -67,6 +75,64 @@ function resolveAiConfig(apiKey) {
   }
 
   return { model, apiUrl, isGemini };
+}
+
+/* =========================================================
+   RESILIENT MODEL CASCADE & CIRCUIT BREAKER
+   ========================================================= */
+
+const MODEL_COOLDOWN_MS = 60 * 1000; // 60 seconds cooldown for degraded models
+const modelCooldowns = new Map(); // Map<string, number> (model -> timestamp when cooldown ends)
+
+function getCandidateModels(primaryModel, isGemini) {
+  if (!isGemini) {
+    const list = [primaryModel];
+    if (primaryModel === "gpt-4o-mini") list.push("gpt-4o");
+    else if (primaryModel === "gpt-4o") list.push("gpt-4o-mini");
+    return list;
+  }
+
+  // Gemini candidate priority cascade:
+  // 1. primaryModel (e.g. gemini-3.8-flash)
+  // 2. gemini-3.5-flash-lite (Google designated high-throughput low-latency model)
+  // 3. gemini-3.1-flash-lite (high-availability backup)
+  // 4. gemini-3.8-flash (if not primary)
+  const rawList = [
+    primaryModel,
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-3.8-flash"
+  ];
+
+  // Filter out duplicates and retired/deprecated models (1.0, 1.5, 2.0, 2.5, 3.7)
+  const unique = [];
+  const seen = new Set();
+  for (const m of rawList) {
+    if (!m) continue;
+    const lower = m.toLowerCase();
+    if (
+      lower.includes("1.0") ||
+      lower.includes("1.5") ||
+      lower.includes("2.0") ||
+      lower.includes("2.5") ||
+      lower.includes("3.7")
+    ) {
+      continue;
+    }
+    if (!seen.has(m)) {
+      seen.add(m);
+      unique.push(m);
+    }
+  }
+
+  // Circuit Breaker Sorting:
+  // If a model is currently in cooldown (e.g. returned 503 high demand recently),
+  // route new requests immediately to healthy models first to avoid stalls.
+  const now = Date.now();
+  const healthy = unique.filter(m => (modelCooldowns.get(m) || 0) < now);
+  const degraded = unique.filter(m => (modelCooldowns.get(m) || 0) >= now);
+
+  return healthy.length > 0 ? [...healthy, ...degraded] : unique;
 }
 
 const MAX_MESSAGE_LENGTH = 2000;
@@ -1273,141 +1339,114 @@ module.exports = async function (req, res) {
 
 
   /* ---------------------------------------------------------
-     AI PROVIDER REQUEST (Gemini / OpenAI)
+     AI PROVIDER REQUEST WITH MULTI-TIER RESILIENCE CASCADE
      --------------------------------------------------------- */
 
   const { model, apiUrl, isGemini } = resolveAiConfig(apiKey);
+  const candidateModels = getCandidateModels(model, isGemini);
+
+  const PER_MODEL_TIMEOUT_MS = 10000; // 10s per-model attempt budget
+  let lastResponse = null;
+  let lastProviderText = "";
+  let lastProviderData = null;
+  let answer = "";
+  let activeModel = "";
 
   try {
+    for (let i = 0; i < candidateModels.length; i++) {
+      const candidate = candidateModels[i];
+      const isLast = i === candidateModels.length - 1;
+      const controller = new AbortController();
+      const timerId = setTimeout(() => controller.abort(), PER_MODEL_TIMEOUT_MS);
 
-    let response =
-      await fetch(
-        apiUrl,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-
-            "Authorization":
-              "Bearer " + apiKey,
-
-            "User-Agent":
-              "RightAware-AI/1.0"
-          },
-
-          body:
-            JSON.stringify(
-              apiUrl.includes("/responses")
-                ? {
-                    model: model,
-                    instructions: SYSTEM,
-                    input: input,
-                    max_output_tokens: MAX_OUTPUT_TOKENS
-                  }
-                : {
-                    model: model,
-                    messages: [
-                      { role: "system", content: SYSTEM },
-                      { role: "user", content: input }
-                    ],
-                    max_tokens: MAX_OUTPUT_TOKENS
-                  }
-            )
-        }
-      );
-
-
-    /* -------------------------------------------------------
-       READ PROVIDER RESPONSE
-       ------------------------------------------------------- */
-
-    let providerText =
-      await response.text();
-
-
-    let providerData =
-      null;
-
-
-    try {
-      providerData =
-        JSON.parse(
-          providerText
-        );
-    }
-
-    catch (_) {
-      providerData =
-        null;
-    }
-
-    // Resilient fallback: If upstream returns 404 Model Not Found on Gemini, retry once with gemini-3.8-flash
-    if (!response.ok && response.status === 404 && isGemini && model !== "gemini-3.8-flash") {
-      console.warn("[RA_AI_FALLBACK] Model " + model + " returned 404; retrying with gemini-3.8-flash");
       try {
-        const retryRes = await fetch(apiUrl, {
+        const payload = apiUrl.includes("/responses")
+          ? {
+              model: candidate,
+              instructions: SYSTEM,
+              input: input,
+              max_output_tokens: MAX_OUTPUT_TOKENS
+            }
+          : {
+              model: candidate,
+              messages: [
+                { role: "system", content: SYSTEM },
+                { role: "user", content: input }
+              ],
+              max_tokens: MAX_OUTPUT_TOKENS
+            };
+
+        const res = await fetch(apiUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + apiKey,
             "User-Agent": "RightAware-AI/1.0"
           },
-          body: JSON.stringify({
-            model: "gemini-3.8-flash",
-            messages: [
-              { role: "system", content: SYSTEM },
-              { role: "user", content: input }
-            ],
-            max_tokens: MAX_OUTPUT_TOKENS
-          })
+          body: JSON.stringify(payload),
+          signal: controller.signal
         });
-        if (retryRes.ok) {
-          response = retryRes;
-          providerText = await retryRes.text();
-          try {
-            providerData = JSON.parse(providerText);
-          } catch (_) {
-            providerData = null;
+
+        lastResponse = res;
+        lastProviderText = await res.text();
+        try {
+          lastProviderData = JSON.parse(lastProviderText);
+        } catch (_) {
+          lastProviderData = null;
+        }
+
+        if (res.ok) {
+          const text = extractResponseText(lastProviderData);
+          if (text) {
+            answer = text;
+            activeModel = candidate;
+            if (i > 0) {
+              console.warn(`[RA_AI_RECOVERY] Model "${candidateModels[0]}" degraded; successfully recovered using candidate model "${candidate}"`);
+            }
+            break; // Valid AI answer obtained!
           }
         }
-      } catch (retryErr) {
-        console.warn("[RA_AI_RETRY_ERROR]", retryErr);
+
+        const status = res.status;
+        const isTransient = status === 503 || status === 429 || status === 500 || status === 502 || status === 504 || status === 404;
+
+        if (isTransient) {
+          // Trip circuit breaker for degraded model
+          modelCooldowns.set(candidate, Date.now() + MODEL_COOLDOWN_MS);
+          console.warn(`[RA_AI_FALLBACK] Candidate "${candidate}" returned HTTP ${status}. Tripped 60s circuit breaker. ${isLast ? "No more candidates." : "Cascading to next candidate..."}`);
+          if (!isLast) continue;
+        } else {
+          // Fatal auth/client error (e.g. 401 Unauthorized, 403 Forbidden)
+          console.error(`[RA_AI_FATAL_ERROR] Candidate "${candidate}" returned non-retryable HTTP ${status}`);
+          break;
+        }
+      } catch (fetchErr) {
+        const isTimeout = fetchErr.name === "AbortError";
+        modelCooldowns.set(candidate, Date.now() + MODEL_COOLDOWN_MS);
+        console.warn(`[RA_AI_EXCEPTION] Candidate "${candidate}" ${isTimeout ? "timed out after " + PER_MODEL_TIMEOUT_MS + "ms" : "network error: " + fetchErr.message}. ${isLast ? "No more candidates." : "Cascading to next candidate..."}`);
+        if (!isLast) continue;
+      } finally {
+        clearTimeout(timerId);
       }
     }
 
-
     /* -------------------------------------------------------
-       PROVIDER ERROR
+       PROVIDER ERROR (IF ALL CANDIDATES FAILED OR UNREADABLE)
        ------------------------------------------------------- */
 
-    if (!response.ok) {
-
+    if (!lastResponse || !lastResponse.ok || !answer) {
       const providerMessage =
-        providerData &&
-        providerData.error &&
-        providerData.error.message
-
-          ? String(
-              providerData
-                .error
-                .message
-            )
-
-          : providerText
-
-            ? providerText.slice(
-                0,
-                500
-              )
-
-            : "No provider error message.";
-
+        lastProviderData &&
+        lastProviderData.error &&
+        lastProviderData.error.message
+          ? String(lastProviderData.error.message)
+          : lastProviderText
+            ? lastProviderText.slice(0, 500)
+            : (!lastResponse ? "Upstream AI provider timeout on all candidate models." : "No provider error message.");
 
       console.error(
         "RIGHTAWARE_AI_PROVIDER_ERROR",
-        response.status,
+        lastResponse ? lastResponse.status : 504,
         providerMessage
       );
 
@@ -1418,54 +1457,12 @@ module.exports = async function (req, res) {
         } catch (_) {}
       }
 
-      /*
-       * Resilient error boundary: never return 200 for upstream AI failure.
-       * Keep raw provider status / error strictly in server logs.
-       */
       return res.status(503).json({
         ok: false,
         code: "provider_unavailable",
         error: "The AI assistant is temporarily unavailable. Verified guides and helplines are available below.",
-        providerStatus: response.status,
+        providerStatus: lastResponse ? lastResponse.status : 504,
         providerMessage: providerMessage,
-        disclaimer: DISCLAIMER
-      });
-    }
-
-
-    /* -------------------------------------------------------
-       EXTRACT GENERATED ANSWER
-       ------------------------------------------------------- */
-
-    const answer =
-      extractResponseText(
-        providerData
-      );
-
-
-    if (!answer) {
-
-      console.error(
-        "RIGHTAWARE_AI_UNREADABLE_RESPONSE",
-        JSON.stringify(
-          providerData
-        ).slice(
-          0,
-          5000
-        )
-      );
-
-      // Refund guest quota if unreadable
-      if (isGuest && guestId) {
-        try {
-          await callSupabaseRpc("refund_guest_quota", { p_guest_id: guestId });
-        } catch (_) {}
-      }
-
-      return res.status(503).json({
-        ok: false,
-        code: "provider_unavailable",
-        error: "The AI assistant could not parse the provider response. Verified guides and helplines are available below.",
         disclaimer: DISCLAIMER
       });
     }
@@ -1514,6 +1511,8 @@ module.exports = async function (req, res) {
 
       disclaimer:
         DISCLAIMER,
+
+      model: activeModel,
 
       isGuest: isGuest,
       guestAttempts: guestQuota ? guestQuota.current_attempts : undefined,

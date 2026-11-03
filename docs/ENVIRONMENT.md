@@ -34,9 +34,11 @@ git-ignored and must never be committed.
 1. In Google AI Studio, generate an API key.
 2. In Vercel Project Settings → Environment Variables:
    - `AI_API_KEY`: `AIzaSy...` (your Gemini key)
-   - `AI_MODEL`: `gemini-3.8-flash`
+   - `AI_MODEL`: `gemini-3.8-flash` (or omit for default)
    - `AI_BASE_URL` (optional): `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`
      (if omitted or set to the SDK baseURL `.../openai/`, it is auto-resolved)
+
+   *High-Availability & Spike Resilience:* RightAware automatically executes a resilient model cascade (`gemini-3.8-flash` → `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`) with a 10s per-model timeout and in-memory circuit breaker. If Google experiences high demand (HTTP 503) or latency spikes on the primary model, requests seamlessly failover to the ultra-low-latency `gemini-3.5-flash-lite` tier.
 
 ### OpenAI (Legacy / Alternative)
 1. In OpenAI platform, generate an API key (`sk-...`).

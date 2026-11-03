@@ -107,12 +107,20 @@
             context: opts.context || undefined
           };
 
-          const res = await fetch(RA_CONFIG.AI_ENDPOINT, {
-            method: "POST",
-            headers: headers,
-            credentials: "same-origin",
-            body: JSON.stringify(reqBody)
-          });
+          const abortCtrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+          const abortTimer = abortCtrl ? setTimeout(function(){ abortCtrl.abort(); }, 30000) : null;
+          let res;
+          try {
+            res = await fetch(RA_CONFIG.AI_ENDPOINT, {
+              method: "POST",
+              headers: headers,
+              credentials: "same-origin",
+              body: JSON.stringify(reqBody),
+              signal: abortCtrl ? abortCtrl.signal : undefined
+            });
+          } finally {
+            if(abortTimer) clearTimeout(abortTimer);
+          }
 
           try{ data = await res.json(); }catch(_){ data = null; }
 
