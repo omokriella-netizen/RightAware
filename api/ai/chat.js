@@ -1277,21 +1277,31 @@ module.exports = async function (req, res) {
 
 
   /* ---------------------------------------------------------
-     OPTIONAL PAGE CONTEXT
+     OPTIONAL PAGE CONTEXT & CONVERSATIONAL HISTORY
      --------------------------------------------------------- */
 
   const pageContext =
     typeof body.context === "string" &&
     body.context.trim()
-
       ? "\n\nRIGHTAWARE PAGE CONTEXT:\n" +
         body.context.slice(
           0,
           MAX_PAGE_CONTEXT_LENGTH
         )
-
       : "";
 
+  const conversationHistory =
+    Array.isArray(body.history) && body.history.length > 0
+      ? "\n\nRECENT DIALOGUE CONTEXT:\n" +
+        body.history
+          .slice(-6)
+          .map(function (h) {
+            const roleName = h.role === "assistant" ? "Assistant" : "Citizen";
+            const textContent = String(h.text || "").slice(0, 500);
+            return roleName + ": " + textContent;
+          })
+          .join("\n")
+      : "";
 
   /* ---------------------------------------------------------
      RETRIEVE RIGHTAWARE CONTEXT
@@ -1302,7 +1312,6 @@ module.exports = async function (req, res) {
     laws: [],
     orgs: []
   };
-
 
   try {
     verifiedContext =
@@ -1321,7 +1330,6 @@ module.exports = async function (req, res) {
     );
   }
 
-
   /* ---------------------------------------------------------
      FINAL MODEL INPUT
      --------------------------------------------------------- */
@@ -1329,9 +1337,8 @@ module.exports = async function (req, res) {
   const input =
     "USER QUESTION:\n" +
     message +
-
+    conversationHistory +
     pageContext +
-
     "\n\nRIGHTAWARE VERIFIED CONTEXT:\n" +
     JSON.stringify(
       verifiedContext

@@ -104,7 +104,8 @@
 
           const reqBody = {
             message: m,
-            context: opts.context || undefined
+            context: opts.context || undefined,
+            history: Array.isArray(opts.history) ? opts.history.slice(-6) : undefined
           };
 
           const abortCtrl = typeof AbortController !== "undefined" ? new AbortController() : null;

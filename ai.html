@@ -99,37 +99,52 @@
 </header>
 <main id="main" class="ra-messenger-page">
   <div class="ra-messenger-workspace">
-    <!-- Left Sidebar: Emergency Desks, Quick Guides & Quota Pill -->
-    <aside class="ra-messenger-sidebar" id="raSidebar" aria-label="Emergency Desks and Legal Guides">
+    <!-- Left Sidebar: New Chat, Past Conversations, Emergency Desks & Quota -->
+    <aside class="ra-messenger-sidebar" id="raSidebar" aria-label="Chat History and Legal Desks">
       <div>
         <div class="ra-sidebar-header">
           <div class="ra-sidebar-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <span>Legal Desks &amp; Guides</span>
+            <span>RightAware AI</span>
           </div>
           <button type="button" class="ra-sidebar-close" id="raSidebarClose" aria-label="Close sidebar">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
 
-        <!-- Section 1: Verified Emergency Contacts -->
+        <!-- Action: New Chat CTA -->
+        <button type="button" class="ra-sidebar-new-btn" id="raNewChatBtn" aria-label="Start a new chat inquiry">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>New Chat</span>
+        </button>
+
+        <!-- Section 1: Past Conversations -->
         <div class="ra-sidebar-section">
-          <h3 class="ra-sidebar-heading">Verified Emergency Desks</h3>
+          <h3 class="ra-sidebar-heading">Past Conversations</h3>
+          <div class="ra-sidebar-sessions-list" id="raSidebarSessionsList" role="list" aria-label="Past conversations"></div>
+          <div class="ra-sidebar-sessions-empty" id="raSidebarSessionsEmpty">
+            No past conversations yet.
+          </div>
+        </div>
+
+        <!-- Section 2: Verified Emergency Desks -->
+        <div class="ra-sidebar-section">
+          <h3 class="ra-sidebar-heading">Emergency Helplines</h3>
           <div class="ra-sidebar-cards">
             <a href="tel:08057000001" class="ra-sidebar-card">
               <span class="ra-sidebar-badge police">24/7 Police CRU</span>
               <strong>0805 700 0001</strong>
-              <small>Police Complaint Response Unit for extortion, unlawful arrest &amp; harassment.</small>
+              <small>Extortion, unlawful arrest &amp; bail demands.</small>
             </a>
             <a href="tel:112" class="ra-sidebar-card">
               <span class="ra-sidebar-badge emergency">National Dispatch</span>
               <strong>112</strong>
-              <small>Toll-free emergency dispatch for immediate physical danger &amp; distress.</small>
+              <small>Toll-free emergency dispatch for immediate physical danger.</small>
             </a>
           </div>
         </div>
 
-        <!-- Section 2: Quick Legal Guides -->
+        <!-- Section 3: Quick Legal Guides -->
         <div class="ra-sidebar-section">
           <h3 class="ra-sidebar-heading">Quick Legal Guides</h3>
           <nav class="ra-sidebar-links" aria-label="Guides shortcuts">
@@ -142,9 +157,6 @@
             <a href="laws.html" class="ra-sidebar-link">
               <span aria-hidden="true">📜</span> Nigerian Constitution &amp; Statutes
             </a>
-            <a href="help.html" class="ra-sidebar-link">
-              <span aria-hidden="true">🆘</span> Emergency Assistance Center
-            </a>
           </nav>
         </div>
       </div>
@@ -152,7 +164,7 @@
       <!-- Sidebar Footer: Quota & Reset -->
       <div class="ra-sidebar-footer">
         <span class="ra-sidebar-quota-pill" id="aiModePillSidebar">PREVIEW: 0/3 FREE</span>
-        <button type="button" class="ra-sidebar-clear-btn" id="raSidebarClearBtn" aria-label="Clear chat conversation">
+        <button type="button" class="ra-sidebar-clear-btn" id="raSidebarClearBtn" aria-label="Reset active conversation">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           <span>Reset Conversation</span>
         </button>
@@ -179,13 +191,13 @@
           </div>
         </div>
         <div class="ra-messenger-actions">
-          <button type="button" class="ra-sidebar-toggle-btn" id="raSidebarToggle" aria-label="Open emergency contacts and guides">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <span>Desks &amp; Guides</span>
+          <button type="button" class="ra-sidebar-toggle-btn" id="raSidebarToggle" aria-label="Open past chats and emergency desks">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Past Chats &amp; Desks</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm" id="clearChatBtn" title="Clear conversation" aria-label="Clear conversation">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            <span class="ra-clear-text">Clear</span>
+          <button type="button" class="btn btn-ghost btn-sm" id="clearChatBtn" title="Start new conversation" aria-label="Start new conversation">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span class="ra-clear-text">New</span>
           </button>
         </div>
       </header>
@@ -199,27 +211,48 @@
         <button type="button" id="raDismissDraftBtn" aria-label="Dismiss notice">&times;</button>
       </div>
 
-      <!-- Expansive Messages Stream -->
-      <div class="ra-messenger-stream" id="chatBox" aria-live="polite">
-        <!-- Greeting Assistant Message -->
-        <div class="ra-msg assistant">
-          <div class="ra-msg-bubble">
-            <span class="ra-msg-sender">RightAware AI</span>
-            <div class="ra-msg-content">
-              <p class="ra-ai-p">Hello! I can explain your legal rights under Nigerian law (police stops, bail, tenancy, salary disputes, online scams). What would you like to know?</p>
+      <!-- Welcome Hero (Empty State Canvas when no active chat messages) -->
+      <div class="ra-welcome-hero" id="welcomeHero">
+        <div class="ra-welcome-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Nigerian Civic &amp; Legal Assistant</span>
+        </div>
+        <h2 class="ra-welcome-title">What Nigerian legal issue can we help you resolve today?</h2>
+        <p class="ra-welcome-subtitle">Select a common civic scenario below or describe your situation in plain words in the box below.</p>
+        <div class="ra-welcome-grid">
+          <button type="button" class="ra-welcome-card" data-p="Police stopped someone I know at a checkpoint or arrested them. What are their constitutional rights regarding search, interrogation, and free bail?">
+            <div class="ra-welcome-card-header">
+              <span class="ra-welcome-card-icon" aria-hidden="true">🚔</span>
+              <strong class="ra-welcome-card-title">Police Stop &amp; Bail</strong>
             </div>
-            <span class="ra-msg-time">Just now</span>
-          </div>
+            <p class="ra-welcome-card-desc">Checkpoint searches, phone inspections, 24/48-hr detention limits, and free bail protections.</p>
+          </button>
+          <button type="button" class="ra-welcome-card" data-p="My landlord locked me out of my apartment or threatened immediate eviction without court notice. What are my legal protections?">
+            <div class="ra-welcome-card-header">
+              <span class="ra-welcome-card-icon" aria-hidden="true">🏠</span>
+              <strong class="ra-welcome-card-title">Landlord Lockout</strong>
+            </div>
+            <p class="ra-welcome-card-desc">Recovery of Premises rules, 6-month statutory notice periods, and illegal self-help lockout recourse.</p>
+          </button>
+          <button type="button" class="ra-welcome-card" data-p="My employer has refused to pay my earned salary for months. What legal steps can I take under the Nigerian Labour Act?">
+            <div class="ra-welcome-card-header">
+              <span class="ra-welcome-card-icon" aria-hidden="true">💼</span>
+              <strong class="ra-welcome-card-title">Unpaid Salary</strong>
+            </div>
+            <p class="ra-welcome-card-desc">Statutory wage recovery, formal demand letters, and National Industrial Court grievance filings.</p>
+          </button>
+          <button type="button" class="ra-welcome-card" data-p="I was scammed by a fake online vendor or fraudster. How do I initiate a CBN bank freeze and report to cybercrime authorities?">
+            <div class="ra-welcome-card-header">
+              <span class="ra-welcome-card-icon" aria-hidden="true">📱</span>
+              <strong class="ra-welcome-card-title">Online Fraud &amp; Scams</strong>
+            </div>
+            <p class="ra-welcome-card-desc">CBN chargebacks, banker's order account freezes, and Police Cybercrime Unit reporting.</p>
+          </button>
         </div>
       </div>
 
-      <!-- Quick Starter Chips (auto-hidden once question sent, restored on clear) -->
-      <div class="ra-messenger-chips" id="quickChips">
-        <button type="button" class="ra-chip" data-p="Police arrested someone I know. What are our constitutional rights?">🚔 Police Arrest &amp; Bail</button>
-        <button type="button" class="ra-chip" data-p="My landlord locked my apartment without court notice. What can I do?">🏠 Landlord Lockout</button>
-        <button type="button" class="ra-chip" data-p="My employer has refused to pay my salary for 3 months.">💼 Unpaid Salary</button>
-        <button type="button" class="ra-chip" data-p="I was scammed online by a fake vendor. How do I recover my money?">📱 Online Scam</button>
-      </div>
+      <!-- Expansive Messages Stream (Populates white space as conversation unfolds) -->
+      <div class="ra-messenger-stream" id="chatBox" aria-live="polite" style="display: none;"></div>
 
       <!-- Bottom Composer Bar -->
       <div class="ra-messenger-composer">
@@ -294,16 +327,19 @@
 <script>
 (function(){
   var box = document.getElementById("chatBox");
+  var welcomeHero = document.getElementById("welcomeHero");
   var form = document.getElementById("chatForm");
   var input = document.getElementById("chatInput");
   var sendBtn = document.getElementById("sendBtn");
   var clearBtn = document.getElementById("clearChatBtn");
+  var newChatBtn = document.getElementById("raNewChatBtn");
   var sidebarClearBtn = document.getElementById("raSidebarClearBtn");
   var sidebar = document.getElementById("raSidebar");
   var sidebarToggle = document.getElementById("raSidebarToggle");
   var sidebarClose = document.getElementById("raSidebarClose");
   var sidebarBackdrop = document.getElementById("raSidebarBackdrop");
-  var quickChips = document.getElementById("quickChips");
+  var sessionsListEl = document.getElementById("raSidebarSessionsList");
+  var sessionsEmptyEl = document.getElementById("raSidebarSessionsEmpty");
   var draftNotice = document.getElementById("raDraftNotice");
   var dismissDraftBtn = document.getElementById("raDismissDraftBtn");
   var statusBadge = document.getElementById("aiStatusBadge");
@@ -335,14 +371,34 @@
       .replace(/'/g, "&#39;");
   }
 
-  function formatTime(){
-    var d = new Date();
+  function formatTime(d){
+    d = d ? new Date(d) : new Date();
     var h = d.getHours();
     var m = d.getMinutes();
     var ampm = h >= 12 ? "PM" : "AM";
     h = h % 12;
     h = h ? h : 12;
     return h + ":" + (m < 10 ? "0" + m : m) + " " + ampm;
+  }
+
+  function formatRelativeTime(ts){
+    if(!ts) return "";
+    var d = new Date(ts);
+    var now = new Date();
+    var diffMs = now.getTime() - d.getTime();
+    var diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    if(diffHours < 1){
+      var diffMins = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+      return diffMins + "m ago";
+    }
+    if(diffHours < 24 && d.getDate() === now.getDate()){
+      return formatTime(d);
+    }
+    if(diffHours < 48){
+      return "Yesterday";
+    }
+    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return months[d.getMonth()] + " " + d.getDate();
   }
 
   function toggleSidebar(open){
@@ -417,7 +473,7 @@
     pendingRevealContainer = null;
   }
 
-  // Abort active stream immediately when conversation is cleared
+  // Abort active stream immediately when conversation is cleared or switched
   function abortActiveReveal(){
     if(activeRevealTimer){
       clearTimeout(activeRevealTimer);
@@ -522,11 +578,11 @@
     return out;
   }
 
-  function addMsg(role, text, links, customLabel, isStreamed){
+  function addMsg(role, text, links, customLabel, isStreamed, customTime){
     var wrap = document.createElement("div");
     wrap.className = "ra-msg " + (role === "user" ? "user" : "assistant");
 
-    var timeStr = formatTime();
+    var timeStr = customTime || formatTime();
     var bubble = document.createElement("div");
     bubble.className = "ra-msg-bubble";
 
@@ -617,6 +673,125 @@
     } catch(_) { return false; }
   }
 
+  /* ---------------------------------------------------------
+     SIDEBAR SESSIONS RENDERING & SESSION SWITCHING
+     --------------------------------------------------------- */
+
+  function renderSidebarSessions(){
+    if(!sessionsListEl) return;
+    var sessions = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getSessions() : [];
+    var activeId = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getActiveSessionId() : null;
+    sessionsListEl.innerHTML = "";
+
+    if(!sessions || sessions.length === 0){
+      if(sessionsEmptyEl) sessionsEmptyEl.style.display = "block";
+      return;
+    }
+    if(sessionsEmptyEl) sessionsEmptyEl.style.display = "none";
+
+    sessions.forEach(function(sess){
+      var item = document.createElement("div");
+      item.className = "ra-session-item" + (sess.id === activeId ? " active" : "");
+      item.setAttribute("role", "button");
+      item.setAttribute("tabindex", "0");
+      item.setAttribute("aria-label", "Open conversation: " + sess.title);
+
+      var main = document.createElement("div");
+      main.className = "ra-session-item-main";
+      main.innerHTML = '<svg class="ra-session-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+        + '<div class="ra-session-info">'
+        + '  <span class="ra-session-title">' + esc(sess.title) + '</span>'
+        + '  <span class="ra-session-time">' + formatRelativeTime(sess.updatedAt || sess.createdAt) + '</span>'
+        + '</div>';
+
+      var delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "ra-session-delete-btn";
+      delBtn.setAttribute("aria-label", "Delete conversation: " + sess.title);
+      delBtn.title = "Delete conversation";
+      delBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+
+      delBtn.addEventListener("click", function(e){
+        e.stopPropagation();
+        if(window.RA_CHAT_STATE){
+          window.RA_CHAT_STATE.deleteSession(sess.id);
+          if(sess.id === activeId){
+            startNewChat();
+          } else {
+            renderSidebarSessions();
+          }
+        }
+      });
+
+      item.addEventListener("click", function(){
+        switchSession(sess.id);
+      });
+      item.addEventListener("keydown", function(e){
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          switchSession(sess.id);
+        }
+      });
+
+      item.appendChild(main);
+      item.appendChild(delBtn);
+      sessionsListEl.appendChild(item);
+    });
+  }
+
+  function mountSessionMessages(messages){
+    box.innerHTML = "";
+    if(welcomeHero) welcomeHero.classList.add("hidden");
+    box.style.display = "flex";
+
+    messages.forEach(function(m){
+      addMsg(m.role, m.text, m.links, m.sourceLabel || (m.role === "assistant" ? "RightAware AI" : ""), false, m.timestamp);
+    });
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function switchSession(id){
+    if(!window.RA_CHAT_STATE) return;
+    abortActiveReveal();
+    removeCalmingCard();
+    setMutationLock(false);
+
+    window.RA_CHAT_STATE.setActiveSessionId(id);
+    var session = window.RA_CHAT_STATE.getSession(id);
+    if(session && session.messages && session.messages.length){
+      mountSessionMessages(session.messages);
+    } else {
+      startNewChat();
+    }
+    renderSidebarSessions();
+    toggleSidebar(false);
+  }
+
+  function startNewChat(){
+    abortActiveReveal();
+    removeCalmingCard();
+    setMutationLock(false);
+
+    if(window.RA_CHAT_STATE){
+      window.RA_CHAT_STATE.setActiveSessionId(null);
+    }
+    box.innerHTML = "";
+    box.style.display = "none";
+    if(welcomeHero) welcomeHero.classList.remove("hidden");
+    if(draftNotice) draftNotice.setAttribute("hidden", "");
+
+    renderSidebarSessions();
+    toggleSidebar(false);
+
+    if(input){
+      input.disabled = false;
+      input.placeholder = "Describe your issue in plain words…";
+      input.value = "";
+      input.focus();
+    }
+    if(sendBtn) sendBtn.disabled = false;
+  }
+
   async function handleSend(q){
     if(isSubmitting) return;
     q = (q || "").trim();
@@ -630,12 +805,24 @@
     // Flush any pending progressive reveal animation before starting new turn
     flushActiveReveal();
 
-    // Auto-collapse quick chips to maximize vertical reading canvas
-    if(quickChips) quickChips.style.display = "none";
+    // Auto-create session if starting a fresh inquiry
+    if(window.RA_CHAT_STATE && !window.RA_CHAT_STATE.getActiveSessionId()){
+      window.RA_CHAT_STATE.createSession(q);
+    }
+
+    // Transition from Welcome Hero to Active Message Stream
+    if(welcomeHero) welcomeHero.classList.add("hidden");
+    box.style.display = "flex";
     if(draftNotice) draftNotice.setAttribute("hidden", "");
 
     setMutationLock(true);
-    addMsg("user", q);
+    var userTime = formatTime();
+    addMsg("user", q, [], "", false, userTime);
+    if(window.RA_CHAT_STATE){
+      window.RA_CHAT_STATE.addMessageToActiveSession("user", q, [], "", userTime);
+    }
+    renderSidebarSessions();
+
     if(input) input.value = "";
     showCalmingCard();
 
@@ -646,7 +833,21 @@
         return;
       }
 
-      var res = await window.RA_AI.ask(q);
+      var historyTurns = [];
+      try {
+        if(window.RA_CHAT_STATE){
+          var activeId = window.RA_CHAT_STATE.getActiveSessionId();
+          var curSess = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
+          if(curSess && Array.isArray(curSess.messages)){
+            // Exclude the current user message which was just appended
+            historyTurns = curSess.messages.slice(0, -1).slice(-6).map(function(m){
+              return { role: m.role, text: m.text };
+            });
+          }
+        }
+      } catch(_) {}
+
+      var res = await window.RA_AI.ask(q, { history: historyTurns });
       removeCalmingCard();
 
       if(res && res.limitReached){
@@ -676,13 +877,23 @@
         window.RA_CHAT_STATE.setGuestPromptCount(res.guestAttempts);
       }
 
+      var aiTime = formatTime();
       if(res && res.text){
         var label = (res.isFallback || res.demo) ? (res.sourceLabel || "Verified RightAware Guide") : "RightAware AI";
-        addMsg("ai", res.text, res.links, label, true);
+        if(window.RA_CHAT_STATE){
+          window.RA_CHAT_STATE.addMessageToActiveSession("assistant", res.text, res.links || [], label, aiTime);
+        }
+        addMsg("ai", res.text, res.links, label, true, aiTime);
       } else {
-        addMsg("ai", "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.", [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }], "Verified RightAware Guide", false);
+        var fallbackText = "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.";
+        var fallbackLinks = [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }];
+        if(window.RA_CHAT_STATE){
+          window.RA_CHAT_STATE.addMessageToActiveSession("assistant", fallbackText, fallbackLinks, "Verified RightAware Guide", aiTime);
+        }
+        addMsg("ai", fallbackText, fallbackLinks, "Verified RightAware Guide", false, aiTime);
       }
 
+      renderSidebarSessions();
       setPills();
 
       if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
@@ -703,33 +914,13 @@
     }
   }
 
-  function clearConversation(){
-    abortActiveReveal();
-    removeCalmingCard();
-    box.innerHTML = '<div class="ra-msg assistant">'
-      + '<div class="ra-msg-bubble">'
-      + '<span class="ra-msg-sender">RightAware AI</span>'
-      + '<div class="ra-msg-content"><p class="ra-ai-p">Conversation cleared. What would you like to know about Nigerian legal rights?</p></div>'
-      + '<span class="ra-msg-time">Just now</span>'
-      + '</div></div>';
-    // Restore starter chips on clear conversation
-    if(quickChips) quickChips.style.display = "";
-    if(draftNotice) draftNotice.setAttribute("hidden", "");
-    if(input){
-      input.disabled = false;
-      input.placeholder = "Describe your issue in plain words…";
-      input.focus();
-    }
-    if(sendBtn) sendBtn.disabled = false;
-  }
-
   form.addEventListener("submit", function(e){
     e.preventDefault();
     if(input) handleSend(input.value);
   });
 
-  // Starter chip click handlers
-  document.querySelectorAll("[data-p]").forEach(function(b){
+  // Welcome scenario cards click handlers
+  document.querySelectorAll(".ra-welcome-card[data-p]").forEach(function(b){
     b.addEventListener("click", function(){
       if(input) {
         input.value = b.dataset.p;
@@ -738,12 +929,10 @@
     });
   });
 
-  // Clear conversation button handlers (both header button and sidebar button)
-  if(clearBtn) clearBtn.addEventListener("click", clearConversation);
-  if(sidebarClearBtn) sidebarClearBtn.addEventListener("click", function(){
-    clearConversation();
-    toggleSidebar(false);
-  });
+  // New Chat CTA handlers
+  if(newChatBtn) newChatBtn.addEventListener("click", startNewChat);
+  if(clearBtn) clearBtn.addEventListener("click", startNewChat);
+  if(sidebarClearBtn) sidebarClearBtn.addEventListener("click", startNewChat);
 
   // Handle ?q= Deep Link Contract (Pre-fill without auto-submit to protect guest quota)
   try {
@@ -768,21 +957,35 @@
     if(window.RA_CHAT_STATE){
       var transit = window.RA_CHAT_STATE.consumeTransitThread();
       if(transit && transit.length){
-        box.innerHTML = "";
+        var transitSession = window.RA_CHAT_STATE.createSession(transit[0].text || "Home Inquiry");
         transit.forEach(function(m){
-          if(m.role === "user"){
-            addMsg("user", m.text);
-          } else if(m.role === "ai" || m.role === "assistant"){
-            addMsg("ai", m.text, m.links, "RightAware AI", false);
-          }
+          window.RA_CHAT_STATE.addMessageToActiveSession(m.role, m.text, m.links || [], m.role === "ai" ? "RightAware AI" : "", formatTime());
         });
-        if(quickChips) quickChips.style.display = "none";
+        mountSessionMessages(transitSession.messages);
       }
     }
   } catch(_) {}
 
+  // Session Hydration on Initial Load
+  try {
+    if(window.RA_CHAT_STATE){
+      var activeId = window.RA_CHAT_STATE.getActiveSessionId();
+      var activeSession = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
+      if(activeSession && activeSession.messages && activeSession.messages.length > 0){
+        mountSessionMessages(activeSession.messages);
+      } else {
+        // Fresh state: show Welcome Hero, hide empty chat box
+        if(box) box.style.display = "none";
+        if(welcomeHero) welcomeHero.classList.remove("hidden");
+      }
+    }
+  } catch(_) {}
+
+  renderSidebarSessions();
+
   document.addEventListener("ra:session-ready", function(){
     setPills();
+    renderSidebarSessions();
   });
   document.addEventListener("ra:backend-ready", function(){
     setPills();
