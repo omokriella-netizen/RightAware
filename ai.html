@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="ra-ai-body">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
@@ -193,7 +193,7 @@
         <div class="ra-messenger-actions">
           <button type="button" class="ra-sidebar-toggle-btn" id="raSidebarToggle" aria-label="Open past chats and emergency desks">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span>Past Chats &amp; Desks</span>
+            <span class="ra-toggle-text">Chats</span>
           </button>
           <button type="button" class="btn btn-ghost btn-sm" id="clearChatBtn" title="Start new conversation" aria-label="Start new conversation">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -211,42 +211,44 @@
         <button type="button" id="raDismissDraftBtn" aria-label="Dismiss notice">&times;</button>
       </div>
 
-      <!-- Welcome Hero (Empty State Canvas when no active chat messages) -->
+      <!-- Welcome Hero (Empty State Canvas when no active chat messages - Gemini Style) -->
       <div class="ra-welcome-hero" id="welcomeHero">
-        <div class="ra-welcome-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>Nigerian Civic &amp; Legal Assistant</span>
+        <div class="ra-gemini-sparkle" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/>
+          </svg>
         </div>
-        <h2 class="ra-welcome-title">What Nigerian legal issue can we help you resolve today?</h2>
-        <p class="ra-welcome-subtitle">Select a common civic scenario below or describe your situation in plain words in the box below.</p>
-        <div class="ra-welcome-grid">
-          <button type="button" class="ra-welcome-card" data-p="Police stopped someone I know at a checkpoint or arrested them. What are their constitutional rights regarding search, interrogation, and free bail?">
-            <div class="ra-welcome-card-header">
-              <span class="ra-welcome-card-icon" aria-hidden="true">🚔</span>
-              <strong class="ra-welcome-card-title">Police Stop &amp; Bail</strong>
-            </div>
-            <p class="ra-welcome-card-desc">Checkpoint searches, phone inspections, 24/48-hr detention limits, and free bail protections.</p>
+        <h2 class="ra-welcome-title">Where should we start?</h2>
+        <p class="ra-welcome-subtitle">Ask RightAware AI about your fundamental legal rights under Nigerian law.</p>
+
+        <!-- Centered Landing Input Capsule (Immediately visible on page landing) -->
+        <form class="ra-gemini-search-box" id="heroForm">
+          <div class="ra-gemini-input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </div>
+          <input type="text" id="heroInput" class="ra-gemini-input" placeholder="Ask RightAware AI..." autocomplete="off" aria-label="Ask RightAware AI"/>
+          <button type="submit" class="ra-gemini-send" id="heroSendBtn" aria-label="Send message">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           </button>
-          <button type="button" class="ra-welcome-card" data-p="My landlord locked me out of my apartment or threatened immediate eviction without court notice. What are my legal protections?">
-            <div class="ra-welcome-card-header">
-              <span class="ra-welcome-card-icon" aria-hidden="true">🏠</span>
-              <strong class="ra-welcome-card-title">Landlord Lockout</strong>
-            </div>
-            <p class="ra-welcome-card-desc">Recovery of Premises rules, 6-month statutory notice periods, and illegal self-help lockout recourse.</p>
+        </form>
+
+        <!-- Suggestion Prompt Rows -->
+        <div class="ra-gemini-prompts-list">
+          <button type="button" class="ra-gemini-prompt-row" data-p="Police stopped someone I know at a checkpoint or arrested them. What are their constitutional rights regarding search, interrogation, and free bail?">
+            <span class="ra-gemini-prompt-icon" aria-hidden="true">🚔</span>
+            <span class="ra-gemini-prompt-text">Police checkpoint search, phone checks, &amp; free bail rights</span>
           </button>
-          <button type="button" class="ra-welcome-card" data-p="My employer has refused to pay my earned salary for months. What legal steps can I take under the Nigerian Labour Act?">
-            <div class="ra-welcome-card-header">
-              <span class="ra-welcome-card-icon" aria-hidden="true">💼</span>
-              <strong class="ra-welcome-card-title">Unpaid Salary</strong>
-            </div>
-            <p class="ra-welcome-card-desc">Statutory wage recovery, formal demand letters, and National Industrial Court grievance filings.</p>
+          <button type="button" class="ra-gemini-prompt-row" data-p="My landlord locked me out of my apartment or threatened immediate eviction without court notice. What are my legal protections?">
+            <span class="ra-gemini-prompt-icon" aria-hidden="true">🏠</span>
+            <span class="ra-gemini-prompt-text">Protect against illegal landlord lockout &amp; eviction without notice</span>
           </button>
-          <button type="button" class="ra-welcome-card" data-p="I was scammed by a fake online vendor or fraudster. How do I initiate a CBN bank freeze and report to cybercrime authorities?">
-            <div class="ra-welcome-card-header">
-              <span class="ra-welcome-card-icon" aria-hidden="true">📱</span>
-              <strong class="ra-welcome-card-title">Online Fraud &amp; Scams</strong>
-            </div>
-            <p class="ra-welcome-card-desc">CBN chargebacks, banker's order account freezes, and Police Cybercrime Unit reporting.</p>
+          <button type="button" class="ra-gemini-prompt-row" data-p="My employer has refused to pay my earned salary for months. What legal steps can I take under the Nigerian Labour Act?">
+            <span class="ra-gemini-prompt-icon" aria-hidden="true">💼</span>
+            <span class="ra-gemini-prompt-text">Recover unpaid salary arrears under Nigerian Labour Act</span>
+          </button>
+          <button type="button" class="ra-gemini-prompt-row" data-p="I was scammed by a fake online vendor or fraudster. How do I initiate a CBN bank freeze and report to cybercrime authorities?">
+            <span class="ra-gemini-prompt-icon" aria-hidden="true">📱</span>
+            <span class="ra-gemini-prompt-text">Report fake online vendor scam &amp; initiate CBN bank freeze</span>
           </button>
         </div>
       </div>
@@ -254,8 +256,8 @@
       <!-- Expansive Messages Stream (Populates white space as conversation unfolds) -->
       <div class="ra-messenger-stream" id="chatBox" aria-live="polite" style="display: none;"></div>
 
-      <!-- Bottom Composer Bar -->
-      <div class="ra-messenger-composer">
+      <!-- Bottom Composer Bar (Hidden on landing, docked at bottom during active conversation) -->
+      <div class="ra-messenger-composer" id="chatComposerWrap" style="display: none;">
         <form id="chatForm" class="ra-composer-form">
           <input id="chatInput" class="ra-composer-input" type="text" placeholder="Describe your issue in plain words…" autocomplete="off" aria-label="Ask RightAware AI"/>
           <button class="ra-composer-send-btn" id="sendBtn" type="submit" aria-label="Send message">
@@ -267,55 +269,6 @@
     </div>
   </div>
 </main>
-<footer class="footer" id="contact">
-  <div class="container footer-grid">
-    <div class="footer-brand">
-      <a href="index.html" class="logo logo-light"><span class="logo-brand logo-light"><img src="assets/images/logo-rightaware.webp" alt="RightAware" width="130" height="30" loading="lazy" decoding="async"/></span></a>
-      <p>A Nigerian civic-tech and legal awareness platform. Helping everyday citizens understand the law and defend their rights.</p>
-      <p class="disclaimer">RightAware provides public legal information for civic education, not private legal counsel.</p>
-    </div>
-    <div>
-      <h4>Civic Library</h4>
-      <a href="rights.html">Explore Rights</a>
-      <a href="laws.html">Laws Library</a>
-      <a href="resources.html">Resources &amp; Guides</a>
-      <a href="lawyers.html">Legal Directory</a>
-      <a href="ai.html">AI Legal Assistant</a>
-    </div>
-    <div>
-      <h4>Citizen Action</h4>
-      <a href="help.html">Emergency Help</a>
-      <a href="help.html#report">Report an Incident</a>
-      <a href="resources.html#faqs">Civic FAQs</a>
-      <a href="about.html">About Our Mission</a>
-      <a href="contact.html">Contact Civic Desk</a>
-    </div>
-    <div>
-      <h4>Official Inquiries</h4>
-      <div class="footer-contact-item">
-        <a href="mailto:rightawareofficial@gmail.com">
-          <svg class="ra-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          rightawareofficial@gmail.com
-        </a>
-        <span class="footer-note">Project Feedback &amp; Inquiries</span>
-      </div>
-      <div class="footer-contact-item">
-        <span class="footer-note">Awareness Desk: Mon–Fri, 8:00 AM – 5:00 PM WAT</span>
-      </div>
-      <div class="footer-dispatch-rows">
-        <div class="dispatch-row">
-          <span class="dispatch-label">24/7 Police CRU:</span>
-          <a href="tel:08057000001" class="dispatch-phone">0805 700 0001</a>
-        </div>
-        <div class="dispatch-row">
-          <span class="dispatch-label-alt">National Emergency:</span>
-          <a href="tel:112" class="dispatch-phone">112</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
-</footer>
 <script src="data.js"></script>
 <script src="content/rights.js"></script>
 <script src="js/config.js"></script>
@@ -331,6 +284,10 @@
   var form = document.getElementById("chatForm");
   var input = document.getElementById("chatInput");
   var sendBtn = document.getElementById("sendBtn");
+  var heroForm = document.getElementById("heroForm");
+  var heroInput = document.getElementById("heroInput");
+  var heroSendBtn = document.getElementById("heroSendBtn");
+  var chatComposerWrap = document.getElementById("chatComposerWrap");
   var clearBtn = document.getElementById("clearChatBtn");
   var newChatBtn = document.getElementById("raNewChatBtn");
   var sidebarClearBtn = document.getElementById("raSidebarClearBtn");
@@ -630,12 +587,21 @@
   function setMutationLock(locked){
     isSubmitting = locked;
     if(input) input.disabled = locked;
+    if(heroInput) heroInput.disabled = locked;
     if(sendBtn){
       sendBtn.disabled = locked;
       if(locked){
         sendBtn.innerHTML = '<span class="ra-spinner"></span>';
       } else {
         sendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+      }
+    }
+    if(heroSendBtn){
+      heroSendBtn.disabled = locked;
+      if(locked){
+        heroSendBtn.innerHTML = '<span class="ra-spinner"></span>';
+      } else {
+        heroSendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
       }
     }
   }
@@ -661,6 +627,11 @@
       input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
     }
     if(sendBtn) sendBtn.disabled = true;
+    if(heroInput){
+      heroInput.disabled = true;
+      heroInput.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+    }
+    if(heroSendBtn) heroSendBtn.disabled = true;
   }
 
   function isUserAuthed(){
@@ -743,6 +714,7 @@
     box.innerHTML = "";
     if(welcomeHero) welcomeHero.classList.add("hidden");
     box.style.display = "flex";
+    if(chatComposerWrap) chatComposerWrap.style.display = "block";
 
     messages.forEach(function(m){
       addMsg(m.role, m.text, m.links, m.sourceLabel || (m.role === "assistant" ? "RightAware AI" : ""), false, m.timestamp);
@@ -778,16 +750,23 @@
     box.innerHTML = "";
     box.style.display = "none";
     if(welcomeHero) welcomeHero.classList.remove("hidden");
+    if(chatComposerWrap) chatComposerWrap.style.display = "none";
     if(draftNotice) draftNotice.setAttribute("hidden", "");
 
     renderSidebarSessions();
     toggleSidebar(false);
 
+    if(heroInput){
+      heroInput.disabled = false;
+      heroInput.placeholder = "Ask RightAware AI...";
+      heroInput.value = "";
+      heroInput.focus();
+    }
+    if(heroSendBtn) heroSendBtn.disabled = false;
     if(input){
       input.disabled = false;
       input.placeholder = "Describe your issue in plain words…";
       input.value = "";
-      input.focus();
     }
     if(sendBtn) sendBtn.disabled = false;
   }
@@ -813,6 +792,7 @@
     // Transition from Welcome Hero to Active Message Stream
     if(welcomeHero) welcomeHero.classList.add("hidden");
     box.style.display = "flex";
+    if(chatComposerWrap) chatComposerWrap.style.display = "block";
     if(draftNotice) draftNotice.setAttribute("hidden", "");
 
     setMutationLock(true);
@@ -824,6 +804,7 @@
     renderSidebarSessions();
 
     if(input) input.value = "";
+    if(heroInput) heroInput.value = "";
     showCalmingCard();
 
     try {
@@ -908,24 +889,36 @@
       if(reached){
         if(input){ input.disabled = true; input.placeholder = "Sign in to continue…"; }
         if(sendBtn) sendBtn.disabled = true;
+        if(heroInput){ heroInput.disabled = true; heroInput.placeholder = "Sign in to continue…"; }
+        if(heroSendBtn) heroSendBtn.disabled = true;
       } else {
         if(input){ input.disabled = false; input.focus(); }
+        if(heroInput){ heroInput.disabled = false; }
       }
     }
   }
 
-  form.addEventListener("submit", function(e){
-    e.preventDefault();
-    if(input) handleSend(input.value);
-  });
+  if(form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      if(input) handleSend(input.value);
+    });
+  }
 
-  // Welcome scenario cards click handlers
-  document.querySelectorAll(".ra-welcome-card[data-p]").forEach(function(b){
+  if(heroForm){
+    heroForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      if(heroInput) handleSend(heroInput.value);
+    });
+  }
+
+  // Gemini suggestion prompt rows click handlers
+  document.querySelectorAll(".ra-gemini-prompt-row[data-p]").forEach(function(b){
     b.addEventListener("click", function(){
-      if(input) {
-        input.value = b.dataset.p;
-        handleSend(b.dataset.p);
-      }
+      var promptText = b.dataset.p;
+      if(heroInput) heroInput.value = promptText;
+      if(input) input.value = promptText;
+      handleSend(promptText);
     });
   });
 
@@ -938,9 +931,10 @@
   try {
     var params = new URLSearchParams(window.location.search);
     var queryParam = (params.get("q") || "").trim();
-    if(queryParam && input){
-      input.value = queryParam;
-      input.focus();
+    if(queryParam){
+      if(heroInput) heroInput.value = queryParam;
+      if(input) input.value = queryParam;
+      if(heroInput) heroInput.focus();
       if(draftNotice) draftNotice.removeAttribute("hidden");
       window.history.replaceState({}, document.title, window.location.pathname);
     }
@@ -974,9 +968,11 @@
       if(activeSession && activeSession.messages && activeSession.messages.length > 0){
         mountSessionMessages(activeSession.messages);
       } else {
-        // Fresh state: show Welcome Hero, hide empty chat box
+        // Fresh state: show Welcome Hero with landing input, hide empty chat box and bottom composer
         if(box) box.style.display = "none";
         if(welcomeHero) welcomeHero.classList.remove("hidden");
+        if(chatComposerWrap) chatComposerWrap.style.display = "none";
+        if(heroInput) heroInput.focus();
       }
     }
   } catch(_) {}

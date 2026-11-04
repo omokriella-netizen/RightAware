@@ -697,17 +697,43 @@ body.nav-open{overflow:hidden}
    MODERN MESSENGER INTERFACE (ai.html & Drawer)
    ========================================================= */
 
-.ra-messenger-page {
-  background: #f8fafc;
-  min-height: calc(100dvh - 72px);
+body.ra-ai-body {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden !important;
   display: flex;
   flex-direction: column;
+}
+
+body.ra-ai-body .site-header {
+  flex-shrink: 0;
+}
+
+body.ra-ai-body footer,
+.ra-messenger-page ~ footer {
+  display: none !important;
+}
+
+.ra-messenger-page {
+  background: #f8fafc;
+  flex: 1;
+  height: calc(100dvh - 72px);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  body.ra-ai-body .ra-messenger-page {
+    height: calc(100dvh - 64px);
+  }
 }
 
 .ra-messenger-workspace {
   display: flex;
   width: 100%;
-  height: calc(100dvh - 72px);
+  height: 100%;
   position: relative;
   overflow: hidden;
   background: #f8fafc;
@@ -882,127 +908,190 @@ body.nav-open{overflow:hidden}
   margin-bottom: 0.8rem;
 }
 
-/* Welcome Hero (Empty State Canvas) */
+/* =========================================================
+   GEMINI-STYLE WELCOME HERO (Empty State Canvas)
+   ========================================================= */
+
 .ra-welcome-hero {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
-  max-width: 760px;
+  max-width: 680px;
   margin: 0 auto;
   width: 100%;
-  animation: fadeInMsg 0.2s ease-out;
+  animation: fadeInMsg 0.25s ease-out;
 }
 
 .ra-welcome-hero.hidden {
   display: none !important;
 }
 
-.ra-welcome-badge {
-  display: inline-flex;
+.ra-gemini-sparkle {
+  color: var(--green, #008753);
+  margin-bottom: 0.85rem;
+  display: flex;
   align-items: center;
-  gap: 0.45rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #166534;
-  background: #dcfce7;
-  border: 1px solid #bbf7d0;
-  padding: 0.3rem 0.85rem;
-  border-radius: 999px;
-  margin-bottom: 0.9rem;
+  justify-content: center;
+  animation: raPulse 3s infinite ease-in-out;
+}
+
+@keyframes raPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
 }
 
 .ra-welcome-title {
-  font-size: 1.6rem;
-  font-weight: 800;
+  font-size: 2.2rem;
+  font-weight: 700;
   color: var(--navy, #1e293b);
   margin: 0 0 0.5rem;
-  line-height: 1.28;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .ra-welcome-subtitle {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--muted, #64748b);
-  margin: 0 0 1.5rem;
-  max-width: 520px;
+  margin: 0 0 1.75rem;
+  max-width: 500px;
   line-height: 1.5;
 }
 
-.ra-welcome-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.85rem;
-  width: 100%;
-  max-width: 680px;
-}
-
-@media (max-width: 680px) {
-  .ra-welcome-grid {
-    grid-template-columns: 1fr;
-    gap: 0.65rem;
-  }
-  .ra-welcome-title {
-    font-size: 1.35rem;
-  }
-  .ra-welcome-hero {
-    padding: 1.5rem 1rem;
-  }
-}
-
-.ra-welcome-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  background: #ffffff;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 0.9rem 1.1rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.18s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-}
-
-.ra-welcome-card:hover {
-  background: #f0fdf4;
-  border-color: #86efac;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 135, 83, 0.08);
-}
-
-.ra-welcome-card-header {
+/* Centered Input Capsule (Gemini Style) */
+.ra-gemini-search-box {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.35rem;
+  width: 100%;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.5rem 0.35rem 1.15rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  margin: 0 auto 1.5rem;
+  transition: all 0.2s ease;
 }
 
-.ra-welcome-card-icon {
-  font-size: 1.2rem;
-  line-height: 1;
+.ra-gemini-search-box:focus-within {
+  border-color: var(--green, #008753);
+  box-shadow: 0 0 0 3px rgba(0, 135, 83, 0.15), 0 6px 20px rgba(0, 0, 0, 0.07);
 }
 
-.ra-welcome-card-title {
-  font-size: 0.92rem;
-  font-weight: 700;
+.ra-gemini-input-icon {
+  color: var(--green, #008753);
+  display: flex;
+  align-items: center;
+  margin-right: 0.65rem;
+  flex-shrink: 0;
+}
+
+.ra-gemini-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  font-family: inherit;
   color: var(--navy, #1e293b);
 }
 
-.ra-welcome-card:hover .ra-welcome-card-title {
-  color: var(--green, #008753);
+.ra-gemini-input::placeholder {
+  color: #94a3b8;
 }
 
-.ra-welcome-card-desc {
-  font-size: 0.78rem;
-  color: var(--muted, #64748b);
+.ra-gemini-send {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--green, #008753);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.ra-gemini-send:hover:not(:disabled) {
+  background: var(--green-dark, #065f46);
+  transform: scale(1.05);
+}
+
+.ra-gemini-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Suggestions List (Gemini Style) */
+.ra-gemini-prompts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.ra-gemini-prompt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.1rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--navy, #1e293b);
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  width: 100%;
+}
+
+.ra-gemini-prompt-row:hover {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 135, 83, 0.08);
+}
+
+.ra-gemini-prompt-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ra-gemini-prompt-text {
+  flex: 1;
   line-height: 1.4;
-  margin: 0;
+}
+
+@media (max-width: 680px) {
+  .ra-welcome-hero {
+    padding: 1.5rem 1rem;
+  }
+  .ra-welcome-title {
+    font-size: 1.6rem;
+  }
+  .ra-welcome-subtitle {
+    font-size: 0.88rem;
+    margin-bottom: 1.25rem;
+  }
+  .ra-gemini-search-box {
+    margin-bottom: 1.15rem;
+  }
+  .ra-gemini-prompt-row {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.82rem;
+  }
 }
 
 .ra-sidebar-section {
@@ -1162,20 +1251,47 @@ body.nav-open{overflow:hidden}
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   z-index: 10;
+  gap: 0.5rem;
 }
 
 .ra-messenger-identity {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.75rem;
   min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ra-messenger-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.ra-messenger-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy, #1e293b);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ra-messenger-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .ra-sidebar-toggle-btn {
   display: none;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.75rem;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--navy);
@@ -1184,6 +1300,7 @@ body.nav-open{overflow:hidden}
   border-radius: 8px;
   cursor: pointer;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .ra-status-badge-inline {
@@ -1196,6 +1313,7 @@ body.nav-open{overflow:hidden}
   background: rgba(34, 197, 94, 0.15);
   color: #15803d;
   border: 1px solid rgba(34, 197, 94, 0.3);
+  flex-shrink: 0;
 }
 
 .ra-sidebar-backdrop {
@@ -1230,6 +1348,8 @@ body.nav-open{overflow:hidden}
 
   .ra-sidebar-toggle-btn {
     display: inline-flex;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.78rem;
   }
 
   .ra-sidebar-backdrop.open {
@@ -1241,11 +1361,32 @@ body.nav-open{overflow:hidden}
   }
 
   .ra-messenger-header {
-    padding: 0.65rem 1rem;
+    padding: 0.6rem 0.85rem;
+    gap: 0.5rem;
+  }
+
+  /* Defensively hide the inline badge on mobile header to completely eliminate overlapping */
+  .ra-status-badge-inline {
+    display: none !important;
   }
 
   .ra-messenger-caption {
-    display: none;
+    display: none !important;
+  }
+
+  .ra-messenger-avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  .ra-messenger-name {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ra-sidebar-toggle-btn .ra-toggle-text {
+    display: none; /* Just show the chat bubble icon on very narrow mobile viewports */
   }
 }
 
