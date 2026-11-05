@@ -2,24 +2,39 @@
 (function(){
   function ready(fn){ if(document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
   ready(function(){
-    // Mobile nav
+    // Mobile nav overlay controller
     var btn = document.getElementById("menuBtn"), nav = document.getElementById("mobileNav");
+    function closeOverlayNav(){
+      if(nav) nav.classList.remove("open");
+      if(btn) {
+        btn.classList.remove("is-active");
+        btn.setAttribute("aria-expanded", "false");
+      }
+      document.body.classList.remove("nav-open");
+    }
+    function openOverlayNav(){
+      if(nav) nav.classList.add("open");
+      if(btn) {
+        btn.classList.add("is-active");
+        btn.setAttribute("aria-expanded", "true");
+      }
+      document.body.classList.add("nav-open");
+    }
     if(btn && nav){
-      btn.addEventListener("click", function(){
-        var open = nav.classList.toggle("open");
-        btn.classList.toggle("is-active", open);
-        btn.setAttribute("aria-expanded", open ? "true" : "false");
-        document.body.classList.toggle("nav-open", open);
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        if(nav.classList.contains("open")) {
+          closeOverlayNav();
+        } else {
+          openOverlayNav();
+        }
       });
       nav.querySelectorAll("a").forEach(function(a){
-        a.addEventListener("click", function(){
-          nav.classList.remove("open");
-          btn.classList.remove("is-active");
-          btn.setAttribute("aria-expanded", "false");
-          document.body.classList.remove("nav-open");
-        });
+        a.addEventListener("click", closeOverlayNav);
       });
     }
+    window.raCloseNav = closeOverlayNav;
+    window.raOpenNav = openOverlayNav;
     function esc(s){
       return String(s == null ? "" : s).replace(/[&<>"']/g, function(m){
         return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[m];
@@ -149,7 +164,7 @@
 
       nav.innerHTML = ''
         + '<a href="' + base + 'index.html"' + (homeActive ? ' class="active"' : '') + '>Home</a>'
-        + '<a href="' + base + 'about.html"' + (aboutActive ? ' class="active"' : '') + '>About</a>'
+        + '<a href="' + base + 'about.html"' + (aboutActive ? ' class="active"' : '') + '>About Us</a>'
         + '<a href="' + base + 'rights.html"' + (rightsActive ? ' class="active"' : '') + '>Explore Rights</a>'
         + '<a href="' + base + 'resources.html"' + (resourcesActive ? ' class="active"' : '') + '>Resources</a>'
         + '<a href="' + base + 'contact.html"' + (contactActive ? ' class="active"' : '') + '>Contact Us</a>'
@@ -205,35 +220,58 @@
       var isAuthed = !!(cur && !cur.demo && (cur.supabaseId || cur.email));
 
       var authLink = isAuthed
-        ? '<a href="' + base + 'account.html">My Account</a>'
-        : '<a href="' + base + 'login.html">Log In</a>';
+        ? '<a href="' + base + 'account.html">My Account &amp; Workspace</a>'
+        : '<a href="' + base + 'login.html">Log In / Register</a>';
 
       mNav.innerHTML = ''
-        + '<form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>'
-        + '<a href="' + base + 'index.html"' + (page === "index.html" || page === "" ? ' class="active"' : '') + '>Home</a>'
-        + '<a href="' + base + 'about.html"' + (page === "about.html" ? ' class="active"' : '') + '>About</a>'
-        + '<a href="' + base + 'rights.html"' + (page === "rights.html" || page.indexOf("topic.html") !== -1 ? ' class="active"' : '') + '>Explore Rights</a>'
-        + '<a href="' + base + 'resources.html"' + (page === "resources.html" ? ' class="active"' : '') + '>Resources</a>'
-        + '<a href="' + base + 'contact.html"' + (page === "contact.html" ? ' class="active"' : '') + '>Contact Us</a>'
-        + '<a href="' + base + 'help.html"' + (page === "help.html" ? ' class="active"' : '') + '>Get Help</a>'
-        + '<a href="' + base + 'laws.html"' + (page === "laws.html" ? ' class="active"' : '') + '>Laws Library</a>'
-        + '<a href="' + base + 'organizations.html"' + (page === "organizations.html" || page === "organization.html" ? ' class="active"' : '') + '>Organizations Directory</a>'
-        + '<a href="' + base + 'lawyers.html"' + (page === "lawyers.html" ? ' class="active"' : '') + '>Legal Professionals</a>'
-        + '<a href="' + base + 'ai.html"' + (page === "ai.html" ? ' class="active"' : '') + '>RightAware AI</a>'
-        + '<a href="' + base + 'printables.html"' + (page === "printables.html" ? ' class="active"' : '') + '>Printable Checklists</a>'
-        + '<a href="' + base + 'videos.html"' + (page === "videos.html" ? ' class="active"' : '') + '>Civic Video Guides</a>'
-        + authLink;
+        + '<div class="mobile-nav-top">'
+        + '  <a href="' + base + 'index.html" class="logo" aria-label="RightAware Home">'
+        + '    <span class="logo-brand"><img src="' + base + 'assets/images/logo-rightaware.webp" alt="RightAware" width="130" height="30" loading="lazy" decoding="async"/></span>'
+        + '  </a>'
+        + '  <button type="button" class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>'
+        + '</div>'
+        + '<div class="mobile-nav-body">'
+        + '  <form data-global-search class="msearch" role="search" style="margin-bottom:0.75rem;"><input type="search" placeholder="Search rights, laws, topics…" aria-label="Search"/></form>'
+        + '  <div class="mobile-nav-section-title">Core Civic Library</div>'
+        + '  <a href="' + base + 'index.html"' + (page === "index.html" || page === "" ? ' class="active"' : '') + '>Home</a>'
+        + '  <a href="' + base + 'rights.html"' + (page === "rights.html" || page.indexOf("topic.html") !== -1 ? ' class="active"' : '') + '>Explore Rights (28 Guides)</a>'
+        + '  <a href="' + base + 'laws.html"' + (page === "laws.html" ? ' class="active"' : '') + '>Laws Library (Acts &amp; Codes)</a>'
+        + '  <a href="' + base + 'organizations.html"' + (page === "organizations.html" || page === "organization.html" ? ' class="active"' : '') + '>Organizations &amp; 36 Hotlines</a>'
+        + '  <a href="' + base + 'lawyers.html"' + (page === "lawyers.html" ? ' class="active"' : '') + '>Legal Directory (Lawyers)</a>'
+        + '  <a href="' + base + 'resources.html"' + (page === "resources.html" ? ' class="active"' : '') + '>Resources &amp; Toolkits</a>'
+        + '  <div class="mobile-nav-section-title">Emergency &amp; AI Tools</div>'
+        + '  <a href="' + base + 'ai.html"' + (page === "ai.html" ? ' class="active"' : '') + '>RightAware AI Assistant</a>'
+        + '  <a href="' + base + 'help.html"' + (page === "help.html" ? ' class="active"' : '') + ' style="color:#dc2626; font-weight:700;">Emergency Help &amp; Report</a>'
+        + '  <a href="' + base + 'printables.html"' + (page === "printables.html" ? ' class="active"' : '') + '>Printable Pocket Checklists</a>'
+        + '  <a href="' + base + 'videos.html"' + (page === "videos.html" ? ' class="active"' : '') + '>Civic Video Guides</a>'
+        + '  <div class="mobile-nav-section-title">About &amp; Civic Desk</div>'
+        + '  <a href="' + base + 'about.html"' + (page === "about.html" ? ' class="active"' : '') + '>About RightAware Mission</a>'
+        + '  <a href="' + base + 'contact.html"' + (page === "contact.html" ? ' class="active"' : '') + '>Contact Civic Desk</a>'
+        + '  <div class="mobile-nav-section-title">Account &amp; Workspace</div>'
+        + authLink
+        + '</div>';
 
-      var btn = document.getElementById("menuBtn");
+      function closeNav(){
+        mNav.classList.remove("open");
+        var btn = document.getElementById("menuBtn");
+        if(btn) {
+          btn.classList.remove("is-active");
+          btn.setAttribute("aria-expanded", "false");
+        }
+        document.body.classList.remove("nav-open");
+      }
+
+      var closeBtn = document.getElementById("mobileNavClose");
+      if(closeBtn) closeBtn.addEventListener("click", closeNav);
+
       mNav.querySelectorAll("a").forEach(function(a){
-        a.addEventListener("click", function(){
-          mNav.classList.remove("open");
-          if(btn) {
-            btn.classList.remove("is-active");
-            btn.setAttribute("aria-expanded", "false");
-          }
-          document.body.classList.remove("nav-open");
-        });
+        a.addEventListener("click", closeNav);
+      });
+
+      document.addEventListener("keydown", function(e){
+        if(e.key === "Escape" && mNav.classList.contains("open")){
+          closeNav();
+        }
       });
     }
 
@@ -261,6 +299,15 @@
           if(rawChip) rawChip.style.display = "none";
 
           var meta = user.user_metadata || {};
+          var role = ((cur && cur.role) || (user && user.role) || "user").toLowerCase();
+          var workspaceItem = "";
+          if (role === "professional") {
+            workspaceItem = '<a class="nav-dropdown-item" href="' + base + 'professional.html" role="menuitem"><span class="nav-dropdown-item-title">⚖️ Professional Workspace</span><span class="nav-dropdown-item-desc">Consultation intake &amp; profile</span></a>';
+          } else if (role === "organization") {
+            workspaceItem = '<a class="nav-dropdown-item" href="' + base + 'organization.html" role="menuitem"><span class="nav-dropdown-item-title">🏢 Organization Desk</span><span class="nav-dropdown-item-desc">Hotlines &amp; incident dispatch</span></a>';
+          } else if (role === "admin") {
+            workspaceItem = '<a class="nav-dropdown-item" href="' + base + 'admin.html" role="menuitem"><span class="nav-dropdown-item-title">🛡️ Admin Moderation</span><span class="nav-dropdown-item-desc">Review applications &amp; records</span></a>';
+          }
           var name = meta.full_name || meta.name || (user.email ? user.email.split("@")[0] : "Account");
           if(name.length > 14) name = name.substring(0, 12) + "…";
 
@@ -272,7 +319,7 @@
               + '<span class="ra-user-name">' + esc(name) + '</span>'
               + '<svg class="ra-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg>'
               + '</button>'
-              + '<div class="nav-dropdown-menu" role="menu">'
+              + '<div class="nav-dropdown-menu" role="menu">' + workspaceItem
               + '<a class="nav-dropdown-item" href="' + base + 'account.html" role="menuitem"><span class="nav-dropdown-item-title">My Account</span><span class="nav-dropdown-item-desc">Civic profile &amp; settings</span></a>'
               + '<a class="nav-dropdown-item" href="' + base + 'account.html#saved" role="menuitem"><span class="nav-dropdown-item-title">Saved Guides</span><span class="nav-dropdown-item-desc">Your pinned rights &amp; laws</span></a>'
               + '<div class="nav-dropdown-divider"></div>'
@@ -515,5 +562,242 @@
         document.body.appendChild(fab);
       }
     }catch(_){}
+
+    /* ==========================================================================
+       MOBILE 5-TAB BOTTOM NAVIGATION & CROSS-PAGE SUBNAV
+       ========================================================================== */
+
+    var ROUTE_GROUPS = {
+      home: ['index.html', ''],
+      rights: ['rights.html', 'topic.html', 'laws.html', 'arrest-rights.html', 'resources.html', 'printables.html', 'videos.html'],
+      help: ['help.html', 'organizations.html', 'organization.html', 'lawyers.html'],
+      ai: ['ai.html'],
+      account: ['account.html', 'professional.html', 'admin.html', 'login.html', 'signup.html']
+    };
+
+    function getActiveNavGroup() {
+      var path = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+      for (var group in ROUTE_GROUPS) {
+        if (ROUTE_GROUPS[group].indexOf(path) !== -1) return group;
+      }
+      return 'home';
+    }
+
+    function resolveTab5Config() {
+      var base = getBasePath();
+      var cur = (window.RA_AUTH && typeof window.RA_AUTH.current === "function") ? window.RA_AUTH.current() : null;
+      var isAuthed = !!(cur && !cur.demo && (cur.supabaseId || cur.email));
+
+      if (!isAuthed) {
+        return {
+          href: base + "login.html",
+          label: "Log In",
+          badge: false,
+          iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
+        };
+      }
+
+      var role = (cur.role || "user").toLowerCase();
+      if (role === "professional") {
+        return {
+          href: base + "professional.html",
+          label: "Workspace",
+          badge: true,
+          iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>'
+        };
+      } else if (role === "organization") {
+        return {
+          href: base + "organization.html",
+          label: "Desk",
+          badge: true,
+          iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>'
+        };
+      } else if (role === "admin") {
+        return {
+          href: base + "admin.html",
+          label: "Admin",
+          badge: true,
+          iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
+        };
+      }
+
+      return {
+        href: base + "account.html",
+        label: "Account",
+        badge: false,
+        iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
+      };
+    }
+
+    function updateBottomNavAuth() {
+      var tab = document.getElementById("raTabAccount");
+      if (!tab) return;
+      var tab5 = resolveTab5Config();
+      tab.href = tab5.href;
+      var icon = tab.querySelector(".ra-tab-account-icon");
+      if (icon) icon.innerHTML = tab5.iconSvg;
+      var lbl = tab.querySelector(".ra-tab-account-label");
+      if (lbl) lbl.textContent = tab5.label;
+      if (tab5.badge) tab.classList.add("has-badge");
+      else tab.classList.remove("has-badge");
+    }
+
+    function renderBottomNav() {
+      if (document.getElementById("raBottomNav")) return;
+      var base = getBasePath();
+      var group = getActiveNavGroup();
+      var tab5 = resolveTab5Config();
+
+      var nav = document.createElement("nav");
+      nav.id = "raBottomNav";
+      nav.className = "ra-bottom-nav";
+      nav.setAttribute("aria-label", "Mobile primary navigation");
+
+      nav.innerHTML = ''
+        + '<a href="' + base + 'index.html" class="ra-bottom-tab' + (group === 'home' ? ' active' : '') + '" id="raTabHome"' + (group === 'home' ? ' aria-current="page"' : '') + '>'
+        + '  <span class="ra-tab-icon">'
+        + '    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>'
+        + '  </span>'
+        + '  <span class="ra-tab-label">Home</span>'
+        + '</a>'
+        + '<a href="' + base + 'rights.html" class="ra-bottom-tab' + (group === 'rights' ? ' active' : '') + '" id="raTabRights"' + (group === 'rights' ? ' aria-current="page"' : '') + '>'
+        + '  <span class="ra-tab-icon">'
+        + '    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
+        + '  </span>'
+        + '  <span class="ra-tab-label">Rights</span>'
+        + '</a>'
+        + '<button type="button" class="ra-bottom-tab ra-tab-ai' + (group === 'ai' ? ' active' : '') + '" id="raTabAi" aria-label="Ask RightAware Legal AI">'
+        + '  <span class="ra-tab-ai-circle">'
+        + '    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>'
+        + '  </span>'
+        + '  <span class="ra-tab-label">Ask AI</span>'
+        + '</button>'
+        + '<a href="' + base + 'help.html" class="ra-bottom-tab' + (group === 'help' ? ' active' : '') + '" id="raTabHelp"' + (group === 'help' ? ' aria-current="page"' : '') + '>'
+        + '  <span class="ra-tab-icon">'
+        + '    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+        + '  </span>'
+        + '  <span class="ra-tab-label">Get Help</span>'
+        + '</a>'
+        + '<a href="' + tab5.href + '" class="ra-bottom-tab' + (group === 'account' ? ' active' : '') + (tab5.badge ? ' has-badge' : '') + '" id="raTabAccount"' + (group === 'account' ? ' aria-current="page"' : '') + '>'
+        + '  <span class="ra-tab-icon ra-tab-account-icon">' + tab5.iconSvg + '</span>'
+        + '  <span class="ra-tab-label ra-tab-account-label">' + esc(tab5.label) + '</span>'
+        + '</a>';
+
+      document.body.appendChild(nav);
+
+      var aiBtn = nav.querySelector("#raTabAi");
+      if (aiBtn) {
+        aiBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          var drawer = document.getElementById("raAiDrawer");
+          if (drawer && typeof window.raOpenAiDrawer === "function") {
+            window.raOpenAiDrawer();
+          } else if (drawer) {
+            drawer.classList.add("open");
+            drawer.setAttribute("aria-hidden", "false");
+            var inp = drawer.querySelector("input, textarea");
+            if (inp) setTimeout(function() { inp.focus(); }, 150);
+          } else {
+            location.href = base + "ai.html";
+          }
+        });
+      }
+    }
+
+    function renderStickySubNav() {
+      var path = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+      var base = getBasePath();
+      var mainEl = document.getElementById("main") || document.querySelector("main");
+      if (!mainEl || document.querySelector(".ra-subnav-pills")) return;
+
+      var subnavHtml = "";
+      if (path === "rights.html" || path === "laws.html" || path.indexOf("topic.html") !== -1 || path.indexOf("arrest-rights.html") !== -1) {
+        subnavHtml = ''
+          + '<nav class="ra-subnav-pills" aria-label="Rights & Laws Navigation">'
+          + '  <div class="container ra-subnav-inner">'
+          + '    <a href="' + base + 'rights.html" class="ra-subnav-pill' + (path === "rights.html" || path.indexOf("topic.html") !== -1 ? ' active' : '') + '"' + (path === "rights.html" ? ' aria-current="page"' : '') + '>'
+          + '      <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
+          + '      28 Rights Topics'
+          + '    </a>'
+          + '    <a href="' + base + 'laws.html" class="ra-subnav-pill' + (path === "laws.html" ? ' active' : '') + '"' + (path === "laws.html" ? ' aria-current="page"' : '') + '>'
+          + '      <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>'
+          + '      Searchable Laws (21)'
+          + '    </a>'
+          + '    <a href="' + base + 'printables.html" class="ra-subnav-pill' + (path === "printables.html" ? ' active' : '') + '">'
+          + '      Checklists'
+          + '    </a>'
+          + '  </div>'
+          + '</nav>';
+      } else if (path === "help.html" || path === "organizations.html" || path === "organization.html" || path === "lawyers.html") {
+        subnavHtml = ''
+          + '<nav class="ra-subnav-pills" aria-label="Citizen Support Navigation">'
+          + '  <div class="container ra-subnav-inner">'
+          + '    <a href="' + base + 'help.html" class="ra-subnav-pill' + (path === "help.html" ? ' active' : '') + '"' + (path === "help.html" ? ' aria-current="page"' : '') + '>'
+          + '      <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+          + '      Emergency & Report'
+          + '    </a>'
+          + '    <a href="' + base + 'organizations.html" class="ra-subnav-pill' + (path === "organizations.html" || path === "organization.html" ? ' active' : '') + '"' + (path === "organizations.html" ? ' aria-current="page"' : '') + '>'
+          + '      <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>'
+          + '      36 Statutory Desks'
+          + '    </a>'
+          + '    <a href="' + base + 'lawyers.html" class="ra-subnav-pill' + (path === "lawyers.html" ? ' active' : '') + '"' + (path === "lawyers.html" ? ' aria-current="page"' : '') + '>'
+          + '      <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
+          + '      Legal Professionals'
+          + '    </a>'
+          + '  </div>'
+          + '</nav>';
+      }
+
+      if (subnavHtml) {
+        var wrapDiv = document.createElement("div");
+        wrapDiv.innerHTML = subnavHtml;
+        mainEl.insertBefore(wrapDiv.firstElementChild, mainEl.firstChild);
+      }
+    }
+
+    function bindKeyboardDefense() {
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", function() {
+          var isKeyboard = window.visualViewport.height < (window.innerHeight * 0.78);
+          document.body.classList.toggle("keyboard-open", isKeyboard);
+        });
+      }
+      document.addEventListener("focusin", function(e) {
+        if (e.target && e.target.matches("input, textarea, select")) {
+          document.body.classList.add("keyboard-open");
+        }
+      });
+      document.addEventListener("focusout", function(e) {
+        if (e.target && e.target.matches("input, textarea, select")) {
+          setTimeout(function() {
+            if (!document.activeElement || !document.activeElement.matches("input, textarea, select")) {
+              document.body.classList.remove("keyboard-open");
+            }
+          }, 60);
+        }
+      });
+    }
+
+    function checkEmergencyDeepLink() {
+      var hash = (window.location.hash || "").toLowerCase();
+      if (hash === "#emergencyconsole" || hash === "#urgent-help" || hash === "#emergency" || hash === "#triage") {
+        if (typeof window.raOpenEmergencyModal === "function") {
+          window.raOpenEmergencyModal();
+        }
+      }
+    }
+
+    // Initialize Mobile Architecture & Lifecycle Listeners
+    renderStickySubNav();
+    renderBottomNav();
+    updateBottomNavAuth();
+    bindKeyboardDefense();
+    checkEmergencyDeepLink();
+
+    window.addEventListener("hashchange", checkEmergencyDeepLink);
+    document.addEventListener("ra:auth-change", updateBottomNavAuth);
+    document.addEventListener("ra:session-ready", updateBottomNavAuth);
+    document.addEventListener("ra:backend-ready", updateBottomNavAuth);
+    document.addEventListener("ra:synced", updateBottomNavAuth);
   });
 })();

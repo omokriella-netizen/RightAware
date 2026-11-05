@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://rightaware-three.vercel.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/rights.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/rights/arrest-rights.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/laws.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/resources.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/videos.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/lawyers.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/organizations.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/ai.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/help.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/about.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/contact.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://rightaware-three.vercel.app/printables.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.rightaware.ng/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.rightaware.ng/rights.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.rightaware.ng/rights/arrest-rights.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.rightaware.ng/laws.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.rightaware.ng/resources.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.rightaware.ng/videos.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.rightaware.ng/lawyers.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.rightaware.ng/organizations.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.rightaware.ng/ai.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.rightaware.ng/help.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.rightaware.ng/about.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.rightaware.ng/contact.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.rightaware.ng/printables.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.rightaware.ng/blog/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

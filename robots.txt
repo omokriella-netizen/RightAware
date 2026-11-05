@@ -1,7 +1,9 @@
-# RightAware — https://rightaware-three.vercel.app
+# RightAware — https://www.rightaware.ng
 User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /account.html
+Disallow: /professional.html
+Disallow: /organization.html
 
-Sitemap: https://rightaware-three.vercel.app/sitemap.xml
+Sitemap: https://www.rightaware.ng/sitemap.xml

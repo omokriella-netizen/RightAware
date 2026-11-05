@@ -15,7 +15,12 @@ const https = require("https");
 
 /* Server-side price list in kobo, keyed by service. Empty = not yet
    price-configured: no request can pass with a client-chosen amount. */
-const PRICES = Object.create(null);
+const PRICES = Object.assign(Object.create(null), {
+  "consultation-standard": 500000,    // 5,000 NGN in kobo
+  "consultation-extended": 1000000,   // 10,000 NGN in kobo
+  "document-review": 750000,          // 7,500 NGN in kobo
+  "donation-citizen-tier": 100000     // 1,000 NGN in kobo
+});
 
 const RATE_LIMIT = 10;           // requests per IP per 60s (best effort, per instance)
 const RATE_WINDOW = 60000;

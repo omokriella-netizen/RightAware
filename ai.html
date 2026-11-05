@@ -1,999 +1,1075 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RightAware AI — RightAware</title>
-<meta name="description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
-<link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
-<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-<link rel="manifest" href="site.webmanifest"/>
-<meta name="theme-color" content="#122620"/>
-<meta property="og:type" content="website"/>
-<meta property="og:site_name" content="RightAware"/>
-<meta property="og:title" content="RightAware AI — RightAware"/>
-<meta property="og:description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
-<meta property="og:url" content="https://rightaware-three.vercel.app/ai.html"/>
-<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="RightAware AI — RightAware"/>
-<meta name="twitter:description" content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice."/>
-<link rel="canonical" href="https://rightaware-three.vercel.app/ai.html"/>
-<link rel="stylesheet" href="styles.css?v=2.3"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RightAware AI — RightAware</title>
+  <meta name="description"
+    content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice." />
+  <link rel="icon" href="assets/images/favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#122620" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="RightAware" />
+  <meta property="og:title" content="RightAware AI — RightAware" />
+  <meta property="og:description"
+    content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice." />
+  <meta property="og:url" content="https://www.rightaware.ng/ai.html" />
+  <meta property="og:image" content="https://www.rightaware.ng/assets/images/hero-citizens.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RightAware AI — RightAware" />
+  <meta name="twitter:description"
+    content="Ask RightAware AI for general Nigerian legal information grounded in RightAware's verified guides — not a lawyer, not legal advice." />
+  <link rel="canonical" href="https://www.rightaware.ng/ai.html" />
+  <link rel="stylesheet" href="styles.css?v=2.3" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="ra-ai-body">
-<a class="skip" href="#main">Skip to content</a>
-<header class="site-header" id="top">
-  <div class="container header-inner">
-    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-        <nav class="nav" id="mainNav" aria-label="Primary">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img
+            src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30"
+            loading="lazy" /></span></a>
+      <nav class="nav" id="mainNav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="rights.html">Explore Rights</a>
+        <a href="resources.html">Resources</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="help.html">Get Help</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-btn" aria-expanded="false" aria-haspopup="true">
+            More
+            <svg class="ra-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="1 1 5 5 9 1"></polyline>
+            </svg>
+          </button>
+          <div class="nav-dropdown-menu" role="menu">
+            <a class="nav-dropdown-item" href="laws.html" role="menuitem">
+              <span class="nav-dropdown-item-title">Laws Library</span>
+              <span class="nav-dropdown-item-desc">Searchable Nigerian legal acts &amp; statutes</span>
+            </a>
+            <a class="nav-dropdown-item" href="organizations.html" role="menuitem">
+              <span class="nav-dropdown-item-title">Organizations Directory</span>
+              <span class="nav-dropdown-item-desc">Public complaint commissions &amp; rights desks</span>
+            </a>
+            <a class="nav-dropdown-item" href="lawyers.html" role="menuitem">
+              <span class="nav-dropdown-item-title">Legal Professionals</span>
+              <span class="nav-dropdown-item-desc">Verified lawyers &amp; legal aid clinics</span>
+            </a>
+            <a class="nav-dropdown-item" href="ai.html" role="menuitem">
+              <span class="nav-dropdown-item-title">RightAware AI</span>
+              <span class="nav-dropdown-item-desc">Interactive Nigerian civic &amp; legal assistant</span>
+            </a>
+            <div class="nav-dropdown-divider"></div>
+            <a class="nav-dropdown-item" href="rights/arrest-rights.html" role="menuitem">
+              <span class="nav-dropdown-item-title">Police &amp; Bail Guide</span>
+              <span class="nav-dropdown-item-desc">Critical safeguards during stops &amp; arrest</span>
+            </a>
+            <a class="nav-dropdown-item" href="printables.html" role="menuitem">
+              <span class="nav-dropdown-item-title">Printable Checklists</span>
+              <span class="nav-dropdown-item-desc">Pocket emergency guides &amp; handbooks</span>
+            </a>
+            <a class="nav-dropdown-item" href="videos.html" role="menuitem">
+              <span class="nav-dropdown-item-title">Civic Video Guides</span>
+              <span class="nav-dropdown-item-desc">Visual legal walkthroughs in English &amp; Pidgin</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
+        <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
+          <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          Urgent Help
+        </a>
+        <button class="hamburger" id="menuBtn" aria-label="Open menu"
+          aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…"
+          aria-label="Search" /></form>
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="rights.html">Explore Rights</a>
       <a href="resources.html">Resources</a>
       <a href="contact.html">Contact Us</a>
       <a href="help.html">Get Help</a>
-      <div class="nav-dropdown">
-        <button type="button" class="nav-dropdown-btn" aria-expanded="false" aria-haspopup="true">
-          More
-          <svg class="ra-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 1 5 5 9 1"></polyline></svg>
-        </button>
-        <div class="nav-dropdown-menu" role="menu">
-          <a class="nav-dropdown-item" href="laws.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Laws Library</span>
-            <span class="nav-dropdown-item-desc">Searchable Nigerian legal acts &amp; statutes</span>
-          </a>
-          <a class="nav-dropdown-item" href="organizations.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Organizations Directory</span>
-            <span class="nav-dropdown-item-desc">Public complaint commissions &amp; rights desks</span>
-          </a>
-          <a class="nav-dropdown-item" href="lawyers.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Legal Professionals</span>
-            <span class="nav-dropdown-item-desc">Verified lawyers &amp; legal aid clinics</span>
-          </a>
-          <a class="nav-dropdown-item" href="ai.html" role="menuitem">
-            <span class="nav-dropdown-item-title">RightAware AI</span>
-            <span class="nav-dropdown-item-desc">Interactive Nigerian civic &amp; legal assistant</span>
-          </a>
-          <div class="nav-dropdown-divider"></div>
-          <a class="nav-dropdown-item" href="rights/arrest-rights.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Police &amp; Bail Guide</span>
-            <span class="nav-dropdown-item-desc">Critical safeguards during stops &amp; arrest</span>
-          </a>
-          <a class="nav-dropdown-item" href="printables.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Printable Checklists</span>
-            <span class="nav-dropdown-item-desc">Pocket emergency guides &amp; handbooks</span>
-          </a>
-          <a class="nav-dropdown-item" href="videos.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Civic Video Guides</span>
-            <span class="nav-dropdown-item-desc">Visual legal walkthroughs in English &amp; Pidgin</span>
-          </a>
-        </div>
-      </div>
-    </nav>
-    <div class="header-actions">
-      <a class="btn btn-outline btn-sm" href="login.html">Log In</a>
-      <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
-        <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        Urgent Help
-      </a>
-      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <a href="laws.html">Laws Library</a>
+      <a href="organizations.html">Organizations Directory</a>
+      <a href="lawyers.html">Legal Professionals</a>
+      <a href="ai.html">RightAware AI</a>
+      <a href="printables.html">Printable Checklists</a>
+      <a href="videos.html">Civic Video Guides</a>
+      <a href="login.html">Log In</a>
     </div>
-  </div>
-    <div class="mobile-nav" id="mobileNav">
-    <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="rights.html">Explore Rights</a>
-    <a href="resources.html">Resources</a>
-    <a href="contact.html">Contact Us</a>
-    <a href="help.html">Get Help</a>
-    <a href="laws.html">Laws Library</a>
-    <a href="organizations.html">Organizations Directory</a>
-    <a href="lawyers.html">Legal Professionals</a>
-    <a href="ai.html">RightAware AI</a>
-    <a href="printables.html">Printable Checklists</a>
-    <a href="videos.html">Civic Video Guides</a>
-    <a href="login.html">Log In</a>
-  </div>
-</header>
-<main id="main" class="ra-messenger-page">
-  <div class="ra-messenger-workspace">
-    <!-- Left Sidebar: New Chat, Past Conversations, Emergency Desks & Quota -->
-    <aside class="ra-messenger-sidebar" id="raSidebar" aria-label="Chat History and Legal Desks">
-      <div>
-        <div class="ra-sidebar-header">
-          <div class="ra-sidebar-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <span>RightAware AI</span>
-          </div>
-          <button type="button" class="ra-sidebar-close" id="raSidebarClose" aria-label="Close sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-
-        <!-- Action: New Chat CTA -->
-        <button type="button" class="ra-sidebar-new-btn" id="raNewChatBtn" aria-label="Start a new chat inquiry">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          <span>New Chat</span>
-        </button>
-
-        <!-- Section 1: Past Conversations -->
-        <div class="ra-sidebar-section">
-          <h3 class="ra-sidebar-heading">Past Conversations</h3>
-          <div class="ra-sidebar-sessions-list" id="raSidebarSessionsList" role="list" aria-label="Past conversations"></div>
-          <div class="ra-sidebar-sessions-empty" id="raSidebarSessionsEmpty">
-            No past conversations yet.
-          </div>
-        </div>
-
-        <!-- Section 2: Verified Emergency Desks -->
-        <div class="ra-sidebar-section">
-          <h3 class="ra-sidebar-heading">Emergency Helplines</h3>
-          <div class="ra-sidebar-cards">
-            <a href="tel:08057000001" class="ra-sidebar-card">
-              <span class="ra-sidebar-badge police">24/7 Police CRU</span>
-              <strong>0805 700 0001</strong>
-              <small>Extortion, unlawful arrest &amp; bail demands.</small>
-            </a>
-            <a href="tel:112" class="ra-sidebar-card">
-              <span class="ra-sidebar-badge emergency">National Dispatch</span>
-              <strong>112</strong>
-              <small>Toll-free emergency dispatch for immediate physical danger.</small>
-            </a>
-          </div>
-        </div>
-
-        <!-- Section 3: Quick Legal Guides -->
-        <div class="ra-sidebar-section">
-          <h3 class="ra-sidebar-heading">Quick Legal Guides</h3>
-          <nav class="ra-sidebar-links" aria-label="Guides shortcuts">
-            <a href="rights/arrest-rights.html" class="ra-sidebar-link">
-              <span aria-hidden="true">🚔</span> Police Arrest &amp; Free Bail
-            </a>
-            <a href="rights.html" class="ra-sidebar-link">
-              <span aria-hidden="true">🏠</span> Tenancy &amp; Lockout Protections
-            </a>
-            <a href="laws.html" class="ra-sidebar-link">
-              <span aria-hidden="true">📜</span> Nigerian Constitution &amp; Statutes
-            </a>
-          </nav>
-        </div>
-      </div>
-
-      <!-- Sidebar Footer: Quota & Reset -->
-      <div class="ra-sidebar-footer">
-        <span class="ra-sidebar-quota-pill" id="aiModePillSidebar">PREVIEW: 0/3 FREE</span>
-        <button type="button" class="ra-sidebar-clear-btn" id="raSidebarClearBtn" aria-label="Reset active conversation">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          <span>Reset Conversation</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Mobile Backdrop -->
-    <div class="ra-sidebar-backdrop" id="raSidebarBackdrop" aria-hidden="true"></div>
-
-    <!-- Main Expansive Chat Canvas -->
-    <div class="ra-messenger-canvas">
-      <!-- Streamlined Canvas Header -->
-      <header class="ra-messenger-header">
-        <div class="ra-messenger-identity">
-          <div class="ra-messenger-avatar" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <div class="ra-messenger-info">
-            <div class="ra-messenger-title-row">
-              <h1 class="ra-messenger-name">RightAware AI</h1>
-              <span class="ra-status-badge-inline" id="aiStatusBadge">ACTIVE</span>
+  </header>
+  <main id="main" class="ra-messenger-page">
+    <div class="ra-messenger-workspace">
+      <!-- Left Sidebar: New Chat, Past Conversations, Emergency Desks & Quota -->
+      <aside class="ra-messenger-sidebar" id="raSidebar" aria-label="Chat History and Legal Desks">
+        <div>
+          <div class="ra-sidebar-header">
+            <div class="ra-sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <span>RightAware AI</span>
             </div>
-            <p class="ra-messenger-caption">Civic &amp; legal awareness grounded in Nigerian law • Not legal advice</p>
+            <button type="button" class="ra-sidebar-close" id="raSidebarClose" aria-label="Close sidebar">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Action: New Chat CTA -->
+          <button type="button" class="ra-sidebar-new-btn" id="raNewChatBtn" aria-label="Start a new chat inquiry">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>New Chat</span>
+          </button>
+
+          <!-- Section 1: Past Conversations -->
+          <div class="ra-sidebar-section">
+            <h3 class="ra-sidebar-heading">Past Conversations</h3>
+            <div class="ra-sidebar-sessions-list" id="raSidebarSessionsList" role="list"
+              aria-label="Past conversations"></div>
+            <div class="ra-sidebar-sessions-empty" id="raSidebarSessionsEmpty">
+              No past conversations yet.
+            </div>
+          </div>
+
+          <!-- Section 2: Verified Emergency Desks -->
+          <div class="ra-sidebar-section">
+            <h3 class="ra-sidebar-heading">Emergency Helplines</h3>
+            <div class="ra-sidebar-cards">
+              <a href="tel:08057000001" class="ra-sidebar-card">
+                <span class="ra-sidebar-badge police">24/7 Police CRU</span>
+                <strong>0805 700 0001</strong>
+                <small>Extortion, unlawful arrest &amp; bail demands.</small>
+              </a>
+              <a href="tel:112" class="ra-sidebar-card">
+                <span class="ra-sidebar-badge emergency">National Dispatch</span>
+                <strong>112</strong>
+                <small>Toll-free emergency dispatch for immediate physical danger.</small>
+              </a>
+            </div>
+          </div>
+
+          <!-- Section 3: Quick Legal Guides -->
+          <div class="ra-sidebar-section">
+            <h3 class="ra-sidebar-heading">Quick Legal Guides</h3>
+            <nav class="ra-sidebar-links" aria-label="Guides shortcuts">
+              <a href="rights/arrest-rights.html" class="ra-sidebar-link">
+                <span aria-hidden="true">🚔</span> Police Arrest &amp; Free Bail
+              </a>
+              <a href="rights.html" class="ra-sidebar-link">
+                <span aria-hidden="true">🏠</span> Tenancy &amp; Lockout Protections
+              </a>
+              <a href="laws.html" class="ra-sidebar-link">
+                <span aria-hidden="true">📜</span> Nigerian Constitution &amp; Statutes
+              </a>
+            </nav>
           </div>
         </div>
-        <div class="ra-messenger-actions">
-          <button type="button" class="ra-sidebar-toggle-btn" id="raSidebarToggle" aria-label="Open past chats and emergency desks">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span class="ra-toggle-text">Chats</span>
+
+        <!-- Sidebar Footer: Quota & Reset -->
+        <div class="ra-sidebar-footer">
+          <span class="ra-sidebar-quota-pill" id="aiModePillSidebar">PREVIEW: 0/3 FREE</span>
+          <button type="button" class="ra-sidebar-clear-btn" id="raSidebarClearBtn"
+            aria-label="Reset active conversation">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Reset Conversation</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm" id="clearChatBtn" title="Start new conversation" aria-label="Start new conversation">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span class="ra-clear-text">New</span>
-          </button>
         </div>
-      </header>
+      </aside>
 
-      <!-- Draft Prompt Notice (when navigated via ?q=) -->
-      <div class="ra-draft-notice" id="raDraftNotice" hidden>
-        <div class="ra-draft-content">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <span>Search inquiry loaded. Edit below or press <strong>Send</strong> to consult RightAware AI.</span>
-        </div>
-        <button type="button" id="raDismissDraftBtn" aria-label="Dismiss notice">&times;</button>
-      </div>
+      <!-- Mobile Backdrop -->
+      <div class="ra-sidebar-backdrop" id="raSidebarBackdrop" aria-hidden="true"></div>
 
-      <!-- Welcome Hero (Empty State Canvas when no active chat messages - Gemini Style) -->
-      <div class="ra-welcome-hero" id="welcomeHero">
-        <div class="ra-gemini-sparkle" aria-hidden="true">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/>
-          </svg>
-        </div>
-        <h2 class="ra-welcome-title">Where should we start?</h2>
-        <p class="ra-welcome-subtitle">Ask RightAware AI about your fundamental legal rights under Nigerian law.</p>
-
-        <!-- Centered Landing Input Capsule (Immediately visible on page landing) -->
-        <form class="ra-gemini-search-box" id="heroForm">
-          <div class="ra-gemini-input-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <!-- Main Expansive Chat Canvas -->
+      <div class="ra-messenger-canvas">
+        <!-- Streamlined Canvas Header -->
+        <header class="ra-messenger-header">
+          <div class="ra-messenger-identity">
+            <div class="ra-messenger-avatar" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </div>
+            <div class="ra-messenger-info">
+              <div class="ra-messenger-title-row">
+                <h1 class="ra-messenger-name">RightAware AI</h1>
+                <span class="ra-status-badge-inline" id="aiStatusBadge">ACTIVE</span>
+              </div>
+              <p class="ra-messenger-caption">Civic &amp; legal awareness grounded in Nigerian law • Not legal advice
+              </p>
+            </div>
           </div>
-          <input type="text" id="heroInput" class="ra-gemini-input" placeholder="Ask RightAware AI..." autocomplete="off" aria-label="Ask RightAware AI"/>
-          <button type="submit" class="ra-gemini-send" id="heroSendBtn" aria-label="Send message">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          </button>
-        </form>
+          <div class="ra-messenger-actions">
+            <button type="button" class="ra-sidebar-toggle-btn" id="raSidebarToggle"
+              aria-label="Open past chats and emergency desks">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span class="ra-toggle-text">Chats</span>
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" id="clearChatBtn" title="Start new conversation"
+              aria-label="Start new conversation">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span class="ra-clear-text">New</span>
+            </button>
+          </div>
+        </header>
 
-        <!-- Suggestion Prompt Rows -->
-        <div class="ra-gemini-prompts-list">
-          <button type="button" class="ra-gemini-prompt-row" data-p="Police stopped someone I know at a checkpoint or arrested them. What are their constitutional rights regarding search, interrogation, and free bail?">
-            <span class="ra-gemini-prompt-icon" aria-hidden="true">🚔</span>
-            <span class="ra-gemini-prompt-text">Police checkpoint search, phone checks, &amp; free bail rights</span>
-          </button>
-          <button type="button" class="ra-gemini-prompt-row" data-p="My landlord locked me out of my apartment or threatened immediate eviction without court notice. What are my legal protections?">
-            <span class="ra-gemini-prompt-icon" aria-hidden="true">🏠</span>
-            <span class="ra-gemini-prompt-text">Protect against illegal landlord lockout &amp; eviction without notice</span>
-          </button>
-          <button type="button" class="ra-gemini-prompt-row" data-p="My employer has refused to pay my earned salary for months. What legal steps can I take under the Nigerian Labour Act?">
-            <span class="ra-gemini-prompt-icon" aria-hidden="true">💼</span>
-            <span class="ra-gemini-prompt-text">Recover unpaid salary arrears under Nigerian Labour Act</span>
-          </button>
-          <button type="button" class="ra-gemini-prompt-row" data-p="I was scammed by a fake online vendor or fraudster. How do I initiate a CBN bank freeze and report to cybercrime authorities?">
-            <span class="ra-gemini-prompt-icon" aria-hidden="true">📱</span>
-            <span class="ra-gemini-prompt-text">Report fake online vendor scam &amp; initiate CBN bank freeze</span>
-          </button>
+        <!-- Draft Prompt Notice (when navigated via ?q=) -->
+        <div class="ra-draft-notice" id="raDraftNotice" hidden>
+          <div class="ra-draft-content">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>Search inquiry loaded. Edit below or press <strong>Send</strong> to consult RightAware AI.</span>
+          </div>
+          <button type="button" id="raDismissDraftBtn" aria-label="Dismiss notice">&times;</button>
         </div>
-      </div>
 
-      <!-- Expansive Messages Stream (Populates white space as conversation unfolds) -->
-      <div class="ra-messenger-stream" id="chatBox" aria-live="polite" style="display: none;"></div>
+        <!-- Welcome Hero (Empty State Canvas when no active chat messages - Gemini Style) -->
+        <div class="ra-welcome-hero" id="welcomeHero">
+          <div class="ra-gemini-sparkle" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z" />
+            </svg>
+          </div>
+          <h2 class="ra-welcome-title">Where should we start?</h2>
+          <p class="ra-welcome-subtitle">Ask RightAware AI about your fundamental legal rights under Nigerian law.</p>
 
-      <!-- Bottom Composer Bar (Hidden on landing, docked at bottom during active conversation) -->
-      <div class="ra-messenger-composer" id="chatComposerWrap" style="display: none;">
-        <form id="chatForm" class="ra-composer-form">
-          <input id="chatInput" class="ra-composer-input" type="text" placeholder="Describe your issue in plain words…" autocomplete="off" aria-label="Ask RightAware AI"/>
-          <button class="ra-composer-send-btn" id="sendBtn" type="submit" aria-label="Send message">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          </button>
-        </form>
-        <p class="ra-composer-disclaimer">General legal information only — not legal advice. Grounded in verified Nigerian statutes.</p>
+          <!-- Centered Landing Input Capsule (Immediately visible on page landing) -->
+          <form class="ra-gemini-search-box" id="heroForm">
+            <div class="ra-gemini-input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+            <input type="text" id="heroInput" class="ra-gemini-input" placeholder="Ask RightAware AI..."
+              autocomplete="off" aria-label="Ask RightAware AI" />
+            <button type="submit" class="ra-gemini-send" id="heroSendBtn" aria-label="Send message">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+
+          <!-- Suggestion Prompt Rows -->
+          <div class="ra-gemini-prompts-list">
+            <button type="button" class="ra-gemini-prompt-row"
+              data-p="Police stopped someone I know at a checkpoint or arrested them. What are their constitutional rights regarding search, interrogation, and free bail?">
+              <span class="ra-gemini-prompt-icon" aria-hidden="true">🚔</span>
+              <span class="ra-gemini-prompt-text">Police checkpoint search, phone checks, &amp; free bail rights</span>
+            </button>
+            <button type="button" class="ra-gemini-prompt-row"
+              data-p="My landlord locked me out of my apartment or threatened immediate eviction without court notice. What are my legal protections?">
+              <span class="ra-gemini-prompt-icon" aria-hidden="true">🏠</span>
+              <span class="ra-gemini-prompt-text">Protect against illegal landlord lockout &amp; eviction without
+                notice</span>
+            </button>
+            <button type="button" class="ra-gemini-prompt-row"
+              data-p="My employer has refused to pay my earned salary for months. What legal steps can I take under the Nigerian Labour Act?">
+              <span class="ra-gemini-prompt-icon" aria-hidden="true">💼</span>
+              <span class="ra-gemini-prompt-text">Recover unpaid salary arrears under Nigerian Labour Act</span>
+            </button>
+            <button type="button" class="ra-gemini-prompt-row"
+              data-p="I was scammed by a fake online vendor or fraudster. How do I initiate a CBN bank freeze and report to cybercrime authorities?">
+              <span class="ra-gemini-prompt-icon" aria-hidden="true">📱</span>
+              <span class="ra-gemini-prompt-text">Report fake online vendor scam &amp; initiate CBN bank freeze</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Expansive Messages Stream (Populates white space as conversation unfolds) -->
+        <div class="ra-messenger-stream" id="chatBox" aria-live="polite" style="display: none;"></div>
+
+        <!-- Bottom Composer Bar (Hidden on landing, docked at bottom during active conversation) -->
+        <div class="ra-messenger-composer" id="chatComposerWrap" style="display: none;">
+          <form id="chatForm" class="ra-composer-form">
+            <input id="chatInput" class="ra-composer-input" type="text"
+              placeholder="Describe your issue in plain words…" autocomplete="off" aria-label="Ask RightAware AI" />
+            <button class="ra-composer-send-btn" id="sendBtn" type="submit" aria-label="Send message">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+          <p class="ra-composer-disclaimer">General legal information only — not legal advice. Grounded in verified
+            Nigerian statutes.</p>
+        </div>
       </div>
     </div>
-  </div>
-</main>
-<script src="data.js"></script>
-<script src="content/rights.js"></script>
-<script src="js/config.js"></script>
-<script src="js/auth.js?v=db6"></script>
-<script src="js/ai-renderer.js"></script>
-<script src="js/ai.js"></script>
-<script src="js/chat-state.js"></script>
-<script src="app.js"></script>
-<script>
-(function(){
-  var box = document.getElementById("chatBox");
-  var welcomeHero = document.getElementById("welcomeHero");
-  var form = document.getElementById("chatForm");
-  var input = document.getElementById("chatInput");
-  var sendBtn = document.getElementById("sendBtn");
-  var heroForm = document.getElementById("heroForm");
-  var heroInput = document.getElementById("heroInput");
-  var heroSendBtn = document.getElementById("heroSendBtn");
-  var chatComposerWrap = document.getElementById("chatComposerWrap");
-  var clearBtn = document.getElementById("clearChatBtn");
-  var newChatBtn = document.getElementById("raNewChatBtn");
-  var sidebarClearBtn = document.getElementById("raSidebarClearBtn");
-  var sidebar = document.getElementById("raSidebar");
-  var sidebarToggle = document.getElementById("raSidebarToggle");
-  var sidebarClose = document.getElementById("raSidebarClose");
-  var sidebarBackdrop = document.getElementById("raSidebarBackdrop");
-  var sessionsListEl = document.getElementById("raSidebarSessionsList");
-  var sessionsEmptyEl = document.getElementById("raSidebarSessionsEmpty");
-  var draftNotice = document.getElementById("raDraftNotice");
-  var dismissDraftBtn = document.getElementById("raDismissDraftBtn");
-  var statusBadge = document.getElementById("aiStatusBadge");
-  var pillSidebar = document.getElementById("aiModePillSidebar");
+  </main>
+  <script src="data.js"></script>
+  <script src="content/rights.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js?v=db6"></script>
+  <script src="js/ai-renderer.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/chat-state.js"></script>
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      var box = document.getElementById("chatBox");
+      var welcomeHero = document.getElementById("welcomeHero");
+      var form = document.getElementById("chatForm");
+      var input = document.getElementById("chatInput");
+      var sendBtn = document.getElementById("sendBtn");
+      var heroForm = document.getElementById("heroForm");
+      var heroInput = document.getElementById("heroInput");
+      var heroSendBtn = document.getElementById("heroSendBtn");
+      var chatComposerWrap = document.getElementById("chatComposerWrap");
+      var clearBtn = document.getElementById("clearChatBtn");
+      var newChatBtn = document.getElementById("raNewChatBtn");
+      var sidebarClearBtn = document.getElementById("raSidebarClearBtn");
+      var sidebar = document.getElementById("raSidebar");
+      var sidebarToggle = document.getElementById("raSidebarToggle");
+      var sidebarClose = document.getElementById("raSidebarClose");
+      var sidebarBackdrop = document.getElementById("raSidebarBackdrop");
+      var sessionsListEl = document.getElementById("raSidebarSessionsList");
+      var sessionsEmptyEl = document.getElementById("raSidebarSessionsEmpty");
+      var draftNotice = document.getElementById("raDraftNotice");
+      var dismissDraftBtn = document.getElementById("raDismissDraftBtn");
+      var statusBadge = document.getElementById("aiStatusBadge");
+      var pillSidebar = document.getElementById("aiModePillSidebar");
 
-  var isSubmitting = false;
+      var isSubmitting = false;
 
-  // Reveal controller state
-  var activeRevealTimer = null;
-  var pendingRevealNodes = [];
-  var pendingRevealContainer = null;
-  var pendingRevealComplete = null;
+      // Reveal controller state
+      var activeRevealTimer = null;
+      var pendingRevealNodes = [];
+      var pendingRevealContainer = null;
+      var pendingRevealComplete = null;
 
-  // Calming state machine
-  var CALMING_PHASES = [
-    "🛡️ Analyzing your situation under Nigerian law...",
-    "⚖️ Examining relevant Constitutional provisions and statutes...",
-    "🕊️ Take a deep breath. Organizing practical steps to protect your rights...",
-    "📋 Finalizing verified legal safeguards and official contact desks..."
-  ];
-  var calmingTimer = null;
+      // Calming state machine
+      var CALMING_PHASES = [
+        "🛡️ Analyzing your situation under Nigerian law...",
+        "⚖️ Examining relevant Constitutional provisions and statutes...",
+        "🕊️ Take a deep breath. Organizing practical steps to protect your rights...",
+        "📋 Finalizing verified legal safeguards and official contact desks..."
+      ];
+      var calmingTimer = null;
 
-  function esc(s){
-    return String(s == null ? "" : s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  function formatTime(d){
-    d = d ? new Date(d) : new Date();
-    var h = d.getHours();
-    var m = d.getMinutes();
-    var ampm = h >= 12 ? "PM" : "AM";
-    h = h % 12;
-    h = h ? h : 12;
-    return h + ":" + (m < 10 ? "0" + m : m) + " " + ampm;
-  }
-
-  function formatRelativeTime(ts){
-    if(!ts) return "";
-    var d = new Date(ts);
-    var now = new Date();
-    var diffMs = now.getTime() - d.getTime();
-    var diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    if(diffHours < 1){
-      var diffMins = Math.max(1, Math.floor(diffMs / (1000 * 60)));
-      return diffMins + "m ago";
-    }
-    if(diffHours < 24 && d.getDate() === now.getDate()){
-      return formatTime(d);
-    }
-    if(diffHours < 48){
-      return "Yesterday";
-    }
-    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    return months[d.getMonth()] + " " + d.getDate();
-  }
-
-  function toggleSidebar(open){
-    if(!sidebar) return;
-    var shouldOpen = typeof open === "boolean" ? open : !sidebar.classList.contains("open");
-    if(shouldOpen){
-      sidebar.classList.add("open");
-      if(sidebarBackdrop) sidebarBackdrop.classList.add("open");
-    } else {
-      sidebar.classList.remove("open");
-      if(sidebarBackdrop) sidebarBackdrop.classList.remove("open");
-    }
-  }
-
-  if(sidebarToggle) sidebarToggle.addEventListener("click", function(){ toggleSidebar(true); });
-  if(sidebarClose) sidebarClose.addEventListener("click", function(){ toggleSidebar(false); });
-  if(sidebarBackdrop) sidebarBackdrop.addEventListener("click", function(){ toggleSidebar(false); });
-
-  function setPills(){
-    var isAuthed = isUserAuthed();
-    if(isAuthed){
-      if(statusBadge){
-        statusBadge.textContent = "ACTIVE";
-        statusBadge.className = "ra-status-badge-inline";
+      function esc(s) {
+        return String(s == null ? "" : s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
       }
-      if(pillSidebar){
-        pillSidebar.textContent = "ACCOUNT ACTIVE • UNLIMITED";
-        pillSidebar.className = "ra-sidebar-quota-pill";
+
+      function formatTime(d) {
+        d = d ? new Date(d) : new Date();
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var ampm = h >= 12 ? "PM" : "AM";
+        h = h % 12;
+        h = h ? h : 12;
+        return h + ":" + (m < 10 ? "0" + m : m) + " " + ampm;
       }
-    } else {
-      var count = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : 0;
-      var max = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.MAX_PREVIEWS : 3;
-      if(statusBadge){
-        statusBadge.textContent = "PREVIEW: " + count + "/" + max;
-        statusBadge.className = "ra-status-badge-inline";
-      }
-      if(pillSidebar){
-        pillSidebar.textContent = "PREVIEW: " + count + "/" + max + " FREE";
-        pillSidebar.className = "ra-sidebar-quota-pill";
-      }
-    }
-  }
 
-  // Smooth container-bounded scroll anchoring (immune to ancestor positioning context)
-  function scrollToReadingHead(bubbleWrap){
-    if(!box || !bubbleWrap) return;
-    var scrollTarget = box.scrollTop + (bubbleWrap.getBoundingClientRect().top - box.getBoundingClientRect().top) - 16;
-    box.scrollTo({
-      top: Math.max(0, scrollTarget),
-      behavior: "smooth"
-    });
-  }
-
-  // Flush active stream synchronously when a new question arrives
-  function flushActiveReveal(){
-    if(activeRevealTimer){
-      clearTimeout(activeRevealTimer);
-      activeRevealTimer = null;
-    }
-    if(pendingRevealContainer && pendingRevealNodes.length){
-      while(pendingRevealNodes.length){
-        var node = pendingRevealNodes.shift();
-        if(node) pendingRevealContainer.appendChild(node);
-      }
-    }
-    if(typeof pendingRevealComplete === "function"){
-      var cb = pendingRevealComplete;
-      pendingRevealComplete = null;
-      cb();
-    }
-    pendingRevealNodes = [];
-    pendingRevealContainer = null;
-  }
-
-  // Abort active stream immediately when conversation is cleared or switched
-  function abortActiveReveal(){
-    if(activeRevealTimer){
-      clearTimeout(activeRevealTimer);
-      activeRevealTimer = null;
-    }
-    pendingRevealNodes = [];
-    pendingRevealContainer = null;
-    pendingRevealComplete = null;
-  }
-
-  // Progressive DOM Chunk Reveal Engine
-  function streamRevealNodes(container, rawHtml, onComplete){
-    flushActiveReveal();
-
-    var temp = document.createElement("div");
-    temp.innerHTML = rawHtml;
-    var nodes = Array.from(temp.children);
-
-    if(!nodes.length){
-      if(typeof onComplete === "function") onComplete();
-      return;
-    }
-
-    pendingRevealNodes = nodes;
-    pendingRevealContainer = container;
-    pendingRevealComplete = onComplete;
-
-    function revealNext(){
-      if(pendingRevealNodes.length > 0){
-        var nextNode = pendingRevealNodes.shift();
-        if(nextNode && pendingRevealContainer){
-          pendingRevealContainer.appendChild(nextNode);
+      function formatRelativeTime(ts) {
+        if (!ts) return "";
+        var d = new Date(ts);
+        var now = new Date();
+        var diffMs = now.getTime() - d.getTime();
+        var diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        if (diffHours < 1) {
+          var diffMins = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+          return diffMins + "m ago";
         }
-        activeRevealTimer = setTimeout(revealNext, 45);
-      } else {
-        activeRevealTimer = null;
-        pendingRevealContainer = null;
-        var cb = pendingRevealComplete;
-        pendingRevealComplete = null;
-        if(typeof cb === "function") cb();
+        if (diffHours < 24 && d.getDate() === now.getDate()) {
+          return formatTime(d);
+        }
+        if (diffHours < 48) {
+          return "Yesterday";
+        }
+        var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return months[d.getMonth()] + " " + d.getDate();
       }
-    }
 
-    revealNext();
-  }
-
-  // Dynamic Calming Waiting Card
-  function showCalmingCard(){
-    removeCalmingCard();
-    var wrap = document.createElement("div");
-    wrap.className = "ra-msg assistant ra-thinking-msg";
-    wrap.id = "raCalmingBubble";
-    wrap.innerHTML = '<div class="ra-msg-bubble ra-thinking-bubble">'
-      + '<div class="ra-thinking-header">'
-      + '  <span class="ra-thinking-spinner" aria-hidden="true"></span>'
-      + '  <span class="ra-msg-sender">RightAware AI • Consulting Legal Library</span>'
-      + '</div>'
-      + '<div class="ra-calming-text" id="raCalmingText" aria-live="assertive">'
-      +   CALMING_PHASES[0]
-      + '</div>'
-      + '</div>';
-    box.appendChild(wrap);
-    scrollToReadingHead(wrap);
-
-    var phase = 0;
-    var textEl = document.getElementById("raCalmingText");
-    calmingTimer = setInterval(function(){
-      phase = (phase + 1) % CALMING_PHASES.length;
-      if(textEl){
-        textEl.style.opacity = "0.35";
-        setTimeout(function(){
-          textEl.textContent = CALMING_PHASES[phase];
-          textEl.style.opacity = "1";
-        }, 140);
+      function toggleSidebar(open) {
+        if (!sidebar) return;
+        var shouldOpen = typeof open === "boolean" ? open : !sidebar.classList.contains("open");
+        if (shouldOpen) {
+          sidebar.classList.add("open");
+          if (sidebarBackdrop) sidebarBackdrop.classList.add("open");
+        } else {
+          sidebar.classList.remove("open");
+          if (sidebarBackdrop) sidebarBackdrop.classList.remove("open");
+        }
       }
-    }, 1800);
-  }
 
-  function removeCalmingCard(){
-    if(calmingTimer){
-      clearInterval(calmingTimer);
-      calmingTimer = null;
-    }
-    var el = document.getElementById("raCalmingBubble");
-    if(el && el.parentNode) el.parentNode.removeChild(el);
-  }
+      if (sidebarToggle) sidebarToggle.addEventListener("click", function () { toggleSidebar(true); });
+      if (sidebarClose) sidebarClose.addEventListener("click", function () { toggleSidebar(false); });
+      if (sidebarBackdrop) sidebarBackdrop.addEventListener("click", function () { toggleSidebar(false); });
 
-  function linksHtml(links){
-    var out = "";
-    if(links && links.length){
-      out += '<div class="ra-msg-links">';
-      links.forEach(function(l){
-        if(!l || !l.u) return;
-        var safe = window.RA_AI_RENDERER ? window.RA_AI_RENDERER.sanitizeUrl(l.u) : esc(l.u);
-        out += '<a class="ra-msg-link-item" href="' + safe + '">'
-          + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
-          + esc(l.t || "Open Link")
-          + '</a>';
-      });
-      out += '</div>';
-    }
-    return out;
-  }
+      function setPills() {
+        var isAuthed = isUserAuthed();
+        if (isAuthed) {
+          if (statusBadge) {
+            statusBadge.textContent = "ACTIVE";
+            statusBadge.className = "ra-status-badge-inline";
+          }
+          if (pillSidebar) {
+            pillSidebar.textContent = "ACCOUNT ACTIVE • UNLIMITED";
+            pillSidebar.className = "ra-sidebar-quota-pill";
+          }
+        } else {
+          var count = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getGuestPromptCount() : 0;
+          var max = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.MAX_PREVIEWS : 3;
+          if (statusBadge) {
+            statusBadge.textContent = "PREVIEW: " + count + "/" + max;
+            statusBadge.className = "ra-status-badge-inline";
+          }
+          if (pillSidebar) {
+            pillSidebar.textContent = "PREVIEW: " + count + "/" + max + " FREE";
+            pillSidebar.className = "ra-sidebar-quota-pill";
+          }
+        }
+      }
 
-  function addMsg(role, text, links, customLabel, isStreamed, customTime){
-    var wrap = document.createElement("div");
-    wrap.className = "ra-msg " + (role === "user" ? "user" : "assistant");
-
-    var timeStr = customTime || formatTime();
-    var bubble = document.createElement("div");
-    bubble.className = "ra-msg-bubble";
-
-    if(role === "user"){
-      bubble.innerHTML = '<div class="ra-msg-content"><p class="ra-ai-p">' + esc(text) + '</p></div>'
-        + '<span class="ra-msg-time">' + timeStr + '</span>';
-      wrap.appendChild(bubble);
-      box.appendChild(wrap);
-      scrollToReadingHead(wrap);
-    } else {
-      var sender = customLabel || "RightAware AI";
-      var parsedBody = window.RA_AI_RENDERER
-        ? window.RA_AI_RENDERER.renderMarkdown(text)
-        : '<p class="ra-ai-p">' + esc(text).replace(/\n+/g, "<br/>") + '</p>';
-
-      var senderSpan = document.createElement("span");
-      senderSpan.className = "ra-msg-sender";
-      senderSpan.textContent = sender;
-      bubble.appendChild(senderSpan);
-
-      var contentDiv = document.createElement("div");
-      contentDiv.className = "ra-msg-content";
-      bubble.appendChild(contentDiv);
-
-      var timeSpan = document.createElement("span");
-      timeSpan.className = "ra-msg-time";
-      timeSpan.textContent = timeStr;
-      timeSpan.style.display = isStreamed ? "none" : "block";
-      bubble.appendChild(timeSpan);
-
-      wrap.appendChild(bubble);
-      box.appendChild(wrap);
-      scrollToReadingHead(wrap);
-
-      if(isStreamed){
-        streamRevealNodes(contentDiv, parsedBody + linksHtml(links), function(){
-          timeSpan.style.display = "block";
+      // Smooth container-bounded scroll anchoring (immune to ancestor positioning context)
+      function scrollToReadingHead(bubbleWrap) {
+        if (!box || !bubbleWrap) return;
+        var scrollTarget = box.scrollTop + (bubbleWrap.getBoundingClientRect().top - box.getBoundingClientRect().top) - 16;
+        box.scrollTo({
+          top: Math.max(0, scrollTarget),
+          behavior: "smooth"
         });
-      } else {
-        contentDiv.innerHTML = parsedBody + linksHtml(links);
       }
-    }
-  }
 
-  function setMutationLock(locked){
-    isSubmitting = locked;
-    if(input) input.disabled = locked;
-    if(heroInput) heroInput.disabled = locked;
-    if(sendBtn){
-      sendBtn.disabled = locked;
-      if(locked){
-        sendBtn.innerHTML = '<span class="ra-spinner"></span>';
-      } else {
-        sendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+      // Flush active stream synchronously when a new question arrives
+      function flushActiveReveal() {
+        if (activeRevealTimer) {
+          clearTimeout(activeRevealTimer);
+          activeRevealTimer = null;
+        }
+        if (pendingRevealContainer && pendingRevealNodes.length) {
+          while (pendingRevealNodes.length) {
+            var node = pendingRevealNodes.shift();
+            if (node) pendingRevealContainer.appendChild(node);
+          }
+        }
+        if (typeof pendingRevealComplete === "function") {
+          var cb = pendingRevealComplete;
+          pendingRevealComplete = null;
+          cb();
+        }
+        pendingRevealNodes = [];
+        pendingRevealContainer = null;
       }
-    }
-    if(heroSendBtn){
-      heroSendBtn.disabled = locked;
-      if(locked){
-        heroSendBtn.innerHTML = '<span class="ra-spinner"></span>';
-      } else {
-        heroSendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+
+      // Abort active stream immediately when conversation is cleared or switched
+      function abortActiveReveal() {
+        if (activeRevealTimer) {
+          clearTimeout(activeRevealTimer);
+          activeRevealTimer = null;
+        }
+        pendingRevealNodes = [];
+        pendingRevealContainer = null;
+        pendingRevealComplete = null;
       }
-    }
-  }
 
-  function showLimitCard(){
-    setPills();
-    if(document.getElementById("raAiLimitCard")) return;
-    var card = document.createElement("div");
-    card.className = "ra-ai-limit-card";
-    card.id = "raAiLimitCard";
-    card.style.margin = "0.75rem 0";
-    card.innerHTML = '<h4>Free Preview Limit Reached (3/3)</h4>'
-      + '<p>Sign in with a free RightAware account to continue where you left off with unlimited AI answers.</p>'
-      + '<div class="ra-ai-limit-actions">'
-      + '<a class="btn btn-primary btn-sm" href="login.html?next=ai.html">Sign In & Continue</a>'
-      + '<a class="btn btn-outline btn-sm" href="signup.html">Create Free Account</a>'
-      + '</div>';
-    box.appendChild(card);
-    scrollToReadingHead(card);
+      // Progressive DOM Chunk Reveal Engine
+      function streamRevealNodes(container, rawHtml, onComplete) {
+        flushActiveReveal();
 
-    if(input){
-      input.disabled = true;
-      input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
-    }
-    if(sendBtn) sendBtn.disabled = true;
-    if(heroInput){
-      heroInput.disabled = true;
-      heroInput.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
-    }
-    if(heroSendBtn) heroSendBtn.disabled = true;
-  }
+        var temp = document.createElement("div");
+        temp.innerHTML = rawHtml;
+        var nodes = Array.from(temp.children);
 
-  function isUserAuthed(){
-    try {
-      if(window.RA_AUTH && typeof window.RA_AUTH.current === "function"){
-        var u = window.RA_AUTH.current();
-        return !!(u && !u.demo && (u.supabaseId || u.email));
-      }
-      return false;
-    } catch(_) { return false; }
-  }
+        if (!nodes.length) {
+          if (typeof onComplete === "function") onComplete();
+          return;
+        }
 
-  /* ---------------------------------------------------------
-     SIDEBAR SESSIONS RENDERING & SESSION SWITCHING
-     --------------------------------------------------------- */
+        pendingRevealNodes = nodes;
+        pendingRevealContainer = container;
+        pendingRevealComplete = onComplete;
 
-  function renderSidebarSessions(){
-    if(!sessionsListEl) return;
-    var sessions = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getSessions() : [];
-    var activeId = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getActiveSessionId() : null;
-    sessionsListEl.innerHTML = "";
-
-    if(!sessions || sessions.length === 0){
-      if(sessionsEmptyEl) sessionsEmptyEl.style.display = "block";
-      return;
-    }
-    if(sessionsEmptyEl) sessionsEmptyEl.style.display = "none";
-
-    sessions.forEach(function(sess){
-      var item = document.createElement("div");
-      item.className = "ra-session-item" + (sess.id === activeId ? " active" : "");
-      item.setAttribute("role", "button");
-      item.setAttribute("tabindex", "0");
-      item.setAttribute("aria-label", "Open conversation: " + sess.title);
-
-      var main = document.createElement("div");
-      main.className = "ra-session-item-main";
-      main.innerHTML = '<svg class="ra-session-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
-        + '<div class="ra-session-info">'
-        + '  <span class="ra-session-title">' + esc(sess.title) + '</span>'
-        + '  <span class="ra-session-time">' + formatRelativeTime(sess.updatedAt || sess.createdAt) + '</span>'
-        + '</div>';
-
-      var delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.className = "ra-session-delete-btn";
-      delBtn.setAttribute("aria-label", "Delete conversation: " + sess.title);
-      delBtn.title = "Delete conversation";
-      delBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
-
-      delBtn.addEventListener("click", function(e){
-        e.stopPropagation();
-        if(window.RA_CHAT_STATE){
-          window.RA_CHAT_STATE.deleteSession(sess.id);
-          if(sess.id === activeId){
-            startNewChat();
+        function revealNext() {
+          if (pendingRevealNodes.length > 0) {
+            var nextNode = pendingRevealNodes.shift();
+            if (nextNode && pendingRevealContainer) {
+              pendingRevealContainer.appendChild(nextNode);
+            }
+            activeRevealTimer = setTimeout(revealNext, 45);
           } else {
-            renderSidebarSessions();
+            activeRevealTimer = null;
+            pendingRevealContainer = null;
+            var cb = pendingRevealComplete;
+            pendingRevealComplete = null;
+            if (typeof cb === "function") cb();
           }
         }
-      });
 
-      item.addEventListener("click", function(){
-        switchSession(sess.id);
-      });
-      item.addEventListener("keydown", function(e){
-        if(e.key === "Enter" || e.key === " "){
-          e.preventDefault();
-          switchSession(sess.id);
-        }
-      });
+        revealNext();
+      }
 
-      item.appendChild(main);
-      item.appendChild(delBtn);
-      sessionsListEl.appendChild(item);
-    });
-  }
-
-  function mountSessionMessages(messages){
-    box.innerHTML = "";
-    if(welcomeHero) welcomeHero.classList.add("hidden");
-    box.style.display = "flex";
-    if(chatComposerWrap) chatComposerWrap.style.display = "block";
-
-    messages.forEach(function(m){
-      addMsg(m.role, m.text, m.links, m.sourceLabel || (m.role === "assistant" ? "RightAware AI" : ""), false, m.timestamp);
-    });
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function switchSession(id){
-    if(!window.RA_CHAT_STATE) return;
-    abortActiveReveal();
-    removeCalmingCard();
-    setMutationLock(false);
-
-    window.RA_CHAT_STATE.setActiveSessionId(id);
-    var session = window.RA_CHAT_STATE.getSession(id);
-    if(session && session.messages && session.messages.length){
-      mountSessionMessages(session.messages);
-    } else {
-      startNewChat();
-    }
-    renderSidebarSessions();
-    toggleSidebar(false);
-  }
-
-  function startNewChat(){
-    abortActiveReveal();
-    removeCalmingCard();
-    setMutationLock(false);
-
-    if(window.RA_CHAT_STATE){
-      window.RA_CHAT_STATE.setActiveSessionId(null);
-    }
-    box.innerHTML = "";
-    box.style.display = "none";
-    if(welcomeHero) welcomeHero.classList.remove("hidden");
-    if(chatComposerWrap) chatComposerWrap.style.display = "none";
-    if(draftNotice) draftNotice.setAttribute("hidden", "");
-
-    renderSidebarSessions();
-    toggleSidebar(false);
-
-    if(heroInput){
-      heroInput.disabled = false;
-      heroInput.placeholder = "Ask RightAware AI...";
-      heroInput.value = "";
-      heroInput.focus();
-    }
-    if(heroSendBtn) heroSendBtn.disabled = false;
-    if(input){
-      input.disabled = false;
-      input.placeholder = "Describe your issue in plain words…";
-      input.value = "";
-    }
-    if(sendBtn) sendBtn.disabled = false;
-  }
-
-  async function handleSend(q){
-    if(isSubmitting) return;
-    q = (q || "").trim();
-    if(!q) return;
-
-    if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
-      showLimitCard();
-      return;
-    }
-
-    // Flush any pending progressive reveal animation before starting new turn
-    flushActiveReveal();
-
-    // Auto-create session if starting a fresh inquiry
-    if(window.RA_CHAT_STATE && !window.RA_CHAT_STATE.getActiveSessionId()){
-      window.RA_CHAT_STATE.createSession(q);
-    }
-
-    // Transition from Welcome Hero to Active Message Stream
-    if(welcomeHero) welcomeHero.classList.add("hidden");
-    box.style.display = "flex";
-    if(chatComposerWrap) chatComposerWrap.style.display = "block";
-    if(draftNotice) draftNotice.setAttribute("hidden", "");
-
-    setMutationLock(true);
-    var userTime = formatTime();
-    addMsg("user", q, [], "", false, userTime);
-    if(window.RA_CHAT_STATE){
-      window.RA_CHAT_STATE.addMessageToActiveSession("user", q, [], "", userTime);
-    }
-    renderSidebarSessions();
-
-    if(input) input.value = "";
-    if(heroInput) heroInput.value = "";
-    showCalmingCard();
-
-    try {
-      if(!window.RA_AI){
+      // Dynamic Calming Waiting Card
+      function showCalmingCard() {
         removeCalmingCard();
-        addMsg("ai", "RightAware AI is initializing. Please try again in a few moments.", [{ t: "Browse Rights", u: "rights.html" }], "RightAware Notice", false);
-        return;
+        var wrap = document.createElement("div");
+        wrap.className = "ra-msg assistant ra-thinking-msg";
+        wrap.id = "raCalmingBubble";
+        wrap.innerHTML = '<div class="ra-msg-bubble ra-thinking-bubble">'
+          + '<div class="ra-thinking-header">'
+          + '  <span class="ra-thinking-spinner" aria-hidden="true"></span>'
+          + '  <span class="ra-msg-sender">RightAware AI • Consulting Legal Library</span>'
+          + '</div>'
+          + '<div class="ra-calming-text" id="raCalmingText" aria-live="assertive">'
+          + CALMING_PHASES[0]
+          + '</div>'
+          + '</div>';
+        box.appendChild(wrap);
+        scrollToReadingHead(wrap);
+
+        var phase = 0;
+        var textEl = document.getElementById("raCalmingText");
+        calmingTimer = setInterval(function () {
+          phase = (phase + 1) % CALMING_PHASES.length;
+          if (textEl) {
+            textEl.style.opacity = "0.35";
+            setTimeout(function () {
+              textEl.textContent = CALMING_PHASES[phase];
+              textEl.style.opacity = "1";
+            }, 140);
+          }
+        }, 1800);
       }
 
-      var historyTurns = [];
-      try {
-        if(window.RA_CHAT_STATE){
-          var activeId = window.RA_CHAT_STATE.getActiveSessionId();
-          var curSess = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
-          if(curSess && Array.isArray(curSess.messages)){
-            // Exclude the current user message which was just appended
-            historyTurns = curSess.messages.slice(0, -1).slice(-6).map(function(m){
-              return { role: m.role, text: m.text };
+      function removeCalmingCard() {
+        if (calmingTimer) {
+          clearInterval(calmingTimer);
+          calmingTimer = null;
+        }
+        var el = document.getElementById("raCalmingBubble");
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      }
+
+      function linksHtml(links) {
+        var out = "";
+        if (links && links.length) {
+          out += '<div class="ra-msg-links">';
+          links.forEach(function (l) {
+            if (!l || !l.u) return;
+            var safe = window.RA_AI_RENDERER ? window.RA_AI_RENDERER.sanitizeUrl(l.u) : esc(l.u);
+            out += '<a class="ra-msg-link-item" href="' + safe + '">'
+              + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
+              + esc(l.t || "Open Link")
+              + '</a>';
+          });
+          out += '</div>';
+        }
+        return out;
+      }
+
+      function addMsg(role, text, links, customLabel, isStreamed, customTime) {
+        var wrap = document.createElement("div");
+        wrap.className = "ra-msg " + (role === "user" ? "user" : "assistant");
+
+        var timeStr = customTime || formatTime();
+        var bubble = document.createElement("div");
+        bubble.className = "ra-msg-bubble";
+
+        if (role === "user") {
+          bubble.innerHTML = '<div class="ra-msg-content"><p class="ra-ai-p">' + esc(text) + '</p></div>'
+            + '<span class="ra-msg-time">' + timeStr + '</span>';
+          wrap.appendChild(bubble);
+          box.appendChild(wrap);
+          scrollToReadingHead(wrap);
+        } else {
+          var sender = customLabel || "RightAware AI";
+          var parsedBody = window.RA_AI_RENDERER
+            ? window.RA_AI_RENDERER.renderMarkdown(text)
+            : '<p class="ra-ai-p">' + esc(text).replace(/\n+/g, "<br/>") + '</p>';
+
+          var senderSpan = document.createElement("span");
+          senderSpan.className = "ra-msg-sender";
+          senderSpan.textContent = sender;
+          bubble.appendChild(senderSpan);
+
+          var contentDiv = document.createElement("div");
+          contentDiv.className = "ra-msg-content";
+          bubble.appendChild(contentDiv);
+
+          var timeSpan = document.createElement("span");
+          timeSpan.className = "ra-msg-time";
+          timeSpan.textContent = timeStr;
+          timeSpan.style.display = isStreamed ? "none" : "block";
+          bubble.appendChild(timeSpan);
+
+          wrap.appendChild(bubble);
+          box.appendChild(wrap);
+          scrollToReadingHead(wrap);
+
+          if (isStreamed) {
+            streamRevealNodes(contentDiv, parsedBody + linksHtml(links), function () {
+              timeSpan.style.display = "block";
             });
+          } else {
+            contentDiv.innerHTML = parsedBody + linksHtml(links);
           }
         }
-      } catch(_) {}
+      }
 
-      var res = await window.RA_AI.ask(q, { history: historyTurns });
-      removeCalmingCard();
-
-      if(res && res.limitReached){
-        if(window.RA_CHAT_STATE && typeof res.attempts === "number"){
-          window.RA_CHAT_STATE.setGuestPromptCount(res.attempts);
+      function setMutationLock(locked) {
+        isSubmitting = locked;
+        if (input) input.disabled = locked;
+        if (heroInput) heroInput.disabled = locked;
+        if (sendBtn) {
+          sendBtn.disabled = locked;
+          if (locked) {
+            sendBtn.innerHTML = '<span class="ra-spinner"></span>';
+          } else {
+            sendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+          }
         }
-        showLimitCard();
-        return;
-      }
-
-      if(res && res.captchaNeeded){
-        addMsg("ai", res.text || "Security verification required.", res.links || [], "Verification Notice", false);
-        return;
-      }
-
-      if(res && res.needsAuth){
-        addMsg("ai", res.text, res.links, "Account Required", false);
-        return;
-      }
-
-      if(res && res.serviceUnavailable && !res.isFallback){
-        addMsg("ai", res.text, res.links, "RightAware Notice", false);
-        return;
-      }
-
-      if(!isUserAuthed() && window.RA_CHAT_STATE && res && res.isGuest && typeof res.guestAttempts === "number"){
-        window.RA_CHAT_STATE.setGuestPromptCount(res.guestAttempts);
-      }
-
-      var aiTime = formatTime();
-      if(res && res.text){
-        var label = (res.isFallback || res.demo) ? (res.sourceLabel || "Verified RightAware Guide") : "RightAware AI";
-        if(window.RA_CHAT_STATE){
-          window.RA_CHAT_STATE.addMessageToActiveSession("assistant", res.text, res.links || [], label, aiTime);
+        if (heroSendBtn) {
+          heroSendBtn.disabled = locked;
+          if (locked) {
+            heroSendBtn.innerHTML = '<span class="ra-spinner"></span>';
+          } else {
+            heroSendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+          }
         }
-        addMsg("ai", res.text, res.links, label, true, aiTime);
-      } else {
-        var fallbackText = "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.";
-        var fallbackLinks = [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }];
-        if(window.RA_CHAT_STATE){
-          window.RA_CHAT_STATE.addMessageToActiveSession("assistant", fallbackText, fallbackLinks, "Verified RightAware Guide", aiTime);
-        }
-        addMsg("ai", fallbackText, fallbackLinks, "Verified RightAware Guide", false, aiTime);
       }
+
+      function showLimitCard() {
+        setPills();
+        if (document.getElementById("raAiLimitCard")) return;
+        var card = document.createElement("div");
+        card.className = "ra-ai-limit-card";
+        card.id = "raAiLimitCard";
+        card.style.margin = "0.75rem 0";
+        card.innerHTML = '<h4>Free Preview Limit Reached (3/3)</h4>'
+          + '<p>Sign in with a free RightAware account to continue where you left off with unlimited AI answers.</p>'
+          + '<div class="ra-ai-limit-actions">'
+          + '<a class="btn btn-primary btn-sm" href="login.html?next=ai.html">Sign In & Continue</a>'
+          + '<a class="btn btn-outline btn-sm" href="signup.html">Create Free Account</a>'
+          + '</div>';
+        box.appendChild(card);
+        scrollToReadingHead(card);
+
+        if (input) {
+          input.disabled = true;
+          input.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+        }
+        if (sendBtn) sendBtn.disabled = true;
+        if (heroInput) {
+          heroInput.disabled = true;
+          heroInput.placeholder = "Free preview limit reached (3/3). Sign in to continue…";
+        }
+        if (heroSendBtn) heroSendBtn.disabled = true;
+      }
+
+      function isUserAuthed() {
+        try {
+          if (window.RA_AUTH && typeof window.RA_AUTH.current === "function") {
+            var u = window.RA_AUTH.current();
+            return !!(u && !u.demo && (u.supabaseId || u.email));
+          }
+          return false;
+        } catch (_) { return false; }
+      }
+
+      /* ---------------------------------------------------------
+         SIDEBAR SESSIONS RENDERING & SESSION SWITCHING
+         --------------------------------------------------------- */
+
+      function renderSidebarSessions() {
+        if (!sessionsListEl) return;
+        var sessions = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getSessions() : [];
+        var activeId = window.RA_CHAT_STATE ? window.RA_CHAT_STATE.getActiveSessionId() : null;
+        sessionsListEl.innerHTML = "";
+
+        if (!sessions || sessions.length === 0) {
+          if (sessionsEmptyEl) sessionsEmptyEl.style.display = "block";
+          return;
+        }
+        if (sessionsEmptyEl) sessionsEmptyEl.style.display = "none";
+
+        sessions.forEach(function (sess) {
+          var item = document.createElement("div");
+          item.className = "ra-session-item" + (sess.id === activeId ? " active" : "");
+          item.setAttribute("role", "button");
+          item.setAttribute("tabindex", "0");
+          item.setAttribute("aria-label", "Open conversation: " + sess.title);
+
+          var main = document.createElement("div");
+          main.className = "ra-session-item-main";
+          main.innerHTML = '<svg class="ra-session-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+            + '<div class="ra-session-info">'
+            + '  <span class="ra-session-title">' + esc(sess.title) + '</span>'
+            + '  <span class="ra-session-time">' + formatRelativeTime(sess.updatedAt || sess.createdAt) + '</span>'
+            + '</div>';
+
+          var delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "ra-session-delete-btn";
+          delBtn.setAttribute("aria-label", "Delete conversation: " + sess.title);
+          delBtn.title = "Delete conversation";
+          delBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+
+          delBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (window.RA_CHAT_STATE) {
+              window.RA_CHAT_STATE.deleteSession(sess.id);
+              if (sess.id === activeId) {
+                startNewChat();
+              } else {
+                renderSidebarSessions();
+              }
+            }
+          });
+
+          item.addEventListener("click", function () {
+            switchSession(sess.id);
+          });
+          item.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              switchSession(sess.id);
+            }
+          });
+
+          item.appendChild(main);
+          item.appendChild(delBtn);
+          sessionsListEl.appendChild(item);
+        });
+      }
+
+      function mountSessionMessages(messages) {
+        box.innerHTML = "";
+        if (welcomeHero) welcomeHero.classList.add("hidden");
+        box.style.display = "flex";
+        if (chatComposerWrap) chatComposerWrap.style.display = "block";
+
+        messages.forEach(function (m) {
+          addMsg(m.role, m.text, m.links, m.sourceLabel || (m.role === "assistant" ? "RightAware AI" : ""), false, m.timestamp);
+        });
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function switchSession(id) {
+        if (!window.RA_CHAT_STATE) return;
+        abortActiveReveal();
+        removeCalmingCard();
+        setMutationLock(false);
+
+        window.RA_CHAT_STATE.setActiveSessionId(id);
+        var session = window.RA_CHAT_STATE.getSession(id);
+        if (session && session.messages && session.messages.length) {
+          mountSessionMessages(session.messages);
+        } else {
+          startNewChat();
+        }
+        renderSidebarSessions();
+        toggleSidebar(false);
+      }
+
+      function startNewChat() {
+        abortActiveReveal();
+        removeCalmingCard();
+        setMutationLock(false);
+
+        if (window.RA_CHAT_STATE) {
+          window.RA_CHAT_STATE.setActiveSessionId(null);
+        }
+        box.innerHTML = "";
+        box.style.display = "none";
+        if (welcomeHero) welcomeHero.classList.remove("hidden");
+        if (chatComposerWrap) chatComposerWrap.style.display = "none";
+        if (draftNotice) draftNotice.setAttribute("hidden", "");
+
+        renderSidebarSessions();
+        toggleSidebar(false);
+
+        if (heroInput) {
+          heroInput.disabled = false;
+          heroInput.placeholder = "Ask RightAware AI...";
+          heroInput.value = "";
+          heroInput.focus();
+        }
+        if (heroSendBtn) heroSendBtn.disabled = false;
+        if (input) {
+          input.disabled = false;
+          input.placeholder = "Describe your issue in plain words…";
+          input.value = "";
+        }
+        if (sendBtn) sendBtn.disabled = false;
+      }
+
+      async function handleSend(q) {
+        if (isSubmitting) return;
+        q = (q || "").trim();
+        if (!q) return;
+
+        if (!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()) {
+          showLimitCard();
+          return;
+        }
+
+        // Flush any pending progressive reveal animation before starting new turn
+        flushActiveReveal();
+
+        // Auto-create session if starting a fresh inquiry
+        if (window.RA_CHAT_STATE && !window.RA_CHAT_STATE.getActiveSessionId()) {
+          window.RA_CHAT_STATE.createSession(q);
+        }
+
+        // Transition from Welcome Hero to Active Message Stream
+        if (welcomeHero) welcomeHero.classList.add("hidden");
+        box.style.display = "flex";
+        if (chatComposerWrap) chatComposerWrap.style.display = "block";
+        if (draftNotice) draftNotice.setAttribute("hidden", "");
+
+        setMutationLock(true);
+        var userTime = formatTime();
+        addMsg("user", q, [], "", false, userTime);
+        if (window.RA_CHAT_STATE) {
+          window.RA_CHAT_STATE.addMessageToActiveSession("user", q, [], "", userTime);
+        }
+        renderSidebarSessions();
+
+        if (input) input.value = "";
+        if (heroInput) heroInput.value = "";
+        showCalmingCard();
+
+        try {
+          if (!window.RA_AI) {
+            removeCalmingCard();
+            addMsg("ai", "RightAware AI is initializing. Please try again in a few moments.", [{ t: "Browse Rights", u: "rights.html" }], "RightAware Notice", false);
+            return;
+          }
+
+          var historyTurns = [];
+          try {
+            if (window.RA_CHAT_STATE) {
+              var activeId = window.RA_CHAT_STATE.getActiveSessionId();
+              var curSess = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
+              if (curSess && Array.isArray(curSess.messages)) {
+                // Exclude the current user message which was just appended
+                historyTurns = curSess.messages.slice(0, -1).slice(-6).map(function (m) {
+                  return { role: m.role, text: m.text };
+                });
+              }
+            }
+          } catch (_) { }
+
+          var res = await window.RA_AI.ask(q, { history: historyTurns });
+          removeCalmingCard();
+
+          if (res && res.limitReached) {
+            if (window.RA_CHAT_STATE && typeof res.attempts === "number") {
+              window.RA_CHAT_STATE.setGuestPromptCount(res.attempts);
+            }
+            showLimitCard();
+            return;
+          }
+
+          if (res && res.captchaNeeded) {
+            addMsg("ai", res.text || "Security verification required.", res.links || [], "Verification Notice", false);
+            return;
+          }
+
+          if (res && res.needsAuth) {
+            addMsg("ai", res.text, res.links, "Account Required", false);
+            return;
+          }
+
+          if (res && res.serviceUnavailable && !res.isFallback) {
+            addMsg("ai", res.text, res.links, "RightAware Notice", false);
+            return;
+          }
+
+          if (!isUserAuthed() && window.RA_CHAT_STATE && res && res.isGuest && typeof res.guestAttempts === "number") {
+            window.RA_CHAT_STATE.setGuestPromptCount(res.guestAttempts);
+          }
+
+          var aiTime = formatTime();
+          if (res && res.text) {
+            var label = (res.isFallback || res.demo) ? (res.sourceLabel || "Verified RightAware Guide") : "RightAware AI";
+            if (window.RA_CHAT_STATE) {
+              window.RA_CHAT_STATE.addMessageToActiveSession("assistant", res.text, res.links || [], label, aiTime);
+            }
+            addMsg("ai", res.text, res.links, label, true, aiTime);
+          } else {
+            var fallbackText = "I couldn't match that to a legal guide right now. Please explore our library or urgent help console.";
+            var fallbackLinks = [{ t: "Browse Rights", u: "rights.html" }, { t: "Urgent Help", u: "help.html" }];
+            if (window.RA_CHAT_STATE) {
+              window.RA_CHAT_STATE.addMessageToActiveSession("assistant", fallbackText, fallbackLinks, "Verified RightAware Guide", aiTime);
+            }
+            addMsg("ai", fallbackText, fallbackLinks, "Verified RightAware Guide", false, aiTime);
+          }
+
+          renderSidebarSessions();
+          setPills();
+
+          if (!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()) {
+            showLimitCard();
+          }
+        } catch (err) {
+          removeCalmingCard();
+          addMsg("ai", "A temporary issue occurred while loading this answer. Please try again or visit our help center.", [{ t: "Get Help", u: "help.html" }], "RightAware Notice", false);
+        } finally {
+          var reached = !isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit();
+          setMutationLock(false);
+          if (reached) {
+            if (input) { input.disabled = true; input.placeholder = "Sign in to continue…"; }
+            if (sendBtn) sendBtn.disabled = true;
+            if (heroInput) { heroInput.disabled = true; heroInput.placeholder = "Sign in to continue…"; }
+            if (heroSendBtn) heroSendBtn.disabled = true;
+          } else {
+            if (input) { input.disabled = false; input.focus(); }
+            if (heroInput) { heroInput.disabled = false; }
+          }
+        }
+      }
+
+      if (form) {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (input) handleSend(input.value);
+        });
+      }
+
+      if (heroForm) {
+        heroForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (heroInput) handleSend(heroInput.value);
+        });
+      }
+
+      // Gemini suggestion prompt rows click handlers
+      document.querySelectorAll(".ra-gemini-prompt-row[data-p]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var promptText = b.dataset.p;
+          if (heroInput) heroInput.value = promptText;
+          if (input) input.value = promptText;
+          handleSend(promptText);
+        });
+      });
+
+      // New Chat CTA handlers
+      if (newChatBtn) newChatBtn.addEventListener("click", startNewChat);
+      if (clearBtn) clearBtn.addEventListener("click", startNewChat);
+      if (sidebarClearBtn) sidebarClearBtn.addEventListener("click", startNewChat);
+
+      // Handle ?q= Deep Link Contract (Pre-fill without auto-submit to protect guest quota)
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var queryParam = (params.get("q") || "").trim();
+        if (queryParam) {
+          if (heroInput) heroInput.value = queryParam;
+          if (input) input.value = queryParam;
+          if (heroInput) heroInput.focus();
+          if (draftNotice) draftNotice.removeAttribute("hidden");
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (_) { }
+
+      if (dismissDraftBtn && draftNotice) {
+        dismissDraftBtn.addEventListener("click", function () {
+          draftNotice.setAttribute("hidden", "");
+        });
+      }
+
+      // Hydrate transit thread from homepage drawer if available
+      try {
+        if (window.RA_CHAT_STATE) {
+          var transit = window.RA_CHAT_STATE.consumeTransitThread();
+          if (transit && transit.length) {
+            var transitSession = window.RA_CHAT_STATE.createSession(transit[0].text || "Home Inquiry");
+            transit.forEach(function (m) {
+              window.RA_CHAT_STATE.addMessageToActiveSession(m.role, m.text, m.links || [], m.role === "ai" ? "RightAware AI" : "", formatTime());
+            });
+            mountSessionMessages(transitSession.messages);
+          }
+        }
+      } catch (_) { }
+
+      // Session Hydration on Initial Load
+      try {
+        if (window.RA_CHAT_STATE) {
+          var activeId = window.RA_CHAT_STATE.getActiveSessionId();
+          var activeSession = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
+          if (activeSession && activeSession.messages && activeSession.messages.length > 0) {
+            mountSessionMessages(activeSession.messages);
+          } else {
+            // Fresh state: show Welcome Hero with landing input, hide empty chat box and bottom composer
+            if (box) box.style.display = "none";
+            if (welcomeHero) welcomeHero.classList.remove("hidden");
+            if (chatComposerWrap) chatComposerWrap.style.display = "none";
+            if (heroInput) heroInput.focus();
+          }
+        }
+      } catch (_) { }
 
       renderSidebarSessions();
-      setPills();
 
-      if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
+      document.addEventListener("ra:session-ready", function () {
+        setPills();
+        renderSidebarSessions();
+      });
+      document.addEventListener("ra:backend-ready", function () {
+        setPills();
+      });
+
+      // Initial pill render
+      if (!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()) {
         showLimitCard();
-      }
-    } catch(err){
-      removeCalmingCard();
-      addMsg("ai", "A temporary issue occurred while loading this answer. Please try again or visit our help center.", [{ t: "Get Help", u: "help.html" }], "RightAware Notice", false);
-    } finally {
-      var reached = !isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit();
-      setMutationLock(false);
-      if(reached){
-        if(input){ input.disabled = true; input.placeholder = "Sign in to continue…"; }
-        if(sendBtn) sendBtn.disabled = true;
-        if(heroInput){ heroInput.disabled = true; heroInput.placeholder = "Sign in to continue…"; }
-        if(heroSendBtn) heroSendBtn.disabled = true;
       } else {
-        if(input){ input.disabled = false; input.focus(); }
-        if(heroInput){ heroInput.disabled = false; }
+        setPills();
       }
-    }
-  }
-
-  if(form){
-    form.addEventListener("submit", function(e){
-      e.preventDefault();
-      if(input) handleSend(input.value);
-    });
-  }
-
-  if(heroForm){
-    heroForm.addEventListener("submit", function(e){
-      e.preventDefault();
-      if(heroInput) handleSend(heroInput.value);
-    });
-  }
-
-  // Gemini suggestion prompt rows click handlers
-  document.querySelectorAll(".ra-gemini-prompt-row[data-p]").forEach(function(b){
-    b.addEventListener("click", function(){
-      var promptText = b.dataset.p;
-      if(heroInput) heroInput.value = promptText;
-      if(input) input.value = promptText;
-      handleSend(promptText);
-    });
-  });
-
-  // New Chat CTA handlers
-  if(newChatBtn) newChatBtn.addEventListener("click", startNewChat);
-  if(clearBtn) clearBtn.addEventListener("click", startNewChat);
-  if(sidebarClearBtn) sidebarClearBtn.addEventListener("click", startNewChat);
-
-  // Handle ?q= Deep Link Contract (Pre-fill without auto-submit to protect guest quota)
-  try {
-    var params = new URLSearchParams(window.location.search);
-    var queryParam = (params.get("q") || "").trim();
-    if(queryParam){
-      if(heroInput) heroInput.value = queryParam;
-      if(input) input.value = queryParam;
-      if(heroInput) heroInput.focus();
-      if(draftNotice) draftNotice.removeAttribute("hidden");
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  } catch(_) {}
-
-  if(dismissDraftBtn && draftNotice){
-    dismissDraftBtn.addEventListener("click", function(){
-      draftNotice.setAttribute("hidden", "");
-    });
-  }
-
-  // Hydrate transit thread from homepage drawer if available
-  try {
-    if(window.RA_CHAT_STATE){
-      var transit = window.RA_CHAT_STATE.consumeTransitThread();
-      if(transit && transit.length){
-        var transitSession = window.RA_CHAT_STATE.createSession(transit[0].text || "Home Inquiry");
-        transit.forEach(function(m){
-          window.RA_CHAT_STATE.addMessageToActiveSession(m.role, m.text, m.links || [], m.role === "ai" ? "RightAware AI" : "", formatTime());
-        });
-        mountSessionMessages(transitSession.messages);
-      }
-    }
-  } catch(_) {}
-
-  // Session Hydration on Initial Load
-  try {
-    if(window.RA_CHAT_STATE){
-      var activeId = window.RA_CHAT_STATE.getActiveSessionId();
-      var activeSession = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
-      if(activeSession && activeSession.messages && activeSession.messages.length > 0){
-        mountSessionMessages(activeSession.messages);
-      } else {
-        // Fresh state: show Welcome Hero with landing input, hide empty chat box and bottom composer
-        if(box) box.style.display = "none";
-        if(welcomeHero) welcomeHero.classList.remove("hidden");
-        if(chatComposerWrap) chatComposerWrap.style.display = "none";
-        if(heroInput) heroInput.focus();
-      }
-    }
-  } catch(_) {}
-
-  renderSidebarSessions();
-
-  document.addEventListener("ra:session-ready", function(){
-    setPills();
-    renderSidebarSessions();
-  });
-  document.addEventListener("ra:backend-ready", function(){
-    setPills();
-  });
-
-  // Initial pill render
-  if(!isUserAuthed() && window.RA_CHAT_STATE && window.RA_CHAT_STATE.hasReachedLimit()){
-    showLimitCard();
-  } else {
-    setPills();
-  }
-})();
-</script>
+    })();
+  </script>
 </body>
+
 </html>

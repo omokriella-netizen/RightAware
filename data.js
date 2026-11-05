@@ -31,8 +31,22 @@ window.RA_LAWYERS = [
   { id:"d6", name:"Citizens Free Legal Clinic", initials:"CL", practice:"Free Legal Aid for Low Income Citizens", location:"Enugu", exp:"Pro Bono Clinic", rating:"4.9", reviews:57, fee:"Completely Free", bio:"First-line legal representation and human rights defense for citizens who cannot afford private counsel.", tags:["free","students"], rev:[["G. Okonkwo","Grateful for their dedicated free legal support.","5"]] }
 ];
 
-/* Statutory bodies and citizen complaints desks. */
-window.RA_ORGS = [
+/* Statutory bodies and citizen complaints desks (Unified single source of truth). */
+window.getAuthoritativeOrgs = function() {
+  if (window.RA_ORGANIZATIONS && window.RA_ORGANIZATIONS.length) {
+    return window.RA_ORGANIZATIONS.slice(0, 6).map(function(o){
+      var contactStr = o.phone ? ("Hotline: " + o.phone) : (o.hotline ? ("Hotline: " + o.hotline) : (o.email ? ("Email: " + o.email) : (o.website || "Official Desk")));
+      return {
+        name: o.name + (o.acronym ? " (" + o.acronym + ")" : ""),
+        help: o.who_they_help || (o.services && o.services.length ? o.services.join(", ") : "Statutory citizen rights assistance desk."),
+        contact: contactStr
+      };
+    });
+  }
+  return window.RA_ORGS_FALLBACK;
+};
+
+window.RA_ORGS_FALLBACK = [
   { name:"Legal Aid Council of Nigeria (LACON)", help:"Free criminal legal representation and advice for indigent citizens across all 36 states.", contact:"Hotline: 0800 534 2524 | Abuja HQ & State Secretariats" },
   { name:"National Human Rights Commission (NHRC)", help:"Statutory body investigating human rights abuses, unlawful detention, and police brutality.", contact:"Toll-free: 0800 647 2428 | www.nigeriarights.gov.ng" },
   { name:"Police Complaint Response Unit (CRU)", help:"Official police oversight desk for reporting officer extortion, brutality, and illegal arrest.", contact:"WhatsApp: 0805 700 0001 | Phone: 0805 700 0002" },
@@ -40,6 +54,8 @@ window.RA_ORGS = [
   { name:"National Agency for Prohibition of Trafficking in Persons (NAPTIP)", help:"Statutory agency investigating child abuse, exploitation, and human trafficking.", contact:"Toll-free: 0800 225 5627 | complaint@naptip.gov.ng" },
   { name:"Public Complaints Commission (PCC)", help:"Citizen ombudsman for administrative injustice, bureaucratic delay, and government workplace grievances.", contact:"www.pcc.org.ng | State Offices Nationwide" }
 ];
+
+window.RA_ORGS = window.getAuthoritativeOrgs();
 
 window.RA_SEARCH_INDEX = function(){
   const pages = [

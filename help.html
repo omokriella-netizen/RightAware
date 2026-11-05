@@ -12,12 +12,12 @@
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Get Help | RightAware"/>
 <meta property="og:description" content="Find legal help: professionals directory, rights-protection organisations, emergency guidance and report-a-concern form."/>
-<meta property="og:url" content="https://rightaware-three.vercel.app/help.html"/>
-<meta property="og:image" content="https://rightaware-three.vercel.app/assets/images/hero-citizens.jpg"/>
+<meta property="og:url" content="https://www.rightaware.ng/help.html"/>
+<meta property="og:image" content="https://www.rightaware.ng/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Get Help | RightAware"/>
 <meta name="twitter:description" content="Find legal help: professionals directory, rights-protection organisations, emergency guidance and report-a-concern form."/>
-<link rel="canonical" href="https://rightaware-three.vercel.app/help.html"/>
+<link rel="canonical" href="https://www.rightaware.ng/help.html"/>
 <link rel="stylesheet" href="styles.css?v=2.4"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
     <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
         <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="index.html">Home</a>
-      <a href="about.html">About</a>
+      <a href="about.html">About Us</a>
       <a href="rights.html">Explore Rights</a>
       <a href="resources.html">Resources</a>
       <a href="contact.html">Contact Us</a>
@@ -69,6 +69,15 @@
           <a class="nav-dropdown-item" href="videos.html" role="menuitem">
             <span class="nav-dropdown-item-title">Civic Video Guides</span>
             <span class="nav-dropdown-item-desc">Visual legal walkthroughs in English &amp; Pidgin</span>
+          </a>
+          <div class="nav-dropdown-divider"></div>
+          <a class="nav-dropdown-item" href="about.html" role="menuitem">
+            <span class="nav-dropdown-item-title">About RightAware</span>
+            <span class="nav-dropdown-item-desc">Our civic awareness mission &amp; legal disclaimer</span>
+          </a>
+          <a class="nav-dropdown-item" href="contact.html" role="menuitem">
+            <span class="nav-dropdown-item-title">Contact Civic Desk</span>
+            <span class="nav-dropdown-item-desc">Direct inquiries, corrections &amp; partnerships</span>
           </a>
         </div>
       </div>
@@ -352,6 +361,7 @@
   F.addEventListener("submit",function(e){
     e.preventDefault();
     var out = document.getElementById("repOut");
+    var btn = F.querySelector("button[type=submit]");
     var text = document.getElementById("repText").value.trim();
     if(text.length < 10){
       out.textContent = "Please describe what happened (at least 10 characters) so the report is useful.";
@@ -359,10 +369,13 @@
       document.getElementById("repText").focus();
       return;
     }
+    if(btn && btn.disabled) return;
+    if(btn) { btn.disabled = true; }
     var s = summary();
     try{ var a=JSON.parse(localStorage.getItem("ra_reports")||"[]");a.push({at:new Date().toISOString(),s:s});localStorage.setItem("ra_reports",JSON.stringify(a.slice(0,20)));}catch(_){}
     out.style.color = ""; out.textContent = "Sending…";
     deliver({ name:"Get Help report", topic:"Report a concern", message:s }, function(err){
+      if(btn) { setTimeout(function(){ btn.disabled = false; }, 4000); }
       if(!err){
         out.textContent = "Report sent to the RightAware review team. Keep your own copy with “Copy summary”.";
         out.style.color = "";
