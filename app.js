@@ -4,6 +4,10 @@
   ready(function(){
     // Mobile nav overlay controller
     var btn = document.getElementById("menuBtn"), nav = document.getElementById("mobileNav");
+    // Teleport out of .site-header so backdrop-filter does not trap overlay inside header
+    if(nav && nav.parentNode && nav.parentNode !== document.body){
+      document.body.appendChild(nav);
+    }
     function closeOverlayNav(){
       if(nav) nav.classList.remove("open");
       if(btn) {
@@ -174,36 +178,73 @@
         + '    More'
         + '    <svg class="ra-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 1 5 5 9 1"></polyline></svg>'
         + '  </button>'
-        + '  <div class="nav-dropdown-menu" role="menu">'
-        + '    <a class="nav-dropdown-item' + (page === "laws.html" ? " active" : "") + '" href="' + base + 'laws.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Laws Library</span>'
-        + '      <span class="nav-dropdown-item-desc">Searchable Nigerian legal acts &amp; statutes</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "organizations.html" || page === "organization.html" ? " active" : "") + '" href="' + base + 'organizations.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Organizations Directory</span>'
-        + '      <span class="nav-dropdown-item-desc">Public complaint commissions &amp; rights desks</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "lawyers.html" ? " active" : "") + '" href="' + base + 'lawyers.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Legal Professionals</span>'
-        + '      <span class="nav-dropdown-item-desc">Verified lawyers &amp; legal aid clinics</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "ai.html" ? " active" : "") + '" href="' + base + 'ai.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">RightAware AI</span>'
-        + '      <span class="nav-dropdown-item-desc">Interactive Nigerian civic &amp; legal assistant</span>'
-        + '    </a>'
-        + '    <div class="nav-dropdown-divider"></div>'
-        + '    <a class="nav-dropdown-item' + (page.indexOf("arrest-rights.html") !== -1 ? " active" : "") + '" href="' + base + 'rights/arrest-rights.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Police &amp; Bail Guide</span>'
-        + '      <span class="nav-dropdown-item-desc">Critical safeguards during stops &amp; arrest</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "printables.html" ? " active" : "") + '" href="' + base + 'printables.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Printable Checklists</span>'
-        + '      <span class="nav-dropdown-item-desc">Pocket emergency guides &amp; handbooks</span>'
-        + '    </a>'
-        + '    <a class="nav-dropdown-item' + (page === "videos.html" ? " active" : "") + '" href="' + base + 'videos.html" role="menuitem">'
-        + '      <span class="nav-dropdown-item-title">Civic Video Guides</span>'
-        + '      <span class="nav-dropdown-item-desc">Visual legal walkthroughs in English &amp; Pidgin</span>'
-        + '    </a>'
+        + '  <div class="nav-dropdown-menu nav-dropdown-mega" role="menu">'
+        + '    <div class="nav-mega-grid">'
+        + '      <div class="nav-mega-col">'
+        + '        <div class="nav-mega-heading">'
+        + '          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>'
+        + '          Civic &amp; Legal Libraries'
+        + '        </div>'
+        + '        <a class="nav-dropdown-item' + (page === "laws.html" ? " active" : "") + '" href="' + base + 'laws.html" role="menuitem">'
+        + '          <span class="nav-mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>'
+        + '          <span class="nav-mega-content">'
+        + '            <span class="nav-mega-title">Laws Library <span class="nav-mega-badge">21 Acts</span></span>'
+        + '            <span class="nav-mega-desc">Searchable Nigerian legal acts &amp; statutes</span>'
+        + '          </span>'
+        + '        </a>'
+        + '        <a class="nav-dropdown-item' + (page === "organizations.html" || page === "organization.html" ? " active" : "") + '" href="' + base + 'organizations.html" role="menuitem">'
+        + '          <span class="nav-mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></span>'
+        + '          <span class="nav-mega-content">'
+        + '            <span class="nav-mega-title">Organizations</span>'
+        + '            <span class="nav-mega-desc">Public complaint commissions &amp; 36 desks</span>'
+        + '          </span>'
+        + '        </a>'
+        + '        <a class="nav-dropdown-item' + (page === "lawyers.html" ? " active" : "") + '" href="' + base + 'lawyers.html" role="menuitem">'
+        + '          <span class="nav-mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>'
+        + '          <span class="nav-mega-content">'
+        + '            <span class="nav-mega-title">Legal Directory</span>'
+        + '            <span class="nav-mega-desc">Verified lawyers &amp; legal aid clinics</span>'
+        + '          </span>'
+        + '        </a>'
+        + '      </div>'
+        + '      <div class="nav-mega-col">'
+        + '        <div class="nav-mega-heading">'
+        + '          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
+        + '          Emergency &amp; AI Tools'
+        + '        </div>'
+        + '        <a class="nav-dropdown-item' + (page === "ai.html" ? " active" : "") + '" href="' + base + 'ai.html" role="menuitem">'
+        + '          <span class="nav-mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></span>'
+        + '          <span class="nav-mega-content">'
+        + '            <span class="nav-mega-title">RightAware AI <span class="nav-mega-badge">Instant</span></span>'
+        + '            <span class="nav-mega-desc">Interactive Nigerian civic &amp; legal assistant</span>'
+        + '          </span>'
+        + '        </a>'
+        + '        <a class="nav-dropdown-item' + (page.indexOf("arrest-rights.html") !== -1 ? " active" : "") + '" href="' + base + 'rights/arrest-rights.html" role="menuitem">'
+        + '          <span class="nav-mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>'
+        + '          <span class="nav-mega-content">'
+        + '            <span class="nav-mega-title">Police &amp; Bail <span class="nav-mega-badge nav-mega-badge-urgent">Shield</span></span>'
+        + '            <span class="nav-mega-desc">Critical safeguards during stops &amp; arrest</span>'
+        + '          </span>'
+        + '        </a>'
+        + '        <a class="nav-dropdown-item' + (page === "printables.html" ? " active" : "") + '" href="' + base + 'printables.html" role="menuitem">'
+        + '          <span class="nav-mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></span>'
+        + '          <span class="nav-mega-content">'
+        + '            <span class="nav-mega-title">Print Checklists</span>'
+        + '            <span class="nav-mega-desc">Pocket emergency guides &amp; handbooks</span>'
+        + '          </span>'
+        + '        </a>'
+        + '      </div>'
+        + '    </div>'
+        + '    <div class="nav-mega-footer">'
+        + '      <a class="nav-mega-foot-link" href="' + base + 'videos.html">'
+        + '        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'
+        + '        Civic Video Guides'
+        + '      </a>'
+        + '      <a class="nav-mega-foot-link" href="' + base + 'contact.html">'
+        + '        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>'
+        + '        Contact Civic Desk &rarr;'
+        + '      </a>'
+        + '    </div>'
         + '  </div>'
         + '</div>';
 
@@ -213,6 +254,9 @@
     function hydrateMobileNav(){
       var mNav = document.getElementById("mobileNav");
       if(!mNav) return;
+      if(mNav.parentNode && mNav.parentNode !== document.body){
+        document.body.appendChild(mNav);
+      }
       var base = getBasePath();
       var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 
@@ -275,6 +319,32 @@
       });
     }
 
+    function ensureHeaderSearch(){
+      var actions = document.querySelector(".header-actions");
+      if(!actions || actions.querySelector(".hsearch")) return;
+      var base = getBasePath();
+      var form = document.createElement("form");
+      form.className = "hsearch";
+      form.setAttribute("data-global-search", "");
+      form.setAttribute("role", "search");
+      form.setAttribute("aria-label", "Search Nigerian rights and laws");
+      form.setAttribute("data-base", base);
+      form.innerHTML = '<span class="hsearch-icon" aria-hidden="true">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'
+        + '</span>'
+        + '<input type="search" placeholder="Search rights, laws…" aria-label="Search rights, laws"/>';
+
+      form.addEventListener("submit", function(e){
+        e.preventDefault();
+        var inp = form.querySelector("input[type=search]");
+        var q = (inp ? inp.value : "").trim();
+        if(q) location.href = base + "search.html?q=" + encodeURIComponent(q);
+      });
+
+      actions.insertBefore(form, actions.firstChild);
+    }
+
+    ensureHeaderSearch();
     hydrateDesktopNav();
     hydrateMobileNav();
 
@@ -684,6 +754,14 @@
         + '</a>';
 
       document.body.appendChild(nav);
+
+      nav.querySelectorAll(".ra-bottom-tab").forEach(function(tabLink) {
+        tabLink.addEventListener("click", function() {
+          if (typeof window.raCloseNav === "function") {
+            window.raCloseNav();
+          }
+        });
+      });
 
       var aiBtn = nav.querySelector("#raTabAi");
       if (aiBtn) {

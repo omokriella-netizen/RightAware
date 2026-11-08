@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Log In | RightAware</title>
-<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth)."/>
+<meta name="description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Encrypted Auth)."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,12 +11,12 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="Log In | RightAware"/>
-<meta property="og:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth)."/>
+<meta property="og:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Encrypted Auth)."/>
 <meta property="og:url" content="https://www.rightaware.ng/login.html"/>
 <meta property="og:image" content="https://www.rightaware.ng/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Log In | RightAware"/>
-<meta name="twitter:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Supabase Auth)."/>
+<meta name="twitter:description" content="Sign in to RightAware with your email and password. Handles email confirmation, expired links, resending the confirmation email and password reset (Encrypted Auth)."/>
 <link rel="canonical" href="https://www.rightaware.ng/login.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -113,7 +113,7 @@
       <a class="auth-tab" href="signup.html">Create Account</a>
     </div>
     <div class="auth-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" loading="lazy"/></div>
-    <span class="pill pill-green" id="loginPill">SECURE LOGIN</span><h1>Log in</h1>
+    <span class="pill pill-green" id="loginPill">ENCRYPTED CIVIC ACCESS</span><h1>Log in</h1>
     <p style="color:var(--muted);font-size:.92rem;line-height:1.45;margin-bottom:1.1rem">Single secure sign-in for Citizens, Legal Professionals, Organizations, and Administrators. You will be automatically routed to your dedicated workspace.</p>
 
     <!-- 8-Second Timeout Recovery Boundary (Low stress, zero privilege leakage) -->
@@ -421,7 +421,7 @@
     }
     if(authErrorBox) authErrorBox.hidden = true;
     if(loginPill){
-      loginPill.textContent = "SUPABASE: SECURE LOGIN";
+      loginPill.textContent = "ENCRYPTED CIVIC ACCESS";
       loginPill.className = "pill pill-green";
     }
     return true;

@@ -441,7 +441,7 @@
       function renderLocked() {
         title.innerHTML = 'Professional workspace <span class="pill">LOCKED — NO BACKEND</span>';
         line.innerHTML = 'This device has no database connection, so ownership of a professional record cannot be verified — the workspace stays closed rather than guessing.';
-        body.innerHTML = '<div class="notice rv"><strong>Locked.</strong> Verification status, your profile, consultation requests and reviews all live in Supabase behind row-level security. Nothing on this page is simulated, so there is no local preview with fake data. '
+        body.innerHTML = '<div class="notice rv"><strong>Locked.</strong> Verification status, your profile, consultation requests and reviews all live in our encrypted database behind row-level security. Nothing on this page is simulated, so there is no local preview with fake data. '
           + 'Sign in on a connected device to open the workspace.</div>'
           + '<p><a class="btn btn-primary" href="login.html?next=professional.html">Sign in</a> <a class="btn btn-secondary" href="account.html">My account</a> <a class="btn btn-outline" href="index.html">Home</a></p>'
           + stamp();
@@ -1012,7 +1012,7 @@
           + '<label>Confirm new password<input type="password" id="pw2" autocomplete="new-password" minlength="8"/></label>'
           + '<div class="ws-actions"><button class="btn btn-primary btn-sm" type="button" id="pwBtn">Update password</button></div>'
           + '<p class="ws-out" id="pwOut"></p></form>'
-          + '<p class="form-note">Password changes go through Supabase Authentication on this signed-in session. The server applies them; this page only reports what the server answered.</p>'
+          + '<p class="form-note">Password changes go through secure encrypted authentication on this signed-in session. The server applies them; this page only reports what the server answered.</p>'
           + '<p><a class="link" href="account.html">My account: profile, saved items, sync →</a></p></article>'
           + '<article class="card"><span class="tag">Session</span><h3>Sign out</h3>'
           + '<p>Ends this session on this device. Your record, decisions, and messages stay in the database; signing out changes nothing about them.</p>'

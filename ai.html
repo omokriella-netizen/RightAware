@@ -822,6 +822,11 @@
         if (window.RA_CHAT_STATE) {
           window.RA_CHAT_STATE.setActiveSessionId(null);
         }
+        try {
+          if (window.location.search) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } catch (_) { }
         box.innerHTML = "";
         box.style.display = "none";
         if (welcomeHero) welcomeHero.classList.remove("hidden");
@@ -1002,15 +1007,22 @@
       if (clearBtn) clearBtn.addEventListener("click", startNewChat);
       if (sidebarClearBtn) sidebarClearBtn.addEventListener("click", startNewChat);
 
-      // Handle ?q= Deep Link Contract (Pre-fill without auto-submit to protect guest quota)
+      // Handle ?session= or ?q= Deep Link Contract
       try {
         var params = new URLSearchParams(window.location.search);
+        var sessParam = (params.get("session") || "").trim();
+        if (sessParam && window.RA_CHAT_STATE) {
+          window.RA_CHAT_STATE.setActiveSessionId(sessParam);
+        }
         var queryParam = (params.get("q") || "").trim();
         if (queryParam) {
           if (heroInput) heroInput.value = queryParam;
           if (input) input.value = queryParam;
           if (heroInput) heroInput.focus();
           if (draftNotice) draftNotice.removeAttribute("hidden");
+        }
+        // As soon as deep-link params are processed, strip them from the URL bar to prevent refresh traps
+        if (sessParam || queryParam) {
           window.history.replaceState({}, document.title, window.location.pathname);
         }
       } catch (_) { }
@@ -1036,27 +1048,34 @@
       } catch (_) { }
 
       // Session Hydration on Initial Load
-      try {
-        if (window.RA_CHAT_STATE) {
-          var activeId = window.RA_CHAT_STATE.getActiveSessionId();
-          var activeSession = activeId ? window.RA_CHAT_STATE.getSession(activeId) : null;
-          if (activeSession && activeSession.messages && activeSession.messages.length > 0) {
-            mountSessionMessages(activeSession.messages);
-          } else {
-            // Fresh state: show Welcome Hero with landing input, hide empty chat box and bottom composer
-            if (box) box.style.display = "none";
-            if (welcomeHero) welcomeHero.classList.remove("hidden");
-            if (chatComposerWrap) chatComposerWrap.style.display = "none";
-            if (heroInput) heroInput.focus();
+      function hydrateActiveSession() {
+        try {
+          if (window.RA_CHAT_STATE) {
+            var activeId = window.RA_CHAT_STATE.getActiveSessionId();
+            if (!activeId) return false;
+            var activeSession = window.RA_CHAT_STATE.getSession(activeId);
+            if (activeSession && activeSession.messages && activeSession.messages.length > 0) {
+              mountSessionMessages(activeSession.messages);
+              return true;
+            } else if (!box || box.children.length === 0) {
+              if (box) box.style.display = "none";
+              if (welcomeHero) welcomeHero.classList.remove("hidden");
+              if (chatComposerWrap) chatComposerWrap.style.display = "none";
+              if (heroInput) heroInput.focus();
+            }
           }
-        }
-      } catch (_) { }
+        } catch (_) { }
+        return false;
+      }
+
+      hydrateActiveSession();
 
       renderSidebarSessions();
 
       document.addEventListener("ra:session-ready", function () {
         setPills();
         renderSidebarSessions();
+        hydrateActiveSession();
       });
       document.addEventListener("ra:backend-ready", function () {
         setPills();

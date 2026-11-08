@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Account | RightAware</title>
-<meta name="description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
+<meta name="description" content="Your RightAware account: case inquiries, legal consultations, saved rights, notifications, and profile preferences."/>
 <link rel="icon" href="assets/images/favicon-32.png" type="image/png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="manifest" href="site.webmanifest"/>
@@ -11,22 +11,626 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="RightAware"/>
 <meta property="og:title" content="My Account | RightAware"/>
-<meta property="og:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
+<meta property="og:description" content="Manage your legal consultations, AI inquiry history, saved offline rights, notifications, and personal profile."/>
 <meta property="og:url" content="https://www.rightaware.ng/account.html"/>
 <meta property="og:image" content="https://www.rightaware.ng/assets/images/hero-citizens.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="My Account | RightAware"/>
-<meta name="twitter:description" content="Your RightAware account: profile, saved items, consultation history, notifications and settings. Saved items and profile sync with your account when you are signed in."/>
+<meta name="twitter:description" content="Manage your legal consultations, AI inquiry history, saved offline rights, notifications, and personal profile."/>
 <link rel="canonical" href="https://www.rightaware.ng/account.html"/>
 <link rel="stylesheet" href="styles.css?v=2.3"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ==========================================================================
+     MODERN ACCOUNT WORKSPACE (Zero-Drag 4-Tab Architecture)
+     ========================================================================== */
+
+  /* 1. Compact Workspace Header */
+  .ws-hero {
+    background: var(--ra-brand-dark, #122620);
+    color: #ffffff;
+    padding: 1.5rem 0 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  @media (max-width: 640px) {
+    .ws-hero {
+      padding: 0.95rem 0 0.85rem;
+    }
+  }
+  .ws-hero-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .ws-hero-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .ws-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ra-brand-leaf, #779D32);
+  }
+  .ws-hero h1 {
+    margin: 0;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+  @media (max-width: 640px) {
+    .ws-hero h1 {
+      font-size: 1.2rem;
+    }
+  }
+  .ws-hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    margin-top: 0.2rem;
+  }
+  .ws-pill-role {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    background: rgba(119, 157, 50, 0.25);
+    color: #d1fae5;
+    border: 1px solid rgba(119, 157, 50, 0.45);
+  }
+  .ws-sync-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+  .sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+    display: inline-block;
+  }
+  .sync-dot.offline {
+    background: #f59e0b;
+    box-shadow: none;
+  }
+
+  /* 2. Prominent Role Workspace Alert (Lawyer / NGO / Admin) */
+  .ws-role-alert {
+    background: #F4F8EE;
+    border-bottom: 1px solid rgba(119, 157, 50, 0.35);
+    padding: 0.7rem 0;
+  }
+  .ws-role-alert-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .ws-role-alert-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--navy, #122620);
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  .ws-role-alert-msg svg {
+    color: var(--ra-brand-leaf, #779D32);
+    flex-shrink: 0;
+  }
+
+  /* 3. The 4-Tab Navigation Bar (360px Mobile-Hardened) */
+  .ws-tabs-bar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 56px;
+    z-index: 45;
+    box-shadow: 0 2px 10px rgba(18, 38, 32, 0.04);
+  }
+  .ws-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    list-style: none;
+  }
+  .ws-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-height: 42px;
+    text-decoration: none;
+    user-select: none;
+  }
+  .ws-tab-label-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: 100%;
+  }
+  .ws-tab-label {
+    white-space: nowrap;
+  }
+  .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border-radius: 999px;
+    background: var(--ra-brand-leaf, #779D32);
+    color: #ffffff;
+    height: 18px;
+    min-width: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .ws-tab-btn:hover {
+    background: var(--ra-brand-tint, #F4F8EE);
+    color: var(--navy);
+  }
+  .ws-tab-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+  .ws-tab-btn[aria-selected="true"] {
+    background: var(--ra-brand-leaf, #779D32);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(119, 157, 50, 0.25);
+  }
+  .ws-tab-btn[aria-selected="true"] .tab-badge {
+    background: #ffffff;
+    color: var(--ra-brand-leaf-hover, #5F8025);
+  }
+
+  /* Strict 360px viewport grid fit (zero text overflow & wrapping) */
+  @media (max-width: 640px) {
+    .ws-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      padding: 0.35rem 0;
+    }
+    .ws-tab-btn {
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px 2px !important;
+      font-size: 0.72rem !important;
+      min-height: 48px;
+      border-radius: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .ws-tab-btn svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+    .ws-tab-label-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      max-width: 100%;
+    }
+    .ws-tab-label {
+      font-size: 0.72rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tab-badge {
+      font-size: 0.62rem !important;
+      padding: 0 3px !important;
+      min-width: 15px !important;
+      height: 15px !important;
+      line-height: 15px !important;
+      border-radius: 999px !important;
+      flex-shrink: 0;
+    }
+  }
+
+  /* 4. Tab Viewports */
+  .ws-tabpanel {
+    display: none;
+    padding: 1.75rem 0 3.5rem;
+  }
+  .ws-tabpanel.active {
+    display: block;
+  }
+  @media (max-width: 640px) {
+    .ws-tabpanel {
+      padding: 1.25rem 0 3rem;
+    }
+  }
+
+  /* 5. Sub-headers & Filter Controls */
+  .ws-panel-head {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .ws-panel-head h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.25rem;
+    color: var(--navy);
+  }
+  .ws-panel-head p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .subfilter-row {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin: 0.85rem 0 1rem;
+  }
+  .subfilter-btn {
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s ease;
+  }
+  .subfilter-btn:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+  }
+  .subfilter-btn.active {
+    background: var(--navy);
+    color: #ffffff;
+    border-color: var(--navy);
+  }
+
+  /* 6. Case & AI Cards */
+  .case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-top: 0.85rem;
+  }
+  @media (max-width: 480px) {
+    .case-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .case-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    box-shadow: 0 4px 12px rgba(18, 38, 32, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .case-card:hover {
+    box-shadow: 0 6px 18px rgba(18, 38, 32, 0.08);
+  }
+  .case-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .case-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--navy);
+    line-height: 1.35;
+  }
+  .case-card p {
+    margin: 0.25rem 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .case-card-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .case-card-foot {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 0.25rem;
+  }
+
+  /* Status Badges */
+  .badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+  .badge-requested {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FDE68A;
+  }
+  .badge-accepted {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+  }
+  .badge-declined {
+    background: #F3F4F6;
+    color: #4B5563;
+    border: 1px solid #E5E7EB;
+  }
+
+  .device-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.45rem;
+    background: rgba(119, 157, 50, 0.12);
+    color: var(--ra-brand-leaf-hover, #5F8025);
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+
+  /* Empty State Card */
+  .ws-empty-card {
+    background: #ffffff;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 2.25rem 1.5rem;
+    text-align: center;
+    margin: 0.75rem 0;
+  }
+  .ws-empty-card h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+    color: var(--navy);
+  }
+  .ws-empty-card p {
+    margin: 0 0 1rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 7. Notifications Feed */
+  .notif-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-top: 0.75rem;
+  }
+  .notif-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .notif-card.unread {
+    border-left: 4px solid var(--ra-brand-leaf, #779D32);
+    background: #FAFCF8;
+  }
+  .notif-main {
+    flex: 1;
+  }
+  .notif-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.25rem;
+  }
+  .notif-unread-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ra-brand-leaf, #779D32);
+    display: inline-block;
+  }
+  .notif-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .notif-body {
+    font-size: 0.86rem;
+    color: var(--muted);
+    margin: 0 0 0.35rem;
+    line-height: 1.4;
+  }
+  .notif-time {
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .notif-actions {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* 8. Profile & Settings Layout */
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 820px) {
+    .profile-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+  .ws-card-box {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.35rem;
+    box-shadow: 0 4px 12px rgba(18, 38, 32, 0.04);
+  }
+  .ws-card-box h3 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    color: var(--navy);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+  .form-note-status {
+    font-size: 0.84rem;
+    margin-top: 0.65rem;
+    font-weight: 600;
+  }
+
+  /* 9. Native Dialog Modal for AI Transcripts */
+  dialog.transcript-dialog {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 0;
+    max-width: 640px;
+    width: 92%;
+    max-height: 85vh;
+    box-shadow: 0 20px 45px rgba(18, 38, 32, 0.25);
+    background: #ffffff;
+  }
+  dialog.transcript-dialog::backdrop {
+    background: rgba(18, 38, 32, 0.65);
+    backdrop-filter: blur(4px);
+  }
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: #FAFBF8;
+  }
+  .modal-head h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--navy);
+  }
+  .modal-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+  }
+  .modal-close-btn:hover {
+    color: var(--navy);
+    background: rgba(0,0,0,0.05);
+  }
+  .modal-body {
+    padding: 1.25rem;
+    overflow-y: auto;
+    max-height: calc(85vh - 130px);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .bubble {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    max-width: 88%;
+    word-break: break-word;
+  }
+  .bubble-user {
+    align-self: flex-end;
+    background: var(--ra-brand-tint, #F4F8EE);
+    color: var(--navy);
+    border: 1px solid rgba(119, 157, 50, 0.35);
+  }
+  .bubble-assistant {
+    align-self: flex-start;
+    background: #ffffff;
+    color: var(--navy);
+    border: 1px solid var(--border);
+  }
+  .bubble-role {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .modal-foot {
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    background: #FAFBF8;
+  }
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+
+<!-- Site Header -->
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a href="index.html" class="logo" aria-label="RightAware home"><span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span></a>
-        <nav class="nav" id="mainNav" aria-label="Primary">
+    <a href="index.html" class="logo" aria-label="RightAware home">
+      <span class="logo-brand"><img src="assets/images/logo-rightaware.png" alt="RightAware" width="130" height="30" loading="lazy"/></span>
+    </a>
+    <nav class="nav" id="mainNav" aria-label="Primary">
       <a href="index.html">Home</a>
       <a href="about.html">About Us</a>
       <a href="rights.html">Explore Rights</a>
@@ -68,21 +672,12 @@
             <span class="nav-dropdown-item-title">Civic Video Guides</span>
             <span class="nav-dropdown-item-desc">Visual legal walkthroughs in English &amp; Pidgin</span>
           </a>
-          <div class="nav-dropdown-divider"></div>
-          <a class="nav-dropdown-item" href="about.html" role="menuitem">
-            <span class="nav-dropdown-item-title">About RightAware</span>
-            <span class="nav-dropdown-item-desc">Our civic awareness mission &amp; legal disclaimer</span>
-          </a>
-          <a class="nav-dropdown-item" href="contact.html" role="menuitem">
-            <span class="nav-dropdown-item-title">Contact Civic Desk</span>
-            <span class="nav-dropdown-item-desc">Direct inquiries, corrections &amp; partnerships</span>
-          </a>
         </div>
       </div>
     </nav>
     <div class="header-actions">
       <span id="whoChip" class="tag"></span>
-      <button class="btn btn-outline btn-sm" id="logoutBtn">Log Out</button>
+      <button class="btn btn-outline btn-sm" id="logoutBtn" type="button">Log Out</button>
       <a class="btn btn-urgent btn-sm" href="index.html#emergencyConsole">
         <svg class="ra-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         Urgent Help
@@ -90,7 +685,7 @@
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
-    <div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav" id="mobileNav">
     <form data-global-search class="msearch" role="search"><input type="search" placeholder="Search rights, topics…" aria-label="Search"/></form>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
@@ -102,33 +697,230 @@
     <a href="organizations.html">Organizations Directory</a>
     <a href="lawyers.html">Legal Professionals</a>
     <a href="ai.html">RightAware AI</a>
-    <a href="printables.html">Printable Checklists</a>
-    <a href="videos.html">Civic Video Guides</a>
     <a href="login.html">Log In</a>
   </div>
 </header>
+
 <main id="main">
-<section class="page-hero"><div class="container rv"><span class="eyebrow">My account</span><h1 id="helloTitle">Welcome</h1><p class="lead-dark"><span class="pill" id="syncPill">CHECKING CONNECTION…</span> Your profile, saved items, account role and application status sync with your account when you are signed in, and everything stays available on this device.</p>
-<div class="chip-row"><a href="#mystatus">My status</a><a href="#saved">Saved</a><a href="#consult">Consultations</a><a href="#notif">Notifications</a><a href="#profile">Profile</a><a href="#settings">Settings</a></div></div></section>
-<section class="section section-alt" id="mystatus"><div class="container">
-  <div class="section-head"><span class="eyebrow">Access & applications</span><h2>My status</h2></div>
-  <div id="statusBox" class="cards-grid" aria-live="polite"></div>
-</div></section>
-<section class="section" id="saved"><div class="container"><div class="section-head"><span class="eyebrow">Saved</span><h2>Saved rights & videos</h2></div><div id="savedGrid" class="cards-grid"></div></div></section>
-<section class="section section-alt" id="consult"><div class="container"><div class="section-head"><span class="eyebrow">History</span><h2>Consultation history</h2><p id="consultMeta" style="max-width:760px">Loading consultations…</p></div><div id="consultList" class="cards-grid"></div><p class="form-note" id="consultOut" role="status" aria-live="polite"></p></div></section>
-<section class="section" id="notif"><div class="container"><div class="section-head"><span class="eyebrow">Notifications</span><h2>Notifications</h2><p id="notifMeta" style="max-width:760px">Loading notifications…</p><p style="max-width:760px"><button class="btn btn-secondary btn-sm" id="notifMarkAll" type="button" style="display:none">Mark all read</button></p></div><div id="notifList" style="max-width:760px"></div><p class="form-note" id="notifOut" role="status" aria-live="polite"></p></div></section>
-<section class="section section-alt"><div class="container contact-grid">
-  <form class="form-card rv" id="profileForm"><h2 id="profile">Profile</h2>
-    <label>Full name<input id="pName"/></label>
-    <div class="form-row"><label>Email<input id="pEmail" type="email"/></label><label>Phone (optional)<input id="pPhone" placeholder="For follow-ups from RightAware"/></label></div>
-    <div class="form-row"><label>State<select id="pState"><option>Lagos</option><option>Abuja FCT</option><option>Kano</option><option>Rivers</option><option>Oyo</option><option>Enugu</option><option>Other</option></select></label><label>Language<select id="pLang"><option>English</option><option>Pidgin</option><option>Yoruba</option><option>Hausa</option><option>Igbo</option></select></label></div>
-    <button class="btn btn-primary" type="submit">Save Profile</button><p class="form-note" id="pOut"></p></form>
-  <form class="form-card rv" id="setForm"><h2 id="settings">Settings</h2>
-    <label><input type="checkbox" id="sRem" style="width:auto"/> Weekly rights-tips reminders</label>
-    <label><input type="checkbox" id="sOff" style="width:auto"/> Prefer offline-friendly pages</label>
-    <button class="btn btn-secondary" type="submit">Save Settings</button><p class="form-note">Online-only features will always say so.</p></form>
-</div></section>
+  <!-- Slim, High-Signal Workspace Header -->
+  <section class="ws-hero" aria-label="User Workspace Header">
+    <div class="container ws-hero-inner">
+      <div class="ws-hero-identity">
+        <span class="ws-eyebrow">Citizen Workspace</span>
+        <h1 id="helloTitle">Welcome, Member</h1>
+        <div class="ws-hero-meta">
+          <span id="userEmailText"></span>
+          <span class="ws-pill-role" id="roleBadge">Citizen</span>
+          <span class="ws-sync-badge" id="syncStatusBadge"><span class="sync-dot" id="syncDot"></span> <span id="syncText">Synced</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prominent Role-Specific Workspace Banner for Lawyers, NGOs & Admins -->
+  <aside id="roleWorkspaceBanner" class="ws-role-alert" style="display:none;" aria-label="Role workspace alert">
+    <div class="container ws-role-alert-inner">
+      <div class="ws-role-alert-msg">
+        <svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span id="roleWorkspaceText">You are signed in as a verified Legal Professional.</span>
+      </div>
+      <a href="professional.html" id="roleWorkspaceLink" class="btn btn-primary btn-sm">Open Workspace &rarr;</a>
+    </div>
+  </aside>
+
+  <!-- Sticky 4-Tab Navigation Bar (Hardened 360px Single-Row Layout) -->
+  <div class="ws-tabs-bar">
+    <div class="container">
+      <nav class="ws-tabs" role="tablist" aria-label="Workspace Sections">
+        <button type="button" role="tab" class="ws-tab-btn" id="tab-cases" data-tab="cases" aria-selected="true" aria-controls="panel-cases">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <span class="ws-tab-label-wrap">
+            <span class="ws-tab-label">My Cases</span>
+            <span class="tab-badge" id="badgeCases" style="display:none">0</span>
+          </span>
+        </button>
+        <button type="button" role="tab" class="ws-tab-btn" id="tab-saved" data-tab="saved" aria-selected="false" aria-controls="panel-saved">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          <span class="ws-tab-label-wrap">
+            <span class="ws-tab-label">Saved</span>
+            <span class="tab-badge" id="badgeSaved" style="display:none">0</span>
+          </span>
+        </button>
+        <button type="button" role="tab" class="ws-tab-btn" id="tab-inbox" data-tab="inbox" aria-selected="false" aria-controls="panel-inbox">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="ws-tab-label-wrap">
+            <span class="ws-tab-label">Inbox</span>
+            <span class="tab-badge" id="badgeInbox" style="display:none">0</span>
+          </span>
+        </button>
+        <button type="button" role="tab" class="ws-tab-btn" id="tab-profile" data-tab="profile" aria-selected="false" aria-controls="panel-profile">
+          <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span class="ws-tab-label-wrap">
+            <span class="ws-tab-label">Profile</span>
+          </span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- =========================================================================
+         TAB 1: MY CASES (Consultations + AI Inquiry History)
+         ========================================================================= -->
+    <section class="ws-tabpanel active" id="panel-cases" role="tabpanel" aria-labelledby="tab-cases">
+      <!-- Consultations Sub-section -->
+      <div class="ws-panel-head">
+        <h2>Legal Consultations</h2>
+        <p>Inquiries and consultation requests sent to verified legal practitioners.</p>
+        <div class="subfilter-row" role="group" aria-label="Filter consultations by status">
+          <button type="button" class="subfilter-btn active" data-consult-filter="all">All</button>
+          <button type="button" class="subfilter-btn" data-consult-filter="requested">Pending</button>
+          <button type="button" class="subfilter-btn" data-consult-filter="accepted">Accepted</button>
+          <button type="button" class="subfilter-btn" data-consult-filter="declined">Declined</button>
+        </div>
+      </div>
+      <div id="consultList" class="case-grid" aria-live="polite"></div>
+      <p class="form-note" id="consultOut" role="status" aria-live="polite" style="margin-top:0.5rem;"></p>
+
+      <!-- AI Inquiry History Sub-section -->
+      <div class="ws-panel-head" style="margin-top: 2.25rem;">
+        <h2>RightAware AI Conversations <span class="device-badge">On this device</span></h2>
+        <p>Previous questions and constitutional guidance explored with our legal AI assistant.</p>
+      </div>
+      <div id="aiChatList" class="case-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 2: SAVED GUIDES & RESOURCES
+         ========================================================================= -->
+    <section class="ws-tabpanel" id="panel-saved" role="tabpanel" aria-labelledby="tab-saved">
+      <div class="ws-panel-head">
+        <h2>Saved Rights &amp; Video Guides</h2>
+        <p>Bookmarked articles and handbooks remain accessible even when your device is offline.</p>
+      </div>
+      <div id="savedGrid" class="cards-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 3: INBOX (Notifications & Status)
+         ========================================================================= -->
+    <section class="ws-tabpanel" id="panel-inbox" role="tabpanel" aria-labelledby="tab-inbox">
+      <div class="ws-panel-head" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:0.5rem;">
+        <div>
+          <h2>Notifications Feed</h2>
+          <p id="notifMeta">Stay informed on case updates, decisions, and system alerts.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" id="notifMarkAll" type="button" style="display:none">Mark all read</button>
+      </div>
+      <div id="notifList" class="notif-feed" aria-live="polite"></div>
+      <p class="form-note" id="notifOut" role="status" aria-live="polite" style="margin-top:0.5rem;"></p>
+
+      <!-- Compact Application Status Section -->
+      <div class="ws-panel-head" style="margin-top: 2.25rem;">
+        <h2>Account Pathway &amp; Verification</h2>
+        <p>Professional or organisation listing applications associated with this account.</p>
+      </div>
+      <div id="statusBox" class="cards-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 4: PROFILE, SETTINGS & SIGN OUT
+         ========================================================================= -->
+    <section class="ws-tabpanel" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile">
+      <div class="profile-grid">
+        <!-- Personal Information Form -->
+        <form class="ws-card-box" id="profileForm" novalidate>
+          <h3>Personal Details</h3>
+          <label>Full name
+            <input id="pName" autocomplete="name" required placeholder="Your full name"/>
+          </label>
+          <div class="form-row">
+            <label>Email address
+              <input id="pEmail" type="email" autocomplete="email" readonly disabled title="Email is tied to your account login"/>
+            </label>
+            <label>Phone number (optional)
+              <input id="pPhone" type="tel" autocomplete="tel" placeholder="For consultation follow-ups"/>
+            </label>
+          </div>
+          <div class="form-row">
+            <label>State of residence
+              <select id="pState">
+                <option value="Lagos">Lagos</option>
+                <option value="Abuja FCT">Abuja FCT</option>
+                <option value="Kano">Kano</option>
+                <option value="Rivers">Rivers</option>
+                <option value="Oyo">Oyo</option>
+                <option value="Enugu">Enugu</option>
+                <option value="Delta">Delta</option>
+                <option value="Kaduna">Kaduna</option>
+                <option value="Ogun">Ogun</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+            <label>Preferred language
+              <select id="pLang">
+                <option value="English">English</option>
+                <option value="Pidgin">Pidgin</option>
+                <option value="Yoruba">Yoruba</option>
+                <option value="Hausa">Hausa</option>
+                <option value="Igbo">Igbo</option>
+              </select>
+            </label>
+          </div>
+          <div style="margin-top: 1rem;">
+            <button class="btn btn-primary" type="submit" id="saveProfileBtn">Save Profile</button>
+          </div>
+          <p class="form-note-status" id="pOut" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Preferences & Account Actions -->
+        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+          <form class="ws-card-box" id="setForm">
+            <h3>Account Preferences</h3>
+            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; margin-bottom:0.75rem; cursor:pointer;">
+              <input type="checkbox" id="sRem" style="width:auto; margin:0;"/>
+              <span>Weekly civic rights tips &amp; legal updates</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal; margin-bottom:1rem; cursor:pointer;">
+              <input type="checkbox" id="sOff" style="width:auto; margin:0;"/>
+              <span>Prefer offline-friendly cached pages</span>
+            </label>
+            <button class="btn btn-secondary btn-sm" type="submit" id="saveSettingsBtn">Save Preferences</button>
+            <p class="form-note-status" id="setOut" role="status" aria-live="polite"></p>
+          </form>
+
+          <!-- Explicit Sign Out Box -->
+          <div class="ws-card-box" style="border-color: rgba(220, 38, 38, 0.25);">
+            <h3 style="color: #b91c1c; border-bottom-color: rgba(220, 38, 38, 0.15);">Session &amp; Security</h3>
+            <p style="font-size:0.86rem; color:var(--muted); margin:0 0 0.85rem;">
+              Signed in as <strong id="signOutEmail">Member</strong>. Ending your session clears authentication credentials from this device.
+            </p>
+            <button type="button" class="btn btn-outline btn-sm" id="panelLogoutBtn" style="color:#b91c1c; border-color:#fca5a5;">
+              Sign Out of Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </main>
+
+<!-- Native Accessible Dialog for AI Conversation Transcripts -->
+<dialog id="aiTranscriptModal" class="transcript-dialog" aria-labelledby="aiModalTitle">
+  <div class="modal-head">
+    <h3 id="aiModalTitle">AI Inquiry Transcript</h3>
+    <button type="button" class="modal-close-btn" id="aiModalCloseBtn" aria-label="Close dialog">&times;</button>
+  </div>
+  <div class="modal-body" id="aiModalContent" tabindex="0">
+    <!-- Populated dynamically with conversational bubbles -->
+  </div>
+  <div class="modal-foot">
+    <button type="button" class="btn btn-outline btn-sm" id="aiModalDismissBtn">Close</button>
+    <button type="button" class="btn btn-primary btn-sm" id="aiModalResumeBtn">Continue in RightAware AI &rarr;</button>
+  </div>
+</dialog>
+
+<!-- Footer -->
 <footer class="footer" id="contact">
   <div class="container footer-grid">
     <div class="footer-brand">
@@ -178,267 +970,755 @@
   </div>
   <div class="footer-bottom container"><small>© <span data-year>2026</span> RightAware <span class="ra-flag-wrapper"><svg class="ra-flag-ng" width="16" height="11" viewBox="0 0 24 16" aria-label="Nigeria" role="img"><rect width="8" height="16" fill="#008753"/><rect x="8" width="8" height="16" fill="#FFFFFF"/><rect x="16" width="8" height="16" fill="#008753"/></svg></span> • Open-access civic awareness for all Nigerians</small></div>
 </footer>
+
+<!-- Script Architecture -->
 <script src="js/config.js"></script>
 <script src="js/auth.js?v=db6"></script>
 <script src="js/db.js?v=db6"></script>
+<script src="js/chat-state.js"></script>
 <script src="app.js"></script>
+
 <script>
 (function(){
-  const u = RA_AUTH.guard(); if(!u) return;
-  document.getElementById("whoChip").textContent = u.email || u.name;
-  document.getElementById("helloTitle").textContent = "Welcome, " + (u.name || "Member");
-  document.getElementById("logoutBtn").addEventListener("click",()=>{RA_AUTH.logoutLive().then(function(){ location.href="index.html"; });});
-  const linkFor = s => s.type==="right" ? "rights/topic.html?id="+s.ref : s.type==="video" ? "videos.html" : "laws.html";
-  function renderSaved(){
-    const l = RA_DB.savedList();
-    document.getElementById("savedGrid").innerHTML = l.length ? l.map(s=>'<article class="card rv"><span class="tag">'+s.type+'</span><h3 style="margin-top:.4rem">'+s.title+'</h3><a class="link" href="'+linkFor(s)+'">Open →</a> <button class="btn btn-outline btn-sm" data-unsave="'+s.type+"|"+s.ref+'">Remove</button></article>').join("")
-      : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>Nothing saved yet</h3><p>Tap Save on any rights guide or video; items appear here and stay available offline.</p><a class="link" href="rights.html">Browse rights →</a></div>';
-    document.querySelectorAll("[data-unsave]").forEach(b=>b.addEventListener("click",()=>{const[t,r]=b.dataset.unsave.split("|");RA_DB.toggleSaved(t,r,"");renderSaved();}));
+  "use strict";
+
+  /* 1. Auth Guard - Unauthenticated redirects cleanly to login */
+  const u = RA_AUTH.guard();
+  if(!u) return;
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function(m){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m];
+    });
   }
+
+  function fmtDate(iso){
+    if(!iso) return "";
+    try {
+      var d = new Date(iso);
+      if(isNaN(d.getTime())) return String(iso).slice(0, 10);
+      return d.toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" });
+    } catch(_) {
+      return String(iso).slice(0, 10);
+    }
+  }
+
+  /* 2. Top-Level Identity & Status Display */
+  const ROLE_LABELS = {
+    admin: "Administrator",
+    editor: "Content Editor",
+    moderator: "Moderator",
+    professional: "Legal Professional",
+    organization: "Civil Society Org",
+    user: "Citizen"
+  };
+
+  function updateRoleBanner(role){
+    var banner = document.getElementById("roleWorkspaceBanner");
+    var text = document.getElementById("roleWorkspaceText");
+    var link = document.getElementById("roleWorkspaceLink");
+    if(!banner || !text || !link) return;
+
+    if(role === "professional"){
+      text.textContent = "You are signed in as a verified Legal Professional.";
+      link.textContent = "Open Professional Workspace \u2192";
+      link.href = "professional.html";
+      banner.style.display = "block";
+    } else if(role === "organization"){
+      text.textContent = "You are signed in as a verified Civil Society Organisation.";
+      link.textContent = "Open Organisation Workspace \u2192";
+      link.href = "organization.html";
+      banner.style.display = "block";
+    } else if(role === "admin"){
+      text.textContent = "You are signed in as a RightAware Administrator.";
+      link.textContent = "Open Admin Dashboard \u2192";
+      link.href = "admin.html";
+      banner.style.display = "block";
+    } else {
+      banner.style.display = "none";
+    }
+  }
+
+  function updateIdentityHeader(){
+    var me = RA_AUTH.current() || u;
+    var name = me.name || (me.email ? me.email.split("@")[0] : "Member");
+    document.getElementById("helloTitle").textContent = "Welcome, " + name;
+    document.getElementById("userEmailText").textContent = me.email || "";
+    document.getElementById("signOutEmail").textContent = me.email || name;
+    document.getElementById("whoChip").textContent = me.email || name;
+
+    var role = me.role || "user";
+    var roleBadge = document.getElementById("roleBadge");
+    roleBadge.textContent = ROLE_LABELS[role] || "Citizen";
+
+    updateRoleBanner(role);
+
+    var syncDot = document.getElementById("syncDot");
+    var syncText = document.getElementById("syncText");
+    if(window.RA_SUPA && RA_SUPA.ready){
+      syncDot.className = "sync-dot";
+      syncText.textContent = "Synced";
+    } else {
+      syncDot.className = "sync-dot offline";
+      syncText.textContent = "Offline (Local Device)";
+    }
+  }
+
+  /* 3. Session Sign Out Handlers */
+  function handleLogout(){
+    RA_AUTH.logoutLive().then(function(){
+      window.location.href = "index.html";
+    });
+  }
+  document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+  document.getElementById("panelLogoutBtn").addEventListener("click", handleLogout);
+
+  /* 4. Tab Router (Browser History pushState / popstate Contract) */
+  const VALID_TABS = ["cases", "saved", "inbox", "profile"];
+  var activeTab = "cases";
+
+  function switchTab(tabId, pushHistory){
+    if(VALID_TABS.indexOf(tabId) === -1) tabId = "cases";
+    if(activeTab === tabId && pushHistory !== false) return;
+    activeTab = tabId;
+
+    VALID_TABS.forEach(function(t){
+      var btn = document.getElementById("tab-" + t);
+      var panel = document.getElementById("panel-" + t);
+      if(btn && panel){
+        var isSelected = (t === tabId);
+        btn.setAttribute("aria-selected", isSelected ? "true" : "false");
+        if(isSelected){
+          panel.classList.add("active");
+        } else {
+          panel.classList.remove("active");
+        }
+      }
+    });
+
+    if(pushHistory){
+      try {
+        history.pushState({ tab: tabId }, "", "#" + tabId);
+      } catch(_) {}
+    }
+  }
+
+  // Explicit user clicks push a new history entry onto the stack
+  document.querySelector(".ws-tabs").addEventListener("click", function(e){
+    var btn = e.target.closest("[data-tab]");
+    if(btn){
+      e.preventDefault();
+      var t = btn.getAttribute("data-tab");
+      if(t !== activeTab){
+        switchTab(t, true);
+      }
+    }
+  });
+
+  // Browser Back/Forward navigation restores the active tab cleanly
+  window.addEventListener("popstate", function(e){
+    var tab = (e.state && e.state.tab) || (window.location.hash || "").replace("#", "").trim();
+    if(VALID_TABS.indexOf(tab) !== -1){
+      switchTab(tab, false);
+    } else {
+      switchTab("cases", false);
+    }
+  });
+
+  // Hashchange fallback for direct link anchors
+  window.addEventListener("hashchange", function(){
+    var hash = (window.location.hash || "").replace("#", "").trim();
+    if(VALID_TABS.indexOf(hash) !== -1 && hash !== activeTab){
+      switchTab(hash, false);
+    }
+  });
+
+  // Initial load uses replaceState to normalize default hash without creating a ghost history entry
+  function initHashRoute(){
+    var hash = (window.location.hash || "").replace("#", "").trim();
+    var targetTab = (VALID_TABS.indexOf(hash) !== -1) ? hash : "cases";
+    switchTab(targetTab, false);
+    try {
+      history.replaceState({ tab: targetTab }, "", "#" + targetTab);
+    } catch(_) {}
+  }
+
+  /* 5. TAB 1 (MY CASES): Consultations Logic */
+  var activeConsultFilter = "all";
   var consultMsg = "";
-  function consultSignedIn(){ return !!(RA_DB.remote.ready() && RA_DB.remote.uid()); }
-  // Signed in → the account's REAL rows in Supabase (the mirror syncNow just
-  // refreshed); signed out → the device-local receipts. Never a blend.
-  function consultRows(){ return consultSignedIn() ? RA_DB.consultationsLive() : RA_DB.consultations(); }
-  function renderConsult(){
-    var signedIn = consultSignedIn(), c = consultRows();
-    document.getElementById("consultMeta").textContent = signedIn
-      ? "From your account (Supabase): real requests; database is the source of truth. Payments stay “none” until Paystack is configured."
-      : "Local copy on this device: sign in to send real consultation requests and track them here. Payments stay “none” until Paystack is configured.";
-    document.getElementById("consultList").innerHTML = c.length ? c.map(function(x){
-      var st = String(x.status || "requested");
-      var stLabel = st === "accepted" ? "Accepted" : st === "declined" ? "Declined" : st;
-      return '<article class="card rv"><span class="tag">'+esc(stLabel)+'</span><h3 style="margin-top:.4rem">'+esc(x.to || (x.live ? "Consultation request" : "Professional"))+'</h3>'
-        + '<p>'+esc(x.msg || "")+'</p>'
-        + '<p><small>Payment: '+esc((x.payment && x.payment.status) || "none")+' • '+esc(String(x.at || ""))+'</small></p></article>';
-    }).join("")
-      : (signedIn
-          ? '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultation requests yet</h3><p>Requests you send from the professionals directory appear here with their real status; nothing is generated for display.</p><a class="link" href="lawyers.html">Open directory →</a></div>'
-          : '<div class="card rv" style="grid-column:1/-1;text-align:center"><h3>No consultations yet</h3><p>Requests from the professionals directory will be listed here with payment status.</p><a class="link" href="lawyers.html">Open directory →</a></div>');
+
+  function isConsultRemote(){
+    return !!(RA_DB.remote && RA_DB.remote.ready && RA_DB.remote.ready() && RA_DB.remote.uid && RA_DB.remote.uid());
+  }
+
+  function getConsultRows(){
+    return isConsultRemote() ? RA_DB.consultationsLive() : RA_DB.consultations();
+  }
+
+  function renderConsultations(){
+    var rows = getConsultRows();
+    var filtered = rows;
+    if(activeConsultFilter !== "all"){
+      filtered = rows.filter(function(x){
+        return String(x.status || "requested") === activeConsultFilter;
+      });
+    }
+
+    var pendingCount = rows.filter(function(x){ return String(x.status || "requested") === "requested"; }).length;
+    var badgeCases = document.getElementById("badgeCases");
+    if(pendingCount > 0){
+      badgeCases.textContent = pendingCount;
+      badgeCases.style.display = "inline-flex";
+    } else {
+      badgeCases.style.display = "none";
+    }
+
+    var listEl = document.getElementById("consultList");
+    if(!rows.length){
+      listEl.innerHTML = '<div class="ws-empty-card" style="grid-column:1/-1;">'
+        + '<h3>No consultation requests yet</h3>'
+        + '<p>When you request legal assistance from verified lawyers in our directory, your case status and responses appear here.</p>'
+        + '<a class="btn btn-primary btn-sm" href="lawyers.html">Browse Verified Lawyers &rarr;</a>'
+        + '</div>';
+    } else if(!filtered.length){
+      listEl.innerHTML = '<div class="ws-empty-card" style="grid-column:1/-1;">'
+        + '<h3>No consultations in this category</h3>'
+        + '<p>No records match the selected status filter (' + esc(activeConsultFilter) + ').</p>'
+        + '<button class="btn btn-outline btn-sm" type="button" data-reset-consult-filter>Show all requests</button>'
+        + '</div>';
+    } else {
+      listEl.innerHTML = filtered.map(function(c){
+        var st = String(c.status || "requested").toLowerCase();
+        var badgeClass = st === "accepted" ? "badge-accepted" : st === "declined" ? "badge-declined" : "badge-requested";
+        var statusLabel = st === "accepted" ? "Accepted" : st === "declined" ? "Declined" : "Awaiting response";
+        var targetName = c.to || (c.live ? "Verified Legal Practitioner" : "Legal Professional");
+        var msgText = c.msg || c.message || "(No message recorded)";
+        var dateStr = fmtDate(c.at || c.created_at);
+
+        var nextStep = "";
+        if(st === "accepted"){
+          nextStep = '<div class="notice" style="margin-top:0.4rem; padding:0.45rem 0.65rem; font-size:0.8rem; background:#ECFDF5; border:1px solid #A7F3D0; border-radius:6px; color:#065F46;">'
+            + '<strong>Request accepted:</strong> The legal practitioner has received your inquiry and will follow up via your account contact details.'
+            + '</div>';
+        } else if(st === "requested"){
+          nextStep = '<p style="font-size:0.8rem; color:var(--muted); margin-top:0.35rem;">Submitted and awaiting review by the legal practitioner.</p>';
+        }
+
+        return '<article class="case-card">'
+          + '<div>'
+          + '  <div class="case-card-head">'
+          + '    <h3>' + esc(targetName) + '</h3>'
+          + '    <span class="badge-status ' + badgeClass + '">' + esc(statusLabel) + '</span>'
+          + '  </div>'
+          + '  <p>' + esc(msgText) + '</p>'
+          +    nextStep
+          + '</div>'
+          + '<div class="case-card-foot">'
+          + '  <div class="case-card-meta">'
+          + '    <span>Requested: ' + esc(dateStr) + '</span>'
+          + '  </div>'
+          + '</div>'
+          + '</article>';
+      }).join("");
+    }
+
     document.getElementById("consultOut").textContent = consultMsg;
   }
+
+  // Bind filter buttons
+  document.querySelectorAll("[data-consult-filter]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll("[data-consult-filter]").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      activeConsultFilter = btn.getAttribute("data-consult-filter");
+      renderConsultations();
+    });
+  });
+
+  document.getElementById("consultList").addEventListener("click", function(e){
+    if(e.target && e.target.hasAttribute("data-reset-consult-filter")){
+      activeConsultFilter = "all";
+      document.querySelectorAll("[data-consult-filter]").forEach(function(b){
+        b.classList.toggle("active", b.getAttribute("data-consult-filter") === "all");
+      });
+      renderConsultations();
+    }
+  });
+
+  /* 6. TAB 1 (MY CASES): AI Chat History Logic (Device-Local via RA_CHAT_STATE) */
+  var activeDialogSessionId = null;
+
+  function renderAiChats(){
+    var listEl = document.getElementById("aiChatList");
+    if(!window.RA_CHAT_STATE){
+      listEl.innerHTML = '<div class="ws-empty-card" style="grid-column:1/-1;"><p>AI Assistant state manager is loading…</p></div>';
+      return;
+    }
+
+    var sessions = window.RA_CHAT_STATE.getSessions();
+    if(!sessions || !sessions.length){
+      listEl.innerHTML = '<div class="ws-empty-card" style="grid-column:1/-1;">'
+        + '<h3>No AI conversations on this device yet</h3>'
+        + '<p>Ask RightAware AI about your constitutional rights, police stop protocols, or tenant laws. Conversations remain saved locally on this device.</p>'
+        + '<a class="btn btn-primary btn-sm" href="ai.html">Ask RightAware AI &rarr;</a>'
+        + '</div>';
+      return;
+    }
+
+    listEl.innerHTML = sessions.map(function(s){
+      var count = (s.messages && s.messages.length) || 0;
+      var dateStr = fmtDate(s.updatedAt || s.createdAt);
+      var titleStr = s.title || "Legal Inquiry";
+
+      return '<article class="case-card">'
+        + '<div>'
+        + '  <div class="case-card-head">'
+        + '    <h3>' + esc(titleStr) + '</h3>'
+        + '    <span class="device-badge">On this device</span>'
+        + '  </div>'
+        + '  <div class="case-card-meta" style="margin-top:0.4rem;">'
+        + '    <span>' + count + ' exchange' + (count === 1 ? '' : 's') + '</span>'
+        + '    <span>&bull;</span>'
+        + '    <span>' + esc(dateStr) + '</span>'
+        + '  </div>'
+        + '</div>'
+        + '<div class="case-card-foot">'
+        + '  <button type="button" class="btn btn-primary btn-sm" data-resume-ai="' + esc(s.id) + '">Continue in RightAware AI &rarr;</button>'
+        + '  <button type="button" class="btn btn-outline btn-sm" data-preview-ai="' + esc(s.id) + '">Transcript</button>'
+        + '  <button type="button" class="btn btn-outline btn-sm" style="color:#b91c1c; border-color:#fca5a5;" data-delete-ai="' + esc(s.id) + '" aria-label="Delete inquiry ' + esc(titleStr) + '">Delete</button>'
+        + '</div>'
+        + '</article>';
+    }).join("");
+  }
+
+  // Delegated AI chat card clicks: sync active session ID and deep-link via query param
+  document.getElementById("aiChatList").addEventListener("click", function(e){
+    var resumeBtn = e.target.closest("[data-resume-ai]");
+    if(resumeBtn){
+      var sessId = resumeBtn.getAttribute("data-resume-ai");
+      if(window.RA_CHAT_STATE){
+        window.RA_CHAT_STATE.setActiveSessionId(sessId);
+      }
+      window.location.href = "ai.html?session=" + encodeURIComponent(sessId);
+      return;
+    }
+
+    var previewBtn = e.target.closest("[data-preview-ai]");
+    if(previewBtn){
+      var pId = previewBtn.getAttribute("data-preview-ai");
+      openAiTranscriptModal(pId);
+      return;
+    }
+
+    var delBtn = e.target.closest("[data-delete-ai]");
+    if(delBtn){
+      var dId = delBtn.getAttribute("data-delete-ai");
+      if(window.confirm("Remove this conversation transcript from this device? This action cannot be undone.")){
+        if(window.RA_CHAT_STATE){
+          window.RA_CHAT_STATE.deleteSession(dId);
+          renderAiChats();
+        }
+      }
+      return;
+    }
+  });
+
+  // Native <dialog> Transcript Modal handling
+  const modal = document.getElementById("aiTranscriptModal");
+  function openAiTranscriptModal(sessId){
+    if(!window.RA_CHAT_STATE || !modal) return;
+    var sess = window.RA_CHAT_STATE.getSession(sessId);
+    if(!sess) return;
+    activeDialogSessionId = sessId;
+
+    document.getElementById("aiModalTitle").textContent = sess.title || "AI Conversation Transcript";
+    var contentEl = document.getElementById("aiModalContent");
+
+    if(!sess.messages || !sess.messages.length){
+      contentEl.innerHTML = '<p class="empty">No messages recorded in this conversation.</p>';
+    } else {
+      contentEl.innerHTML = sess.messages.map(function(m){
+        var isUser = m.role === "user";
+        return '<div class="bubble ' + (isUser ? 'bubble-user' : 'bubble-assistant') + '">'
+          + '<span class="bubble-role">' + (isUser ? 'You' : 'RightAware AI') + '</span>'
+          + '<div>' + esc(m.text || '') + '</div>'
+          + (m.timestamp ? '<small style="display:block; margin-top:0.3rem; opacity:0.75; font-size:0.72rem;">' + esc(m.timestamp) + '</small>' : '')
+          + '</div>';
+      }).join("");
+    }
+
+    if(typeof modal.showModal === "function"){
+      modal.showModal();
+    } else {
+      modal.setAttribute("open", "");
+    }
+  }
+
+  function closeAiTranscriptModal(){
+    if(!modal) return;
+    if(typeof modal.close === "function"){
+      modal.close();
+    } else {
+      modal.removeAttribute("open");
+    }
+    activeDialogSessionId = null;
+  }
+
+  document.getElementById("aiModalCloseBtn").addEventListener("click", closeAiTranscriptModal);
+  document.getElementById("aiModalDismissBtn").addEventListener("click", closeAiTranscriptModal);
+  document.getElementById("aiModalResumeBtn").addEventListener("click", function(){
+    if(activeDialogSessionId){
+      if(window.RA_CHAT_STATE){
+        window.RA_CHAT_STATE.setActiveSessionId(activeDialogSessionId);
+      }
+      window.location.href = "ai.html?session=" + encodeURIComponent(activeDialogSessionId);
+    } else {
+      window.location.href = "ai.html";
+    }
+  });
+  modal.addEventListener("click", function(e){
+    if(e.target === modal) closeAiTranscriptModal();
+  });
+
+  /* 7. TAB 2: Saved Guides & Handbooks Logic */
+  const linkFor = function(s){
+    return s.type === "right" ? "rights/topic.html?id=" + s.ref
+      : s.type === "video" ? "videos.html"
+      : "laws.html";
+  };
+
+  function renderSaved(){
+    var list = RA_DB.savedList();
+    var badgeSaved = document.getElementById("badgeSaved");
+    if(list.length > 0){
+      badgeSaved.textContent = list.length;
+      badgeSaved.style.display = "inline-flex";
+    } else {
+      badgeSaved.style.display = "none";
+    }
+
+    var grid = document.getElementById("savedGrid");
+    if(!list.length){
+      grid.innerHTML = '<div class="ws-empty-card" style="grid-column:1/-1;">'
+        + '<h3>No saved guides yet</h3>'
+        + '<p>Tap "Save" on any rights guide, statute or visual handbook. Bookmarked items stay available for offline reference on this device.</p>'
+        + '<a class="btn btn-primary btn-sm" href="rights.html">Explore Rights Library &rarr;</a>'
+        + '</div>';
+      return;
+    }
+
+    grid.innerHTML = list.map(function(s){
+      var typeLabel = s.type === "right" ? "Rights Guide" : s.type === "video" ? "Civic Video" : "Law / Statute";
+      return '<article class="card rv">'
+        + '<span class="tag">' + esc(typeLabel) + '</span>'
+        + '<h3 style="margin-top:.45rem">' + esc(s.title || "Saved Item") + '</h3>'
+        + '<div style="display:flex; gap:.5rem; align-items:center; margin-top:.75rem;">'
+        + '  <a class="btn btn-primary btn-sm" href="' + esc(linkFor(s)) + '">Read Guide &rarr;</a>'
+        + '  <button type="button" class="btn btn-outline btn-sm" data-unsave="' + esc(s.type + "|" + s.ref) + '">Remove</button>'
+        + '</div>'
+        + '</article>';
+    }).join("");
+
+    grid.querySelectorAll("[data-unsave]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var parts = b.getAttribute("data-unsave").split("|");
+        RA_DB.toggleSaved(parts[0], parts[1], "");
+        renderSaved();
+      });
+    });
+  }
+
+  /* 8. TAB 3: Notifications & Application Status Logic */
   var notifMsg = "";
-  function notifSignedIn(){ return !!(RA_DB.remote.ready() && RA_DB.remote.uid()); }
-  function notifRows(){ return notifSignedIn() ? RA_DB.notificationsLive() : RA_DB.notifications(); }
+
+  function isNotifRemote(){
+    return !!(RA_DB.remote && RA_DB.remote.ready && RA_DB.remote.ready() && RA_DB.remote.uid && RA_DB.remote.uid());
+  }
+
+  function getNotifRows(){
+    return isNotifRemote() ? RA_DB.notificationsLive() : RA_DB.notifications();
+  }
+
   function renderNotif(){
-    var signedIn = notifSignedIn(), n = notifRows();
-    var unread = 0; n.forEach(function(x){ if(!x.read) unread++; });
-    document.getElementById("notifMeta").textContent = signedIn
-      ? (unread ? unread + " unread · from your account (Supabase)" : "All read · from your account (Supabase)")
-      : "Local copy on this device: sign in to sync notifications with your account.";
-    var mb = document.getElementById("notifMarkAll");
-    mb.style.display = unread > 0 ? "" : "none";
-    document.getElementById("notifList").innerHTML = n.length
-      ? n.map(function(x){
-          return '<div class="result"><strong>'+esc(x.title||"(no title)")+'</strong> '+(x.read?"":"<span class='tag'>new</span>")+'<br/>'
-            + esc(x.body||"") +'<br/><small>'+esc(String(x.at||""))+'</small> '
-            + '<button class="btn btn-outline btn-sm" type="button" data-notif-read="'+esc(x.id)+'">'+(x.read?"Mark unread":"Mark read")+'</button> '
-            + '<button class="btn btn-outline btn-sm" type="button" data-notif-del="'+esc(x.id)+'">Delete</button></div>';
-        }).join("")
-      : (signedIn
-          ? '<p class="empty">No notifications yet. Application decisions and other account events appear here automatically; nothing is generated for display.</p>'
-          : '<p class="empty">No notifications on this device yet.</p>');
-    document.querySelectorAll("[data-notif-read]").forEach(function(b){ b.addEventListener("click", function(){
-      var id = b.getAttribute("data-notif-read"), row = null;
-      notifRows().forEach(function(x){ if(String(x.id) === id) row = x; });
-      notifAct(id, row && row.read ? "unread" : "read");
-    }); });
-    document.querySelectorAll("[data-notif-del]").forEach(function(b){ b.addEventListener("click", function(){
-      notifAct(b.getAttribute("data-notif-del"), "delete");
-    }); });
+    var rows = getNotifRows();
+    var unread = 0;
+    rows.forEach(function(x){ if(!x.read) unread++; });
+
+    var badgeInbox = document.getElementById("badgeInbox");
+    if(unread > 0){
+      badgeInbox.textContent = unread;
+      badgeInbox.style.display = "inline-flex";
+    } else {
+      badgeInbox.style.display = "none";
+    }
+
+    document.getElementById("notifMeta").textContent = unread
+      ? unread + " unread notification" + (unread === 1 ? "" : "s") + " on your account."
+      : "You're all caught up. No unread notifications.";
+
+    var markAllBtn = document.getElementById("notifMarkAll");
+    markAllBtn.style.display = unread > 0 ? "inline-block" : "none";
+
+    var listEl = document.getElementById("notifList");
+    if(!rows.length){
+      listEl.innerHTML = '<div class="ws-empty-card">'
+        + '<h3>No notifications</h3>'
+        + '<p>When your consultation requests receive updates or verification decisions are made, notifications will appear here.</p>'
+        + '</div>';
+    } else {
+      listEl.innerHTML = rows.map(function(x){
+        var isUnread = !x.read;
+        return '<article class="notif-card ' + (isUnread ? 'unread' : '') + '">'
+          + '<div class="notif-main">'
+          + '  <div class="notif-title-row">'
+          + (isUnread ? '<span class="notif-unread-dot" aria-label="Unread"></span>' : '')
+          + '    <span class="notif-title">' + esc(x.title || "Notification") + '</span>'
+          + '  </div>'
+          + '  <p class="notif-body">' + esc(x.body || "") + '</p>'
+          + '  <span class="notif-time">' + esc(fmtDate(x.at)) + '</span>'
+          + '</div>'
+          + '<div class="notif-actions">'
+          + '  <button class="btn btn-outline btn-sm" type="button" data-notif-read="' + esc(x.id) + '">' + (x.read ? "Mark unread" : "Mark read") + '</button>'
+          + '  <button class="btn btn-outline btn-sm" type="button" data-notif-del="' + esc(x.id) + '" aria-label="Dismiss notification">&times;</button>'
+          + '</div>'
+          + '</article>';
+      }).join("");
+
+      listEl.querySelectorAll("[data-notif-read]").forEach(function(b){
+        b.addEventListener("click", function(){
+          var id = b.getAttribute("data-notif-read");
+          var targetRow = null;
+          rows.forEach(function(x){ if(String(x.id) === id) targetRow = x; });
+          notifAct(id, targetRow && targetRow.read ? "unread" : "read");
+        });
+      });
+
+      listEl.querySelectorAll("[data-notif-del]").forEach(function(b){
+        b.addEventListener("click", function(){
+          notifAct(b.getAttribute("data-notif-del"), "delete");
+        });
+      });
+    }
+
     document.getElementById("notifOut").textContent = notifMsg;
   }
-  /* Every action reports ONLY after the server re-read that proves it stuck
-     (remote) or honestly labels the device-local copy (offline/demo). */
+
   function notifDone(r){
-    notifMsg = r.ok ? "Saved; re-read from the database just now."
-      : "Could not save: " + (r.error || "unknown error");
+    notifMsg = r.ok ? "Saved." : "Could not save: " + (r.error || "network error");
     renderNotif();
   }
+
   function notifAct(id, action){
-    if(!notifSignedIn()){
+    if(!isNotifRemote()){
       if(action === "read") RA_DB.markRead(id);
       else if(action === "unread") RA_DB.markUnread(id);
       else RA_DB.removeNotification(id);
-      notifMsg = "Saved on this device (sign in to sync notifications with your account).";
-      renderNotif(); return;
+      notifMsg = "Updated on this device.";
+      renderNotif();
+      return;
     }
-    notifMsg = "…"; renderNotif();
+    notifMsg = "Updating…";
+    renderNotif();
     var p = action === "delete" ? RA_DB.remote.deleteNotif(id) : RA_DB.remote.setNotifRead(id, action === "read");
-    p.then(notifDone, function(e){ notifDone({ ok:false, error:(e && e.message) || "network error" }); });
+    p.then(notifDone, function(e){ notifDone({ ok:false, error: (e && e.message) || "network error" }); });
   }
+
   function notifMarkAll(){
-    if(!notifSignedIn()){ RA_DB.markAllRead(); notifMsg = "All marked read on this device (sign in to sync)."; renderNotif(); return; }
-    notifMsg = "…"; renderNotif();
-    RA_DB.remote.markAllNotifsRead().then(notifDone, function(e){ notifDone({ ok:false, error:(e && e.message) || "network error" }); });
+    if(!isNotifRemote()){
+      RA_DB.markAllRead();
+      notifMsg = "All marked read.";
+      renderNotif();
+      return;
+    }
+    notifMsg = "Marking all read…";
+    renderNotif();
+    RA_DB.remote.markAllNotifsRead().then(notifDone, function(e){
+      notifDone({ ok:false, error: (e && e.message) || "network error" });
+    });
   }
   document.getElementById("notifMarkAll").addEventListener("click", notifMarkAll);
-  var profileTouched = false;
-  function fillProfile(){
-    const p = RA_DB.profile();
-    document.getElementById("pName").value=p.name||u.name||""; document.getElementById("pEmail").value=p.email||u.email||"";
-    document.getElementById("pPhone").value=p.phone||""; document.getElementById("pState").value=p.state||"Lagos"; document.getElementById("pLang").value=p.language||"English";
-  }
-  fillProfile();                       // re-run after a sync lands (never over an edit in progress)
-  ["input","change"].forEach(function(ev){
-    document.getElementById("profileForm").addEventListener(ev, function(){ profileTouched = true; });
-  });
-  document.getElementById("profileForm").addEventListener("submit",e=>{e.preventDefault();
-    var prof={name:document.getElementById("pName").value,email:document.getElementById("pEmail").value,phone:document.getElementById("pPhone").value,state:document.getElementById("pState").value,language:document.getElementById("pLang").value};
-    RA_DB.saveProfile(prof);
-    var pOut=document.getElementById("pOut");
-    if(RA_DB.remote.ready() && RA_DB.remote.uid()){
-      pOut.textContent="Profile saved on this device; syncing…";
-      RA_DB.remote.pushProfile(prof).then(function(r){
-        pOut.textContent = r.ok ? "Profile saved on this device and synced to your account."
-          : r.conflict ? "Another device updated this profile first; the account copy was kept. Save again to apply your change."
-          : "Profile saved on this device (sync failed: " + (r.error||"error") + "). It will retry on your next visit.";
-      });
-    } else {
-      pOut.textContent = RA_DB.remote.ready() ? "Profile saved on this device. Sign in to sync it to your account."
-        : "Profile saved on this device (backend not connected).";
-    }});
-  const s = RA_DB.settings();
-  document.getElementById("sRem").checked=!!s.reminders; document.getElementById("sOff").checked=!!s.offlineMode;
-  document.getElementById("setForm").addEventListener("submit",e=>{e.preventDefault();
-    RA_DB.saveSettings({reminders:document.getElementById("sRem").checked,offlineMode:document.getElementById("sOff").checked,language:RA_DB.profile().language});});
-  /* ---- role & application status ---- */
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
-  var ROLE_LABEL = { admin:"Administrator", editor:"Content editor", moderator:"Moderator", professional:"Legal professional", user:"General user" };
-  function paintSync(){
-    var pill = document.getElementById("syncPill");
-    // Version proof on the page itself: this HTML is network-first (always
-    // fresh) and knows the expected build; RA_DB.v comes from the script that
-    // actually loaded. A mismatch means a stale copy is running: say so
-    // instead of trusting it. (Keep "?v=" on the script tags = "db6".)
-    var ver = (window.RA_DB && RA_DB.v) || "unknown";
-    var tag = (ver === "db6") ? "SYNC db6" : "RELOAD: OLD APP COPY";
-    if(window.RA_SUPA && RA_SUPA.ready){ pill.textContent = "BACKEND CONNECTED · " + tag; }
-    else { pill.textContent = "LOCAL / DEMO: NOT CONNECTED · " + tag; }
-  }
-  function renderStatus(){
+
+  /* Application & Role Status Cards */
+  function renderStatusCards(){
     var box = document.getElementById("statusBox");
-    var me = RA_AUTH.current() || u;           // fresh (role may arrive after backend-ready)
+    var me = RA_AUTH.current() || u;
     var role = me.role || "user";
-    var iconSvg = role==="admin"
-      ? '<svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"></path></svg>'
-      : role==="professional"
-      ? '<svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M5 8l7-4 7 4"></path><path d="M5 8v6a4 4 0 0 0 8 0V8"></path><path d="M19 8v6a4 4 0 0 1-8 0V8"></path><line x1="4" y1="21" x2="20" y2="21"></line></svg>'
-      : '<svg class="ra-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-    var html = '<article class="card"><span class="tag">Account</span><h3 style="display:flex;align-items:center;gap:.5rem">'+iconSvg+' '+esc(ROLE_LABEL[role]||"General user")+'</h3>'
-      + '<p>Signed in as <strong>'+esc(me.email||me.name||"member")+'</strong>'
-      + (RA_AUTH.mode==="demo" ? ' <span class="pill">DEMO SESSION</span>' : '')+'</p>'
-      + (role==="admin" ? '<a class="btn btn-primary btn-sm" href="admin.html">Open admin dashboard</a>' : '')
-      + (role==="professional" ? ' <a class="btn btn-primary btn-sm" href="professional.html">Open professional workspace</a>' : '')
+
+    var roleHtml = '<article class="card">'
+      + '<span class="tag">Account Role</span>'
+      + '<h3 style="margin-top:.4rem">' + esc(ROLE_LABELS[role] || "Citizen") + '</h3>'
+      + '<p>Signed in as <strong>' + esc(me.email || me.name || "Member") + '</strong>'
+      + (RA_AUTH.mode === "demo" ? ' <span class="pill">DEMO SESSION</span>' : '') + '</p>'
+      + (role === "admin" ? '<p><a class="btn btn-primary btn-sm" href="admin.html">Open Admin Dashboard &rarr;</a></p>' : '')
+      + (role === "professional" ? '<p><a class="btn btn-primary btn-sm" href="professional.html">Open Professional Workspace &rarr;</a></p>' : '')
+      + (role === "organization" ? '<p><a class="btn btn-primary btn-sm" href="organization.html">Open Organisation Workspace &rarr;</a></p>' : '')
       + '</article>';
+
     var local = [];
-    try{ local = JSON.parse(localStorage.getItem("ra_applications")||"[]"); }catch(_){}
+    try { local = JSON.parse(localStorage.getItem("ra_applications") || "[]"); } catch(_) {}
+
+    var appHtml = "";
     if(local.length){
       var a = local[0];
-      html += '<article class="card"><span class="tag">Application (this device)</span><h3>'
-        + (a.path==="professional" ? "Professional application" : "Organisation application") + '</h3>'
-        + '<p>Reference <strong>'+esc(a.ref)+'</strong> ('+esc(a.status)+', '+esc(String(a.at).slice(0,10))+')</p>'
-        + '<p><small>' + (window.RA_SUPA && RA_SUPA.ready
-            ? "Reference receipt saved locally. Status is shown in the “Application (live)” card above when available."
-            : "Backend not connected; this copy has not been submitted to RightAware. Re-submit when connected.")
-        + '</small></p></article>';
-    } else {
-      html += '<article class="card"><span class="tag">Application</span><h3>No pending application</h3>'
-        + '<p>You joined through the general-user pathway. Want a professional or organisation listing? <a class="link" href="signup.html">Choose a pathway →</a></p></article>';
+      appHtml = '<article class="card">'
+        + '<span class="tag">Application Receipt</span>'
+        + '<h3 style="margin-top:.4rem">' + (a.path === "professional" ? "Professional Application" : "Organisation Application") + '</h3>'
+        + '<p>Reference: <strong>' + esc(a.ref) + '</strong> (' + esc(a.status || "submitted") + ', ' + esc(String(a.at || "").slice(0, 10)) + ')</p>'
+        + '<p style="font-size:0.82rem; color:var(--muted);">Receipt saved locally. Official decision updates will appear in your Notifications feed.</p>'
+        + '</article>';
+    } else if(role === "user") {
+      appHtml = '<article class="card">'
+        + '<span class="tag">Pathway</span>'
+        + '<h3 style="margin-top:.4rem">General Citizen Pathway</h3>'
+        + '<p>Are you a verified lawyer, paralegal or civil society organisation? You can apply for a verified public listing.</p>'
+        + '<p><a class="link" href="signup.html">Apply for verified listing &rarr;</a></p>'
+        + '</article>';
     }
-    box.innerHTML = html;
+
+    box.innerHTML = roleHtml + appHtml;
+
     if(RA_AUTH.supabaseReady()){
       RA_AUTH.myApplication().then(function(app){
-        if(app && app.error){
-          var errCard = document.createElement("article");
-          errCard.className = "card";
-          errCard.innerHTML = '<span class="tag">Application (live)</span><h3>Live status unavailable</h3>'
-            + '<p><small>Your application could not be read from the server right now: '
-            + esc(app.error) + '; try again in a moment.</small></p>';
-          box.appendChild(errCard);
-          return;
-        }
-        if(!app) return;
+        if(!app || app.error) return;
         var st = app.row.verification_status;
         var isPro = app.path === "professional";
-        var label, pill, hint;
-        if(st === "verified"){
-          label = isPro ? "VERIFIED LEGAL PROFESSIONAL" : "VERIFIED ORGANIZATION";
-          pill = "pill-green";
-          hint = "Approved by an administrator; shown publicly as verified.";
-        } else if(st === "pending"){
-          label = "PENDING VERIFICATION";
-          pill = "pill-gold";
-          hint = "Submitted and awaiting an administrator's review. Your details stay private; only administrators can see them until approval.";
-        } else if(st === "rejected"){
-          label = "APPLICATION REJECTED";
-          pill = "pill-red";
-          hint = "An administrator reviewed this application and did not approve the listing. Contact us if you need clarification.";
-        } else {
-          label = "NOT VERIFIED";
-          pill = "pill-gold";
-          hint = "Not verified; this record is never shown publicly as verified.";
-        }
+        var label = st === "verified" ? (isPro ? "VERIFIED LEGAL PROFESSIONAL" : "VERIFIED ORGANIZATION")
+          : st === "pending" ? "PENDING VERIFICATION"
+          : st === "rejected" ? "APPLICATION DECLINED"
+          : "NOT VERIFIED";
+        var pill = st === "verified" ? "pill-green" : st === "rejected" ? "pill-red" : "pill-gold";
+
         var extra = document.createElement("article");
         extra.className = "card";
-        extra.innerHTML = '<span class="tag">Application (live)</span><h3>'
-          + (isPro ? "Professional application" : "Organisation application") + '</h3>'
-          + '<p>'+esc(app.row.name)+' · <span class="'+pill+'">'+label+'</span></p>'
-          + '<p><small>'+hint+'</small></p>'
-          + (st === "verified" ? '<p><a class="btn btn-primary btn-sm" href="' + (isPro ? "professional.html" : "organization.html") + '">Open workspace</a></p>' : '');
+        extra.innerHTML = '<span class="tag">Live Application</span>'
+          + '<h3 style="margin-top:.4rem">' + (isPro ? "Professional Application" : "Organisation Application") + '</h3>'
+          + '<p><strong>' + esc(app.row.name) + '</strong> &bull; <span class="' + pill + '">' + label + '</span></p>'
+          + (st === "verified" ? '<p><a class="btn btn-primary btn-sm" href="' + (isPro ? "professional.html" : "organization.html") + '">Open Verified Workspace &rarr;</a></p>' : '');
         box.appendChild(extra);
       }).catch(function(){});
     }
   }
-  document.addEventListener("ra:backend-ready", function(){
-    paintSync(); renderStatus(); renderNotif(); renderConsult();
-    // fetchRole() resolves AFTER the first paint; repaint when the real role
-    // arrives so an admin/professional does not sit on "General user" until reload.
-    RA_AUTH.fetchRole().then(function(){ renderStatus(); });
-  });
-  /* The account sync finishes AFTER this page first painted, so whatever arrived
-     from the other device is in localStorage by now; repaint from it. An edit
-     already in progress is never overwritten. A failed notification pull is
-     shown honestly instead of leaving a stale list unexplained. */
-  document.addEventListener("ra:synced", function(ev){
-    renderSaved(); renderNotif(); renderConsult();
-    var d = ev && ev.detail;
-    if(notifSignedIn() && d && d.notif && d.notif.ok === false && d.notif.error){
-      notifMsg = "Could not refresh notifications from the server: " + d.notif.error
-        + " (your own notifications are read through policy own_notif, base schema)";
-      renderNotif();
-    } else if(d && d.notif && d.notif.ok !== false){
-      notifMsg = "";
-      renderNotif();
-    }
-    if(consultSignedIn() && d && d.consult && d.consult.ok === false && d.consult.error){
-      consultMsg = "Could not refresh consultations from the server: " + d.consult.error
-        + " (your own rows are read through policy own_cons_sel, supabase/consultations-access.sql)";
-      renderConsult();
-    } else if(d && d.consult && d.consult.ok !== false){
-      consultMsg = "";
-      renderConsult();
-    }
-    if(!profileTouched) fillProfile();
-  });
-  paintSync(); renderStatus();
 
-  /* If an application was submitted before the confirmation email was opened,
-     attach it to this signed-in account now (localStorage payload, never a password). */
-  if(RA_AUTH.supabaseReady()){
-    RA_AUTH.flushPendingApplication().then(function(r){
-      if(!r) return;
-      renderStatus();
-      var box = document.getElementById("statusBox");
-      var note = document.createElement("article");
-      note.className = "card";
-      note.innerHTML = '<span class="tag">Application</span><h3>Application attached</h3>'
-        + '<p>Your earlier application was attached to this account. Status: <span class="pill-gold">PENDING VERIFICATION</span>.</p>';
-      box.prepend(note);
-    });
+  /* 9. TAB 4: Profile & Preferences Logic */
+  var profileTouched = false;
+
+  function fillProfileForm(){
+    var p = RA_DB.profile();
+    document.getElementById("pName").value = p.name || u.name || "";
+    document.getElementById("pEmail").value = p.email || u.email || "";
+    document.getElementById("pPhone").value = p.phone || "";
+    document.getElementById("pState").value = p.state || "Lagos";
+    document.getElementById("pLang").value = p.language || "English";
   }
 
-  renderSaved(); renderConsult(); renderNotif();
+  ["input", "change"].forEach(function(ev){
+    document.getElementById("profileForm").addEventListener(ev, function(){ profileTouched = true; });
+  });
+
+  document.getElementById("profileForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var saveBtn = document.getElementById("saveProfileBtn");
+    var pOut = document.getElementById("pOut");
+    saveBtn.disabled = true;
+
+    var prof = {
+      name: document.getElementById("pName").value.trim(),
+      email: document.getElementById("pEmail").value.trim(),
+      phone: document.getElementById("pPhone").value.trim(),
+      state: document.getElementById("pState").value,
+      language: document.getElementById("pLang").value
+    };
+
+    RA_DB.saveProfile(prof);
+    updateIdentityHeader();
+
+    if(RA_DB.remote && RA_DB.remote.ready && RA_DB.remote.ready() && RA_DB.remote.uid && RA_DB.remote.uid()){
+      pOut.textContent = "Saving and syncing profile…";
+      pOut.style.color = "var(--navy)";
+      RA_DB.remote.pushProfile(prof).then(function(r){
+        saveBtn.disabled = false;
+        if(r.ok){
+          pOut.textContent = "Profile saved and synced successfully.";
+          pOut.style.color = "#065F46";
+        } else if(r.conflict){
+          pOut.textContent = "Another device updated this profile recently. Please save again to confirm your changes.";
+          pOut.style.color = "#92400E";
+        } else {
+          pOut.textContent = "Profile saved on this device. Sync will retry automatically.";
+          pOut.style.color = "var(--muted)";
+        }
+      }).catch(function(){
+        saveBtn.disabled = false;
+        pOut.textContent = "Profile saved on this device.";
+      });
+    } else {
+      saveBtn.disabled = false;
+      pOut.textContent = "Profile saved on this device.";
+      pOut.style.color = "#065F46";
+    }
+  });
+
+  // Settings Form
+  var curSettings = RA_DB.settings();
+  document.getElementById("sRem").checked = !!curSettings.reminders;
+  document.getElementById("sOff").checked = !!curSettings.offlineMode;
+
+  document.getElementById("setForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var setBtn = document.getElementById("saveSettingsBtn");
+    var setOut = document.getElementById("setOut");
+    setBtn.disabled = true;
+
+    var newSettings = {
+      reminders: document.getElementById("sRem").checked,
+      offlineMode: document.getElementById("sOff").checked,
+      language: document.getElementById("pLang").value
+    };
+
+    RA_DB.saveSettings(newSettings);
+    setTimeout(function(){
+      setBtn.disabled = false;
+      setOut.textContent = "Preferences saved.";
+      setOut.style.color = "#065F46";
+    }, 200);
+  });
+
+  /* 10. Lifecycle Synchronization Listeners */
+  document.addEventListener("ra:backend-ready", function(){
+    updateIdentityHeader();
+    renderStatusCards();
+    renderNotif();
+    renderConsultations();
+    RA_AUTH.fetchRole().then(function(){
+      updateIdentityHeader();
+      renderStatusCards();
+    });
+  });
+
+  document.addEventListener("ra:synced", function(ev){
+    updateIdentityHeader();
+    renderSaved();
+    renderNotif();
+    renderConsultations();
+    if(!profileTouched) fillProfileForm();
+  });
+
+  // Initial Paint
+  updateIdentityHeader();
+  initHashRoute();
+  renderConsultations();
+  renderAiChats();
+  renderSaved();
+  renderNotif();
+  renderStatusCards();
+  fillProfileForm();
+
+  // Flush any pending application receipt submitted prior to email confirmation
+  if(RA_AUTH.supabaseReady()){
+    RA_AUTH.flushPendingApplication().then(function(r){
+      if(r) renderStatusCards();
+    });
+  }
 })();
 </script>
 </body>

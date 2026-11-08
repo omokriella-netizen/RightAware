@@ -560,31 +560,38 @@
 
     var html = dangerBanner
       + '<h4>' + p.title + '</h4>'
-      + '<p style="margin:0 0 .35rem;font-size:.76rem;color:var(--gold);font-weight:700">Authority: ' + p.statute + '</p>'
+      + '<p style="margin:0 0 .35rem;font-size:.76rem;color:#0A4D2E;font-weight:700">Authority: ' + p.statute + '</p>'
       + '<ul>' + p.steps.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul>'
       + '<div class="crisis-cta-row">'
       + '<a class="btn btn-sm btn-primary" href="' + p.guide + '">' + p.guideLabel + ' →</a>'
       + '<a class="btn btn-sm btn-urgent" href="tel:' + p.hotline + '">' + phoneSvg + ' ' + p.hotlineLabel + '</a>'
-      + (isDanger ? '<a class="btn btn-sm btn-outline" style="color:#fff;border-color:#fff" href="tel:112">' + phoneSvg + ' Call 112</a>' : '')
+      + (isDanger ? '<a class="btn btn-sm btn-outline" href="tel:112">' + phoneSvg + ' Call 112</a>' : '')
       + '</div>';
 
     o.innerHTML = html;
   }
 
-  var triageBtn = document.getElementById("triageBtn");
-  if(triageBtn){
-    triageBtn.addEventListener("click", function(){
-      var i = document.getElementById("triageIssue").value;
-      var d = document.querySelector('input[name="danger"]:checked') ? document.querySelector('input[name="danger"]:checked').value : "No";
-      runTriage(i, d);
-      try {
-        var u = new URL(location.href);
-        u.searchParams.set("triage", i);
-        u.searchParams.set("danger", d.toLowerCase());
-        history.replaceState(null, "", u.toString());
-      } catch(_) {}
-    });
-  }
+  // Delegated click handler for Triage Dispatcher (independent of DOM parse order)
+  document.addEventListener("click", function(e){
+    var btn = e.target && e.target.closest("#triageBtn");
+    if(!btn) return;
+    e.preventDefault();
+    var issueSelect = document.getElementById("triageIssue");
+    var i = issueSelect ? issueSelect.value : "police";
+    var checkedDanger = document.querySelector('input[name="danger"]:checked');
+    var d = checkedDanger ? checkedDanger.value : "No";
+    runTriage(i, d);
+    var o = document.getElementById("triageOut");
+    if(o){
+      o.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    try {
+      var u = new URL(location.href);
+      u.searchParams.set("triage", i);
+      u.searchParams.set("danger", d.toLowerCase());
+      history.replaceState(null, "", u.toString());
+    } catch(_) {}
+  });
 
   
   // Hero Shield Accordion Toggle
@@ -606,57 +613,67 @@
     });
   }
 
-  // Emergency Modal Controller
-  var emergencyModal = document.getElementById("emergencyModal");
-  var emergencyClose = document.getElementById("emergencyModalClose");
+  // Emergency Modal Controller (Dynamic Resolution)
+  function getEmergencyModal() {
+    return document.getElementById("emergencyModal");
+  }
 
   window.raOpenEmergencyModal = function() {
-    if (!emergencyModal) return;
-    emergencyModal.classList.add("is-open");
-    emergencyModal.setAttribute("aria-hidden", "false");
+    var modal = getEmergencyModal();
+    if (!modal) return;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
   };
 
   window.raCloseEmergencyModal = function() {
-    if (!emergencyModal) return;
-    emergencyModal.classList.remove("is-open");
-    emergencyModal.setAttribute("aria-hidden", "true");
+    var modal = getEmergencyModal();
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
   };
 
-  if (emergencyClose) {
-    emergencyClose.addEventListener("click", window.raCloseEmergencyModal);
-  }
-  if (emergencyModal) {
-    emergencyModal.addEventListener("click", function(e) {
-      if (e.target === emergencyModal) window.raCloseEmergencyModal();
-    });
-  }
-
-  // Wire all Urgent Help buttons on index.html to open modal
-  document.querySelectorAll('a[href*="#emergencyConsole"], .btn-urgent').forEach(function(btn) {
-    if (btn.id === "triageBtn") return;
-    btn.addEventListener("click", function(e) {
-      e.preventDefault();
-      window.raOpenEmergencyModal();
-    });
+  document.addEventListener("click", function(e) {
+    if (!e.target) return;
+    if (e.target.id === "emergencyModalClose" || e.target.closest("#emergencyModalClose")) {
+      window.raCloseEmergencyModal();
+    } else if (e.target.id === "emergencyModal") {
+      window.raCloseEmergencyModal();
+    }
   });
 
-  // Auto-init triage from URL query parameters if present
-  try {
-    var up = new URLSearchParams(location.search);
-    var urlT = up.get("triage");
-    var urlD = up.get("danger");
-    if(urlT) {
-      var sel = document.getElementById("triageIssue");
-      if(sel) sel.value = urlT;
-      if(urlD === "yes") {
-        var rY = document.getElementById("dangerYes");
-        if(rY) rY.checked = true;
-      }
-      runTriage(urlT, urlD === "yes" ? "Yes" : "No");
+  // Wire all Urgent Help buttons on index.html to open modal
+  document.addEventListener("click", function(e) {
+    var btn = e.target && (e.target.closest('a[href*="#emergencyConsole"], .btn-urgent'));
+    if (btn && btn.id !== "triageBtn") {
+      e.preventDefault();
+      window.raOpenEmergencyModal();
     }
-  } catch(_) {}
+  });
+
+  // Auto-init triage from URL query parameters if present (deferred until DOM is ready)
+  function initTriageFromUrl(){
+    try {
+      var up = new URLSearchParams(location.search);
+      var urlT = up.get("triage");
+      var urlD = up.get("danger");
+      if(urlT) {
+        var sel = document.getElementById("triageIssue");
+        if(sel) sel.value = urlT;
+        if(urlD === "yes") {
+          var rY = document.getElementById("dangerYes");
+          if(rY) rY.checked = true;
+        }
+        runTriage(urlT, urlD === "yes" ? "Yes" : "No");
+      }
+    } catch(_) {}
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTriageFromUrl);
+  } else {
+    initTriageFromUrl();
+  }
 
   /* ---- Right of the Day (Inline Featured Civic Spotlight Banner) ----
      Highlights one existing right from content/rights.js (no invented content):
@@ -1252,7 +1269,7 @@
             <svg class="ra-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             Instant Guidance
           </h4>
-          <p style="margin:0 0 .3rem;color:#cbd5e1">Select your situation and click above to reveal immediate legal steps and emergency responder phone desks.</p>
+          <p style="margin:0 0 .3rem;">Select your situation and click above to reveal immediate legal steps and emergency responder phone desks.</p>
         </div>
       </form>
     </div>

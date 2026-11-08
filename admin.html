@@ -229,14 +229,14 @@
           : '<p class="empty">No applications have been made from this browser.</p>');
     document.getElementById("prevBtn").addEventListener("click", function(){
       document.getElementById("prev").innerHTML =
-        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to a Supabase table + admin API.</p></div>'
+        '<div class="section-head" style="margin-top:1.5rem"><h2>Dashboard preview (read-only)</h2><p>Each card maps to an encrypted database table + admin API.</p></div>'
         + '<div class="cards-grid">' + ENTITIES.map(function(e){
             return '<article class="card rv"><h3>' + e[0] + '</h3><p><strong>' + count("window." + e[2]) + '</strong> records in local catalog</p>'
               + '<a class="link" href="' + e[1] + '">Open public page →</a><br/><button class="btn btn-outline btn-sm" disabled title="Requires admin role + backend">Manage (locked)</button></article>';
           }).join("") + '</div>'
         + '<div class="two-col"><div class="card rv"><h3>Review moderation queue (this device)</h3><p>' + RA_REVIEWS.queue().length + ' flagged item(s).</p></div>'
         + '<div class="card rv"><h3>Contact messages (this device)</h3><p>' + RA_DB.messages().length + ' stored message(s).</p></div></div>'
-        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by Supabase RLS, never by frontend code.</div>';
+        + '<div class="notice" style="margin-top:1rem">Role model: <strong>admin</strong> (all), <strong>editor</strong> (content), <strong>moderator</strong> (reviews), <strong>user</strong> (own data). Enforced by database RLS, never by frontend code.</div>';
     });
   }
 
