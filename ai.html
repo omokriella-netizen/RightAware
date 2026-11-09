@@ -387,10 +387,10 @@
 
       // Calming state machine
       var CALMING_PHASES = [
-        "🛡️ Analyzing your situation under Nigerian law...",
-        "⚖️ Examining relevant Constitutional provisions and statutes...",
-        "🕊️ Take a deep breath. Organizing practical steps to protect your rights...",
-        "📋 Finalizing verified legal safeguards and official contact desks..."
+        "Consulting RightAware legal knowledge...",
+        "Examining relevant constitutional provisions and guides...",
+        "Preparing clear, plain-language guidance...",
+        "Finalizing verified legal safeguards and official contact desks..."
       ];
       var calmingTimer = null;
 
@@ -552,9 +552,36 @@
         revealNext();
       }
 
-      // Dynamic Calming Waiting Card
-      function showCalmingCard() {
+      function getAdaptivePhases(query) {
+        var q = String(query || "").toLowerCase();
+        if (/(police|arrest|cell|detain|bail|cru|station|sars|checkpoint)/i.test(q)) {
+          return [
+            "Consulting Nigerian Police Act 2020 & ACJA...",
+            "Examining Section 35 constitutional safeguards...",
+            "Retrieving verified rights guides and helplines..."
+          ];
+        }
+        if (/(landlord|rent|tenant|evict|roof|house|tenancy|notice)/i.test(q)) {
+          return [
+            "Reviewing State Tenancy Laws & recovery of premises...",
+            "Checking statutory notice to quit requirements...",
+            "Structuring relatable analogy and legal safeguards..."
+          ];
+        }
+        if (/(rightaware|platform|website|who\s+built|is\s+it\s+free|feature)/i.test(q)) {
+          return [
+            "Accessing RightAware platform directory...",
+            "Retrieving verified guides and legal library...",
+            "Preparing platform overview and direct links..."
+          ];
+        }
+        return CALMING_PHASES;
+      }
+
+      // Dynamic Waiting Card with Adaptive Phases & Skeleton Shimmer
+      function showCalmingCard(query) {
         removeCalmingCard();
+        var phases = getAdaptivePhases(query);
         var wrap = document.createElement("div");
         wrap.className = "ra-msg assistant ra-thinking-msg";
         wrap.id = "raCalmingBubble";
@@ -564,7 +591,12 @@
           + '  <span class="ra-msg-sender">RightAware AI • Consulting Legal Library</span>'
           + '</div>'
           + '<div class="ra-calming-text" id="raCalmingText" aria-live="assertive">'
-          + CALMING_PHASES[0]
+          + phases[0]
+          + '</div>'
+          + '<div class="ra-thinking-skeleton" aria-hidden="true">'
+          + '  <div class="ra-skeleton-bar ra-skeleton-bar-long"></div>'
+          + '  <div class="ra-skeleton-bar ra-skeleton-bar-med"></div>'
+          + '  <div class="ra-skeleton-bar ra-skeleton-bar-short"></div>'
           + '</div>'
           + '</div>';
         box.appendChild(wrap);
@@ -573,11 +605,11 @@
         var phase = 0;
         var textEl = document.getElementById("raCalmingText");
         calmingTimer = setInterval(function () {
-          phase = (phase + 1) % CALMING_PHASES.length;
+          phase = (phase + 1) % phases.length;
           if (textEl) {
             textEl.style.opacity = "0.35";
             setTimeout(function () {
-              textEl.textContent = CALMING_PHASES[phase];
+              textEl.textContent = phases[phase];
               textEl.style.opacity = "1";
             }, 140);
           }
@@ -885,7 +917,7 @@
 
         if (input) input.value = "";
         if (heroInput) heroInput.value = "";
-        showCalmingCard();
+        showCalmingCard(q);
 
         try {
           if (!window.RA_AI) {

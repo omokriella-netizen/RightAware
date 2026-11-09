@@ -3678,22 +3678,43 @@ body.ra-ai-body footer,
   display: block;
 }
 
-/* Dynamic Calming Waiting Card */
+/* Dynamic Adaptive Waiting Card & Shimmer Skeleton */
 .ra-thinking-msg {
   width: 100%;
 }
 
 .ra-thinking-bubble {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%) !important;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 50%, #ffffff 100%) !important;
   border: 1.5px solid #86efac !important;
-  padding: 1rem 1.3rem !important;
+  padding: 1.1rem 1.4rem !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 135, 83, 0.08);
+  transition: all 0.2s ease-in-out;
+}
+
+.ra-thinking-bubble::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 160%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.65) 50%, transparent 100%);
+  animation: raShimmerBeam 2.4s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes raShimmerBeam {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(180%); }
 }
 
 .ra-thinking-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.45rem;
 }
 
 .ra-thinking-spinner {
@@ -3710,6 +3731,32 @@ body.ra-ai-body footer,
   font-weight: 600;
   color: #166534;
   transition: opacity 0.15s ease-in-out;
+}
+
+.ra-thinking-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(0, 135, 83, 0.18);
+}
+
+.ra-skeleton-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(0, 135, 83, 0.08) 25%, rgba(0, 135, 83, 0.18) 50%, rgba(0, 135, 83, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: raSkeletonPulse 1.6s infinite ease-in-out;
+}
+
+.ra-skeleton-bar-long { width: 92%; }
+.ra-skeleton-bar-med { width: 75%; }
+.ra-skeleton-bar-short { width: 45%; }
+
+@keyframes raSkeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .ra-messenger-avatar {

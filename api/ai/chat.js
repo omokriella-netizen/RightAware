@@ -137,54 +137,245 @@ function getCandidateModels(primaryModel, isGemini) {
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_PAGE_CONTEXT_LENGTH = 3000;
-const MAX_OUTPUT_TOKENS = 900;
-
+const MAX_DEFAULT_OUTPUT_TOKENS = 500;
 
 /* =========================================================
-   RIGHTAWARE SYSTEM INSTRUCTIONS (EMPATHY & LEGAL PRECISION)
+   PLATFORM GROUNDING & CIVIC IDENTITY
    ========================================================= */
 
-const SYSTEM = `
-You are RightAware AI, an empathetic, supportive, and knowledgeable Nigerian civic and legal-awareness companion inside RightAware.
+const PLATFORM_INFO = {
+  name: "RightAware",
+  tagline: "Translating Nigerian constitutional and statutory law into plain, accessible civic power.",
+  nature: "Independent Nigerian civic-tech platform. NOT a law firm, NOT a court, NOT a government agency. Provides free public legal information and verified referrals, not private legal representation.",
+  access: "100% free public access, NDPR privacy-compliant, zero tracking.",
+  keyFeatures: [
+    { title: "28 Rights Topics", url: "rights.html", desc: "Plain-language guides covering fundamental rights in Chapter IV 1999 Constitution (police stops, bail, fair hearing, tenancy, consumer protection, freedom of expression, etc.)." },
+    { title: "Laws & Statutes Library", url: "laws.html", desc: "Searchable authentic Nigerian statutes, gazettes, and acts (Constitution 1999, Electoral Act 2022, ACJA 2015, Cybercrime Act, Marriage Act, etc.)." },
+    { title: "Organizations Directory", url: "organizations.html", desc: "Verified directory of public complaint commissions, human rights desks, and statutory ombudsmen." },
+    { title: "Legal Professionals", url: "lawyers.html", desc: "Verified directory of accredited legal practitioners and university legal aid clinics." },
+    { title: "Emergency Console & Helplines", url: "help.html", desc: "Fast access to Police CRU (0805 700 0001), National Emergency (112), Legal Aid Council, and NHRC." },
+    { title: "Printable Checklists", url: "printables.html", desc: "Pocket-sized offline legal handbooks and emergency guides for low-connectivity environments." },
+    { title: "Civic Video Guides", url: "videos.html", desc: "Visual guides explaining legal rights in clear English and Nigerian Pidgin." }
+  ]
+};
 
-Your purpose is to help everyday Nigerian citizens understand:
-- their constitutional rights and civic protections,
-- Nigerian laws in plain, accessible language,
-- practical, de-escalating next steps when facing crisis or confusion,
-- where relevant verified RightAware resources and official desks can help.
+/* =========================================================
+   DETERMINISTIC FAST-PATH GREETINGS (ZERO TOKEN DRAIN)
+   ========================================================= */
 
+const GREETING_RESPONSES = [
+  "Welcome to RightAware. I am here to help you understand your civic rights under Nigerian law, explore verified statutes, or learn more about the platform. How can I help you today?",
+  "Hello. I am RightAware AI, your Nigerian civic and legal awareness companion. Feel free to ask about your constitutional rights, tenant laws, police rules, or how to navigate RightAware.",
+  "Good day. Welcome to RightAware. You can ask me questions about Nigerian laws, your rights as a citizen, or our verified legal guides. What would you like to explore?"
+];
+
+function pickGreeting() {
+  return GREETING_RESPONSES[Date.now() % GREETING_RESPONSES.length];
+}
+
+/* =========================================================
+   INTENT CLASSIFICATION ENGINE (3-TIER PRIORITY CASCADE)
+   ========================================================= */
+
+/* =========================================================
+   INTENT CLASSIFICATION ENGINE
+   - INTENT_GREETING_CASUAL: Sub-5ms server-local fast-path
+   - INTENT_PLATFORM_INQUIRY: RightAware platform tools & identity
+   - INTENT_EXPLAIN_LAW: ONLY for explicit requests to explain a law/right (uses analogies & examples)
+   - INTENT_PRACTICAL_GUIDANCE: Practical disputes, checkpoints, violations, crimes (step-by-step guidelines, NO analogies)
+   ========================================================= */
+
+const INTENT_RULES = {
+  // Practical problems, disputes, checkpoint encounters, violations, and serious crime cases.
+  // These MUST receive direct step-by-step navigation guidelines — NEVER analogies or metaphors!
+  practicalIndicators: [
+    "my landlord", "landlord locked", "remove my roof", "remove roof", "pack out", "quit notice",
+    "police stop", "stopped me", "checkpoint", "search my phone", "search phone", "unlock my phone",
+    "arrest", "arrested", "detain", "detained", "in a cell", "in cell", "handcuff", "station",
+    "bail money", "pay for bail", "demanding bail", "bribe", "extortion", "extort",
+    "threat", "threatened", "beaten", "assault", "stolen", "fraud", "scam",
+    "is this legal", "is it legal", "what can i do", "what should i do", "how do i handle",
+    "can they do this", "can police do this", "can my landlord", "can an officer",
+    // Pidgin dispute & crisis signals
+    "dem carry", "dem lock", "dem hold", "carry me go", "wan comot my roof", "wan drive me",
+    "dey threaten", "dey beat", "collect my money", "wetin i fit do"
+  ],
+
+  // Explicit requests to explain or demystify a specific law, section, or constitutional right.
+  // ONLY these receive analogies and illustrative examples when personally asked for!
+  explanationKeywords: [
+    "explain", "break down", "meaning of", "what does the law say about",
+    "what does section", "tell me about section", "teach me about",
+    "demystify", "summarize", "with an example", "with example", "with analogy"
+  ],
+
+  platformTerms: [
+    "what is rightaware", "about rightaware", "who built rightaware", "who made rightaware",
+    "what does rightaware do", "is rightaware free", "are you a lawyer", "are you lawyers",
+    "how to use rightaware", "what can you do", "rightaware features",
+    "how do i search laws", "where is the police guide", "how does this platform work",
+    "wetin be rightaware", "wetin una dey do", "how this thing work", "na free"
+  ],
+
+  greetingPatterns: [
+    /^(hi|hello|hey|howdy|good\s*(morning|afternoon|evening|day|night))[\s!.,?]*$/i,
+    /^(how\s*far|how\s*you\s*dey|how\s*bodi|kedu|bawo\s*ni|bawo|sannu|pele)[\s!.,?]*$/i,
+    /^(what'?s?\s*up|sup|yo|oya)[\s!.,?]*$/i
+  ]
+};
+
+function classifyIntent(rawMessage) {
+  const msg = String(rawMessage || "").trim();
+  if (!msg) return "INTENT_GREETING_CASUAL";
+
+  // Expand Pidgin before checking patterns
+  const expanded = expandPidgin(msg).toLowerCase();
+  const rawLower = msg.toLowerCase();
+
+  // Tier 1: Platform Inquiries
+  for (const term of INTENT_RULES.platformTerms) {
+    if (rawLower.includes(term) || expanded.includes(term)) {
+      return "INTENT_PLATFORM_INQUIRY";
+    }
+  }
+
+  // Tier 2: Pure Greetings (anchored regex strictly on raw message)
+  for (const pattern of INTENT_RULES.greetingPatterns) {
+    if (pattern.test(msg)) {
+      return "INTENT_GREETING_CASUAL";
+    }
+  }
+
+  // Tier 3: Practical disputes, incidents, checkpoints, crimes, and personal dilemmas
+  // These get direct step-by-step navigation guidelines — NEVER analogies!
+  for (const term of INTENT_RULES.practicalIndicators) {
+    if (rawLower.includes(term) || expanded.includes(term)) {
+      return "INTENT_PRACTICAL_GUIDANCE";
+    }
+  }
+
+  // Tier 4: Explicit requests to explain/demystify the law, constitution, or rights
+  // Only queries where the citizen personally asks for an explanation of a law/right get analogies & examples!
+  const hasExplainKeyword = INTENT_RULES.explanationKeywords.some(kw => rawLower.includes(kw) || expanded.includes(kw));
+  const hasLawTopic = /(section|s\.\s*\d+|act|constitution|law|right|statute|code|chapter)/i.test(msg);
+
+  if (hasExplainKeyword && hasLawTopic) {
+    return "INTENT_EXPLAIN_LAW";
+  }
+
+  // Substantive law query without personal dispute indicator
+  if (hasLawTopic && !INTENT_RULES.practicalIndicators.some(term => rawLower.includes(term))) {
+    return "INTENT_EXPLAIN_LAW";
+  }
+
+  // Default: Practical guidance
+  return "INTENT_PRACTICAL_GUIDANCE";
+}
+
+/* =========================================================
+   DYNAMIC SYSTEM PROMPT & TOKEN LIMIT BUILDER
+   ========================================================= */
+
+function buildSystemPrompt(intent) {
+  const baseRules = `
+You are RightAware AI, an authoritative, helpful, and empathetic Nigerian civic and legal-awareness companion inside RightAware.
 You are NOT a lawyer and you do NOT provide private legal counsel.
-
-TONE & EMPATHY ARCHITECTURE (CRITICAL):
-1. Citizens who ask questions are often stressed, fearful, or facing intimidating real-world situations (such as unlawful police stops, extortion, unlawful eviction threats, or unpaid salaries).
-2. ALWAYS open your response with a calm, empathetic, and reassuring sentence that validates their feelings and de-escalates panic before presenting legal sections.
-   - Example (English): "Take a deep breath and stay calm. Facing a situation like this can be very stressful, but Nigerian law provides clear safeguards to protect you."
-   - Example (Nigerian Pidgin): "First, take heart and calm down. This kind wahala dey bring tension, but na your right to know wetin law talk to protect you."
-3. Organize your answer into clear, scannable, user-friendly sections:
-   - 🛡️ Immediate Steps (What to do or say right now to protect safety and de-escalate).
-   - ⚖️ What the Law Says (Key Nigerian statutory provisions demystified into plain words, e.g. Constitution Sec 35, ACJA 2015 Sec 30/free bail, State Tenancy Laws).
-   - 📋 Practical Next Actions (Documentation, who to contact, verified phone numbers from verified context, official helplines like Police CRU 0805 700 0001, National Emergency 112).
-4. Demystify legal terminology into relatable everyday Nigerian English or Pidgin.
-
-CORE FACTUAL INVARIANTS (ZERO HALLUCINATION):
-5. Use the RIGHTAWARE VERIFIED CONTEXT supplied with each question as your primary source.
-6. Never invent:
-   - Nigerian laws or statutes
-   - Constitutional sections
-   - Legal cases or citations
-   - Statistics or false guarantees
-   - Organisations or unverified contacts
-   - Phone numbers, email addresses, or URLs
-7. Do not cite a law merely because it appears in the context; only mention laws genuinely relevant to the citizen's dilemma.
-8. If the supplied RightAware context is insufficient, state honestly what is known and advise speaking with a verified legal aid professional or exploring the RightAware directory.
-9. If the user writes Nigerian Pidgin, respond naturally and warmly in Nigerian Pidgin. If they mix Pidgin and English, match their natural style.
-10. If the user describes imminent physical danger, violence, or active armed threat, prioritize physical safety guidance and emergency contact (112) immediately.
-11. Never ask for passwords, bank details, card PINs, or sensitive credentials.
-12. Do not dump unrelated laws into the answer.
-13. End every answer with exactly:
-
+Never invent laws, constitutional sections, phone numbers, or email addresses. Use only verified facts.
+If the citizen writes in Nigerian Pidgin, respond naturally and warmly in Nigerian Pidgin. If they write in English, respond in clear Nigerian English.
+End every response with exactly:
 General legal information only — not legal advice. Verify important points with a qualified professional.
 `;
+
+  if (intent === "INTENT_PLATFORM_INQUIRY") {
+    return `
+${baseRules}
+OPERATIONAL MODE: PLATFORM INQUIRY & CITIZEN ONBOARDING
+1. The user is asking about the RightAware platform itself, its mission, its tools, or how it works.
+2. Clearly explain RightAware:
+   - What it is: An independent Nigerian civic-tech platform that translates constitutional and statutory law into plain, accessible civic knowledge.
+   - Core tools:
+     * 28 Rights Topics (rights.html): Plain-language guides covering fundamental rights, police stops, bail, fair hearing, tenancy, consumer protection, etc.
+     * Laws Library (laws.html): Searchable authentic Nigerian statutes and gazettes (1999 Constitution, Electoral Act 2022, ACJA 2015, Cybercrime Act, etc.).
+     * Organizations Directory (organizations.html): Directory of public complaint commissions, human rights desks, and statutory ombudsmen.
+     * Legal Professionals (lawyers.html): Directory of verified legal aid clinics and legal practitioners.
+     * Emergency Help Console (help.html): Fast access to emergency helplines (Police CRU: 0805 700 0001, Emergency 112).
+     * Printable Checklists (printables.html): Pocket-sized offline handbooks.
+     * Video Guides (videos.html): Explanations in English and Nigerian Pidgin.
+   - Access & Integrity: 100% free public access, NDPR privacy-compliant, zero tracking.
+   - Identity: RightAware is not a law firm and not a government agency.
+3. Keep your response direct, structured, and informative. Do NOT use panic de-escalation ("Take a deep breath" is banned here).
+`;
+  }
+
+  if (intent === "INTENT_PRACTICAL_GUIDANCE") {
+    return `
+${baseRules}
+OPERATIONAL MODE: PRACTICAL LEGAL GUIDELINES & INCIDENT NAVIGATION
+1. The citizen is presenting an actual legal problem, dispute, police checkpoint encounter, landlord harassment, violation, or crime.
+2. STRICT BAN ON ANALOGIES OR STORYTELLING METAPHORS:
+   Do NOT provide analogies, metaphors, or fictional examples (no bus analogies, no bedroom comparisons, no market metaphors). The citizen is facing a real problem and needs direct, actionable guidance.
+3. MANDATORY STEP-BY-STEP NAVIGATION GUIDELINES:
+   Structure your answer into direct, numbered, step-by-step practical guidelines:
+   - Direct Legal Assessment: State immediately whether the action is lawful or illegal under Nigerian law.
+   - Step 1: Immediate Safety & De-escalation: What to say and do right now to protect safety and avoid physical escalation.
+   - Step 2: Evidence & Documentation: Exactly what to document (photos of gates/notices, officer names, force numbers, patrol vehicles, station name, time, witnesses).
+   - Step 3: Legal Shield & Rights: The exact statutory provisions protecting the citizen (e.g., Tenancy Law bar on self-help; Police Act 2020 S. 49 phone privacy; ACJA 2015 S. 30 free bail; Constitution S. 35 & 37).
+   - Step 4: Actionable Next Steps & Helplines: Concrete steps to resolve the issue, including official contact channels (Police CRU: 0805 700 0001 / 0805 700 0002, National Emergency: 112, Citizens Mediation Centre, Legal Aid Council, or RightAware directory).
+4. TONE: Calm, objective, professional, and protective. Focus 100% on practical navigation.
+`;
+  }
+
+  // INTENT_EXPLAIN_LAW: Only when the person personally asked to explain a law/constitution/right
+  return `
+${baseRules}
+OPERATIONAL MODE: STATUTORY EXPLANATION & LEGAL PEDAGOGY
+1. The citizen has explicitly asked you to explain, break down, or demystify a specific law, constitutional section, or legal right.
+2. YOU ARE EXPLICITLY AUTHORIZED AND DIRECTED TO USE EVERYDAY NIGERIAN ANALOGIES AND ILLUSTRATIVE EXAMPLES HERE:
+   Break down the legal provision using this clear 4-part structure:
+   a. Plain Meaning: What this law or right means in everyday language (English or Pidgin).
+   b. Everyday Nigerian Analogy: Demystify the concept using a relatable everyday analogy:
+      - e.g. Fair Hearing (S. 36): Like a football referee who cannot award a red card before seeing the foul and must let both teams play and speak.
+      - e.g. Bail & Presumption of Innocence (S. 35, ACJA S. 30): Like having a market receipt for goods you bought; you do not have to buy back your freedom because bail is free by law.
+      - e.g. Tenancy Laws: Like a formal commercial vehicle lease contract where the owner cannot push you out while driving.
+      - e.g. Phone & Digital Privacy: Like your private bedroom; officers cannot rummage through personal spaces without statutory cause or warrant.
+   c. Illustrative Example: A brief real-world scenario showing how this law works in practice.
+   d. What the Law Says: Exact statutory citation (e.g. 1999 Constitution Chapter IV, ACJA 2015, Electoral Act 2022).
+3. Keep it clear, engaging, and token-efficient.
+`;
+}
+
+function getOutputTokenLimit(intent) {
+  switch (intent) {
+    case "INTENT_PLATFORM_INQUIRY":
+      return 350;
+    case "INTENT_EXPLAIN_LAW":
+      return 500;
+    case "INTENT_PRACTICAL_GUIDANCE":
+      return 500;
+    default:
+      return MAX_DEFAULT_OUTPUT_TOKENS;
+  }
+}
+
+function buildHistoryBlock(history, currentIntent) {
+  if (!Array.isArray(history) || history.length === 0) return "";
+  if (currentIntent === "INTENT_GREETING_CASUAL") return "";
+
+  const maxTurns = currentIntent === "INTENT_PRACTICAL_GUIDANCE" ? 3 : 4;
+  const maxCharsPerTurn = currentIntent === "INTENT_PRACTICAL_GUIDANCE" ? 350 : 500;
+
+  const trimmed = history
+    .slice(-maxTurns)
+    .map(function (h) {
+      const roleName = h.role === "assistant" ? "Assistant" : "Citizen";
+      const textContent = String(h.text || "").slice(0, maxCharsPerTurn);
+      return roleName + ": " + textContent;
+    })
+    .join("\n");
+
+  if (!trimmed) return "";
+  return "\n\nRECENT DIALOGUE CONTEXT (for continuity only; answer the current question on its own merits):\n" + trimmed;
+}
 
 
 /* =========================================================
@@ -684,7 +875,17 @@ function findKnowledge(message) {
    BUILD VERIFIED CONTEXT
    ========================================================= */
 
-function makeContext(message) {
+function makeContext(message, intent) {
+  if (intent === "INTENT_PLATFORM_INQUIRY") {
+    return {
+      platform: PLATFORM_INFO,
+      rights: [],
+      laws: [],
+      orgs: [],
+      note: "Answer using the RightAware platform details provided. Direct the citizen to the relevant platform sections and pages."
+    };
+  }
+
   const found =
     findKnowledge(message);
 
@@ -805,9 +1006,23 @@ function makeContext(message) {
    BUILD RESPONSE LINKS
    ========================================================= */
 
-function buildLinks(verifiedContext) {
+function buildLinks(verifiedContext, intent) {
   const links = [];
   const sources = [];
+
+  if (intent === "INTENT_PLATFORM_INQUIRY" || (verifiedContext && verifiedContext.platform)) {
+    return {
+      links: [
+        { t: "RightAware: 28 Civic Rights Topics", u: "rights.html" },
+        { t: "RightAware: Laws & Statutes Library", u: "laws.html" },
+        { t: "RightAware: Organizations Directory", u: "organizations.html" },
+        { t: "RightAware: Legal Professionals", u: "lawyers.html" },
+        { t: "RightAware: Emergency Helplines", u: "help.html" },
+        { t: "RightAware: Printable Guides", u: "printables.html" }
+      ],
+      sources: []
+    };
+  }
 
 
   /*
@@ -1276,6 +1491,51 @@ module.exports = async function (req, res) {
   }
 
 
+  const intent = classifyIntent(message);
+
+  /* ---------------------------------------------------------
+     FAST PATH: GREETING / CASUAL INTENT
+     Zero upstream LLM call. Sub-5ms deterministic response.
+     Guest quota cookie and DB states remain strictly synchronized.
+     --------------------------------------------------------- */
+  if (intent === "INTENT_GREETING_CASUAL") {
+    if (isGuest && guestId) {
+      const countCookieName = "ra_guest_c";
+      const currentCount = (guestQuota && typeof guestQuota.current_attempts === "number") ? guestQuota.current_attempts : 0;
+      const nextCount = currentCount + 1;
+      const isSecure = (req.headers && req.headers["x-forwarded-proto"] === "https") || process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+      const existingCookies = res.getHeader("Set-Cookie");
+      const cookieList = Array.isArray(existingCookies) ? existingCookies : existingCookies ? [existingCookies] : [];
+      cookieList.push(`${countCookieName}=${nextCount}; Path=/; Max-Age=86400; SameSite=Lax${isSecure ? "; Secure" : ""}`);
+      res.setHeader("Set-Cookie", cookieList);
+      if (guestQuota) guestQuota.current_attempts = nextCount;
+    }
+
+    return res.status(200).json({
+      ok: true,
+      text: pickGreeting(),
+      links: [
+        { t: "RightAware: 28 Civic Rights Topics", u: "rights.html" },
+        { t: "RightAware: Laws & Statutes Library", u: "laws.html" },
+        { t: "RightAware: Emergency Helplines", u: "help.html" }
+      ],
+      sources: [],
+      disclaimer: DISCLAIMER,
+      model: "static",
+      isGreeting: true,
+      isGuest: isGuest,
+      guestAttempts: guestQuota ? guestQuota.current_attempts : undefined,
+      guestMax: isGuest ? 3 : undefined
+    });
+  }
+
+  /* ---------------------------------------------------------
+     DYNAMIC SYSTEM PROMPT & TOKEN BUDGET BY INTENT
+     --------------------------------------------------------- */
+
+  const systemPrompt = buildSystemPrompt(intent);
+  const maxOutputTokens = getOutputTokenLimit(intent);
+
   /* ---------------------------------------------------------
      OPTIONAL PAGE CONTEXT & CONVERSATIONAL HISTORY
      --------------------------------------------------------- */
@@ -1290,18 +1550,7 @@ module.exports = async function (req, res) {
         )
       : "";
 
-  const conversationHistory =
-    Array.isArray(body.history) && body.history.length > 0
-      ? "\n\nRECENT DIALOGUE CONTEXT:\n" +
-        body.history
-          .slice(-6)
-          .map(function (h) {
-            const roleName = h.role === "assistant" ? "Assistant" : "Citizen";
-            const textContent = String(h.text || "").slice(0, 500);
-            return roleName + ": " + textContent;
-          })
-          .join("\n")
-      : "";
+  const conversationHistory = buildHistoryBlock(body.history, intent);
 
   /* ---------------------------------------------------------
      RETRIEVE RIGHTAWARE CONTEXT
@@ -1315,7 +1564,7 @@ module.exports = async function (req, res) {
 
   try {
     verifiedContext =
-      makeContext(message);
+      makeContext(message, intent);
   }
 
   catch (error) {
@@ -1370,17 +1619,17 @@ module.exports = async function (req, res) {
         const payload = apiUrl.includes("/responses")
           ? {
               model: candidate,
-              instructions: SYSTEM,
+              instructions: systemPrompt,
               input: input,
-              max_output_tokens: MAX_OUTPUT_TOKENS
+              max_output_tokens: maxOutputTokens
             }
           : {
               model: candidate,
               messages: [
-                { role: "system", content: SYSTEM },
+                { role: "system", content: systemPrompt },
                 { role: "user", content: input }
               ],
-              max_tokens: MAX_OUTPUT_TOKENS
+              max_tokens: maxOutputTokens
             };
 
         const res = await fetch(apiUrl, {
@@ -1481,7 +1730,8 @@ module.exports = async function (req, res) {
 
     const resourceData =
       buildLinks(
-        verifiedContext
+        verifiedContext,
+        intent
       );
 
 
