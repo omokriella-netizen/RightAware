@@ -46,16 +46,33 @@
     var id = bySource[src];
     if(!id){ return; }
     var next = t(id);
-    if(next && node.nodeValue !== next) node.nodeValue = next;
+    if(next){
+      var leading = /^\s+/.test(node.__raEn) ? " " : "";
+      var trailing = /\s+$/.test(node.__raEn) ? " " : "";
+      var finalVal = leading + next.trim() + trailing;
+      if(node.nodeValue !== finalVal) node.nodeValue = finalVal;
+    }
     else if(lang === "en" && node.nodeValue !== node.__raEn) node.nodeValue = node.__raEn;
   }
   function translatePlaceholder(el){
     if(el.__raPh == null) el.__raPh = el.getAttribute("placeholder") || "";
-    if(!el.__raPh) return;
-    var id = bySource[normalize(el.__raPh)];
-    if(!id) return;
-    var next = t(id) || el.__raPh;
-    if(el.placeholder !== next) el.placeholder = next;
+    if(el.__raPh){
+      var id = bySource[normalize(el.__raPh)];
+      if(id){
+        var next = t(id) || el.__raPh;
+        if(el.placeholder !== next) el.placeholder = next;
+      }
+    }
+    if(el.hasAttribute && el.hasAttribute("aria-label")){
+      if(el.__raAria == null) el.__raAria = el.getAttribute("aria-label") || "";
+      if(el.__raAria){
+        var aId = bySource[normalize(el.__raAria)];
+        if(aId){
+          var aNext = t(aId) || el.__raAria;
+          if(el.getAttribute("aria-label") !== aNext) el.setAttribute("aria-label", aNext);
+        }
+      }
+    }
   }
   var WALK_TAGS = { A:1, BUTTON:1, SPAN:1, H1:1, H2:1, H3:1, H4:1, H5:1, H6:1, P:1, LI:1, LABEL:1, SMALL:1, STRONG:1, TD:1, TH:1, OPTION:1, LEGEND:1, SUMMARY:1, FIGCAPTION:1, DT:1, DD:1, DIV:1, BLOCKQUOTE:1, CAPTION:1 };
 
@@ -63,7 +80,8 @@
     if(node.nodeType === 3){ translateTextNode(node); return; }
     if(node.nodeType !== 1) return;
     if(node.tagName === "SCRIPT" || node.tagName === "STYLE" || node.tagName === "NOSCRIPT") return;
-    if(node.classList && node.classList.contains("ra-lang")) return;
+    if(node.hasAttribute && (node.hasAttribute("data-i18n-ignore") || node.getAttribute("data-i18n-ignore") === "true")) return;
+    if(node.classList && (node.classList.contains("ra-lang") || node.classList.contains("ra-msg-footer"))) return;
     if(node.tagName === "INPUT" && (node.type === "search" || node.type === "text" || node.type === "email" || node.type === "password")) translatePlaceholder(node);
     if(node.tagName === "TEXTAREA") translatePlaceholder(node);
     var kids = node.childNodes;
@@ -76,8 +94,39 @@
     applying = true;
     try{
       walk(document.body);
-      try{ document.documentElement.setAttribute("lang", lang === "pcm" ? "pcm" : "en"); }catch(_){}
+      try{ document.documentElement.setAttribute("lang", lang); }catch(_){}
     }finally{ applying = false; }
+  }
+
+  function pingWarmupEngine(targetLang){
+    if(!targetLang || targetLang === "en" || targetLang === "pcm") return;
+    try{
+      var endpoint = (window.RA_CONFIG && RA_CONFIG.WARMUP_ENDPOINT) || "/functions/v1/warmup-translation-engine";
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: targetLang }),
+        keepalive: true
+      }).catch(function(){});
+    }catch(_){}
+  }
+
+  function setLanguage(next, source){
+    if(!next) return;
+    var valid = (window.RA_I18N && window.RA_I18N.meta && window.RA_I18N.meta.languages || []).some(function(l){ return l.id === next; });
+    if(!valid && next !== "en") return;
+    if(next === lang) return;
+    lang = next;
+    try{ localStorage.setItem(STORE_KEY, lang); }catch(_){}
+    apply();
+    var sel = document.querySelector(".ra-lang-select");
+    if(sel && sel.value !== lang) sel.value = lang;
+    try{
+      document.dispatchEvent(new CustomEvent("ra:langchange", {
+        detail: { lang: lang, source: source || "internal" }
+      }));
+    }catch(_){}
+    pingWarmupEngine(lang);
   }
 
   /* ---------- language selector UI ---------- */
@@ -96,10 +145,7 @@
     });
     sel.value = lang;
     sel.addEventListener("change", function(){
-      lang = sel.value;
-      try{ localStorage.setItem(STORE_KEY, lang); }catch(_){}
-      apply();
-      try{ document.dispatchEvent(new CustomEvent("ra:langchange", { detail:{ lang:lang } })); }catch(_){}
+      setLanguage(sel.value, "user_select");
     });
     wrap.appendChild(sel);
     /* keep the desktop hamburger last */
@@ -118,11 +164,9 @@
       if(localStorage.getItem(STORE_KEY)) return;
       var pl = null;
       try{ var p = JSON.parse(localStorage.getItem("ra_profile") || "null"); if(p) pl = p.language; }catch(_){ pl = null; }
-      var want = pl === "Pidgin" ? "pcm" : (pl === "English" ? "en" : null);
-      if(!want || want === lang) return;
-      lang = want;
-      apply();
-      var sel = document.querySelector(".ra-lang-select"); if(sel) sel.value = lang;
+      var map = { "English": "en", "Pidgin": "pcm", "Yoruba": "yo", "Igbo": "ig", "Hausa": "ha" };
+      var want = map[pl] || null;
+      if(want) setLanguage(want, "profile_sync");
     }catch(_){}
   }
   try{ document.addEventListener("ra:synced", adoptProfileLanguage); }catch(_){}
@@ -153,12 +197,7 @@
     t: function(id){ if(!dict) buildIndex(); return t(id); },
     apply: apply,
     get lang(){ return lang; },
-    setLang: function(next){
-      lang = next;
-      try{ localStorage.setItem(STORE_KEY, lang); }catch(_){}
-      apply();
-      var sel = document.querySelector(".ra-lang-select"); if(sel) sel.value = lang;
-    },
+    setLang: function(next){ setLanguage(next, "api_call"); },
     reviewStatus: function(id){
       var e = dict && dict[id]; if(!e) return null;
       var st = (window.RA_I18N.status || {})[lang] || {};

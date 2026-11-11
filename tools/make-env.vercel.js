@@ -36,7 +36,7 @@ var fs = require("node:fs");
 var path = require("node:path");
 
 // Strict whitelist: names that are safe in frontend code (docs/ENVIRONMENT.md).
-var PUBLIC = ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "PAYSTACK_PUBLIC_KEY"];
+var PUBLIC = ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "PAYSTACK_PUBLIC_KEY", "TTS_ENDPOINT"];
 
 var root = path.resolve(__dirname, "..");
 var outPath = path.join(root, "env.local.js");

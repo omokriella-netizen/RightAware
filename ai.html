@@ -323,7 +323,7 @@
         </div>
 
         <!-- Expansive Messages Stream (Populates white space as conversation unfolds) -->
-        <div class="ra-messenger-stream" id="chatBox" aria-live="polite" style="display: none;"></div>
+        <div class="ra-messenger-stream" id="chatBox" data-i18n-ignore="true" aria-live="polite" style="display: none;"></div>
 
         <!-- Bottom Composer Bar (Hidden on landing, docked at bottom during active conversation) -->
         <div class="ra-messenger-composer" id="chatComposerWrap" style="display: none;">
@@ -351,6 +351,7 @@
   <script src="js/ai-renderer.js"></script>
   <script src="js/ai.js"></script>
   <script src="js/chat-state.js"></script>
+  <script src="js/tts-player.js"></script>
   <script src="app.js"></script>
   <script>
     (function () {
@@ -507,6 +508,9 @@
 
       // Abort active stream immediately when conversation is cleared or switched
       function abortActiveReveal() {
+        if (window.RA_TTS_PLAYER && typeof window.RA_TTS_PLAYER.stop === "function") {
+          window.RA_TTS_PLAYER.stop();
+        }
         if (activeRevealTimer) {
           clearTimeout(activeRevealTimer);
           activeRevealTimer = null;
@@ -642,6 +646,59 @@
         return out;
       }
 
+      function cleanTextForTTS(raw) {
+        if (!raw) return "";
+        return String(raw)
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Strip Markdown hyperlinks [label](url) -> label, while preserving statutory [Section X, ACJA] brackets
+          .replace(/[*#_~`>]/g, "")                // Strip markdown formatting symbols
+          .replace(/\n{2,}/g, "\n")
+          .trim();
+      }
+
+      function resolveActiveTTSLanguage() {
+        try {
+          var active = (window.RA_I18N_API && window.RA_I18N_API.lang) || localStorage.getItem("ra_lang") || "en";
+          return active.toLowerCase();
+        } catch (_) {
+          return "en";
+        }
+      }
+
+      function renderTTSFooter(bubble, rawText, timeSpan) {
+        if (!bubble || !rawText) return;
+        var footer = document.createElement("div");
+        footer.className = "ra-msg-footer";
+
+        var activeLang = resolveActiveTTSLanguage();
+        var labelMap = { en: "Listen", pcm: "Listen", yo: "Gbọ́", ig: "Gee ntị", ha: "Saurara" };
+        var btnLabel = labelMap[activeLang] || "Listen";
+
+        var ttsBtn = document.createElement("button");
+        ttsBtn.type = "button";
+        ttsBtn.className = "ra-tts-btn";
+        ttsBtn.setAttribute("data-lang", activeLang);
+        ttsBtn.setAttribute("aria-label", "Listen to legal explanation in " + activeLang);
+        ttsBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>'
+          + '<span>' + btnLabel + '</span>';
+
+        // ZERO inline onclick string interpolation: bind directly via dataset property and addEventListener
+        ttsBtn.dataset.ttsText = cleanTextForTTS(rawText);
+        ttsBtn.dataset.lang = activeLang;
+
+        ttsBtn.addEventListener("click", function () {
+          if (window.RA_TTS_PLAYER && typeof window.RA_TTS_PLAYER.play === "function") {
+            window.RA_TTS_PLAYER.play(this, this.dataset.ttsText, this.dataset.lang);
+          }
+        });
+
+        footer.appendChild(ttsBtn);
+        if (timeSpan) {
+          timeSpan.style.display = "block";
+          footer.appendChild(timeSpan);
+        }
+        bubble.appendChild(footer);
+      }
+
       function addMsg(role, text, links, customLabel, isStreamed, customTime) {
         var wrap = document.createElement("div");
         wrap.className = "ra-msg " + (role === "user" ? "user" : "assistant");
@@ -674,8 +731,7 @@
           var timeSpan = document.createElement("span");
           timeSpan.className = "ra-msg-time";
           timeSpan.textContent = timeStr;
-          timeSpan.style.display = isStreamed ? "none" : "block";
-          bubble.appendChild(timeSpan);
+          timeSpan.style.display = "none";
 
           wrap.appendChild(bubble);
           box.appendChild(wrap);
@@ -683,10 +739,11 @@
 
           if (isStreamed) {
             streamRevealNodes(contentDiv, parsedBody + linksHtml(links), function () {
-              timeSpan.style.display = "block";
+              renderTTSFooter(bubble, text, timeSpan);
             });
           } else {
             contentDiv.innerHTML = parsedBody + linksHtml(links);
+            renderTTSFooter(bubble, text, timeSpan);
           }
         }
       }
@@ -895,6 +952,9 @@
 
         // Flush any pending progressive reveal animation before starting new turn
         flushActiveReveal();
+        if (window.RA_TTS_PLAYER && typeof window.RA_TTS_PLAYER.stop === "function") {
+          window.RA_TTS_PLAYER.stop();
+        }
 
         // Auto-create session if starting a fresh inquiry
         if (window.RA_CHAT_STATE && !window.RA_CHAT_STATE.getActiveSessionId()) {
@@ -1111,6 +1171,25 @@
       });
       document.addEventListener("ra:backend-ready", function () {
         setPills();
+      });
+
+      document.addEventListener("ra:langchange", function (e) {
+        if (window.RA_TTS_PLAYER && typeof window.RA_TTS_PLAYER.stop === "function") {
+          window.RA_TTS_PLAYER.stop();
+        }
+        var nextLang = (e.detail && e.detail.lang) || "en";
+        var labelMap = { en: "Listen", pcm: "Listen", yo: "Gbọ́", ig: "Gee ntị", ha: "Saurara" };
+        var nextLabel = labelMap[nextLang] || "Listen";
+
+        document.querySelectorAll(".ra-tts-btn").forEach(function (btn) {
+          btn.setAttribute("data-lang", nextLang);
+          btn.dataset.lang = nextLang;
+          btn.setAttribute("aria-label", "Listen to legal explanation in " + nextLang);
+          var labelSpan = btn.querySelector("span");
+          if (labelSpan && !btn.classList.contains("ra-tts-playing") && !btn.classList.contains("ra-tts-loading")) {
+            labelSpan.textContent = nextLabel;
+          }
+        });
       });
 
       // Initial pill render

@@ -3927,6 +3927,80 @@ body.ra-ai-body footer,
   text-decoration: underline;
 }
 
+/* TTS Action Bar & Accessible Audio Player */
+.ra-msg-footer {
+  margin-top: 0.65rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ra-msg-footer .ra-msg-time {
+  margin-top: 0 !important;
+}
+
+.ra-tts-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--green-dark, #065f46);
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  line-height: 1;
+}
+
+.ra-tts-btn:hover:not(:disabled) {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #047857;
+}
+
+.ra-tts-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ra-tts-btn.ra-tts-playing {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.ra-tts-btn.ra-tts-playing:hover:not(:disabled) {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.ra-tts-btn.ra-tts-error {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #e11d48;
+}
+
+.ra-tts-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(0, 135, 83, 0.25);
+  border-top-color: var(--green, #008753);
+  border-radius: 50%;
+  animation: ra-tts-spin 0.65s linear infinite;
+}
+
+@keyframes ra-tts-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Starter chips */
 .ra-messenger-chips {
   flex-shrink: 0;
@@ -4332,6 +4406,22 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 2px
+}
+
+/* Zero-Trust Input Focus Override:
+   Suppress gold accessibility outline on capsule, search, and composer inputs where
+   the parent container or dedicated border already provides the high-contrast green ring */
+.ra-gemini-input:focus,
+.ra-gemini-input:focus-visible,
+.ra-composer-input:focus,
+.ra-composer-input:focus-visible,
+#heroInput:focus,
+#heroInput:focus-visible,
+#chatInput:focus,
+#chatInput:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
 }
 
 .skip {

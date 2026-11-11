@@ -44,6 +44,54 @@ const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(parsedUrl.pathname);
 
+  // Handle CORS Preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    });
+    res.end();
+    return;
+  }
+
+  // Handle Dev Translation Warmup Mock
+  if (pathname === '/functions/v1/warmup-translation-engine') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(JSON.stringify({ ok: true, warmed: true }));
+    return;
+  }
+
+  // Handle Dev Indigenous Speech Synthesis
+  if (pathname === '/functions/v1/synthesize-indigenous-speech') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    await new Promise(resolve => req.on('end', resolve));
+    let parsed = {};
+    try { parsed = JSON.parse(body); } catch (_) {}
+    const { text, language, voice_id } = parsed;
+    console.log(`[TTS Local Dev] Synthesizing speech: lang=${language}, voice=${voice_id || 'default'}, text=${(text || '').slice(0, 60)}...`);
+
+    // Valid lightweight silent MP3 audio frame for local testing
+    const silentMp3Base64 = "//NAxAAAAAAAAAAAAFhpbmcAAAAPAAAAAgAAABwAAAwMDExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEAAA//NAxAgAANgEZcAAA8bM3dE1kMTEwLjAAAAAAAGY2WnAAQAAAAAgAAMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=";
+
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(JSON.stringify({
+      audio_url: `data:audio/mp3;base64,${silentMp3Base64}`,
+      cached: false,
+      dev_mock: true,
+      language: language,
+      voice: voice_id || 'default'
+    }));
+    return;
+  }
+
   // Dispatch /api/* to api directory handlers
   if (pathname.startsWith('/api/')) {
     let apiRel = pathname.replace(/^\/api\//, '');
