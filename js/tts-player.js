@@ -224,7 +224,7 @@
       activeAbortController = new AbortController();
 
       try {
-        var endpoint = (window.RA_CONFIG && RA_CONFIG.TTS_ENDPOINT) || "/functions/v1/synthesize-indigenous-speech";
+        var endpoint = (window.RA_CONFIG && RA_CONFIG.TTS_ENDPOINT) || "/api/ai/tts";
 
         // Map pcm to Nigerian English voice (idera) for speech synthesis
         var requestLang = lang === "pcm" ? "en" : lang;

@@ -25,6 +25,7 @@ git-ignored and must never be committed.
 | PAYSTACK_PUBLIC_KEY | browser | inline payment popup (future) |
 | PAYSTACK_SECRET_KEY | server only | initialize + verify transactions |
 | AI_API_KEY / AI_MODEL / AI_BASE_URL | server only | provider calls in `/api/ai/chat` |
+| APP_ENV / SUPPORT_EMAIL | anywhere | labels, support display |
 | NAIJA_SPEECH_API_KEY | server only (Supabase secret) | official Nigerian speech synthesis in Edge Function |
 | TTS_ENDPOINT | browser | optional custom endpoint for TTS Edge Function |
 | APP_ENV / PORT / SUPPORT_EMAIL | anywhere | labels, local dev port, support display |

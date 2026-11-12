@@ -9,7 +9,15 @@
    The Supabase session token is attached when one exists — a configured AI key
    is only spendable by signed-in callers (401 otherwise). */
 (function(){
-  const DISCLAIMER = "General legal information only — not legal advice. Verify important points with a qualified professional.";
+  const DISCLAIMER_MAP = {
+    en: "General legal information only — not legal advice. Verify important points with a qualified professional.",
+    yo: "Ìmọ̀ òfin gbogbogbò nìkan — kì í ṣe ìmọ̀ràn agbẹjọ́rò. Ṣe ìdánilójú àwọn kókó pàtàkì pẹ̀lú agbẹjọ́rò tí ó ní ìmọ̀.",
+    ig: "Ozi iwu n'ozuzu ya naanị — ọ bụghị ndụmọdụ iwu. Nyochaa isi ihe dị mkpa na onye ọkàiwu ruru eru.",
+    ha: "Bayanin shari'a na gaba ɗaya kawai — ba shawara ce ta doka ba. Tabbatar da mahimman batutuwa tare da ƙwararren masani.",
+    pcm: "General legal information only — no be legal advice. Verify important points with a qualified professional."
+  };
+  const DISCLAIMER = DISCLAIMER_MAP.en;
+
   function localKB(q){
     const s = (q||"").toLowerCase();
     const D = window.RA_RIGHTS_DETAIL || window.RA_RIGHTS || [];
@@ -19,30 +27,65 @@
   /* Shared labelled fallback used only in server mode (demo-kb mode below keeps
      its original wording untouched). Never claim to be live AI. */
   function serverFallback(m){
+    const lang = ((window.RA_I18N_API && window.RA_I18N_API.lang) || localStorage.getItem("ra_lang") || "en").toLowerCase();
     const hit = localKB(m);
+    const strings = (window.RA_I18N && window.RA_I18N.strings) || {};
+    const disclaimer = DISCLAIMER_MAP[lang] || DISCLAIMER;
+
     if(hit){
       const url = hit.fullGuide || ("rights/topic.html?id="+hit.id);
+      let title = hit.title;
+      let summary = hit.summary || "";
+      const tKey = "right." + hit.id;
+      const sKey = "rightsum." + hit.id;
+      if(strings[tKey] && strings[tKey][lang]) title = strings[tKey][lang];
+      if(strings[sKey] && strings[sKey][lang]) summary = strings[sKey][lang];
+
+      let leadText = "The live AI assistant is temporarily unavailable. Based on verified RightAware legal guides, here is key guidance on “" + title + "”:\n\n" + summary;
+      if(lang === "yo"){
+        leadText = "Olùrànlọ́wọ́ AI kò sí lẹ́sẹ̀kẹsẹ̀ yìí. Dá lórí àwọn ìtọ́sọ́nà òfin RightAware tí a fọwọ́sí, èyí ni àkópọ̀ pàtàkì lórí “" + title + "”:\n\n" + summary;
+      } else if(lang === "ig"){
+        leadText = "Onye enyemaka AI adịghị ugbu a. Dabere na ntuziaka iwu RightAware e kwadoro, nke a bụ ntuziaka dị mkpa na “" + title + "”:\n\n" + summary;
+      } else if(lang === "ha"){
+        leadText = "Mataimakin AI ba ya aiki a halin yanzu. Dangane da ingantattun jagororin doka na RightAware, ga muhimmin jagora akan “" + title + "”:\n\n" + summary;
+      } else if(lang === "pcm"){
+        leadText = "Live AI assistant no dey available now. Based on verified RightAware legal guides, see wetin law talk about “" + title + "”:\n\n" + summary;
+      }
+
       return {
-        text: "The live AI assistant is temporarily unavailable. Based on verified RightAware legal guides, here is key guidance on “" + hit.title + "”:\n\n" + (hit.summary || ""),
+        text: leadText,
         links: [
-          { t: "Open Guide: " + hit.title, u: url },
-          { t: "Browse Rights Library", u: "rights.html" },
-          { t: "Emergency Helplines", u: "help.html" }
+          { t: "Open: " + title, u: url },
+          { t: lang === "yo" ? "Àkójọpọ̀ Àwọn Ẹ̀tọ́" : "Browse Rights Library", u: "rights.html" },
+          { t: lang === "yo" ? "Ìrànwọ́ Pàjáwìrì" : "Emergency Helplines", u: "help.html" }
         ],
-        disclaimer: DISCLAIMER,
+        disclaimer: disclaimer,
         demo: true,
         isFallback: true,
-        sourceLabel: "Verified RightAware Guide"
+        sourceLabel: lang === "yo" ? "Ìtọ́sọ́nà Tí A Fọwọ́sí" : (lang === "pcm" ? "Verified Guide" : "Verified RightAware Guide")
       };
     }
+    let noMatchText = "The live AI assistant is temporarily unavailable. We could not find an exact keyword match, but you can explore verified Nigerian legal protections in our library below or contact official help desks.";
+    if(lang === "yo"){
+      noMatchText = "Olùrànlọ́wọ́ AI kò sí lẹ́sẹ̀kẹsẹ̀ yìí. A kò rí ọ̀rọ̀ pàtó tí ó bá a mu, ṣùgbọ́n ẹ lè ṣàwárí àwọn àbò òfin Nàìjíríà tí a fọwọ́sí nínú àkójọpọ̀ wa nísàlẹ̀ tàbí kàn sí àwọn ẹ̀ka ìrànwọ́.";
+    } else if(lang === "ig"){
+      noMatchText = "Onye enyemaka AI adịghị ugbu a. Anyị ahụghị egwuregwu okwu ziri ezi, mana ị nwere ike inyocha nchebe iwu Naịjirịa e kwadoro n'ọbá akwụkwọ anyị n'okpuru.";
+    } else if(lang === "ha"){
+      noMatchText = "Mataimakin AI ba ya aiki a halin yanzu. Ba mu sami ainihin kalmar bincike ba, amma kuna iya bincika kariyar dokokin Najeriya a cikin ɗakin karatu na ƙasa.";
+    } else if(lang === "pcm"){
+      noMatchText = "Live AI assistant no dey available now. We no see exact match for your words, but you fit check verified Nigerian legal protections for our library below.";
+    }
     return {
-      text: "The live AI assistant is temporarily unavailable. We could not find an exact keyword match, but you can explore verified Nigerian legal protections in our library below or contact official help desks.",
+      text: noMatchText,
       links: [
-        { t: "Search all content", u: "search.html?q=" + encodeURIComponent(m) },
-        { t: "Browse rights library", u: "rights.html" },
-        { t: "Emergency Helplines", u: "help.html" }
+        { t: lang === "yo" ? "Wá gbogbo àkóónú" : "Search all content", u: "search.html?q=" + encodeURIComponent(m) },
+        { t: lang === "yo" ? "Àkójọpọ̀ Àwọn Ẹ̀tọ́" : "Browse rights library", u: "rights.html" },
+        { t: lang === "yo" ? "Ìrànwọ́ Pàjáwìrì" : "Emergency Helplines", u: "help.html" }
       ],
-      disclaimer: DISCLAIMER,
+      disclaimer: disclaimer,
+      demo: true,
+      isFallback: true,
+      sourceLabel: lang === "yo" ? "Ìtọ́sọ́nà Tí A Fọwọ́sí" : "Verified RightAware Guide"
       demo: true,
       isFallback: true,
       sourceLabel: "Verified RightAware Guide"
@@ -102,8 +145,11 @@
              guaranteed-failing call. (ra:session-ready also clears the latch.) */
           if(this._authNeeded && !tok) return needAuth();
 
+          const activeLang = (opts.lang || (window.RA_I18N_API && window.RA_I18N_API.lang) || localStorage.getItem("ra_lang") || "en").toLowerCase();
           const reqBody = {
             message: m,
+            lang: activeLang,
+            language: activeLang,
             context: opts.context || undefined,
             history: Array.isArray(opts.history) ? opts.history.slice(-6) : undefined
           };
@@ -216,12 +262,7 @@
         finally {}
         return serverFallback(m);
       }
-      const hit = localKB(m);
-      if(hit){
-        const url = hit.fullGuide || ("rights/topic.html?id="+hit.id);
-        return { text:"Based on your words, start here: “"+hit.title+"” — "+(hit.summary||""), links:[{t:"Open: "+hit.title, u:url},{t:"Get Help", u:"help.html"}], disclaimer:DISCLAIMER, demo:true };
-      }
-      return { text:"I couldn't match that to a guide. Try keywords like arrest, rent, salary, vote, scam — or browse the library.", links:[{t:"Search all content",u:"search.html?q="+encodeURIComponent(m)},{t:"Browse rights library",u:"rights.html"}], disclaimer:DISCLAIMER, demo:true };
+      return serverFallback(m);
     },
     // previewAsk delegates directly to ask so guests get real AI answers on all preview attempts
     previewAsk(message, opts){

@@ -161,16 +161,54 @@ const PLATFORM_INFO = {
 
 /* =========================================================
    DETERMINISTIC FAST-PATH GREETINGS (ZERO TOKEN DRAIN)
+   Localized across 5 languages (en, yo, ig, ha, pcm)
    ========================================================= */
 
-const GREETING_RESPONSES = [
-  "Welcome to RightAware. I am here to help you understand your civic rights under Nigerian law, explore verified statutes, or learn more about the platform. How can I help you today?",
-  "Hello. I am RightAware AI, your Nigerian civic and legal awareness companion. Feel free to ask about your constitutional rights, tenant laws, police rules, or how to navigate RightAware.",
-  "Good day. Welcome to RightAware. You can ask me questions about Nigerian laws, your rights as a citizen, or our verified legal guides. What would you like to explore?"
-];
+const GREETING_RESPONSES = {
+  en: [
+    "Welcome to RightAware. I am here to help you understand your civic rights under Nigerian law, explore verified statutes, or learn more about the platform. How can I help you today?",
+    "Hello. I am RightAware AI, your Nigerian civic and legal awareness companion. Feel free to ask about your constitutional rights, tenant laws, police rules, or how to navigate RightAware.",
+    "Good day. Welcome to RightAware. You can ask me questions about Nigerian laws, your rights as a citizen, or our verified legal guides. What would you like to explore?"
+  ],
+  yo: [
+    "Ẹ kú àbọ̀ sí RightAware AI. Mo wà níbí láti ràn yín lọ́wọ́ láti lóye àwọn ẹ̀tọ́ yín lábẹ́ òfin Nàìjíríà, ṣàwárí àwọn òfin tí a fọwọ́sí, tàbí kẹ́kọ̀ọ́ sí i nípa pẹpẹ yìí. Báwo ni mo ṣe lè ràn yín lọ́wọ́ lónìí?",
+    "Báwo ni! Èmi ni RightAware AI, olùrànlọ́wọ́ ìmọ̀ òfin àti ẹ̀tọ́ ọmọ Nàìjíríà rẹ. Ẹ lè béèrè nípa àwọn ẹ̀tọ́ òfin ìpìlẹ̀ yín, òfin ilé gbígbé, ìlànà ọlọ́pàá, tàbí bí a ṣe ń lo RightAware.",
+    "Ẹ pẹ̀lẹ́ o. Ẹ kú àbọ̀ sí RightAware. Ẹ lè béèrè àwọn ìbéèrè nípa àwọn òfin Nàìjíríà, àwọn ẹ̀tọ́ yín gẹ́gẹ́ bí ọmọ orílẹ̀-èdè, tàbí àwọn ìtọ́sọ́nà òfin wa tí a fọwọ́sí. Kí ni ẹ fẹ́ kí a yẹ̀wò?"
+  ],
+  ig: [
+    "Nnọọ na RightAware AI. Anọ m ebe a iji nyere gị aka ịghọta ikike obodo gị n'okpuru iwu Naịjirịa, chọpụta iwu ndị e kwadoro, ma ọ bụ mụtakwuo banyere ikpo okwu a. Kedu ka m ga-esi nyere gị aka taa?",
+    "Kedu! Abụ m RightAware AI, onye enyemaka mmata gbasara iwu na ikike obodo Naịjirịa gị. Nweere onwe gị ịjụ gbasara ikike iwu gị, iwu ụlọ, iwu ndị uwe ojii, ma ọ bụ otu esi eji RightAware.",
+    "Ndewo. Nnọọ na RightAware. Ị nwere ike ịjụ m ajụjụ gbasara iwu Naịjirịa, ikike gị dị ka nwa amaala, ma ọ bụ ntuziaka iwu anyị e kwadoro. Gịnị ka ị ga-achọ ka anyị nyochaa?"
+  ],
+  ha: [
+    "Barka da zuwa RightAware AI. Ina nan don taimaka muku fahimtar haƙƙoƙinku na ɗan ƙasa a ƙarƙashin dokar Najeriya, bincika ingantattun dokoki, ko ƙarin koyo game da wannan dandalin. Ta yaya zan iya taimaka muku a yau?",
+    "Sannu! Ni ne RightAware AI, mataimakin ku na wayar da kan jama'a game da dokokin Najeriya. Kuna iya tambaya game da haƙƙoƙinku na tsarin mulki, dokokin haya, dokokin 'yan sanda, ko yadda ake amfani da RightAware.",
+    "Barka da yini. Barka da zuwa RightAware. Kuna iya yi mini tambayoyi game da dokokin Najeriya, haƙƙoƙinku a matsayin ɗan ƙasa, ko ingantattun jagororinmu na shari'a. Me kuke so mu duba?"
+  ],
+  pcm: [
+    "Welcome to RightAware AI. I dey here to help you understand your civic rights under Nigerian law, check verified statutes, or learn about our platform. Wetin you go like make we talk about today?",
+    "How far! I be RightAware AI, your Nigerian civic and legal awareness companion. Feel free to ask about your constitutional rights, tenant laws, police rules, or how to use RightAware.",
+    "Good day! Welcome to RightAware. You fit ask me questions about Nigerian laws, your rights as a citizen, or our verified legal guides. Wetin you wan make we check?"
+  ]
+};
 
-function pickGreeting() {
-  return GREETING_RESPONSES[Date.now() % GREETING_RESPONSES.length];
+function pickGreeting(lang) {
+  const l = (lang || "en").toLowerCase();
+  const list = GREETING_RESPONSES[l] || GREETING_RESPONSES.en;
+  return list[Date.now() % list.length];
+}
+
+const DISCLAIMER_MAP = {
+  en: "General legal information only — not legal advice. Verify important points with a qualified professional.",
+  yo: "Ìmọ̀ òfin gbogbogbò nìkan — kì í ṣe ìmọ̀ràn agbẹjọ́rò. Ṣe ìdánilójú àwọn kókó pàtàkì pẹ̀lú agbẹjọ́rò tí ó ní ìmọ̀.",
+  ig: "Ozi iwu n'ozuzu ya naanị — ọ bụghị ndụmọdụ iwu. Nyochaa isi ihe dị mkpa na onye ọkàiwu ruru eru.",
+  ha: "Bayanin shari'a na gaba ɗaya kawai — ba shawara ce ta doka ba. Tabbatar da mahimman batutuwa tare da ƙwararren masani.",
+  pcm: "General legal information only — no be legal advice. Verify important points with a qualified professional."
+};
+
+function getDisclaimer(lang) {
+  const l = (lang || "en").toLowerCase();
+  return DISCLAIMER_MAP[l] || DISCLAIMER_MAP.en;
 }
 
 /* =========================================================
@@ -219,7 +257,7 @@ const INTENT_RULES = {
 
   greetingPatterns: [
     /^(hi|hello|hey|howdy|good\s*(morning|afternoon|evening|day|night))[\s!.,?]*$/i,
-    /^(how\s*far|how\s*you\s*dey|how\s*bodi|kedu|bawo\s*ni|bawo|sannu|pele)[\s!.,?]*$/i,
+    /^(how\s*far|how\s*you\s*dey|how\s*bodi|kedu|bawo\s*ni|bawo|sannu|pele|ndewo|eku|eku\s*aro|eku\s*asan|eku\s*irole|barka)[\s!.,?]*$/i,
     /^(what'?s?\s*up|sup|yo|oya)[\s!.,?]*$/i
   ]
 };
@@ -231,6 +269,7 @@ function classifyIntent(rawMessage) {
   // Expand Pidgin before checking patterns
   const expanded = expandPidgin(msg).toLowerCase();
   const rawLower = msg.toLowerCase();
+  const asciiClean = msg.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
   // Tier 1: Platform Inquiries
   for (const term of INTENT_RULES.platformTerms) {
@@ -239,9 +278,9 @@ function classifyIntent(rawMessage) {
     }
   }
 
-  // Tier 2: Pure Greetings (anchored regex strictly on raw message)
+  // Tier 2: Pure Greetings (anchored regex strictly on raw message or tone-stripped message)
   for (const pattern of INTENT_RULES.greetingPatterns) {
-    if (pattern.test(msg)) {
+    if (pattern.test(msg) || pattern.test(asciiClean)) {
       return "INTENT_GREETING_CASUAL";
     }
   }
@@ -276,14 +315,53 @@ function classifyIntent(rawMessage) {
    DYNAMIC SYSTEM PROMPT & TOKEN LIMIT BUILDER
    ========================================================= */
 
-function buildSystemPrompt(intent) {
+function buildSystemPrompt(intent, lang) {
+  lang = (lang || "en").toLowerCase();
+
+  let languageDirective = "";
+  if (lang === "yo") {
+    languageDirective = `
+MANDATORY LANGUAGE INSTRUCTION — YORÙBÁ (yo):
+The user is viewing RightAware in Yorùbá.
+You MUST write your entire response fluently and naturally in standard Nigerian Yorùbá with appropriate tone marks (àkànṣe àmì ohùn).
+CRITICAL CITATION RULE: Statutory and constitutional citations MUST remain in exact English within square brackets (e.g. [Section 37, 1999 Constitution], [Section 30, ACJA 2015], [Police Act 2020 S. 49]) so the citizen can quote them directly to police, landlords, or courts.
+`;
+  } else if (lang === "ig") {
+    languageDirective = `
+MANDATORY LANGUAGE INSTRUCTION — IGBO (ig):
+The user is viewing RightAware in Asụsụ Igbo.
+You MUST write your entire response fluently and naturally in standard Nigerian Igbo.
+CRITICAL CITATION RULE: Statutory and constitutional citations MUST remain in exact English within square brackets (e.g. [Section 37, 1999 Constitution], [Section 30, ACJA 2015], [Police Act 2020 S. 49]) so the citizen can quote them directly to police, landlords, or courts.
+`;
+  } else if (lang === "ha") {
+    languageDirective = `
+MANDATORY LANGUAGE INSTRUCTION — HAUSA (ha):
+The user is viewing RightAware in Harshen Hausa.
+You MUST write your entire response fluently and naturally in standard Nigerian Hausa.
+CRITICAL CITATION RULE: Statutory and constitutional citations MUST remain in exact English within square brackets (e.g. [Section 37, 1999 Constitution], [Section 30, ACJA 2015], [Police Act 2020 S. 49]) so the citizen can quote them directly to police, landlords, or courts.
+`;
+  } else if (lang === "pcm") {
+    languageDirective = `
+MANDATORY LANGUAGE INSTRUCTION — NIGERIAN PIDGIN (pcm):
+The user is viewing RightAware in Nigerian Pidgin.
+You MUST write your entire response naturally, warmly, and clearly in Nigerian Pidgin.
+CRITICAL CITATION RULE: Statutory and constitutional citations MUST remain in exact English within square brackets (e.g. [Section 37, 1999 Constitution], [Section 30, ACJA 2015], [Police Act 2020 S. 49]) so the citizen can quote them directly to authorities.
+`;
+  } else {
+    languageDirective = `
+If the citizen writes in Nigerian Pidgin, respond naturally and warmly in Nigerian Pidgin. If they write in English, respond in clear Nigerian English.
+`;
+  }
+
+  const disclaimerText = getDisclaimer(lang);
+
   const baseRules = `
 You are RightAware AI, an authoritative, helpful, and empathetic Nigerian civic and legal-awareness companion inside RightAware.
 You are NOT a lawyer and you do NOT provide private legal counsel.
 Never invent laws, constitutional sections, phone numbers, or email addresses. Use only verified facts.
-If the citizen writes in Nigerian Pidgin, respond naturally and warmly in Nigerian Pidgin. If they write in English, respond in clear Nigerian English.
+${languageDirective}
 End every response with exactly:
-General legal information only — not legal advice. Verify important points with a qualified professional.
+${disclaimerText}
 `;
 
   if (intent === "INTENT_PLATFORM_INQUIRY") {
@@ -1321,6 +1399,8 @@ module.exports = async function (req, res) {
       ? body.message.trim()
       : "";
 
+  const lang = String(body.lang || body.language || "en").trim().toLowerCase();
+
 
   if (!message) {
     return res.status(400).json({
@@ -1513,14 +1593,14 @@ module.exports = async function (req, res) {
 
     return res.status(200).json({
       ok: true,
-      text: pickGreeting(),
+      text: pickGreeting(lang),
       links: [
         { t: "RightAware: 28 Civic Rights Topics", u: "rights.html" },
         { t: "RightAware: Laws & Statutes Library", u: "laws.html" },
         { t: "RightAware: Emergency Helplines", u: "help.html" }
       ],
       sources: [],
-      disclaimer: DISCLAIMER,
+      disclaimer: getDisclaimer(lang),
       model: "static",
       isGreeting: true,
       isGuest: isGuest,
@@ -1533,7 +1613,7 @@ module.exports = async function (req, res) {
      DYNAMIC SYSTEM PROMPT & TOKEN BUDGET BY INTENT
      --------------------------------------------------------- */
 
-  const systemPrompt = buildSystemPrompt(intent);
+  const systemPrompt = buildSystemPrompt(intent, lang);
   const maxOutputTokens = getOutputTokenLimit(intent);
 
   /* ---------------------------------------------------------
@@ -1767,7 +1847,7 @@ module.exports = async function (req, res) {
         resourceData.sources,
 
       disclaimer:
-        DISCLAIMER,
+        getDisclaimer(lang),
 
       model: activeModel,
 

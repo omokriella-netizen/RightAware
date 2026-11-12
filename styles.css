@@ -4421,6 +4421,7 @@ textarea:focus-visible {
 #chatInput:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
+  border: none !important;
   box-shadow: none !important;
 }
 
@@ -6277,6 +6278,41 @@ img {
   .ra-ai-drawer.open {
     transform: none;
   }
+}
+
+/* AI Drawer Mobile Header Stabilization & TTS Alignment */
+@media (max-width: 480px) {
+  .ra-ai-drawer-header {
+    padding: 0.65rem 0.75rem;
+    gap: 0.35rem;
+  }
+  .ra-ai-drawer-title-wrap {
+    gap: 0.35rem;
+  }
+  .ra-ai-drawer-title {
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+  .ra-ai-drawer-status {
+    display: none !important; /* Hide secondary preview badge on small viewports so header stays on a single clean row */
+  }
+  .ra-ai-btn-ghost {
+    padding: 0.25rem 0.4rem;
+    white-space: nowrap;
+  }
+  .ra-ai-btn-ghost span {
+    display: none; /* Icon-only full-page button on mobile prevents text wrapping */
+  }
+}
+
+.ra-ai-bubble .ra-msg-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* ==========================================================================

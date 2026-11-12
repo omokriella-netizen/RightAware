@@ -2549,6 +2549,41 @@ window.RA_I18N = {
     "yo": "láti bá RightAware AI sọ̀rọ̀.",
     "ig": "iji kpọtụrụ RightAware AI.",
     "ha": "don tuntuɓar RightAware AI."
+  },
+  "nav.tab.rights": {
+    "en": "Rights",
+    "pcm": "Rights",
+    "yo": "Àwọn Ẹ̀tọ́",
+    "ig": "Ikike",
+    "ha": "Hakkoki"
+  },
+  "hero.shield.btn.q": {
+    "en": "Police stop or lockout?",
+    "pcm": "Police hold you or lockout?",
+    "yo": "Ọlọ́pàá dá ọ dúró tàbí ìléwọ́lù?",
+    "ig": "Ndị uwe ojii kwụsịrị gị ka ọ bụ mkpọchi?",
+    "ha": "'Yan sanda sun tsayar da kai ko kullewa?"
+  },
+  "hero.shield.btn.tail": {
+    "en": "3 laws to cite immediately",
+    "pcm": "3 laws wey you go call sharp sharp",
+    "yo": "Àwọn òfin 3 láti tọ́ka sí lẹ́sẹ̀kẹsẹ̀",
+    "ig": "Iwu 3 ị ga-akpọpụta ngwa ngwa",
+    "ha": "Dokoki 3 da za a ambata nan take"
+  },
+  "hero.shield.btn.full": {
+    "en": "Police stop or lockout? 3 laws to cite immediately",
+    "pcm": "Police hold you or lockout? 3 laws wey you go call sharp sharp",
+    "yo": "Ọlọ́pàá dá ọ dúró tàbí ìléwọ́lù? Àwọn òfin 3 láti tọ́ka sí lẹ́sẹ̀kẹsẹ̀",
+    "ig": "Ndị uwe ojii kwụsịrị gị ka ọ bụ mkpọchi? Iwu 3 ị ga-akpọpụta ngwa ngwa",
+    "ha": "'Yan sanda sun tsayar da kai ko kullewa? Dokoki 3 da za a ambata nan take"
+  },
+  "hero.shield.btn.arrow": {
+    "en": "Police stop or lockout? 3 laws to cite immediately ↓",
+    "pcm": "Police hold you or lockout? 3 laws wey you go call sharp sharp ↓",
+    "yo": "Ọlọ́pàá dá ọ dúró tàbí ìléwọ́lù? Àwọn òfin 3 láti tọ́ka sí lẹ́sẹ̀kẹsẹ̀ ↓",
+    "ig": "Ndị uwe ojii kwụsịrị gị ka ọ bụ mkpọchi? Iwu 3 ị ga-akpọpụta ngwa ngwa ↓",
+    "ha": "'Yan sanda sun tsayar da kai ko kullewa? Dokoki 3 da za a ambata nan take ↓"
   }
 }
 };

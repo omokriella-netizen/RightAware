@@ -360,6 +360,7 @@
 <script src="js/ai-renderer.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/chat-state.js"></script>
+<script src="js/tts-player.js"></script>
 <script src="app.js"></script>
 <script>
 (function(){
@@ -1004,6 +1005,55 @@
     window.visualViewport.addEventListener("scroll", syncVisualViewport);
   }
 
+  function cleanTextForTTS(raw){
+    if(!raw) return "";
+    return String(raw)
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Strip Markdown hyperlinks [label](url) -> label, preserving statutory citations [Section X, ACJA]
+      .replace(/[*#_~`>]/g, "")                // Strip markdown formatting symbols
+      .replace(/\n{2,}/g, "\n")
+      .trim();
+  }
+
+  function resolveActiveTTSLanguage(){
+    try {
+      var active = (window.RA_I18N_API && window.RA_I18N_API.lang) || localStorage.getItem("ra_lang") || "en";
+      return active.toLowerCase();
+    } catch (_) {
+      return "en";
+    }
+  }
+
+  function renderTTSFooter(bubble, rawText){
+    if(!bubble || !rawText) return;
+    if(bubble.querySelector(".ra-tts-btn")) return;
+    var footer = document.createElement("div");
+    footer.className = "ra-msg-footer";
+
+    var activeLang = resolveActiveTTSLanguage();
+    var labelMap = { en: "Listen", pcm: "Listen", yo: "Gbọ́", ig: "Gee ntị", ha: "Saurara" };
+    var btnLabel = labelMap[activeLang] || "Listen";
+
+    var ttsBtn = document.createElement("button");
+    ttsBtn.type = "button";
+    ttsBtn.className = "ra-tts-btn";
+    ttsBtn.setAttribute("data-lang", activeLang);
+    ttsBtn.setAttribute("aria-label", "Listen to legal explanation in " + activeLang);
+    ttsBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>'
+      + '<span>' + btnLabel + '</span>';
+
+    ttsBtn.dataset.ttsText = cleanTextForTTS(rawText);
+    ttsBtn.dataset.lang = activeLang;
+
+    ttsBtn.addEventListener("click", function(){
+      if(window.RA_TTS_PLAYER && typeof window.RA_TTS_PLAYER.play === "function"){
+        window.RA_TTS_PLAYER.play(this, this.dataset.ttsText, this.dataset.lang);
+      }
+    });
+
+    footer.appendChild(ttsBtn);
+    bubble.appendChild(footer);
+  }
+
   function addMsg(role, text, links, customLabel){
     var item = { role: role, text: text, links: links || [] };
     thread.push(item);
@@ -1035,6 +1085,10 @@
     html += '</div>';
 
     wrap.innerHTML = html;
+    if(role !== "user"){
+      var bubbleEl = wrap.querySelector(".ra-ai-bubble");
+      renderTTSFooter(bubbleEl, text);
+    }
     messagesBox.appendChild(wrap);
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }
@@ -1108,7 +1162,7 @@
     showTyping();
 
     try {
-      var res = await window.RA_AI.ask(q);
+      var res = await window.RA_AI.ask(q, { lang: resolveActiveTTSLanguage(), history: thread.slice(-6) });
 
       removeTyping();
 
@@ -1195,6 +1249,32 @@
   });
 
   checkAuth();
+
+  // Attach TTS button to initial pre-rendered assistant greeting
+  var initialAssistantBubble = messagesBox.querySelector(".ra-ai-msg.assistant .ra-ai-bubble");
+  if(initialAssistantBubble){
+    renderTTSFooter(initialAssistantBubble, initialAssistantBubble.textContent.trim());
+  }
+
+  // Synchronize TTS button labels and stop playback on language change
+  document.addEventListener("ra:langchange", function(e){
+    if(window.RA_TTS_PLAYER && typeof window.RA_TTS_PLAYER.stop === "function"){
+      window.RA_TTS_PLAYER.stop();
+    }
+    var nextLang = (e.detail && e.detail.lang) || "en";
+    var labelMap = { en: "Listen", pcm: "Listen", yo: "Gbọ́", ig: "Gee ntị", ha: "Saurara" };
+    var nextLabel = labelMap[nextLang] || "Listen";
+
+    document.querySelectorAll(".ra-ai-drawer .ra-tts-btn").forEach(function(btn){
+      btn.setAttribute("data-lang", nextLang);
+      btn.dataset.lang = nextLang;
+      btn.setAttribute("aria-label", "Listen to legal explanation in " + nextLang);
+      var labelSpan = btn.querySelector("span");
+      if(labelSpan && !btn.classList.contains("ra-tts-playing") && !btn.classList.contains("ra-tts-loading")){
+        labelSpan.textContent = nextLabel;
+      }
+    });
+  });
 })();
 </script>
 
